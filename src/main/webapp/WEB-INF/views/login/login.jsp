@@ -53,8 +53,8 @@
             </div>
 
             <div class="form-floating">
-                <input type="password" class="form-control" id="pwd" name="pwd" placeholder="비밀번호">
-                <label for="pwd">비밀번호</label>
+                <input type="password" class="form-control" id="memberPwd" name="memberPwd" placeholder="비밀번호">
+                <label for="memberPwd">비밀번호</label>
             </div>
 
             <div class="form-check text-start my-3">
@@ -96,16 +96,16 @@
         e.stopPropagation()
 
         const memberId = document.getElementById("memberId");
-        const pwd = document.getElementById("pwd");
+        const memberPwd = document.getElementById("memberPwd");
 
         if (memberId.value.trim() === "") {
             alert("아이디를 입력하세요.");
             memberId.focus();
             return;
         }
-        if (pwd.value.trim() === "") {
+        if (memberPwd.value.trim() === "") {
             alert("비밀번호를 입력하세요.");
-            pwd.focus();
+            memberPwd.focus();
             return;
         }
 
