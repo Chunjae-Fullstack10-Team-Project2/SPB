@@ -77,8 +77,6 @@ public class MemberController {
         int returnValue = memberService.login(memberDTO);
 
         if (returnValue == 1) {
-            log.info("로그인 성공!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
             session.setAttribute("memberId", memberDTO.getMemberId());
 
             if (checkIdSave != null) {
@@ -107,9 +105,10 @@ public class MemberController {
                 response.addCookie(autoCookie);
             }
 
-            return "redirect:/bbs/list";
+            return "redirect:/board/list";
         } else {
             model.addAttribute("loginError", true);
+
             return "login/login";
         }
     }
