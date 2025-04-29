@@ -45,7 +45,7 @@ public class BoardServiceImpl implements BoardServiceIf{
         PostVO vo = modelMapper.map(dto, PostVO.class);
         int rtnResult = boardMapper.modifyPost(vo);
         log.info("=============================");
-        log.info("BoardServiceImpl  >>  insertPost");
+        log.info("BoardServiceImpl  >>  modifyPost");
         log.info("vo: " + vo);
         log.info("dto: " + dto);
         log.info("rtnResult: " + rtnResult);
@@ -61,7 +61,7 @@ public class BoardServiceImpl implements BoardServiceIf{
     public int deletePost(int postIdx) {
         int rtnResult = boardMapper.deletePost(postIdx);
         log.info("=============================");
-        log.info("BoardServiceImpl  >>  insertPost");
+        log.info("BoardServiceImpl  >>  deletePost");
         log.info("rtnResult: " + rtnResult);
         log.info("=============================");
         return rtnResult;
