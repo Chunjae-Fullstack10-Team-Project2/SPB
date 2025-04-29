@@ -15,7 +15,26 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class MemberMapperTests {
     @Autowired(required = false)
     private MemberMapper memberMapper;
+    @Test
+    public void testJoin() {
+        // 새로운 회원 정보 생성
+        MemberVO newMember = MemberVO.builder()
+                .memberId("newuser")
+                .memberPwd("password123")
+                .memberName("NewUser")
+                .memberZipCode("12345")
+                .memberAddr1("서울시 강남구")
+                .memberAddr2("역삼동 123-45")
+                .memberBirth("19900101")
+                .memberGrade("1")
+                .memberEmail("newuser@mail.com")
+                .memberPhone("01012345679")
+                .build();
 
+        boolean result = memberMapper.join(newMember);
+
+        Assertions.assertTrue(result);
+    }
     @Test
     public void testLogin() {
         MemberVO memberVO = MemberVO.builder()

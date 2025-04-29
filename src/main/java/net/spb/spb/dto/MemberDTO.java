@@ -5,8 +5,6 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -21,9 +19,10 @@ public class MemberDTO {
     private String memberZipCode;
     private String memberBirth;
     private String memberState;
+    private String memberGrade;
     private String memberEmail;
     private String memberPhone;
     private int memberIdx;
     private LocalDate memberPwdChangeDate;
-    private LocalDate memberRegistDate;
+    private LocalDate memberCreatedAt;
 }
