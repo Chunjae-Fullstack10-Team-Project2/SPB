@@ -83,7 +83,7 @@
         <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the
             text, and add your own fullscreen background photo to make it your own.</p>
         <p class="lead">
-            <a href="/regist" class="btn btn-lg btn-light fw-bold border-white bg-white">회원가입</a>
+            <a href="/join" class="btn btn-lg btn-light fw-bold border-white bg-white">회원가입</a>
         </p>
     </main>
 

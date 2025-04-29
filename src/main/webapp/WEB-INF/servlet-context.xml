@@ -18,4 +18,5 @@
         <property name="suffix" value=".jsp" />
     </bean>
     <context:component-scan base-package="net.spb.spb.controller" />
+
 </beans>

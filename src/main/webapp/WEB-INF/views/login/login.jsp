@@ -117,13 +117,13 @@
     });
 
     document.getElementById("btnFindId")?.addEventListener("click", () => {
-        location.href = "/findId.jsp";
+        location.href = "/findId";
     });
     document.getElementById("btnFindPwd")?.addEventListener("click", () => {
-        location.href = "/findPwd.jsp";
+        location.href = "/findPwd";
     });
     document.getElementById("btnJoin")?.addEventListener("click", () => {
-        location.href = "/join.jsp";
+        location.href = "/join";
     });
 </script>
 </body>

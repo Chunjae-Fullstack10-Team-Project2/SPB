@@ -20,9 +20,10 @@ public class MemberVO {
     private String memberZipCode;
     private String memberBirth;
     private String memberState;
+    private String memberGrade;
     private String memberEmail;
     private String memberPhone;
     private int memberIdx;
     private LocalDate memberPwdChangeDate;
-    private LocalDate memberRegDate;
+    private LocalDate memberCreatedAt;
 }

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MemberServiceImpl {
+public class MemberServiceImpl implements MemberServiceIf {
 
     private final ModelMapper modelMapper;
 
@@ -25,9 +25,17 @@ public class MemberServiceImpl {
         return memberMapper.login(memberVO);
     }
 
-    public boolean autoLogin(String userId) {
+    public boolean existUser(String userId) {
         MemberVO memberVO = memberMapper.existUser(userId);
         return memberVO != null;
+    }
+
+    @Override
+    public boolean join(MemberDTO memberDTO) {
+        MemberVO memberVO = modelMapper.map(memberDTO, MemberVO.class);
+        boolean result = memberMapper.join(memberVO);
+        System.out.println("회원가입 결과: " + result);
+        return result;
     }
 
 }
