@@ -2,9 +2,12 @@ package net.spb.spb.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.spb.spb.domain.PostCommentVO;
 import net.spb.spb.domain.PostVO;
+import net.spb.spb.dto.PostCommentDTO;
 import net.spb.spb.dto.PostDTO;
 import net.spb.spb.mapper.BoardMapper;
+import net.spb.spb.mapper.CommentMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,7 @@ public class BoardServiceImpl implements BoardServiceIf{
 
     private final BoardMapper boardMapper;
     private final ModelMapper modelMapper;
+    private final CommentMapper commentMapper;
 
     /**
      * @param dto
@@ -88,6 +92,9 @@ public class BoardServiceImpl implements BoardServiceIf{
     @Override
     public PostDTO getPostByIdx(int postIdx) {
         PostDTO dto = modelMapper.map(boardMapper.getPostByIdx(postIdx), PostDTO.class);
+        List<PostCommentVO> postCommentVOs = commentMapper.selectComments(postIdx);
+        dto.setPostComments(
+                postCommentVOs.stream().map(vo -> modelMapper.map(vo, PostCommentDTO.class)).collect(Collectors.toList()));
         log.info("=============================");
         log.info("BoardServiceImpl  >>  getPostByIdx");
         log.info(dto);
