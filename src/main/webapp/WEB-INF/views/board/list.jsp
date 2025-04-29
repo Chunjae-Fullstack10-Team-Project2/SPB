@@ -2,11 +2,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
-    <title>봄콩이 자유게시판</title>
+    <title>봄콩이 ${category.displayName}</title>
   </head>
   <body>
     <div class="container">
-      <h1>자유게시판 🌱</h1>
+      <h1>${category.displayName} 🌱</h1>
       <!-- 검색 영역 -->
       <div class="search-box">
         <div class="search-box-date">

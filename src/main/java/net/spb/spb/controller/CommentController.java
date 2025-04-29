@@ -3,35 +3,34 @@ package net.spb.spb.controller;
 import lombok.RequiredArgsConstructor;
 import net.spb.spb.dto.PostCommentDTO;
 import net.spb.spb.service.CommentServiceImpl;
+import net.spb.spb.util.BoardCategory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/board/comment")
+@RequestMapping("/board/{category}/comment")
 @RequiredArgsConstructor
 public class CommentController {
 
     private final CommentServiceImpl service;
 
     @PostMapping("/write")
-    public String write(@ModelAttribute PostCommentDTO dto) {
+    public String write(@PathVariable("category") BoardCategory category, @ModelAttribute PostCommentDTO dto) {
         dto.setPostCommentMemberId("user01");
         service.insertComment(dto);
-        return "redirect:/board/freeboard/view?idx="+dto.getPostCommentRefPostIdx();
+        return "redirect:/board/"+category+"/view?idx="+dto.getPostCommentRefPostIdx();
     }
 
     @PostMapping("/modify")
-    public String modify(@ModelAttribute PostCommentDTO dto) {
+    public String modify(@PathVariable("category") BoardCategory category, @ModelAttribute PostCommentDTO dto) {
         service.updateComment(dto);
-        return "redirect:/board/freeboard/view?idx="+dto.getPostCommentRefPostIdx();
+        return "redirect:/board/"+category+"/view?idx="+dto.getPostCommentRefPostIdx();
     }
 
     @PostMapping("/delete")
-    public String delete(@ModelAttribute PostCommentDTO dto) {
+    public String delete(@PathVariable("category") BoardCategory category, @ModelAttribute PostCommentDTO dto) {
         service.deleteComment(dto.getPostCommentIdx());
-        return "redirect:/board/freeboard/view?idx="+dto.getPostCommentRefPostIdx();
+        return "redirect:/board/"+category+"/view?idx="+dto.getPostCommentRefPostIdx();
+
     }
 }

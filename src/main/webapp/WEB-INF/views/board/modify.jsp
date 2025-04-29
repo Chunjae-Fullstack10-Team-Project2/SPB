@@ -7,8 +7,8 @@ change this template use File | Settings | File Templates. --%>
   </head>
   <body>
     <div class="container">
-      <h1>자유게시판 수정</h1>
-      <form name="frmModify" action="/board/freeboard/modify" method="post">
+      <h1>${category.displayName} 수정</h1>
+      <form name="frmModify" action="/board/${category}/modify" method="post">
         <input type="hidden" name="postCategory" value="${post.postCategory}"/>
         <input type="hidden" name="postIdx" value="${post.postIdx}"/>
         <div class="title">

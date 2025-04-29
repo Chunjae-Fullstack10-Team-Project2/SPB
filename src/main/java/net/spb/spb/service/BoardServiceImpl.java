@@ -75,8 +75,8 @@ public class BoardServiceImpl implements BoardServiceIf{
      * @return
      */
     @Override
-    public List<PostDTO> getPosts() {
-        List<PostVO> vos = boardMapper.getPosts("FREEBOARD");
+    public List<PostDTO> getPosts(String postCategory) {
+        List<PostVO> vos = boardMapper.getPosts(postCategory);
         List<PostDTO> dtos = vos.stream().map(vo -> modelMapper.map(vo, PostDTO.class)).collect(Collectors.toList());
         log.info("=============================");
         log.info("BoardServiceImpl  >>  getPosts");

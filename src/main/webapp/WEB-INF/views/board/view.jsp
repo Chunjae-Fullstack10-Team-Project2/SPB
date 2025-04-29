@@ -4,13 +4,13 @@ change this template use File | Settings | File Templates. --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
-    <title>봄콩이 자유게시판</title>
+    <title>봄콩이 ${category.displayName}</title>
   </head>
   <body>
     <div class="container">
-      <h1>자유게시판 🌱 - 상세 페이지</h1>
+      <h1>${category.displayName} 🌱 - 상세 페이지</h1>
       <div class="post">
-        <form name="frmDelete" id="frmDelete" method="post" action="/board/freeboard/delete">
+        <form name="frmDelete" id="frmDelete" method="post" action="/board/${category}/delete">
           <input type="hidden" name="idx" value="${post.postIdx}" />
           <!-- 제목, 정보 영역 -->
           <div class="post-header">
@@ -81,7 +81,7 @@ change this template use File | Settings | File Templates. --%>
         </c:choose>
 
         <div class="post-comment-input">
-          <form name="frmCommentRegist" id="frmCommentRegist" action="/board/comment/write" method="post">
+          <form name="frmCommentRegist" id="frmCommentRegist" action="/board/${category}/comment/write" method="post">
             <input type="hidden" name="postCommentMemberId" value="user01">
             <input type="hidden" name="postCommentRefPostIdx" value="${post.postIdx}"/>
             <div class="post-comment-input-comment">
@@ -115,7 +115,7 @@ change this template use File | Settings | File Templates. --%>
         button.addEventListener('click', function() {
           if(confirm('정말 댓글을 삭제하시겠습니까?')) {
             const form = this.closest('form');
-            form.action = "/board/comment/delete";
+            form.action = "/board/${category}/comment/delete";
             form.method="post";
             form.submit();
           }
@@ -155,7 +155,7 @@ change this template use File | Settings | File Templates. --%>
         commentText.style.display = 'block';
         commentEdit.style.display = 'none';
 
-        form.action = "/board/comment/modify";
+        form.action = "/board/${category}/comment/modify";
         form.method = "post";
         form.submit();
       }

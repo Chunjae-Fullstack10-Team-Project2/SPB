@@ -8,6 +8,6 @@ public interface BoardServiceIf {
     int insertPost(PostDTO dto);
     int modifyPost(PostDTO dto);
     int deletePost(int postIdx);
-    List<PostDTO> getPosts();
+    List<PostDTO> getPosts(String postCategory);
     PostDTO getPostByIdx(int postIdx);
 }

@@ -7,8 +7,8 @@ change this template use File | Settings | File Templates. --%>
   </head>
   <body>
     <div class="container">
-      <h1>자유게시판 글쓰기</h1>
-      <form name="frmRegist" action="/board/freeboard/write" method="post">
+      <h1>${category.displayName} 글쓰기</h1>
+      <form name="frmRegist" action="/board/${category}/write" method="post">
         <div class="title">
           <input type="text" name="postTitle"/>
         </div>
