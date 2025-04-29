@@ -79,7 +79,7 @@ public class BoardServiceTests {
     }
     @Test
     public void getPostByIdx() {
-        PostDTO dto = service.getPostByIdx(6);
+        PostDTO dto = service.getPostByIdx(8);
         log.info("=============================");
         log.info("BoardServiceImpl  >>  getPosts");
         log.info("dto: " + dto);
