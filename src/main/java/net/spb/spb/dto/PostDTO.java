@@ -3,6 +3,7 @@ package net.spb.spb.dto;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,4 +21,5 @@ public class PostDTO {
     private LocalDateTime postCreatedAt;
     private LocalDateTime postUpdatedAt;
     private short postState;
+    private List<PostCommentDTO> postComments;
 }
