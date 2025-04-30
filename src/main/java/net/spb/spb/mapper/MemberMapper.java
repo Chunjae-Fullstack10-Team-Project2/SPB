@@ -8,4 +8,11 @@ public interface MemberMapper {
     MemberVO existUser(String userId);
 
     boolean join(MemberVO memberVO);
+
+    MemberVO getMemberById(String memberId);
+
+    boolean updateMember(MemberVO memberVO);
+
+    String getPwdById(String memberId);
+
 }

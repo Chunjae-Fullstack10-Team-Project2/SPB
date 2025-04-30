@@ -18,74 +18,77 @@
             background-color: #f5f6f7;
         }
 
-        .container {
+        .join-container {
             background-color: #fff;
             padding: 40px;
             border-radius: 8px;
             max-width: 700px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
         }
 
-        h2 {
+        .join-container h2 {
             font-weight: bold;
             color: gray;
             border-bottom: 2px solid #ccc;
             padding-bottom: 10px;
         }
 
-        .form-control, .form-select {
+        .join-container .form-control,
+        .join-container .form-select {
             border-radius: 8px;
             height: 45px;
             font-size: 15px;
         }
 
-        .btn {
+        .join-container .btn {
             border-radius: 8px;
             font-size: 14px;
         }
 
-        .btn-outline-secondary {
+        .join-container .btn-outline-secondary {
             border-radius: 8px;
         }
 
-        label {
+        .join-container label {
             font-size: 13px;
             color: gray;
         }
 
-        .row.mb-3 {
-            margin-bottom: 1.25rem !important;
+        .join-container .row.mb-3 {
+            margin-bottom: 1.25rem;
         }
 
-        .text-end {
-            text-align: center !important;
+        .join-container .text-end {
+            text-align: center;
             margin-top: 30px;
         }
 
-        #memberIdCheck span {
+        .join-container #memberIdCheck span {
             font-size: 13px;
             font-weight: 500;
         }
 
-        .warning-text {
+        .join-container .warning-text {
             color: red;
             font-size: 0.8rem;
             margin: 0.2rem 0 0 0.2rem;
         }
 
-        #memberEmail2 {
+        .join-container #memberEmail2 {
             border-top-right-radius: 8px;
             border-bottom-right-radius: 8px;
         }
 
-        .no-radius {
+        .join-container .no-radius {
             border-radius: 0 !important;
         }
     </style>
-
 </head>
 <body>
-<div class="container mt-5">
+<%@ include file="../common/header.jsp" %>
+
+<div class="join-container mt-5 mb-5">
     <h2 class="mb-4">회원가입</h2>
     <form name="frmJoin" id="frmJoin" action="/join" method="post">
 
