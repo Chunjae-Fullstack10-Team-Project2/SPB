@@ -12,6 +12,8 @@ import net.spb.spb.service.MemberServiceImpl;
 import net.spb.spb.service.NaverLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -52,10 +54,10 @@ public class MemberController {
         String accessToken = naverLoginService.getAccessToken(code, state);
         MemberDTO naverUser = naverLoginService.getUserInfo(accessToken);
 
-        String naverId = naverUser.getMemberId(); // 또는 response.get("id")로 바꿔도 됨
+        String naverId = naverUser.getMemberId();
         if (!memberService.existUser(naverId)) {
             naverUser.setMemberId(naverId);
-            naverUser.setMemberPwd("naver"); // 패스워드 지정 방법은 개선 필요
+            naverUser.setMemberPwd("naver");
             memberService.join(naverUser);
         }
 
@@ -152,24 +154,8 @@ public class MemberController {
         }
     }
 
-//    @RequestMapping("/naver/logout")
-//    public String naverLogout(HttpSession session) {
-//        String naverLogoutUrl = "https://nid.naver.com/nidlogin.logout";
-//        String redirectUri = "http://localhost:8080/main";
-//
-//        session.invalidate();
-//        return "redirect:" + naverLogoutUrl + "?url=" + redirectUri;
-//    }
-
     @GetMapping("join")
-    public String join(Model model, HttpSession session) {
-//        MemberDTO memberDTO = (MemberDTO) session.getAttribute("memberDTO");
-//
-//        if (memberDTO == null) {
-//            memberDTO = new MemberDTO();
-//        }
-//
-//        model.addAttribute("memberDTO", memberDTO);
+    public String join() {
         return "login/join";
     }
 
@@ -196,9 +182,6 @@ public class MemberController {
     @PostMapping("/email/verify")
     @ResponseBody
     public Map<String, Object> verifyEmail(@ModelAttribute MemberDTO memberDTO, HttpSession session) {
-//        MemberDTO existingDTO = (MemberDTO) session.getAttribute("memberDTO");
-//        memberDTO = MemberDTOUtil.merge(existingDTO, memberDTO);
-
         String memberEmail = memberDTO.getMemberEmail();
         Map<String, Object> result = new HashMap<>();
 
@@ -223,10 +206,6 @@ public class MemberController {
     @ResponseBody
     public Map<String, Object> checkEmailCode(@RequestParam("memberEmailCode") String memberEmailCode,
                                               @ModelAttribute MemberDTO memberDTO, HttpSession session) {
-
-//        MemberDTO existingDTO = (MemberDTO) session.getAttribute("memberDTO");
-//        memberDTO = MemberDTOUtil.merge(existingDTO, memberDTO);
-
         String sessionCode = (String) session.getAttribute("emailAuthCode");
         Map<String, Object> result = new HashMap<>();
 
@@ -287,5 +266,44 @@ public class MemberController {
             return "login/join";
         }
     }
-}
 
+    @GetMapping("/mypage")
+    public String mypage(HttpSession session, Model model) {
+        String memberId = (String) session.getAttribute("memberId");
+        if (memberId == null) {
+            return "redirect:/login";
+        }
+        MemberDTO memberDTO = memberService.getMemberById(memberId);
+        model.addAttribute("memberDTO", memberDTO);
+
+        return "login/mypage";
+    }
+
+    @PostMapping("/mypage")
+    public String updateMyPage(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
+        String memberId = (String) session.getAttribute("memberId");
+        memberDTO.setMemberId(memberId);
+
+        boolean result = memberService.updateMember(memberDTO);
+        if (result) {
+            session.setAttribute("memberDTO", memberDTO);
+            return "redirect:/mypage";
+        } else {
+            model.addAttribute("errorMessage", "회원 정보 수정에 실패했습니다.");
+            return "login/mypage";
+        }
+    }
+
+    @PostMapping("/mypage/checkPwd")
+    @ResponseBody
+    public ResponseEntity<String> checkPassword(@RequestParam("memberPwd") String memberPwd, HttpSession session) {
+        String memberId = (String) session.getAttribute("memberId");
+        String originalPwd = memberService.getPwdById(memberId);
+
+        if (originalPwd != null && originalPwd.equals(memberPwd)) {
+            return ResponseEntity.ok("success");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("fail");
+        }
+    }
+}
