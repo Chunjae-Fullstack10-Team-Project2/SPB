@@ -51,9 +51,18 @@
                 </tr>
               </c:otherwise>
             </c:choose>
+            <tr>
+              <td colspan="6"><button type="button" class="btn" id="btnRegist">글 작성</button></td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
+  <script>
+    document.getElementById('btnRegist').addEventListener('click', function() {
+      window.location.href="write";
+    })
+
+  </script>
   </body>
 </html>

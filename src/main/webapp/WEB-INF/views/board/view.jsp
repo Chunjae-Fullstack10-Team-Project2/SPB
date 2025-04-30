@@ -30,9 +30,13 @@ change this template use File | Settings | File Templates. --%>
             <div class="post-content-postcontent">
               <p>${post.postContent}</p>
             </div>
-            <div class="post-content-postfile">
-              <img src="" width="200px" height="50px" />
-            </div>
+            <c:if test="${not empty post.postFiles}">
+              <c:forEach items="${post.postFiles}" var="file">
+                <div class="post-content-postfile">
+                  <img src="/upload/${file.fileName}"/>
+                </div>
+              </c:forEach>
+            </c:if>
             <div class="post-content-ex">공유 | 신고</div>
             <div class="post-content-btn">
               <button type="button" id="btnPostModify">수정하기</button>

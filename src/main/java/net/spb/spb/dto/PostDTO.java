@@ -22,4 +22,5 @@ public class PostDTO {
     private LocalDateTime postUpdatedAt;
     private short postState;
     private List<PostCommentDTO> postComments;
+    private List<FileDTO> postFiles;
 }

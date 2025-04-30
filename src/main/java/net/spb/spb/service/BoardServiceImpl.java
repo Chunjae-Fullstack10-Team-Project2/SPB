@@ -2,10 +2,13 @@ package net.spb.spb.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.spb.spb.domain.FileVO;
 import net.spb.spb.domain.PostCommentVO;
 import net.spb.spb.domain.PostVO;
+import net.spb.spb.dto.FileDTO;
 import net.spb.spb.dto.PostCommentDTO;
 import net.spb.spb.dto.PostDTO;
+import net.spb.spb.mapper.BoardFileMapper;
 import net.spb.spb.mapper.BoardMapper;
 import net.spb.spb.mapper.CommentMapper;
 import org.modelmapper.ModelMapper;
@@ -22,7 +25,7 @@ public class BoardServiceImpl implements BoardServiceIf{
     private final BoardMapper boardMapper;
     private final ModelMapper modelMapper;
     private final CommentMapper commentMapper;
-
+    private final BoardFileMapper boardFileMapper;
     /**
      * @param dto
      * @return
@@ -31,13 +34,16 @@ public class BoardServiceImpl implements BoardServiceIf{
     public int insertPost(PostDTO dto) {
         PostVO vo = modelMapper.map(dto, PostVO.class);
         int rtnResult = boardMapper.insertPost(vo);
+        int postIdx = 0;
         log.info("=============================");
         log.info("BoardServiceImpl  >>  insertPost");
         log.info("vo: " + vo);
         log.info("dto: " + dto);
         log.info("rtnResult: " + rtnResult);
+        postIdx = vo.getPostIdx();
+        log.info("postIdx: " + postIdx);
         log.info("=============================");
-        return rtnResult;
+        return postIdx;
     }
 
     /**
@@ -93,8 +99,10 @@ public class BoardServiceImpl implements BoardServiceIf{
     public PostDTO getPostByIdx(int postIdx) {
         PostDTO dto = modelMapper.map(boardMapper.getPostByIdx(postIdx), PostDTO.class);
         List<PostCommentVO> postCommentVOs = commentMapper.selectComments(postIdx);
+        List<FileVO> postFileVOs = boardFileMapper.selectFile(postIdx);
         dto.setPostComments(
                 postCommentVOs.stream().map(vo -> modelMapper.map(vo, PostCommentDTO.class)).collect(Collectors.toList()));
+        dto.setPostFiles(postFileVOs.stream().map(vo->modelMapper.map(vo, FileDTO.class)).collect(Collectors.toList()));
         log.info("=============================");
         log.info("BoardServiceImpl  >>  getPostByIdx");
         log.info(dto);

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.FileMapper">
+    <insert id="insertFile" parameterType="net.spb.spb.domain.FileVO" useGeneratedKeys="true" keyProperty="fileIdx">
+        insert into tbl_file (fileName, fileExt, filePath) values (#{fileName}, #{fileExt}, #{filePath})
+    </insert>
+    <delete id="deleteFile" parameterType="java.lang.Integer">
+        delete from tbl_file where fileIdx = #{fileIdx}
+    </delete>
+    <delete id="deleteFileByFileName" parameterType="string">
+        delete from tbl_file where fileName = #{fileName}
+    </delete>
+</mapper>

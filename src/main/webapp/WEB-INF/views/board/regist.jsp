@@ -8,7 +8,7 @@ change this template use File | Settings | File Templates. --%>
   <body>
     <div class="container">
       <h1>${category.displayName} 글쓰기</h1>
-      <form name="frmRegist" action="/board/${category}/write" method="post">
+      <form name="frmRegist" action="/board/${category}/write" method="post" enctype="multipart/form-data">
         <div class="title">
           <input type="text" name="postTitle"/>
         </div>
@@ -16,7 +16,7 @@ change this template use File | Settings | File Templates. --%>
           <textarea rows="10" cols="100" name="postContent"></textarea>
         </div>
         <div class="file">
-          <input type="file" />
+          <input type="file" name="files" id="files" multiple/>
         </div>
         <div class="btn">
           <button type="button">취소</button>
