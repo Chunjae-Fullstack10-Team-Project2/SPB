@@ -26,8 +26,9 @@
             postUpdatedAt = #{postUpdatedAt}
         where postIdx = #{postIdx}
     </update>
-    <delete id="deletePost" parameterType="java.lang.Integer">
-        delete from tbl_post
+    <update id="deletePost" parameterType="java.lang.Integer">
+        update tbl_post
+        set postState = 2
         where postIdx = #{postIdx}
-    </delete>
+    </update>
 </mapper>
