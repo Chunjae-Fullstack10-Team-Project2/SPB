@@ -71,7 +71,7 @@ public class BoardServiceTests {
     }
     @Test
     public void getPosts() {
-        List<PostDTO> dtos = service.getPosts();
+        List<PostDTO> dtos = service.getPosts("FREEBOARD");
         log.info("=============================");
         log.info("BoardServiceImpl  >>  getPosts");
         log.info("dtos: " + dtos);
