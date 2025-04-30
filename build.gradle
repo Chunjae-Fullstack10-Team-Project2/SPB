@@ -80,6 +80,10 @@ dependencies {
     implementation 'org.apache.commons:commons-email:1.5'
     implementation 'org.quartz-scheduler:quartz-jobs:2.3.2'
 
+    // OAuth를 위한 HttpClient
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2'
+    // https://mvnrepository.com/artifact/org.json/json
+    implementation 'org.json:json:20240303'
 }
 
 test {

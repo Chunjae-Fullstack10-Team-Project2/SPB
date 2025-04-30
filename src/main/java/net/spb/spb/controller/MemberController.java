@@ -9,13 +9,21 @@ import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.MemberDTO;
 import net.spb.spb.service.MailService;
 import net.spb.spb.service.MemberServiceImpl;
+import net.spb.spb.service.NaverLoginService;
+import net.spb.spb.util.HttpUtil;
 import net.spb.spb.util.MemberDTOUtil;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,11 +34,39 @@ public class MemberController {
     private MemberServiceImpl memberService;
 
     @Autowired
+    private NaverLoginService naverLoginService;
+
+    @Autowired
     private MailService mailService;
 
     @GetMapping("/")
     public String main() {
         return "common/main";
+    }
+
+    @GetMapping("/main")
+    public String main2() {
+        return "common/main";
+    }
+
+    @GetMapping("/naver/callback")
+    public String naverCallback(@RequestParam("code") String code,
+                                @RequestParam("state") String state,
+                                HttpSession session,
+                                Model model) throws Exception {
+
+        String accessToken = naverLoginService.getAccessToken(code, state);
+        MemberDTO naverUser = naverLoginService.getUserInfo(accessToken);
+
+        String naverId = naverUser.getMemberId(); // 또는 response.get("id")로 바꿔도 됨
+        if (!memberService.existUser(naverId)) {
+            naverUser.setMemberId(naverId);
+            naverUser.setMemberPwd("naver"); // 패스워드 지정 방법은 개선 필요
+            memberService.join(naverUser);
+        }
+
+        session.setAttribute("memberId", naverId);
+        return "redirect:/main";
     }
 
     @GetMapping("/login")
@@ -73,12 +109,15 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute MemberDTO memberDTO,
+    public String login(@Valid @ModelAttribute MemberDTO memberDTO, BindingResult bindingResult,
                         @RequestParam(value = "checkIdSave", required = false) String checkIdSave,
                         @RequestParam(value = "checkAutoLogin", required = false) String checkAutoLogin,
                         HttpServletResponse response,
                         HttpSession session,
                         Model model) {
+        if (bindingResult.hasErrors()) {
+            return "login/login";
+        }
 
         int returnValue = memberService.login(memberDTO);
 
@@ -121,13 +160,13 @@ public class MemberController {
 
     @GetMapping("join")
     public String join(Model model, HttpSession session) {
-        MemberDTO memberDTO = (MemberDTO) session.getAttribute("memberDTO");
-
-        if (memberDTO == null) {
-            memberDTO = new MemberDTO();
-        }
-
-        model.addAttribute("memberDTO", memberDTO);
+//        MemberDTO memberDTO = (MemberDTO) session.getAttribute("memberDTO");
+//
+//        if (memberDTO == null) {
+//            memberDTO = new MemberDTO();
+//        }
+//
+//        model.addAttribute("memberDTO", memberDTO);
         return "login/join";
     }
 
@@ -181,6 +220,7 @@ public class MemberController {
     @ResponseBody
     public Map<String, Object> checkEmailCode(@RequestParam("memberEmailCode") String memberEmailCode,
                                               @ModelAttribute MemberDTO memberDTO, HttpSession session) {
+
         MemberDTO existingDTO = (MemberDTO) session.getAttribute("memberDTO");
         memberDTO = MemberDTOUtil.merge(existingDTO, memberDTO);
 
@@ -201,7 +241,11 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public String join(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
+    public String join(@Valid @ModelAttribute MemberDTO memberDTO, BindingResult bindingResult, HttpSession session, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "login/join";
+        }
+
         String sessionMemberId = (String) session.getAttribute("memberId");
         String formMemberId = memberDTO.getMemberId();
 
