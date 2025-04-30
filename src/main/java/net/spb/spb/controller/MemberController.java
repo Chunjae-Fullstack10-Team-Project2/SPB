@@ -9,13 +9,20 @@ import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.MemberDTO;
 import net.spb.spb.service.MailService;
 import net.spb.spb.service.MemberServiceImpl;
+import net.spb.spb.util.HttpUtil;
 import net.spb.spb.util.MemberDTOUtil;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +38,54 @@ public class MemberController {
     @GetMapping("/")
     public String main() {
         return "common/main";
+    }
+    @GetMapping("/main")
+    public String main2() {
+        return "common/main";
+    }
+
+    @GetMapping("/naver/callback")
+    public String naverCallback(@RequestParam String code,
+                                @RequestParam String state,
+                                HttpSession session,
+                                Model model) throws Exception {
+        String clientId = "cnVwGS7uEm_5bo6jAIGr";
+        String clientSecret = "Rk6P2ytc2f";
+        String redirectURI = URLEncoder.encode("http://localhost:8080/main", StandardCharsets.UTF_8);
+
+        // 액세스 토큰 요청
+        String naverUrl = "https://nid.naver.com/oauth2.0/token" +
+                "?grant_type=authorization_code" +
+                "&client_id=" + clientId +
+                "&client_secret=" + clientSecret +
+                "&redirect_uri=" + redirectURI +
+                "&code=" + code +
+                "&state=" + state;
+
+        model.addAttribute("naverUrl", naverUrl);
+        String tokenResponse = HttpUtil.get(naverUrl);
+        JSONObject tokenJson = new JSONObject(tokenResponse);
+        String accessToken = tokenJson.getString("access_token");
+
+        // 사용자 정보 요청
+        String profileJson = HttpUtil.get("https://openapi.naver.com/v1/nid/me", accessToken);
+        JSONObject profileObj = new JSONObject(profileJson);
+        JSONObject responseObj = profileObj.getJSONObject("response");
+
+        String naverId = responseObj.getString("id");
+        String email = responseObj.optString("email", "");
+
+        // DB에 네이버 ID가 존재하는지 확인
+        if (!memberService.existUser(naverId)) {
+            MemberDTO memberDTO = new MemberDTO();
+            memberDTO.setMemberId(naverId);
+            memberDTO.setMemberEmail(email);
+            memberDTO.setMemberPwd("naver");
+            memberService.join(memberDTO); // 회원가입 처리
+        }
+
+        session.setAttribute("memberId", naverId);
+        return "redirect:/board/list";
     }
 
     @GetMapping("/login")
@@ -73,12 +128,15 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute MemberDTO memberDTO,
+    public String login(@Valid @ModelAttribute MemberDTO memberDTO, BindingResult bindingResult,
                         @RequestParam(value = "checkIdSave", required = false) String checkIdSave,
                         @RequestParam(value = "checkAutoLogin", required = false) String checkAutoLogin,
                         HttpServletResponse response,
                         HttpSession session,
                         Model model) {
+        if (bindingResult.hasErrors()) {
+            return "login/login";
+        }
 
         int returnValue = memberService.login(memberDTO);
 
@@ -121,13 +179,13 @@ public class MemberController {
 
     @GetMapping("join")
     public String join(Model model, HttpSession session) {
-        MemberDTO memberDTO = (MemberDTO) session.getAttribute("memberDTO");
-
-        if (memberDTO == null) {
-            memberDTO = new MemberDTO();
-        }
-
-        model.addAttribute("memberDTO", memberDTO);
+//        MemberDTO memberDTO = (MemberDTO) session.getAttribute("memberDTO");
+//
+//        if (memberDTO == null) {
+//            memberDTO = new MemberDTO();
+//        }
+//
+//        model.addAttribute("memberDTO", memberDTO);
         return "login/join";
     }
 
@@ -181,6 +239,7 @@ public class MemberController {
     @ResponseBody
     public Map<String, Object> checkEmailCode(@RequestParam("memberEmailCode") String memberEmailCode,
                                               @ModelAttribute MemberDTO memberDTO, HttpSession session) {
+
         MemberDTO existingDTO = (MemberDTO) session.getAttribute("memberDTO");
         memberDTO = MemberDTOUtil.merge(existingDTO, memberDTO);
 
@@ -201,7 +260,11 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public String join(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
+    public String join(@Valid @ModelAttribute MemberDTO memberDTO, BindingResult bindingResult, HttpSession session, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "login/join";
+        }
+
         String sessionMemberId = (String) session.getAttribute("memberId");
         String formMemberId = memberDTO.getMemberId();
 

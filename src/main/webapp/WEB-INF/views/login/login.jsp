@@ -41,7 +41,8 @@
 <c:if test="${empty sessionScope.memberId}">
     <main class="form-signin w-100 m-auto">
         <form name="frmLogin" method="post">
-            <img class="mb-4" src="https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
+            <img class="mb-4" src="https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72"
+                 height="57">
             <h1 class="h3 mb-3 fw-normal">로그인</h1>
 
             <div class="form-floating">
@@ -70,7 +71,11 @@
             <button class="btn btn-primary w-100 py-2" type="submit" id="btnSubmit">로그인</button>
 
             <div class="mt-3 d-flex justify-content-between">
-                <button type="button" class="btn btn-link p-0" id="btnFindId">아이디 찾기</button>
+                    <%--                <button type="button" class="btn btn-link p-0" id="btnFindId">아이디 찾기</button>--%>
+                <div id="naverIdLogin"></div>
+                    <%--                <a href="${naverUrl}">--%>
+                    <%--                    <img src="https://static.nid.naver.com/oauth/small_g_in.PNG" alt="네이버 로그인">--%>
+                    <%--                </a>--%>
                 <button type="button" class="btn btn-link p-0" id="btnFindPwd">비밀번호 찾기</button>
                 <button type="button" class="btn btn-link p-0" id="btnJoin">회원가입</button>
             </div>
@@ -89,8 +94,18 @@
 
 <!-- Bootstrap Bundle JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js" type="text/javascript"></script>
 
 <script>
+    const naverLogin = new naver.LoginWithNaverId({
+        clientId: "cnVwGS7uEm_5bo6jAIGr",
+        callbackUrl: "http://localhost:8080/main", // 콜백 URI
+        isPopup: false, // 새 창이 아닌 리다이렉트 방식
+        loginButton: {color: "green", type: 3, height: 40}
+    });
+
+    naverLogin.init();
+
     document.getElementById("btnSubmit")?.addEventListener("click", function (e) {
         e.preventDefault();
         e.stopPropagation()
