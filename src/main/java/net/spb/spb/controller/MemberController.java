@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.MemberDTO;
 import net.spb.spb.service.MailService;
 import net.spb.spb.service.MemberServiceImpl;
+import net.spb.spb.service.NaverLoginService;
 import net.spb.spb.util.HttpUtil;
 import net.spb.spb.util.MemberDTOUtil;
 import org.json.JSONObject;
@@ -33,59 +34,39 @@ public class MemberController {
     private MemberServiceImpl memberService;
 
     @Autowired
+    private NaverLoginService naverLoginService;
+
+    @Autowired
     private MailService mailService;
 
     @GetMapping("/")
     public String main() {
         return "common/main";
     }
+
     @GetMapping("/main")
     public String main2() {
         return "common/main";
     }
 
     @GetMapping("/naver/callback")
-    public String naverCallback(@RequestParam String code,
-                                @RequestParam String state,
+    public String naverCallback(@RequestParam("code") String code,
+                                @RequestParam("state") String state,
                                 HttpSession session,
                                 Model model) throws Exception {
-        String clientId = "cnVwGS7uEm_5bo6jAIGr";
-        String clientSecret = "Rk6P2ytc2f";
-        String redirectURI = URLEncoder.encode("http://localhost:8080/main", StandardCharsets.UTF_8);
 
-        // 액세스 토큰 요청
-        String naverUrl = "https://nid.naver.com/oauth2.0/token" +
-                "?grant_type=authorization_code" +
-                "&client_id=" + clientId +
-                "&client_secret=" + clientSecret +
-                "&redirect_uri=" + redirectURI +
-                "&code=" + code +
-                "&state=" + state;
+        String accessToken = naverLoginService.getAccessToken(code, state);
+        MemberDTO naverUser = naverLoginService.getUserInfo(accessToken);
 
-        model.addAttribute("naverUrl", naverUrl);
-        String tokenResponse = HttpUtil.get(naverUrl);
-        JSONObject tokenJson = new JSONObject(tokenResponse);
-        String accessToken = tokenJson.getString("access_token");
-
-        // 사용자 정보 요청
-        String profileJson = HttpUtil.get("https://openapi.naver.com/v1/nid/me", accessToken);
-        JSONObject profileObj = new JSONObject(profileJson);
-        JSONObject responseObj = profileObj.getJSONObject("response");
-
-        String naverId = responseObj.getString("id");
-        String email = responseObj.optString("email", "");
-
-        // DB에 네이버 ID가 존재하는지 확인
+        String naverId = naverUser.getMemberId(); // 또는 response.get("id")로 바꿔도 됨
         if (!memberService.existUser(naverId)) {
-            MemberDTO memberDTO = new MemberDTO();
-            memberDTO.setMemberId(naverId);
-            memberDTO.setMemberEmail(email);
-            memberDTO.setMemberPwd("naver");
-            memberService.join(memberDTO); // 회원가입 처리
+            naverUser.setMemberId(naverId);
+            naverUser.setMemberPwd("naver"); // 패스워드 지정 방법은 개선 필요
+            memberService.join(naverUser);
         }
 
         session.setAttribute("memberId", naverId);
-        return "redirect:/board/list";
+        return "redirect:/main";
     }
 
     @GetMapping("/login")

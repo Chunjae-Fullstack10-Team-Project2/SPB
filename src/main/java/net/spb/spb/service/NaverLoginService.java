@@ -1,9 +1,10 @@
 package net.spb.spb.service;
 
-import com.sun.jna.platform.win32.Netapi32Util;
+import jakarta.servlet.ServletContext;
 import net.spb.spb.dto.MemberDTO;
 import net.spb.spb.util.HttpUtil;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
@@ -11,11 +12,13 @@ import java.net.URLEncoder;
 @Service
 public class NaverLoginService {
 
-    private static final String CLIENT_ID = "YOUR_CLIENT_ID";
-    private static final String CLIENT_SECRET = "YOUR_CLIENT_SECRET";
-    private static final String REDIRECT_URI = "http://localhost:8080/naverLogin";
+    @Autowired
+    private ServletContext servletContext;
+    String REDIRECT_URI = "http://localhost:8080/naver/callback";
 
     public String getAccessToken(String code, String state) throws Exception {
+        String CLIENT_ID = servletContext.getInitParameter("naver.clientId");
+        String CLIENT_SECRET = servletContext.getInitParameter("naver.clientSecret");
         String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code"
                 + "&client_id=" + CLIENT_ID
                 + "&client_secret=" + CLIENT_SECRET
@@ -23,7 +26,6 @@ public class NaverLoginService {
                 + "&code=" + code
                 + "&state=" + state;
 
-        // Call Naver API to get access token
         String response = HttpUtil.get(tokenUrl);
         JSONObject jsonResponse = new JSONObject(response);
         return jsonResponse.getString("access_token");
@@ -33,15 +35,29 @@ public class NaverLoginService {
         String profileUrl = "https://openapi.naver.com/v1/nid/me";
         String response = HttpUtil.get(profileUrl, accessToken);
 
-        // Parse the user info
         JSONObject jsonResponse = new JSONObject(response);
         JSONObject responseObj = jsonResponse.getJSONObject("response");
+        String id = responseObj.getString("id");
+        if (id.length() > 20) {
+            id = id.substring(0, 20);
+        }
         String email = responseObj.getString("email");
         String name = responseObj.getString("name");
+        String mobile = responseObj.getString("mobile").replace("-", "");
+        String birthYear = responseObj.getString("birthyear");
+        String birthday = responseObj.getString("birthday"); // MM-DD
+
+        String birth = birthYear + birthday.replace("-", "");
 
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setMemberEmail(email);
         memberDTO.setMemberName(name);
+        memberDTO.setMemberId(id);
+        memberDTO.setMemberPwd("naver");
+//        memberDTO.setMemberZipCode("00000");
+        memberDTO.setMemberGrade("1");
+        memberDTO.setMemberPhone(mobile);
+        memberDTO.setMemberBirth(birth);
 
         return memberDTO;
     }

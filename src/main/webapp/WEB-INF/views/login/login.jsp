@@ -72,10 +72,14 @@
 
             <div class="mt-3 d-flex justify-content-between">
                     <%--                <button type="button" class="btn btn-link p-0" id="btnFindId">아이디 찾기</button>--%>
-                <div id="naverIdLogin"></div>
-                    <%--                <a href="${naverUrl}">--%>
-                    <%--                    <img src="https://static.nid.naver.com/oauth/small_g_in.PNG" alt="네이버 로그인">--%>
-                    <%--                </a>--%>
+                    <%--                <div id="naverIdLogin"></div>--%>
+                <a href="https://nid.naver.com/oauth2.0/authorize?response_type=code
+&client_id=cnVwGS7uEm_5bo6jAIGr
+&redirect_uri=http://localhost:8080/naver/callback
+&state=randomState123">
+                    <img src="https://static.nid.naver.com/oauth/big_g.PNG" alt="네이버 로그인 버튼"/>
+                </a>
+
                 <button type="button" class="btn btn-link p-0" id="btnFindPwd">비밀번호 찾기</button>
                 <button type="button" class="btn btn-link p-0" id="btnJoin">회원가입</button>
             </div>

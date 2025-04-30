@@ -27,7 +27,6 @@ public class MemberDTO {
     @NotNull
     private String memberAddr2;
 
-    @NotNull
     private String memberZipCode;
 
     @NotNull
