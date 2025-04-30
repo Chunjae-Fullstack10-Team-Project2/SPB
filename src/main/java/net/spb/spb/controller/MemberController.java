@@ -10,9 +10,6 @@ import net.spb.spb.dto.MemberDTO;
 import net.spb.spb.service.MailService;
 import net.spb.spb.service.MemberServiceImpl;
 import net.spb.spb.service.NaverLoginService;
-import net.spb.spb.util.HttpUtil;
-import net.spb.spb.util.MemberDTOUtil;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -21,9 +18,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -158,6 +152,15 @@ public class MemberController {
         }
     }
 
+//    @RequestMapping("/naver/logout")
+//    public String naverLogout(HttpSession session) {
+//        String naverLogoutUrl = "https://nid.naver.com/nidlogin.logout";
+//        String redirectUri = "http://localhost:8080/main";
+//
+//        session.invalidate();
+//        return "redirect:" + naverLogoutUrl + "?url=" + redirectUri;
+//    }
+
     @GetMapping("join")
     public String join(Model model, HttpSession session) {
 //        MemberDTO memberDTO = (MemberDTO) session.getAttribute("memberDTO");
@@ -193,8 +196,8 @@ public class MemberController {
     @PostMapping("/email/verify")
     @ResponseBody
     public Map<String, Object> verifyEmail(@ModelAttribute MemberDTO memberDTO, HttpSession session) {
-        MemberDTO existingDTO = (MemberDTO) session.getAttribute("memberDTO");
-        memberDTO = MemberDTOUtil.merge(existingDTO, memberDTO);
+//        MemberDTO existingDTO = (MemberDTO) session.getAttribute("memberDTO");
+//        memberDTO = MemberDTOUtil.merge(existingDTO, memberDTO);
 
         String memberEmail = memberDTO.getMemberEmail();
         Map<String, Object> result = new HashMap<>();
@@ -221,8 +224,8 @@ public class MemberController {
     public Map<String, Object> checkEmailCode(@RequestParam("memberEmailCode") String memberEmailCode,
                                               @ModelAttribute MemberDTO memberDTO, HttpSession session) {
 
-        MemberDTO existingDTO = (MemberDTO) session.getAttribute("memberDTO");
-        memberDTO = MemberDTOUtil.merge(existingDTO, memberDTO);
+//        MemberDTO existingDTO = (MemberDTO) session.getAttribute("memberDTO");
+//        memberDTO = MemberDTOUtil.merge(existingDTO, memberDTO);
 
         String sessionCode = (String) session.getAttribute("emailAuthCode");
         Map<String, Object> result = new HashMap<>();
