@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.QnaMapper">
+
+    <select id="qnaList" resultType="net.spb.spb.domain.QnaVO">
+        select qnaIdx,
+               qnaQMemberId,
+               qnaQContent,
+               qnaState,
+               qnaTitle,
+               qnaCreatedAt
+        from tbl_qna
+        where qnaState = 1
+    </select>
+
+    <select id="view" resultType="net.spb.spb.domain.QnaVO" parameterType="String">
+        select qnaIdx,
+               qnaQMemberId,
+               qnaAMemberId,
+               qnaQContent,
+               qnaAContent,
+               qnaState,
+               qnaTitle,
+               qnaCreatedAt,
+               qnaAnsweredAt
+        from tbl_qna
+        where qnaIdx = #{qnaIdx} and qnaState = 1
+    </select>
+
+    <insert id="createQ" parameterType="String">
+        insert into tbl_qna(qnaQMemberId, qnaTitle, qnaQContent)
+        values (#{qnaQMemberId}, #{qnaTitle}, #{qnaQContent})
+    </insert>
+
+    <update id="updateA" parameterType="net.spb.spb.domain.QnaVO">
+        update tbl_qna
+        set qnaAMemberId = #{qnaAMemberId},
+            qnaAContent  = #{qnaAContent},
+            qnaAnsweredAt = now()
+        where qnaIdx = #{qnaIdx}
+    </update>
+
+    <update id="delete" parameterType="net.spb.spb.domain.QnaVO">
+        update tbl_qna
+        set qnaState = 2
+        where qnaIdx = #{qnaIdx}
+    </update>
+</mapper>
