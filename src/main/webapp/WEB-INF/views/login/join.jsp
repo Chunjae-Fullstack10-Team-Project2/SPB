@@ -2,75 +2,156 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>회원가입</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+
+    <style>
+        body {
+            background-color: #f5f6f7;
+        }
+
+        .join-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            max-width: 700px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+        }
+
+        .join-container h2 {
+            font-weight: bold;
+            color: gray;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        .join-container .form-control,
+        .join-container .form-select {
+            border-radius: 8px;
+            height: 45px;
+            font-size: 15px;
+        }
+
+        .join-container .btn {
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .join-container .btn-outline-secondary {
+            border-radius: 8px;
+        }
+
+        .join-container label {
+            font-size: 13px;
+            color: gray;
+        }
+
+        .join-container .row.mb-3 {
+            margin-bottom: 1.25rem;
+        }
+
+        .join-container .text-end {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .join-container #memberIdCheck span {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .join-container .warning-text {
+            color: red;
+            font-size: 0.8rem;
+            margin: 0.2rem 0 0 0.2rem;
+        }
+
+        .join-container #memberEmail2 {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .join-container .no-radius {
+            border-radius: 0 !important;
+        }
+    </style>
 </head>
 <body>
-<form name="frmJoin" id="frmJoin" action="/join" method="post">
-    <table>
-        <tr>
-            <td>아이디</td>
-            <td><input type="text" name="memberId" id="memberId"
-                       value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"></td>
-            <td>
-                <button type="button" id="btnCheckId">중복 확인</button>
-            </td>
-            <td>
-                <span id="memberIdCheck">
-                    <c:if test="${not empty idCheckMessage}">
-                        <span style="color:${idCheckSuccess ? 'green' : 'red'};">${idCheckMessage}</span>
-                    </c:if>
-                </span>
-            </td>
-        </tr>
-        <tr>
-            <td>비밀번호</td>
-            <td><input type="password" name="memberPwd" id="memberPwd"
-                       value="${memberDTO.memberPwd != null ? memberDTO.memberPwd : ''}"></td>
-        </tr>
-        <tr>
-            <td>비밀번호 확인</td>
-            <td><input type="password" name="memberPwdConfirm" id="memberPwdConfirm"></td>
-            <td><span id="memberPwdCheck"></span></td>
-        </tr>
-        <tr>
-            <td>이름</td>
-            <td><input type="text" name="memberName" id="memberName"
-                       value="${memberDTO.memberName != null ? memberDTO.memberName : ''}"></td>
-        </tr>
-        <tr>
-            <td>우편번호</td>
-            <td><input type="text" id="memberZipCode" name="memberZipCode"
-                       value="${memberDTO.memberZipCode != null ? memberDTO.memberZipCode : ''}" placeholder="우편번호">
-            </td>
-            <td><input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br></td>
-        </tr>
-        <tr>
-            <td>주소</td>
-            <td><input type="text" id="memberAddr1" name="memberAddr1"
-                       value="${memberDTO.memberAddr1 != null ? memberDTO.memberAddr1 : ''}" placeholder="주소"><br></td>
-        </tr>
-        <tr>
-            <td>상세주소</td>
-            <td><input type="text" id="memberAddr2" name="memberAddr2"
-                       value="${memberDTO.memberAddr2 != null ? memberDTO.memberAddr2 : ''}" placeholder="상세주소"></td>
-        </tr>
-        <tr>
-            <td>생년월일</td>
-            <td><input type="text" name="memberBirth" id="memberBirth"
-                       value="${memberDTO.memberBirth != null ? memberDTO.memberBirth : ''}" maxlength="8"></td>
-        </tr>
-        <tr>
-            <td>학년</td>
-            <td>
+<%@ include file="../common/header.jsp" %>
+
+<div class="join-container mt-5 mb-5">
+    <h2 class="mb-4">회원가입</h2>
+    <form name="frmJoin" id="frmJoin" action="/join" method="post">
+
+        <div class="mb-3 row">
+            <div class="col-sm-10 input-group">
+                <input type="text" class="form-control" name="memberId" id="memberId"
+                       value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
+                       placeholder="아이디" maxlength="20" required
+                       oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
+                <button class="btn btn-outline-secondary" type="button" id="btnCheckId" disabled>
+                    중복 확인
+                </button>
+            </div>
+            <div id="idWarning" class="warning-text d-none">아이디는 4~20자, 알파벳과 숫자만 가능합니다.</div>
+            <div id="memberIdCheck">
+                <c:if test="${not empty idCheckMessage}">
+                    <span style="color:${idCheckSuccess ? 'green' : 'red'};">${idCheckMessage}</span>
+                </c:if>
+            </div>
+        </div>
+
+        <div class="mb-3 row">
+            <div class="col-sm-10 input-group">
+                <input type="password" class="form-control" name="memberPwd" id="memberPwd"
+                       value="${memberDTO.memberPwd != null ? memberDTO.memberPwd : ''}"
+                       placeholder="비밀번호" maxlength="15" required
+                       oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
+                <button class="btn btn-outline-secondary" type="button"
+                        onclick="togglePasswordVisibility('memberPwd', this)">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
+            <div id="pwdWarning" class="warning-text d-none">비밀번호는 대소문자와 숫자를 포함한 4~15자여야 합니다.</div>
+        </div>
+
+        <div class="mb-3 row">
+            <div class="col-sm-10 input-group">
+                <input type="password" class="form-control" name="memberPwdConfirm" id="memberPwdConfirm"
+                       placeholder="비밀번호 확인" maxlength="15" required
+                       oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
+                <button class="btn btn-outline-secondary" type="button"
+                        onclick="togglePasswordVisibility('memberPwdConfirm', this)">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
+            <div id="pwdMatchWarning" class="warning-text d-none">비밀번호가 일치하지 않습니다.</div>
+        </div>
+
+        <div class="mb-3 row">
+            <div class="col-sm-4">
+                <input type="text" class="form-control" name="memberName" id="memberName"
+                       value="${memberDTO.memberName != null ? memberDTO.memberName : ''}"
+                       placeholder="이름" maxlength="30" required>
+            </div>
+            <div class="col-sm-4">
                 <select class="form-select" id="memberGrade" name="memberGrade">
                     <optgroup label="초등학교">
-                        <option value="1" ${memberDTO.memberGrade == '1' ? 'selected' : ''}>1학년</option>
-                        <option value="2" ${memberDTO.memberGrade == '2' ? 'selected' : ''}>2학년</option>
-                        <option value="3" ${memberDTO.memberGrade == '3' ? 'selected' : ''}>3학년</option>
-                        <option value="4" ${memberDTO.memberGrade == '4' ? 'selected' : ''}>4학년</option>
-                        <option value="5" ${memberDTO.memberGrade == '5' ? 'selected' : ''}>5학년</option>
-                        <option value="6" ${memberDTO.memberGrade == '6' ? 'selected' : ''}>6학년</option>
+                        <option value="1" ${memberDTO.memberGrade == '1' ? 'selected' : ''}>초1</option>
+                        <option value="2" ${memberDTO.memberGrade == '2' ? 'selected' : ''}>초2</option>
+                        <option value="3" ${memberDTO.memberGrade == '3' ? 'selected' : ''}>초3</option>
+                        <option value="4" ${memberDTO.memberGrade == '4' ? 'selected' : ''}>초4</option>
+                        <option value="5" ${memberDTO.memberGrade == '5' ? 'selected' : ''}>초5</option>
+                        <option value="6" ${memberDTO.memberGrade == '6' ? 'selected' : ''}>초6</option>
                     </optgroup>
                     <optgroup label="중학교">
                         <option value="7" ${memberDTO.memberGrade == '7' ? 'selected' : ''}>중1</option>
@@ -86,58 +167,289 @@
                         <option value="13" ${memberDTO.memberGrade == '13' ? 'selected' : ''}>교사</option>
                     </optgroup>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td>이메일</td>
-            <td><input type="text" name="memberEmail" id="memberEmail"
-                       value="${memberDTO.memberEmail != null ? memberDTO.memberEmail : sessionScope.memberEmail}">
-            </td>
-            <td>
-                <input type="button" id="btnMemberEmailCodeSend" onclick="sendEmailCode()" value="인증 코드 전송">
-            </td>
-        </tr>
-        <tr>
-            <td>인증 코드 확인</td>
-            <td><input type="text" id="memberEmailCode"></td>
-            <td>
-                <input type="button" id="btnMemberEmailCodeAuth" onclick="checkEmailCode()" value="확인">
-            </td>
-            <td>
+            </div>
+
+            <div class="col-sm-4">
+                <input type="text" class="form-control" name="memberBirth" id="memberBirth"
+                       value="${memberDTO.memberBirth != null ? memberDTO.memberBirth : ''}" maxlength="8"
+                       placeholder="생년월일" required>
+            </div>
+        </div>
+
+
+        <div class="mb-3 row">
+            <div class="col-sm-10 input-group">
+                <input type="text" class="form-control" id="memberZipCode" name="memberZipCode"
+                       value="${memberDTO.memberZipCode != null ? memberDTO.memberZipCode : ''}"
+                       placeholder="우편번호" required>
+                <button class="btn btn-outline-secondary" type="button" onclick="sample6_execDaumPostcode()">
+                    우편번호 찾기
+                </button>
+            </div>
+        </div>
+
+        <div class="mb-3 row">
+            <div class="col-sm-6">
+                <input type="text" class="form-control" id="memberAddr1" name="memberAddr1"
+                       value="${memberDTO.memberAddr1 != null ? memberDTO.memberAddr1 : ''}" placeholder="주소" required>
+            </div>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" id="memberAddr2" name="memberAddr2"
+                       value="${memberDTO.memberAddr2 != null ? memberDTO.memberAddr2 : ''}" placeholder="상세주소">
+            </div>
+        </div>
+
+        <div class="input-group mb-3 align-items-stretch">
+            <input type="text" class="form-control" name="memberEmail1" id="memberEmail1"
+                   value="${memberDTO.memberEmail != null ? memberDTO.memberEmail : ''}"
+                   placeholder="이메일" required oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
+            <span class="input-group-text">@</span>
+            <select class="form-select" id="memberEmail2" name="memberEmail2" onchange="toggleCustomEmailInput(this)">
+                <option>naver.com</option>
+                <option>gmail.com</option>
+                <option>hanmail.net</option>
+                <option value="custom">직접 입력</option>
+            </select>
+            <input type="text" class="form-control d-none" id="memberEmailCustom" placeholder="직접 입력"
+                   maxlength="20" oninput="this.value=this.value.replace(/[^a-zA-Z0-9.]/g, '')">
+        </div>
+
+        <div class="input-group mb-3 d-grid gap-2">
+            <button type="button" class="btn btn-outline-secondary w-auto" id="btnMemberEmailCodeSend"
+                    onclick="sendEmailCode()">인증 코드 전송
+            </button>
+        </div>
+
+        <input type="hidden" name="memberEmail">
+
+        <div class="mb-3 row">
+            <div class="col-sm-10 input-group">
+                <input type="text" class="form-control" id="memberEmailCode" placeholder="인증 코드" maxlength="6"
+                       required>
+                <button type="button" class="btn btn-outline-secondary" id="btnMemberEmailCodeAuth"
+                        onclick="checkEmailCode()">인증 코드 확인
+                </button>
+            </div>
+            <div class="col-sm-2">
                 <c:if test="${not empty emailCheckMessage}">
                     <span style="color:${emailCheckSuccess ? 'green' : 'red'};">${emailCheckMessage}</span>
                 </c:if>
-            </td>
-        </tr>
-        <tr>
-            <td>핸드폰 번호</td>
-            <td>
-                <select id="memberPhone1" name="memberPhone1">
-                    <option value="010">010</option>
-                    <option value="011">011</option>
-                </select>
-            </td>
-            <td><input type="text" name="memberPhone2" id="memberPhone2" maxlength="4"></td>
-            <td><input type="text" name="memberPhone3" id="memberPhone3" maxlength="4"></td>
-            <td><input hidden="hidden" name="memberPhone"> </td>
-        </tr>
-        <tr>
-            <td>
-                <input type="submit" id="btnSubmitJoin">
-            </td>
-        </tr>
-    </table>
-</form>
+            </div>
+        </div>
 
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+        <div class="mb-3 row">
+            <div class="col-sm-10 input-group">
+                <input type="text" class="form-control" name="memberPhone" id="memberPhone" maxlength="11"
+                       placeholder="휴대전화번호" required oninput="this.value=this.value.replace(/[^0-9]/g, '')">
+            </div>
+        </div>
+
+        <div class="text-end d-grid gap-2">
+            <button type="submit" class="btn btn-primary" id="btnSubmitJoin">회원가입</button>
+        </div>
+    </form>
+</div>
+
 <script>
+    const idRegEx = /^[a-zA-Z0-9]{4,20}$/;
+    const pwdRegEx = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{4,15}$/;
+
+    $('#memberId').on('input', function () {
+        const memberIdValue = $('#memberId').val().trim();
+        if (!memberIdValue) {
+            $('#btnCheckId').prop('disabled', true);
+            $('#idWarning').addClass('d-none');
+        } else if (idRegEx.test(memberIdValue)) {
+            $('#idWarning').addClass('d-none');
+            $('#btnCheckId').prop('disabled', false);
+        } else {
+            $('#idWarning').removeClass('d-none');
+            $('#btnCheckId').prop('disabled', true);
+        }
+    });
+
+    $('#memberPwd').on('input', function () {
+        const memberPwdValue = $('#memberPwd').val();
+        if (pwdRegEx.test(memberPwdValue)) {
+            $('#pwdWarning').addClass('d-none');
+        } else {
+            $('#pwdWarning').removeClass('d-none');
+        }
+        checkPasswordMatch();
+    });
+
+    $('#memberPwdConfirm').on('input', function () {
+        const password = $('#memberPwd').val();
+        const confirmPassword = $('#memberPwdConfirm').val();
+
+        if (password && confirmPassword) {
+            if (password === confirmPassword) {
+                $('#pwdMatchWarning').addClass('d-none');
+            } else {
+                $('#pwdMatchWarning').removeClass('d-none');
+            }
+        }
+    });
+
+    $(function () {
+        $('input[name="memberBirth"]').daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
+            minYear: 1901,
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            locale: {
+                format: 'YYYYMMDD'
+            }
+        });
+    });
+
+    function sample6_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function (data) {
+                var addr = '';
+                addr = data.roadAddress;
+
+                document.getElementById('memberZipCode').value = data.zonecode;
+                document.getElementById("memberAddr1").value = addr;
+                document.getElementById("memberAddr2").focus();
+            }
+        }).open();
+    }
+
+    function toggleCustomEmailInput(selectEl) {
+        const memberEmailCustom = document.getElementById("memberEmailCustom");
+        const memberEmail2 = document.getElementById("memberEmail2");
+
+        if (selectEl.value === "custom") {
+            memberEmailCustom.classList.remove("d-none");
+            memberEmail2.classList.add("no-radius");
+            memberEmailCustom.focus();
+        } else {
+            memberEmailCustom.classList.add("d-none");
+            memberEmail2.classList.remove("no-radius");
+            memberEmailCustom.value = '';
+        }
+    }
+
+    $('#btnCheckId').on('click', function () {
+        const memberId = $('#memberId').val();
+
+        $.ajax({
+            type: 'POST',
+            url: '/checkIdDuplicate',
+            contentType: 'application/json',
+            data: JSON.stringify({memberId: memberId}),
+            success: function (response) {
+                alert(response.message);
+            },
+            error: function (xhr) {
+                alert("중복체크 실패: " + xhr.status);
+            }
+        });
+    });
+
+    function togglePasswordVisibility(inputId, btnElement) {
+        const input = document.getElementById(inputId);
+        const icon = btnElement.querySelector('i');
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("bi-eye");
+            icon.classList.add("bi-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.remove("bi-eye-slash");
+            icon.classList.add("bi-eye");
+        }
+    }
+
+    function checkPasswordMatch() {
+        const password = document.getElementById("password").value;
+        const confirm = document.getElementById("confirmPassword").value;
+        const message = document.getElementById("passwordMessage");
+
+        if (password && confirm) {
+            if (password === confirm) {
+                message.textContent = "비밀번호가 일치합니다.";
+                message.className = "form-text text-success";
+            } else {
+                message.textContent = "비밀번호가 일치하지 않습니다.";
+                message.className = "form-text text-danger";
+            }
+        } else {
+            message.textContent = "";
+        }
+    }
+
+    function sendEmailCode() {
+        let memberEmail1 = document.getElementById("memberEmail1").value.trim();
+        let memberEmail2 = document.getElementById("memberEmail2").value;
+
+        if (memberEmail2 === "custom") {
+            memberEmail2 = document.getElementById("memberEmailCustom").value.trim();
+        }
+
+        let memberEmail = memberEmail1 + '@' + memberEmail2;
+        document.querySelector('input[name="memberEmail"]').value = memberEmail;
+
+        if (!memberEmail || memberEmail.indexOf('@') === -1) {
+            alert('이메일을 올바르게 입력하세요.');
+            document.getElementById('memberEmail1').focus();
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/email/verify',
+            data: {memberEmail: memberEmail},
+            success: function (response) {
+                if (response.success) {
+                    alert('인증 코드가 전송되었습니다.');
+                    document.getElementById('memberEmail1').readOnly = true;
+                    document.getElementById('btnMemberEmailCodeSend').disabled = true;
+                } else {
+                    alert('이메일 인증 코드 전송 실패: ' + response.message);
+                }
+            },
+            error: function (xhr) {
+                alert("인증 코드 전송 실패: " + xhr.status);
+            }
+        });
+    }
+
+    function checkEmailCode() {
+        const memberEmailCode = document.getElementById('memberEmailCode').value.trim();
+
+        if (!memberEmailCode) {
+            alert('인증 코드를 입력하세요.');
+            document.getElementById('memberEmailCode').focus();
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/email/codeCheck',
+            data: {memberEmailCode: memberEmailCode},
+            success: function (response) {
+                if (response.success) {
+                    alert('인증 코드 확인에 성공하였습니다.');
+                    document.getElementById('memberEmailCode').readOnly = true;
+                    document.getElementById('btnMemberEmailCodeAuth').disabled = true;
+                } else {
+                    alert('인증 코드 확인 실패: ' + response.message);
+                }
+            },
+            error: function (xhr) {
+                alert("인증 코드 확인 실패: " + xhr.status);
+            }
+        });
+    }
+
     const btnSubmitJoin = document.getElementById("btnSubmitJoin");
     btnSubmitJoin?.addEventListener("click", (e) => {
         const memberIdValue = document.getElementById('memberId').value.trim();
         const emailCodeValue = document.getElementById('memberEmailCode').value.trim();
         const memberEmailValue = document.getElementById('memberEmail').value.trim();
-        const memberPhone2Value = document.getElementById("memberPhone2").value.trim();
-        const memberPhone3Value = document.getElementById("memberPhone3").value.trim();
+        const memberPhoneValue = document.getElementById("memberPhone").value.trim();
         const memberBirthValue = document.getElementById("memberBirth").value.trim();
         const memberZipCodeValue = document.getElementById("memberZipCode").value.trim();
         const memberAddr1Value = document.getElementById("memberAddr1").value.trim();
@@ -149,8 +461,7 @@
         const memberIdInput = document.getElementById('memberId');
         const emailCodeInput = document.getElementById('memberEmailCode');
         const memberEmailInput = document.getElementById('memberEmail');
-        const memberPhone2Input = document.getElementById("memberPhone2");
-        const memberPhone3Input = document.getElementById("memberPhone3");
+        const memberPhoneInput = document.getElementById("memberPhone");
         const memberBirthInput = document.getElementById("memberBirth");
         const memberZipCodeInput = document.getElementById("memberZipCode");
         const memberAddr1Input = document.getElementById("memberAddr1");
@@ -162,21 +473,27 @@
         e.preventDefault();
         e.stopPropagation();
 
-        if (!memberIdValue) {
-            alert('아이디를 입력하세요.');
+        const idRegEx = /^[a-zA-Z0-9]{4,20}$/;
+        const pwdRegEx = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{4,15}$/;
+
+        if (!memberIdValue || !idRegEx.test(memberIdValue)) {
+            alert('아이디는 4~20자, 알파벳과 숫자만 가능합니다.');
             memberIdInput.focus();
             return;
         }
-        if (!memberPwdValue) {
-            alert('비밀번호를 입력하세요.');
+
+        if (!memberPwdValue || !pwdRegEx.test(memberPwdValue)) {
+            alert('비밀번호는 대소문자와 숫자를 포함한 4~15자여야 합니다.');
             memberPwdInput.focus();
             return;
         }
-        if (!memberPwdConfirmValue) {
-            alert('비밀번호를 입력하세요.');
+
+        if (memberPwdValue !== memberPwdConfirmValue) {
+            alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.');
             memberPwdConfirmInput.focus();
             return;
         }
+
         if (!memberNameValue) {
             alert('이름을 입력하세요.');
             memberNameInput.focus();
@@ -202,18 +519,11 @@
             memberBirthInput.focus();
             return;
         }
-        if (!memberPhone2Value) {
+        if (!memberPhoneValue) {
             alert('전화번호를 입력하세요.');
-            memberPhone2Input.focus();
+            memberPhoneInput.focus();
             return;
         }
-        if (!memberPhone3Value) {
-            alert('전화번호를 입력하세요.');
-            memberPhone3Input.focus();
-            return;
-        }
-
-        document.querySelector('input[name="memberPhone"]').value = document.getElementById("memberPhone1").value + memberPhone2Value + memberPhone3Value;
 
         if (!memberEmailValue) {
             alert('이메일을 입력하세요.');
@@ -226,94 +536,14 @@
             return;
         }
 
+        let memberEmail1 = document.getElementById("memberEmail1").value.trim();
+        let memberEmail2 = document.getElementById("memberEmail2").value;
+        if (memberEmail2 === "custom") {
+            memberEmail2 = document.getElementById("memberEmailCustom").value.trim();
+        }
+        document.querySelector('input[name="memberEmail"]').value = memberEmail1 + '@' + memberEmail2;
         document.getElementById('frmJoin').submit();
     })
-
-    function sample6_execDaumPostcode() {
-        new daum.Postcode({
-            oncomplete: function (data) {
-                var addr = '';
-                addr = data.roadAddress;
-
-                document.getElementById('memberZipCode').value = data.zonecode;
-                document.getElementById("memberAddr1").value = addr;
-                document.getElementById("memberAddr2").focus();
-            }
-        }).open();
-    }
-
-    $('#btnCheckId').on('click', function () {
-        const memberId = $('#memberId').val();
-
-        $.ajax({
-            type: 'POST',
-            url: '/checkIdDuplicate',
-            contentType: 'application/json',
-            data: JSON.stringify({memberId: memberId}),
-            success: function (response) {
-                alert(response.message);
-            },
-            error: function (xhr) {
-                alert("중복체크 실패: " + xhr.status);
-            }
-        });
-    });
-    // Function to send the email verification code via AJAX
-    function sendEmailCode() {
-        const memberEmail = document.getElementById('memberEmail').value.trim();
-
-        if (!memberEmail) {
-            alert('이메일을 입력하세요.');
-            document.getElementById('memberEmail').focus();
-            return;
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: '/email/verify',
-            data: { memberEmail: memberEmail },
-            success: function(response) {
-                if (response.success) {
-                    alert('인증 코드가 전송되었습니다.');
-                    document.getElementById('memberEmail').readOnly = true;
-                    document.getElementById('btnMemberEmailCodeSend').disabled = true;
-                } else {
-                    alert('이메일 인증 코드 전송 실패: ' + response.message);
-                }
-            },
-            error: function(xhr) {
-                alert("인증 코드 전송 실패: " + xhr.status);
-            }
-        });
-    }
-
-    // Function to check the email verification code via AJAX
-    function checkEmailCode() {
-        const memberEmailCode = document.getElementById('memberEmailCode').value.trim();
-
-        if (!memberEmailCode) {
-            alert('인증 코드를 입력하세요.');
-            document.getElementById('memberEmailCode').focus();
-            return;
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: '/email/codeCheck',
-            data: { memberEmailCode: memberEmailCode },
-            success: function(response) {
-                if (response.success) {
-                    alert('인증 코드 확인에 성공하였습니다.');
-                } else {
-                    alert('인증 코드 확인 실패: ' + response.message);
-                }
-            },
-            error: function(xhr) {
-                alert("인증 코드 확인 실패: " + xhr.status);
-            }
-        });
-    }
-
 </script>
 </body>
 </html>

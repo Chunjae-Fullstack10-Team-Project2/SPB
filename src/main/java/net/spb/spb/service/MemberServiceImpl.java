@@ -34,8 +34,24 @@ public class MemberServiceImpl implements MemberServiceIf {
     public boolean join(MemberDTO memberDTO) {
         MemberVO memberVO = modelMapper.map(memberDTO, MemberVO.class);
         boolean result = memberMapper.join(memberVO);
-        System.out.println("회원가입 결과: " + result);
         return result;
+    }
+
+    @Override
+    public MemberDTO getMemberById(String memberId) {
+        MemberVO memberVO = memberMapper.getMemberById(memberId);
+        return modelMapper.map(memberVO, MemberDTO.class);
+    }
+
+    @Override
+    public boolean updateMember(MemberDTO memberDTO) {
+        MemberVO memberVO = modelMapper.map(memberDTO, MemberVO.class);
+        return memberMapper.updateMember(memberVO);
+    }
+
+    @Override
+    public String getPwdById(String memberId) {
+        return memberMapper.getPwdById(memberId);
     }
 
 }

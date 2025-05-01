@@ -85,6 +85,10 @@ dependencies {
     implementation 'org.imgscalr:imgscalr-lib:4.2'
     implementation 'jakarta.annotation:jakarta.annotation-api:3.0.0'
 
+    // OAuth를 위한 HttpClient
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2'
+    // https://mvnrepository.com/artifact/org.json/json
+    implementation 'org.json:json:20240303'
 }
 
 test {
