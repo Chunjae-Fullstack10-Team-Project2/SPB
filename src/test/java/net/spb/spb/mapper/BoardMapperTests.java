@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 @Log4j2
@@ -83,8 +84,17 @@ public class BoardMapperTests {
         log.info("=============================");
         log.info("BoardMapperTests  >>  select");
         log.info("=============================");
-        PostVO vo = boardMapper.getPostByIdx(3);
+        PostVO vo = boardMapper.getPostByIdx(41);
         log.info("vo: "+vo);
+    }
+    @Test
+    public void selectWithLike() {
+        HashMap<String, Object> param = new HashMap<>();
+        param.put("memberId", "user02");
+        param.put("postIdx", 41);
+        PostVO vo = boardMapper.getPostByIdxWithLike(param);
+        log.info("vo: "+vo);
+
     }
 
     @Test
