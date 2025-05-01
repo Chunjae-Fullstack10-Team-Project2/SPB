@@ -48,6 +48,7 @@ public class BoardController {
 
     @GetMapping("/{category}/view")
     public String view(@PathVariable("category") BoardCategory category, @RequestParam("idx") int idx, Model model) {
+        service.setReadCnt(idx);
         String memberId = "user05"; // 세션에서 받은 아이디로 추후 변경 예정
         HashMap<String, Object> param = new HashMap<>();
         param.put("postIdx", idx);

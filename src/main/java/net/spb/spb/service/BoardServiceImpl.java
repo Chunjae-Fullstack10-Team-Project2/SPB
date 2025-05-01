@@ -136,4 +136,13 @@ public class BoardServiceImpl implements BoardServiceIf{
     public int getPostCount(PostPageDTO postPageDTO) {
         return boardMapper.getPostCount(postPageDTO);
     }
+
+    /**
+     * @param postIdx
+     * @return
+     */
+    @Override
+    public int setReadCnt(int postIdx) {
+        return boardMapper.setReadCnt(postIdx);
+    }
 }

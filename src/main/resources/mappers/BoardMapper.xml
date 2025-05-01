@@ -69,4 +69,9 @@
         set postState = 2
         where postIdx = #{postIdx}
     </update>
+    <update id="setReadCnt" parameterType="java.lang.Integer">
+        update tbl_post
+        set postReadCnt = postReadCnt + 1
+        where postIdx = #{postIdx}
+    </update>
 </mapper>

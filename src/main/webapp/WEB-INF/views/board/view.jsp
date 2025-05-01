@@ -19,7 +19,7 @@ change this template use File | Settings | File Templates. --%>
               <img src="" width="50px" height="50px" />
               <div class="post-header-info-author">
                 ${post.postMemberId}
-                <div class="post-header-info-readcnt">조회 240 | 댓글 20</div>
+                <div class="post-header-info-readcnt">조회 ${post.postReadCnt} | 댓글 20</div>
               </div>
             </div>
             <hr />

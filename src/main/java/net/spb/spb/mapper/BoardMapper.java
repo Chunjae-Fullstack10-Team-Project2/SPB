@@ -14,5 +14,6 @@ public interface BoardMapper {
     int insertPost(PostVO vo);
     int modifyPost(PostVO vo);
     int deletePost(int postIdx);
+    int setReadCnt(int postIdx);
 
 }

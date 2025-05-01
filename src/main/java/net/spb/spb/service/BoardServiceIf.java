@@ -14,4 +14,5 @@ public interface BoardServiceIf {
     PostDTO getPostByIdx(int postIdx);
     PostDTO getPostByIdx(HashMap<String, Object> param);
     int getPostCount(PostPageDTO postPageDTO);
+    int setReadCnt(int postIdx);
 }
