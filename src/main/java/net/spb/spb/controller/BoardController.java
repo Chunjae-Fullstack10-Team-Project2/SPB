@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -47,7 +48,11 @@ public class BoardController {
 
     @GetMapping("/{category}/view")
     public String view(@PathVariable("category") BoardCategory category, @RequestParam("idx") int idx, Model model) {
-        PostDTO post = service.getPostByIdx(idx);
+        String memberId = "user05"; // 세션에서 받은 아이디로 추후 변경 예정
+        HashMap<String, Object> param = new HashMap<>();
+        param.put("postIdx", idx);
+        param.put("memberId", memberId);
+        PostDTO post = service.getPostByIdx(param);
         model.addAttribute("post", post);
         return "board/view";
     }

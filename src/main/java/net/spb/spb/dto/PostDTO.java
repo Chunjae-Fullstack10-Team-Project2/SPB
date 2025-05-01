@@ -23,4 +23,6 @@ public class PostDTO {
     private short postState;
     private List<PostCommentDTO> postComments;
     private List<FileDTO> postFiles;
+    private int postLikeCnt;
+    private boolean isLike;
 }

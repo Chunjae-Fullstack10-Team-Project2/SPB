@@ -15,6 +15,7 @@ import net.spb.spb.mapper.CommentMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,8 +100,24 @@ public class BoardServiceImpl implements BoardServiceIf{
     @Override
     public PostDTO getPostByIdx(int postIdx) {
         PostDTO dto = modelMapper.map(boardMapper.getPostByIdx(postIdx), PostDTO.class);
-        List<PostCommentVO> postCommentVOs = commentMapper.selectComments(postIdx);
         List<FileVO> postFileVOs = boardFileMapper.selectFile(postIdx);
+        dto.setPostFiles(postFileVOs.stream().map(vo->modelMapper.map(vo, FileDTO.class)).collect(Collectors.toList()));
+        log.info("=============================");
+        log.info("BoardServiceImpl  >>  getPostByIdx");
+        log.info(dto);
+        log.info("=============================");
+        return dto;
+    }
+
+    /**
+     * @param param
+     * @return
+     */
+    @Override
+    public PostDTO getPostByIdx(HashMap<String, Object> param) {
+        PostDTO dto = modelMapper.map(boardMapper.getPostByIdxWithLike(param), PostDTO.class);
+        List<PostCommentVO> postCommentVOs = commentMapper.selectComments((int)param.get("postIdx"));
+        List<FileVO> postFileVOs = boardFileMapper.selectFile((int)param.get("postIdx"));
         dto.setPostComments(
                 postCommentVOs.stream().map(vo -> modelMapper.map(vo, PostCommentDTO.class)).collect(Collectors.toList()));
         dto.setPostFiles(postFileVOs.stream().map(vo->modelMapper.map(vo, FileDTO.class)).collect(Collectors.toList()));

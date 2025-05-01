@@ -45,6 +45,16 @@ change this template use File | Settings | File Templates. --%>
             <hr />
           </div>
         </form>
+        <!-- 좋아요 영역 -->
+
+        <div class="post-like">
+          <form name="frmLike" action="/board/${category}/like/regist" method="post" id="frmLike">
+            <input type="hidden" name="postIdx" value="${post.postIdx}"/>
+            <input type="hidden" name="postLikeRefIdx" value="${post.postIdx}"/>
+            <input type="hidden" name="postLikeRefType" value="POST"/>
+            <button type="submit" id="btnLike">👍 ${post.postLikeCnt}</button>
+          </form>
+        </div>
         <!-- 댓글 영역 -->
         <c:choose>
           <c:when test="${not empty post.postComments}">
@@ -163,6 +173,14 @@ change this template use File | Settings | File Templates. --%>
         form.method = "post";
         form.submit();
       }
+      // 좋아요
+      document.getElementById('btnLike').addEventListener('click', function() {
+        const frm = document.getElementById('frmLike');
+        if (${post.like}) {
+          frm.action = "/board/${category}/like/delete";
+        }
+        frm.submit();
+      });
     </script>
   </body>
 </html>
