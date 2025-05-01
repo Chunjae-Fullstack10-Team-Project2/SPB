@@ -1,7 +1,7 @@
 package net.spb.spb.dto;
 
 import lombok.*;
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
 @NoArgsConstructor

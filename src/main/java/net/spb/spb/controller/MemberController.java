@@ -20,8 +20,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
+import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
