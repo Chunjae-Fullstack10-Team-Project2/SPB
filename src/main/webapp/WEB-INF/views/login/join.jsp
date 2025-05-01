@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -127,6 +128,7 @@
         <div class="mb-3 row">
             <div class="col-sm-10 input-group">
                 <input type="password" class="form-control" name="memberPwdConfirm" id="memberPwdConfirm"
+                       value="${memberPwdConfirm != null ? memberPwdConfirm : ''}"
                        placeholder="비밀번호 확인" maxlength="15" required
                        oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
                 <button class="btn btn-outline-secondary" type="button"
@@ -200,8 +202,9 @@
         </div>
 
         <div class="input-group mb-3 align-items-stretch">
+<%--            <c:set var="memberEmail1" value="${fn:split(memberDTO.memberEmail, '@')}" />--%>
             <input type="text" class="form-control" name="memberEmail1" id="memberEmail1"
-                   value="${memberDTO.memberEmail != null ? memberDTO.memberEmail : ''}"
+                   value="${memberDTO.memberEmail != null ? memberEmail1 : ''}"
                    placeholder="이메일" required oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
             <span class="input-group-text">@</span>
             <select class="form-select" id="memberEmail2" name="memberEmail2" onchange="toggleCustomEmailInput(this)">
@@ -224,8 +227,9 @@
 
         <div class="mb-3 row">
             <div class="col-sm-10 input-group">
-                <input type="text" class="form-control" id="memberEmailCode" placeholder="인증 코드" maxlength="6"
-                       required>
+                <input type="text" class="form-control" id="memberEmailCode" name="memberEmailCode" placeholder="인증 코드"
+                       maxlength="6"
+                       required value="${memberEmailCode =! null ? memberEmailCode : ''}">
                 <button type="button" class="btn btn-outline-secondary" id="btnMemberEmailCodeAuth"
                         onclick="checkEmailCode()">인증 코드 확인
                 </button>
@@ -239,7 +243,9 @@
 
         <div class="mb-3 row">
             <div class="col-sm-10 input-group">
-                <input type="text" class="form-control" name="memberPhone" id="memberPhone" maxlength="11"
+                <input type="text" class="form-control" name="memberPhone" id="memberPhone"
+                       value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}"
+                       maxlength="11"
                        placeholder="휴대전화번호" required oninput="this.value=this.value.replace(/[^0-9]/g, '')">
             </div>
         </div>
@@ -252,7 +258,7 @@
 
 <script>
     const idRegEx = /^[a-zA-Z0-9]{4,20}$/;
-    const pwdRegEx = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{4,15}$/;
+    const pwdRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{4,15}$/;
 
     $('#memberId').on('input', function () {
         const memberIdValue = $('#memberId').val().trim();
@@ -444,6 +450,10 @@
         });
     }
 
+    <c:if test="${not empty errorMessage}">
+    alert("${errorMessage}");
+    </c:if>
+
     const btnSubmitJoin = document.getElementById("btnSubmitJoin");
     btnSubmitJoin?.addEventListener("click", (e) => {
         const memberIdValue = document.getElementById('memberId').value.trim();
@@ -474,7 +484,7 @@
         e.stopPropagation();
 
         const idRegEx = /^[a-zA-Z0-9]{4,20}$/;
-        const pwdRegEx = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{4,15}$/;
+        const pwdRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{4,15}$/;
 
         if (!memberIdValue || !idRegEx.test(memberIdValue)) {
             alert('아이디는 4~20자, 알파벳과 숫자만 가능합니다.');

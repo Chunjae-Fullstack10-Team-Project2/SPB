@@ -10,6 +10,7 @@ import net.spb.spb.dto.MemberDTO;
 import net.spb.spb.service.MailService;
 import net.spb.spb.service.MemberServiceImpl;
 import net.spb.spb.service.NaverLoginService;
+import net.spb.spb.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,18 +54,19 @@ public class MemberController {
                                 Model model) throws Exception {
 
         String accessToken = naverLoginService.getAccessToken(code, state);
-        MemberDTO naverUser = naverLoginService.getUserInfo(accessToken);
+        MemberDTO naverMemberDto = naverLoginService.getUserInfo(accessToken);
 
-        String naverId = naverUser.getMemberId();
-        if (!memberService.existUser(naverId)) {
-            naverUser.setMemberId(naverId);
-            naverUser.setMemberPwd("naver");
-            memberService.join(naverUser);
+        String naverMemberId = naverMemberDto.getMemberId();
+
+        if (!memberService.existUser(naverMemberId)) {
+            model.addAttribute("memberDTO", naverMemberDto);
+            return "login/join";
         }
 
-        session.setAttribute("memberId", naverId);
+        session.setAttribute("memberId", naverMemberId);
         return "redirect:/main";
     }
+
 
     @GetMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
@@ -115,6 +118,14 @@ public class MemberController {
             return "login/login";
         }
 
+        try {
+            String encryptedPassword = PasswordUtil.encryptPassword(memberDTO.getMemberPwd());
+            memberDTO.setMemberPwd(encryptedPassword);
+        } catch (NoSuchAlgorithmException e) {
+            model.addAttribute("errorMessage", true);
+            return "login/login";
+        }
+
         int returnValue = memberService.login(memberDTO);
 
         if (returnValue == 1) {
@@ -148,8 +159,7 @@ public class MemberController {
 
             return "redirect:/board/list";
         } else {
-            model.addAttribute("loginError", true);
-
+            model.addAttribute("errorMessage", true);
             return "login/login";
         }
     }
@@ -164,15 +174,23 @@ public class MemberController {
     public Map<String, Object> checkIdDuplicate(@RequestBody Map<String, String> requestBody, HttpSession session) {
         String memberId = requestBody.get("memberId");
 
-        boolean existMember = memberService.existUser(memberId);
         Map<String, Object> result = new HashMap<>();
 
+        String idRegex = "^[a-zA-Z0-9]{4,20}$";
+        if (memberId == null || !memberId.matches(idRegex)) {
+            result.put("success", false);
+            result.put("message", "아이디는 4~20자, 알파벳과 숫자만 가능합니다.");
+            return result;
+        }
+
+        boolean existMember = memberService.existUser(memberId);
         if (existMember) {
             result.put("success", false);
             result.put("message", "이미 존재하는 아이디입니다.");
         } else {
             result.put("success", true);
             result.put("message", "사용 가능한 아이디입니다.");
+            session.setAttribute("checkedMemberId", memberId);
             session.setAttribute("idDuplicateCheck", true);
         }
 
@@ -223,18 +241,25 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public String join(@Valid @ModelAttribute MemberDTO memberDTO, BindingResult bindingResult, HttpSession session, Model model) {
+    public String join(@Valid @ModelAttribute MemberDTO memberDTO, BindingResult bindingResult, HttpServletRequest request, HttpSession session, Model model) {
         if (bindingResult.hasErrors()) {
             return "login/join";
         }
 
-        String sessionMemberId = (String) session.getAttribute("memberId");
-        String formMemberId = memberDTO.getMemberId();
+        String memberEmail = memberDTO.getMemberEmail();
+        if (memberEmail != null && memberEmail.contains("@")) {
+            String memberEmail1 = memberEmail.split("@")[0];
+            model.addAttribute("memberEmail1", memberEmail1);
+        }
 
-        if (sessionMemberId != null && !sessionMemberId.equals(formMemberId)) {
+        String sessionMemberId = (String) session.getAttribute("checkedMemberId");
+        String inputMemberId = request.getParameter("memberId");
+        if (sessionMemberId != null && !sessionMemberId.equals(inputMemberId)) {
             session.removeAttribute("idDuplicateCheck");
-            session.removeAttribute("memberId");
-            model.addAttribute("errorMessage", "아이디가 변경되었습니다. 아이디를 다시 입력해 주세요.");
+            session.removeAttribute("checkedMemberId");
+            model.addAttribute("errorMessage", "아이디가 변경되었습니다. 아이디를 다시 입력해주세요.");
+            model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
+            model.addAttribute("memberEmailCode", request.getParameter("memberEmailCode"));
             model.addAttribute("memberDTO", memberDTO);
             return "login/join";
         }
@@ -242,6 +267,8 @@ public class MemberController {
         Boolean idDuplicateCheck = (Boolean) session.getAttribute("idDuplicateCheck");
         if (idDuplicateCheck == null || !idDuplicateCheck) {
             model.addAttribute("errorMessage", "아이디 중복체크가 완료되지 않았습니다.");
+            model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
+            model.addAttribute("memberEmailCode", request.getParameter("memberEmailCode"));
             model.addAttribute("memberDTO", memberDTO);
             return "login/join";
         }
@@ -249,7 +276,33 @@ public class MemberController {
         Boolean emailVerified = (Boolean) session.getAttribute("emailVerified");
         if (emailVerified == null || !emailVerified) {
             model.addAttribute("errorMessage", "이메일 인증이 완료되지 않았습니다.");
+            model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
             model.addAttribute("memberDTO", memberDTO);
+            return "login/join";
+        }
+
+        String memberPwd = request.getParameter("memberPwd");
+        if (!memberPwd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{4,15}$")) {
+            model.addAttribute("errorMessage", "비밀번호 형식이 올바르지 않습니다.");
+            model.addAttribute("memberEmailCode", request.getParameter("memberEmailCode"));
+            model.addAttribute("memberDTO", memberDTO);
+            return "login/join";
+        }
+
+        String memberPwdConfirm = request.getParameter("memberPwdConfirm");
+        if (!memberPwd.equals(memberPwdConfirm)) {
+            model.addAttribute("errorMessage", "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            model.addAttribute("memberEmailCode", request.getParameter("memberEmailCode"));
+            model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
+            model.addAttribute("memberDTO", memberDTO);
+            return "login/join";
+        }
+
+        try {
+            String encryptedPassword = PasswordUtil.encryptPassword(memberDTO.getMemberPwd());
+            memberDTO.setMemberPwd(encryptedPassword);
+        } catch (NoSuchAlgorithmException e) {
+            model.addAttribute("errorMessage", "비밀번호 암호화 오류가 발생했습니다.");
             return "login/join";
         }
 
@@ -259,6 +312,7 @@ public class MemberController {
             session.removeAttribute("emailVerified");
             session.removeAttribute("emailAuthCode");
             session.removeAttribute("memberEmail");
+            model.addAttribute("errorMessage", "회원가입에 성공했습니다.");
             return "redirect:/login";
         } else {
             model.addAttribute("errorMessage", "회원가입에 실패했습니다.");
