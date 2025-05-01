@@ -1,11 +1,13 @@
 package net.spb.spb.mapper;
 
 import net.spb.spb.domain.PostVO;
+import net.spb.spb.dto.PostPageDTO;
 
 import java.util.List;
 
 public interface BoardMapper {
-    List<PostVO> getPosts(String postCategory);
+    int getPostCount(PostPageDTO postPageDTO);
+    List<PostVO> getPosts(PostPageDTO postPageDTO);
     PostVO getPostByIdx(int postIdx);
     int insertPost(PostVO vo);
     int modifyPost(PostVO vo);

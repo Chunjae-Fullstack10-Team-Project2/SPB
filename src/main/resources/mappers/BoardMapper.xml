@@ -1,12 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.spb.spb.mapper.BoardMapper">
-    <select id="getPosts" parameterType="string" resultType="net.spb.spb.domain.PostVO">
+    <select id="getPostCount" parameterType="net.spb.spb.dto.PostPageDTO" resultType="java.lang.Integer">
+        select count(postIdx) from tbl_post
+        <where>
+            postState=1 and postCategory = #{postCategory}
+            <if test="search_word!=null and search_word!=''">
+                and ${search_type} like concat("%", #{search_word}, "%")
+            </if>
+            <if test="search_date1!=null">
+                and date(postCreatedAt) <![CDATA[>=]]> #{search_date1}
+            </if>
+            <if test="search_date2!=null">
+                and date(postCreatedAt) <![CDATA[<=]]> #{search_date2}
+            </if>
+        </where>
+    </select>
+    <select id="getPosts" parameterType="net.spb.spb.dto.PostPageDTO" resultType="net.spb.spb.domain.PostVO">
         select postIdx, postTitle, postContent, postMemberId, postCategory, postReadCnt, postCreatedAt, postUpdatedAt, postState
         from tbl_post
-        where 1=1
-          and postState = 1
-          and postCategory=#{postCategory}
+        <where>
+            postState=1 and postCategory = #{postCategory}
+            <if test="search_word!=null and search_word!=''">
+                and ${search_type} like concat("%", #{search_word}, "%")
+            </if>
+            <if test="search_date1!=null">
+                and date(postCreatedAt) <![CDATA[>=]]> #{search_date1}
+            </if>
+            <if test="search_date2!=null">
+                and date(postCreatedAt) <![CDATA[<=]]> #{search_date2}
+            </if>
+        </where>
+        order by postCreatedAt desc
+        limit #{page_skip_count}, #{page_size}
     </select>
     <select id="getPostByIdx" parameterType="java.lang.Integer" resultType="net.spb.spb.domain.PostVO">
         select postIdx, postTitle, postContent, postMemberId, postCategory, postReadCnt, postCreatedAt, postUpdatedAt, postState

@@ -8,6 +8,7 @@ import net.spb.spb.domain.PostVO;
 import net.spb.spb.dto.FileDTO;
 import net.spb.spb.dto.PostCommentDTO;
 import net.spb.spb.dto.PostDTO;
+import net.spb.spb.dto.PostPageDTO;
 import net.spb.spb.mapper.BoardFileMapper;
 import net.spb.spb.mapper.BoardMapper;
 import net.spb.spb.mapper.CommentMapper;
@@ -81,8 +82,8 @@ public class BoardServiceImpl implements BoardServiceIf{
      * @return
      */
     @Override
-    public List<PostDTO> getPosts(String postCategory) {
-        List<PostVO> vos = boardMapper.getPosts(postCategory);
+    public List<PostDTO> getPosts(PostPageDTO dto) {
+        List<PostVO> vos = boardMapper.getPosts(dto);
         List<PostDTO> dtos = vos.stream().map(vo -> modelMapper.map(vo, PostDTO.class)).collect(Collectors.toList());
         log.info("=============================");
         log.info("BoardServiceImpl  >>  getPosts");
@@ -108,5 +109,14 @@ public class BoardServiceImpl implements BoardServiceIf{
         log.info(dto);
         log.info("=============================");
         return dto;
+    }
+
+    /**
+     * @param postPageDTO
+     * @return
+     */
+    @Override
+    public int getPostCount(PostPageDTO postPageDTO) {
+        return boardMapper.getPostCount(postPageDTO);
     }
 }

@@ -1,13 +1,16 @@
 package net.spb.spb.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.PostDTO;
 import net.spb.spb.dto.PostFileDTO;
+import net.spb.spb.dto.PostPageDTO;
 import net.spb.spb.service.BoardFileService;
 import net.spb.spb.service.BoardServiceImpl;
 import net.spb.spb.util.BoardCategory;
 import net.spb.spb.util.FileUtil;
+import net.spb.spb.util.PagingUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +31,17 @@ public class BoardController {
     private final FileUtil fileUtil;
 
     @GetMapping("/{category}/list")
-    public String list(@PathVariable("category") BoardCategory category, Model model) {
-        List<PostDTO> posts = service.getPosts(category.toString().toUpperCase());
+    public String list(@PathVariable("category") BoardCategory category, Model model, @ModelAttribute PostPageDTO postPageDTO, HttpServletRequest req) {
+        String baseUrl = req.getRequestURI();
+        postPageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, postPageDTO));
+        postPageDTO.setPostCategory(category.toString().toUpperCase());
+        postPageDTO.setSearch_type();
+        postPageDTO.setTotal_count(service.getPostCount(postPageDTO));
+        List<PostDTO> posts = service.getPosts(postPageDTO);
+        String paging = PagingUtil.pagingArea(postPageDTO);
         model.addAttribute("posts", posts);
+        model.addAttribute("search", postPageDTO);
+        model.addAttribute("paging", paging);
         return "board/list";
     }
 
