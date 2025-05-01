@@ -1,8 +1,8 @@
 package net.spb.spb.service;
 
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.domain.PostVO;
 import net.spb.spb.dto.PostDTO;
+import net.spb.spb.dto.PostPageDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -71,7 +71,9 @@ public class BoardServiceTests {
     }
     @Test
     public void getPosts() {
-        List<PostDTO> dtos = service.getPosts("FREEBOARD");
+        //List<PostDTO> dtos = service.getPosts("FREEBOARD");
+        PostPageDTO postPageDTO = PostPageDTO.builder().postCategory("FREEBOARD").build();
+        List<PostDTO> dtos = service.getPosts(postPageDTO);
         log.info("=============================");
         log.info("BoardServiceImpl  >>  getPosts");
         log.info("dtos: " + dtos);

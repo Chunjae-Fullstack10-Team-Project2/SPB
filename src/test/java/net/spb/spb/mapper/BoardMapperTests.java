@@ -2,6 +2,7 @@ package net.spb.spb.mapper;
 
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.domain.PostVO;
+import net.spb.spb.dto.PostPageDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -70,7 +71,8 @@ public class BoardMapperTests {
         log.info("=============================");
         log.info("BoardMapperTests  >>  selectAll");
         log.info("=============================");
-        List<PostVO> vos = boardMapper.getPosts("FREEBOARD");
+        PostPageDTO postPageDTO = PostPageDTO.builder().postCategory("FREEBOARD").page_size(10).build();
+        List<PostVO> vos = boardMapper.getPosts(postPageDTO);
         for(PostVO vo: vos) {
             log.info("vo: "+vo);
         }
@@ -85,4 +87,13 @@ public class BoardMapperTests {
         log.info("vo: "+vo);
     }
 
+    @Test
+    public void getPostCount() {
+        PostPageDTO postPageDTO = PostPageDTO.builder().search_type("postTitle").search_word("제목").postCategory("UNIINFO").build();
+        int rtnResult = boardMapper.getPostCount(postPageDTO);
+        log.info("=============================");
+        log.info("BoardMapperTests  >>  getPostCount");
+        log.info("rtnResult : "+rtnResult);
+        log.info("=============================");
+    }
 }
