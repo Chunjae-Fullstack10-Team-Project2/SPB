@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.PaymentMapper">
+    <!--장바구니 조회-->
+    <select id="selectCart">
+        select a.cartIdx, a.cartLectureIdx, b.lectureTitle, b.lectureTeacherId, b.lectureAmount
+        from tbl_cart a
+        inner join tbl_lecture b on a.cartLectureIdx = b.lectureIdx
+        where cartMemberId = #{memberId}
+        order by cartIdx asc
+    </select>
+    <!--강의 존재 여부 조회-->
+    <select id="cartCount">
+        select count(*)
+        from tbl_cart
+        where cartMemberId = #{cartMemberId}
+        and cartLectureIdx = #{cartLectureIdx}
+    </select>
+    <!--장바구니 등록-->
+    <insert id="addCart" parameterType="net.spb.spb.dto.CartDTO" useGeneratedKeys="true" keyProperty="cartIdx">
+        insert into tbl_cart(cartMemberId, cartLectureIdx)
+        values (#{cartMemberId}, #{cartLectureIdx})
+    </insert>
+    <!--장바구니 삭제-->
+    <delete id="deleteCartItems" parameterType="map">
+        delete from tbl_cart where cartMemberId = #{param1} and cartLectureIdx = #{param2}
+    </delete>
+</mapper>    
