@@ -39,12 +39,12 @@ public class MemberDTO {
     private String memberGrade;
 
     @NotNull
-    @Email(message = "유효한 이메일 형식이 아닙니다.")
     private String memberEmail;
 
     @NotNull
     @Pattern(regexp = "^01[0-1]\\d{7,8}$", message = "휴대전화 번호 형식이 올바르지 않습니다.")
     private String memberPhone;
+    private String memberJoinPath;
 
     private int memberIdx;
 
