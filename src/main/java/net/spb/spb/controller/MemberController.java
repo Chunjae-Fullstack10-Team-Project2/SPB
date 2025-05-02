@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -74,7 +75,6 @@ public class MemberController {
         session.setAttribute("memberId", naverMemberId);
         return "redirect:/main";
     }
-
 
     @GetMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
@@ -196,6 +196,8 @@ public class MemberController {
 
         if (naverMemberDto != null) {
             model.addAttribute("memberDTO", naverMemberDto);
+//            이걸 안 하면 네이버 로그인->회원가입에서 다시 join으로 새로 들어갔을 때 비어 있는 폼이 아닌 네이버 정보가 들어가 있는 폼이 또 나옴
+//            근데 하면 네이버 로그인->회원가입에서 새로고침 하면 네이버 정보가 다 사라짐...ㅜ
             session.removeAttribute("memberDTO");
         }
         return "login/join";
@@ -261,7 +263,6 @@ public class MemberController {
 
         if (sessionCode != null && sessionCode.equals(memberEmailCode)) {
             result.put("success", true);
-            result.put("message", "인증 코드가 일치합니다.");
             session.setAttribute("emailVerified", true);
         } else {
             result.put("success", false);
@@ -274,7 +275,11 @@ public class MemberController {
 
     @PostMapping("/join")
     public String join(@Valid @ModelAttribute MemberDTO memberDTO, BindingResult bindingResult, HttpServletRequest request, HttpSession session, Model model) {
-        if (bindingResult.hasErrors()) {
+        if (!"2".equals(memberDTO.getMemberJoinPath()) && bindingResult.hasErrors()) {
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                System.out.println("필드: " + error.getField() + " / 메시지: " + error.getDefaultMessage());
+            }
+            model.addAttribute("errorMessage", "회원가입 중 오류가 발생했습니다. 관리자에게 문의하세요.");
             return "login/join";
         }
 
@@ -290,21 +295,24 @@ public class MemberController {
             return "login/join";
         }
 
-        Boolean idDuplicateCheck = (Boolean) session.getAttribute("idDuplicateCheck");
-        if (idDuplicateCheck == null || !idDuplicateCheck) {
-            model.addAttribute("errorMessage", "아이디 중복체크가 완료되지 않았습니다.");
-            model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
-            model.addAttribute("memberEmailCode", request.getParameter("memberEmailCode"));
-            model.addAttribute("memberDTO", memberDTO);
-            return "login/join";
-        }
+        // 네이버로 가입한 회원은 아이디 중복체크, 이메일 인증 X
+        if (!"2".equals(memberDTO.getMemberJoinPath())) {
+            Boolean idDuplicateCheck = (Boolean) session.getAttribute("idDuplicateCheck");
+            if (idDuplicateCheck == null || !idDuplicateCheck) {
+                model.addAttribute("errorMessage", "아이디 중복체크가 완료되지 않았습니다.");
+                model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
+                model.addAttribute("memberEmailCode", request.getParameter("memberEmailCode"));
+                model.addAttribute("memberDTO", memberDTO);
+                return "login/join";
+            }
 
-        Boolean emailVerified = (Boolean) session.getAttribute("emailVerified");
-        if (emailVerified == null || !emailVerified) {
-            model.addAttribute("errorMessage", "이메일 인증이 완료되지 않았습니다.");
-            model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
-            model.addAttribute("memberDTO", memberDTO);
-            return "login/join";
+            Boolean emailVerified = (Boolean) session.getAttribute("emailVerified");
+            if (emailVerified == null || !emailVerified) {
+                model.addAttribute("errorMessage", "이메일 인증이 완료되지 않았습니다.");
+                model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
+                model.addAttribute("memberDTO", memberDTO);
+                return "login/join";
+            }
         }
 
         String memberPwd = request.getParameter("memberPwd");
@@ -342,6 +350,7 @@ public class MemberController {
             return "redirect:/login";
         } else {
             model.addAttribute("errorMessage", "회원가입에 실패했습니다.");
+            System.out.println("실패");
             model.addAttribute("memberDTO", memberDTO);
             return "login/join";
         }

@@ -39,9 +39,11 @@ public class NaverLoginService {
         JSONObject responseObj = jsonResponse.getJSONObject("response");
 
         String id = responseObj.getString("id");
+        id = id.replaceAll("[^a-zA-Z0-9]", "");
         if (id.length() > 20) {
             id = id.substring(0, 20);
         }
+
         String email = "";
         if (!responseObj.getString("email").contains("@")) {
             email = responseObj.getString("email");
@@ -60,6 +62,7 @@ public class NaverLoginService {
         memberDTO.setMemberId(id);
         memberDTO.setMemberPhone(mobile);
         memberDTO.setMemberBirth(birth);
+        memberDTO.setMemberJoinPath("2");
 
         return memberDTO;
     }
