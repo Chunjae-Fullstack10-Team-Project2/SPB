@@ -2,15 +2,15 @@ package net.spb.spb.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.spb.spb.dto.CartDTO;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.TeacherDTO;
+import net.spb.spb.service.PaymentServiceIf;
 import net.spb.spb.service.TeacherServiceIf;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,6 +20,7 @@ import java.util.List;
 @RequestMapping(value = "/teacher")
 public class TeacherController {
     private final TeacherServiceIf teacherService;
+    private final PaymentServiceIf paymentService;
 
     @GetMapping("/personal")
     public String teacherMain(
@@ -47,4 +48,6 @@ public class TeacherController {
         model.addAttribute("chapterList", chapterList);
         return "teacher/lectureMain";
     }
+
+
 }
