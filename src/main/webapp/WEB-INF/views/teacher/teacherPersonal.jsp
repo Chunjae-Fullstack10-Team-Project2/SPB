@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -6,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>선생님 메인</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <style>
         * {
             margin: 0;
@@ -246,7 +248,7 @@
     </style>
 </head>
 <body>
-
+<%@ include file="../common/header.jsp" %>
 <div class="container">
     <aside class="sidebar">
         <div class="sidebar-title">SIDEMENU</div>
@@ -309,13 +311,12 @@
                             </td>
                             <td>
                                 <div class="actions">
-                                    <button class="btn-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                                        </svg>
-                                    </button>
-                                    <button class="btn btn-primary btn-sm">장바구니</button>
-                                    <button class="btn btn-primary btn-sm">수강신청</button>
+                                        <button class="btn-icon" >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="btn btn-primary btn-sm" id="btnAddCart" onclick="addCart(${lecture.lectureIdx})">장바구니</button>
                                 </div>
                             </td>
                         </tr>
@@ -339,6 +340,39 @@
             }
         });
     });
+
+    function addCart(lectureIdx) {
+        const data = {
+            cartLectureIdx: lectureIdx,
+            cartMemberId: "dog109"
+        };
+        $.ajax({
+            url: '/payment/addCart',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                // ✅ 성공 시 콜백
+                console.log('서버 응답:', response);
+                if(response == 999){
+                    alert("해당 강좌가 이미 장바구니에 존재합니다.");
+                } else {
+                    alert("해당 강좌를 장바구니에 담았습니다.")
+                }
+                const goCart = confirm("장바구니로 이동하시겠습니까?");
+                if(goCart){
+                    window.location.href = "/payment/cart?memberId=dog109";
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('오류 발생:', error);
+                console.error('상태 코드:', xhr.status); // 예: 400, 404, 500
+                console.error('서버 응답 텍스트:', xhr.responseText); // ← 실제 에러 메시지 (HTML/JSON 등)
+                console.error('status:', status); // 예: "error"
+            }
+        });
+    }
+
 </script>
 </body>
 </html>
