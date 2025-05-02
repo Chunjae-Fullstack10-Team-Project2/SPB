@@ -43,10 +43,13 @@
             </set>
         </property>
     </bean>
+
     <context:component-scan base-package="net.spb.spb.controller"/>
-
     <context:component-scan base-package="net.spb.spb.config"/>
-
     <context:component-scan base-package="net.spb.spb.service" />
+    <context:component-scan base-package="net.spb.spb.util" />
 
+    <bean id="uploadPath" class="java.lang.String">
+        <constructor-arg value=""/>
+    </bean>
 </beans>

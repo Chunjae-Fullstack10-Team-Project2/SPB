@@ -204,7 +204,7 @@
     }
 
     function verifyPassword() {
-        const inputPwd = $('#memberPwdCheck').val();
+        const inputPwd = $('#memberPwdConfirm').val();
         $.post('/mypage/checkPwd', { memberPwd: inputPwd })
             .done(function () {
                 $('#pwdError').hide();

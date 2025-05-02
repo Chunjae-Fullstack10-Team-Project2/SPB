@@ -44,6 +44,7 @@
                         <li><a class="dropdown-item" href="/login">로그인</a></li>
                     </c:if>
                     <c:if test="${not empty sessionScope.memberId}">
+                        <li><a class="dropdown-item" href="/qna/list">문의하기</a></li>
                         <li><a class="dropdown-item" href="/mypage">마이페이지</a></li>
                         <li>
                             <hr class="dropdown-divider">
