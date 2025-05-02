@@ -6,11 +6,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 
+import net.spb.spb.dto.LoginDTO;
 import net.spb.spb.dto.MemberDTO;
 import net.spb.spb.service.MailService;
 import net.spb.spb.service.MemberServiceImpl;
 import net.spb.spb.service.NaverLoginService;
 import net.spb.spb.util.PasswordUtil;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -18,10 +20,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
+
 import jakarta.validation.Valid;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +41,9 @@ public class MemberController {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @GetMapping("/")
     public String main() {
@@ -59,14 +67,14 @@ public class MemberController {
         String naverMemberId = naverMemberDto.getMemberId();
 
         if (!memberService.existUser(naverMemberId)) {
-            model.addAttribute("memberDTO", naverMemberDto);
-            return "login/join";
+            // model.addAttribute("memberDTO", naverMemberDto);
+            session.setAttribute("memberDTO", naverMemberDto);
+            return "redirect:/join";
         }
 
         session.setAttribute("memberId", naverMemberId);
         return "redirect:/main";
     }
-
 
     @GetMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
@@ -108,21 +116,39 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid @ModelAttribute MemberDTO memberDTO, BindingResult bindingResult,
+    public String login(@Valid @ModelAttribute LoginDTO loginDTO, BindingResult bindingResult,
                         @RequestParam(value = "checkIdSave", required = false) String checkIdSave,
                         @RequestParam(value = "checkAutoLogin", required = false) String checkAutoLogin,
+                        HttpServletRequest request,
                         HttpServletResponse response,
                         HttpSession session,
                         Model model) {
+
         if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", "아이디 혹은 비밀번호를 확인해주세요.");
             return "login/login";
         }
 
+        String memberId = loginDTO.getMemberId();
+        String memberPwd = loginDTO.getMemberPwd();
+
+        if (!memberId.matches("^[A-Za-z0-9]{4,15}$")) {
+            model.addAttribute("errorMessage", "아이디 형식이 올바르지 않습니다.");
+            return "login/login";
+        }
+
+        if (!memberPwd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{4,15}$")) {
+            model.addAttribute("errorMessage", "비밀번호 형식이 올바르지 않습니다.");
+            return "login/login";
+        }
+
+        MemberDTO memberDTO = modelMapper.map(loginDTO, MemberDTO.class);
+
         try {
-            String encryptedPassword = PasswordUtil.encryptPassword(memberDTO.getMemberPwd());
+            String encryptedPassword = PasswordUtil.encryptPassword(memberPwd);
             memberDTO.setMemberPwd(encryptedPassword);
         } catch (NoSuchAlgorithmException e) {
-            model.addAttribute("errorMessage", true);
+            model.addAttribute("errorMessage", "비밀번호 암호화 중 오류가 발생했습니다.");
             return "login/login";
         }
 
@@ -157,15 +183,23 @@ public class MemberController {
                 response.addCookie(autoCookie);
             }
 
-            return "redirect:/board/list";
+            return "redirect:/main";
         } else {
-            model.addAttribute("errorMessage", true);
+            model.addAttribute("errorMessage", "아이디를 확인해주세요.");
             return "login/login";
         }
     }
 
     @GetMapping("join")
-    public String join() {
+    public String join(HttpSession session, Model model) {
+        MemberDTO naverMemberDto = (MemberDTO) session.getAttribute("memberDTO");
+
+        if (naverMemberDto != null) {
+            model.addAttribute("memberDTO", naverMemberDto);
+//            이걸 안 하면 네이버 로그인->회원가입에서 다시 join으로 새로 들어갔을 때 비어 있는 폼이 아닌 네이버 정보가 들어가 있는 폼이 또 나옴
+//            근데 하면 네이버 로그인->회원가입에서 새로고침 하면 네이버 정보가 다 사라짐...ㅜ
+            session.removeAttribute("memberDTO");
+        }
         return "login/join";
     }
 
@@ -229,7 +263,6 @@ public class MemberController {
 
         if (sessionCode != null && sessionCode.equals(memberEmailCode)) {
             result.put("success", true);
-            result.put("message", "인증 코드가 일치합니다.");
             session.setAttribute("emailVerified", true);
         } else {
             result.put("success", false);
@@ -242,14 +275,12 @@ public class MemberController {
 
     @PostMapping("/join")
     public String join(@Valid @ModelAttribute MemberDTO memberDTO, BindingResult bindingResult, HttpServletRequest request, HttpSession session, Model model) {
-        if (bindingResult.hasErrors()) {
+        if (!"2".equals(memberDTO.getMemberJoinPath()) && bindingResult.hasErrors()) {
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                System.out.println("필드: " + error.getField() + " / 메시지: " + error.getDefaultMessage());
+            }
+            model.addAttribute("errorMessage", "회원가입 중 오류가 발생했습니다. 관리자에게 문의하세요.");
             return "login/join";
-        }
-
-        String memberEmail = memberDTO.getMemberEmail();
-        if (memberEmail != null && memberEmail.contains("@")) {
-            String memberEmail1 = memberEmail.split("@")[0];
-            model.addAttribute("memberEmail1", memberEmail1);
         }
 
         String sessionMemberId = (String) session.getAttribute("checkedMemberId");
@@ -264,21 +295,24 @@ public class MemberController {
             return "login/join";
         }
 
-        Boolean idDuplicateCheck = (Boolean) session.getAttribute("idDuplicateCheck");
-        if (idDuplicateCheck == null || !idDuplicateCheck) {
-            model.addAttribute("errorMessage", "아이디 중복체크가 완료되지 않았습니다.");
-            model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
-            model.addAttribute("memberEmailCode", request.getParameter("memberEmailCode"));
-            model.addAttribute("memberDTO", memberDTO);
-            return "login/join";
-        }
+        // 네이버로 가입한 회원은 아이디 중복체크, 이메일 인증 X
+        if (!"2".equals(memberDTO.getMemberJoinPath())) {
+            Boolean idDuplicateCheck = (Boolean) session.getAttribute("idDuplicateCheck");
+            if (idDuplicateCheck == null || !idDuplicateCheck) {
+                model.addAttribute("errorMessage", "아이디 중복체크가 완료되지 않았습니다.");
+                model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
+                model.addAttribute("memberEmailCode", request.getParameter("memberEmailCode"));
+                model.addAttribute("memberDTO", memberDTO);
+                return "login/join";
+            }
 
-        Boolean emailVerified = (Boolean) session.getAttribute("emailVerified");
-        if (emailVerified == null || !emailVerified) {
-            model.addAttribute("errorMessage", "이메일 인증이 완료되지 않았습니다.");
-            model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
-            model.addAttribute("memberDTO", memberDTO);
-            return "login/join";
+            Boolean emailVerified = (Boolean) session.getAttribute("emailVerified");
+            if (emailVerified == null || !emailVerified) {
+                model.addAttribute("errorMessage", "이메일 인증이 완료되지 않았습니다.");
+                model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
+                model.addAttribute("memberDTO", memberDTO);
+                return "login/join";
+            }
         }
 
         String memberPwd = request.getParameter("memberPwd");
@@ -316,6 +350,7 @@ public class MemberController {
             return "redirect:/login";
         } else {
             model.addAttribute("errorMessage", "회원가입에 실패했습니다.");
+            System.out.println("실패");
             model.addAttribute("memberDTO", memberDTO);
             return "login/join";
         }

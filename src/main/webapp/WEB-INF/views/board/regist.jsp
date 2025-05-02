@@ -6,6 +6,7 @@ change this template use File | Settings | File Templates. --%>
     <title>봄콩이 자유게시판</title>
   </head>
   <body>
+  <%@ include file="../common/header.jsp" %>
     <div class="container">
       <h1>${category.displayName} 글쓰기</h1>
       <form name="frmRegist" action="/board/${category}/write" method="post" enctype="multipart/form-data">
