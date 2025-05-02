@@ -1,4 +1,4 @@
-package net.spb.spb.service;
+package net.spb.spb.service.member;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

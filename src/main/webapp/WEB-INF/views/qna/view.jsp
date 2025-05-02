@@ -3,6 +3,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
     <title>Title</title>
 </head>
 <body>
@@ -98,7 +100,7 @@
         <a href="/qna/list" class="btn btn-secondary">목록으로</a>
 
         <c:if test="${not empty sessionScope.memberGrade and (sessionScope.memberGrade == 0 or sessionScope.memberGrade == 13)}">
-            <a href="/qna/regist/answer?qnaIdx=${qnaDTO.qnaIdx}" class="btn btn-primary">답변 등록</a>
+            <a href="/qna/regist/answer?qnaIdx=${qnaDTO.qnaIdx}" class="btn btn-primary">답변하기</a>
 
             <form id="frmDelete" method="post" action="/qna/delete" style="display: inline;">
                 <input type="hidden" name="qnaIdx" value="${qnaDTO.qnaIdx}"/>
@@ -114,7 +116,7 @@
     if (message === 'authorized') {
         alert("답변이 등록되었습니다.");
     } else if (message === 'unauthorized') {
-        alert("답변 등록에 실패했습니다.");
+        alert("권한이 없습니다.");
     } else if (message === 'error') {
         alert("예외가 발생했습니다.");
     }

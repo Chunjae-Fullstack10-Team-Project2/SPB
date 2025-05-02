@@ -1,4 +1,4 @@
-package net.spb.spb.dto;
+package net.spb.spb.dto.qna;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
