@@ -20,11 +20,13 @@ public class MemberServiceImpl implements MemberServiceIf {
         this.memberMapper = memberMapper;
     }
 
+    @Override
     public int login(MemberDTO memberDTO) {
         MemberVO memberVO = modelMapper.map(memberDTO, MemberVO.class);
         return memberMapper.login(memberVO);
     }
 
+    @Override
     public boolean existUser(String userId) {
         MemberVO memberVO = memberMapper.existUser(userId);
         return memberVO != null;

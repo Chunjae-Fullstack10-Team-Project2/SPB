@@ -18,6 +18,12 @@
             <param-value>/WEB-INF/servlet-context.xml</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
+        <multipart-config>
+            <location></location>
+            <max-file-size>10240000</max-file-size>
+            <max-request-size>20480000</max-request-size>
+            <file-size-threshold>512000</file-size-threshold>
+        </multipart-config>
     </servlet>
     <servlet-mapping>
         <servlet-name>appServlet</servlet-name>
