@@ -37,12 +37,14 @@ public class BoardController {
         postPageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, postPageDTO));
         postPageDTO.setPostCategory(category.toString().toUpperCase());
         postPageDTO.setSearch_type();
-        postPageDTO.setTotal_count(service.getPostCount(postPageDTO));
+        int postTotalCount = service.getPostCount(postPageDTO);
+        postPageDTO.setTotal_count(postTotalCount);
         List<PostDTO> posts = service.getPosts(postPageDTO);
         String paging = PagingUtil.pagingArea(postPageDTO);
         model.addAttribute("posts", posts);
         model.addAttribute("search", postPageDTO);
         model.addAttribute("paging", paging);
+        model.addAttribute("postTotalCount", postTotalCount);
         return "board/list";
     }
 

@@ -1,25 +1,32 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%-- Created by IntelliJ IDEA. User: sinjihye Date: 2025. 4. 29. Time: 10:27 To
 change this template use File | Settings | File Templates. --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
     <title>봄콩이 ${category.displayName}</title>
+    <style>
+      .post-header-info {
+        display: flex;
+        gap: 10px;
+      }
+    </style>
   </head>
   <body>
+  <%@ include file="../common/header.jsp" %>
     <div class="container">
       <h1>${category.displayName} 🌱 - 상세 페이지</h1>
       <div class="post">
-        <form name="frmDelete" id="frmDelete" method="post" action="/board/${category}/delete">
           <input type="hidden" name="idx" value="${post.postIdx}" />
           <!-- 제목, 정보 영역 -->
           <div class="post-header">
             <h2>${post.postTitle}</h2>
             <div class="post-header-info">
-              <img src="" width="50px" height="50px" />
+              <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
               <div class="post-header-info-author">
                 ${post.postMemberId}
-                <div class="post-header-info-readcnt">조회 ${post.postReadCnt} | 댓글 20</div>
+                <div class="post-header-info-readcnt">조회 ${post.postReadCnt} | 댓글 ${fn:length(post.postComments)}</div>
               </div>
             </div>
             <hr />
@@ -37,22 +44,24 @@ change this template use File | Settings | File Templates. --%>
                 </div>
               </c:forEach>
             </c:if>
-            <div class="post-content-ex">공유 | 신고</div>
-            <div class="post-content-btn">
-              <button type="button" id="btnPostModify">수정하기</button>
-              <button type="button" id="btnPostDelete">삭제하기</button>
-            </div>
+            <div class="post-content-ex"><button type="button" class="btn" id="btnShare">공유</button> | <button type="button" class="btn" id="btnReport">신고</button></div>
+
+            <form name="frmDelete" id="frmDelete" method="post" action="/board/${category}/delete">
+              <div class="post-content-btn">
+                <button type="button" class="btn btn-outline-secondary" id="btnList">목록 이동</button>
+                <button type="button" class="btn btn-outline-warning" id="btnPostModify">수정하기</button>
+                <button type="submit" class="btn btn-outline-danger" id="btnPostDelete">삭제하기</button>
+              </div>
+            </form>
             <hr />
           </div>
-        </form>
         <!-- 좋아요 영역 -->
-
         <div class="post-like">
           <form name="frmLike" action="/board/${category}/like/regist" method="post" id="frmLike">
             <input type="hidden" name="postIdx" value="${post.postIdx}"/>
             <input type="hidden" name="postLikeRefIdx" value="${post.postIdx}"/>
             <input type="hidden" name="postLikeRefType" value="POST"/>
-            <button type="submit" id="btnLike">👍 ${post.postLikeCnt}</button>
+            <button type="submit" class="btn" id="btnLike">👍 ${post.postLikeCnt}</button>
           </form>
         </div>
         <!-- 댓글 영역 -->
@@ -66,12 +75,16 @@ change this template use File | Settings | File Templates. --%>
                 <div class="comment-item">
                   <div class="post-comment">
                     <div class="post-comment-author-img">
-                      <img src="" width="40px" height="40px" />
+                      <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
                         ${postComment.postCommentMemberId}
                     </div>
+                    <div class="post-comment-createdat-updatedat">
+                      ${fn:replace(postComment.postCommentCreatedAt, 'T', ' ')}
+                      (수정: ${fn:replace(postComment.postCommentUpdatedAt, 'T', ' ')})
+                    </div>
                     <div class="comment-edit-delete-btn">
-                      <input type="button" class="comment-btn edit-btn" style="border: 0px;" value="편집" onclick="enableEdit(this)" />
-                      <input type="button" class="comment-btn delete-btn commentDeleteButton" style="border: 0px;" value="삭제"/>
+                      <input type="button" class="comment-btn edit-btn" style="border: 0px;background:none;" value="편집" onclick="enableEdit(this)" />
+                      <input type="button" class="comment-btn delete-btn commentDeleteButton" style="border: 0px;background:none;" value="삭제"/>
                     </div>
                   </div>
 
@@ -101,12 +114,15 @@ change this template use File | Settings | File Templates. --%>
             <div class="post-comment-input-comment">
               <textarea name="postCommentContent"></textarea>
             </div>
-            <button type="submit">작성</button>
+            <button type="submit" class="btn btn-primary">작성</button>
           </form>
         </div>
       </div>
     </div>
     <script>
+      document.getElementById('btnList').addEventListener('click', function() {
+        window.location.href='list';
+      })
       const btnPostModify = document.getElementById("btnPostModify");
       if (btnPostModify) {
         btnPostModify.addEventListener("click", function () {
