@@ -17,21 +17,24 @@
         </where>
     </select>
     <select id="getPosts" parameterType="net.spb.spb.dto.PostPageDTO" resultType="net.spb.spb.domain.PostVO">
-        select postIdx, postTitle, postContent, postMemberId, postCategory, postReadCnt, postCreatedAt, postUpdatedAt, postState
-        from tbl_post
+        select tp.postIdx, tp.postTitle, tp.postContent, tp.postMemberId, tp.postCategory, tp.postReadCnt, tp.postCreatedAt, tp.postUpdatedAt, tp.postState, count(tpl.postLikeIdx) as postLikeCnt
+        from tbl_post tp
+        left outer join tbl_post_like tpl
+        on tp.postIdx = tpl.postLikeRefIdx and tpl.postLikeRefType='POST'
         <where>
-            postState=1 and postCategory = #{postCategory}
+            tp.postState=1 and tp.postCategory = #{postCategory}
             <if test="search_word!=null and search_word!=''">
-                and ${search_type} like concat("%", #{search_word}, "%")
+                and tp.${search_type} like concat("%", #{search_word}, "%")
             </if>
             <if test="search_date1!=null">
-                and date(postCreatedAt) <![CDATA[>=]]> #{search_date1}
+                and date(tp.postCreatedAt) <![CDATA[>=]]> #{search_date1}
             </if>
             <if test="search_date2!=null">
-                and date(postCreatedAt) <![CDATA[<=]]> #{search_date2}
+                and date(tp.postCreatedAt) <![CDATA[<=]]> #{search_date2}
             </if>
         </where>
-        order by postIdx desc
+        group by tp.postIdx
+        order by tp.postIdx desc
         limit #{page_skip_count}, #{page_size}
     </select>
     <select id="getPostByIdx" parameterType="java.lang.Integer" resultType="net.spb.spb.domain.PostVO">
