@@ -45,13 +45,18 @@ public class PagingUtil {
         int currentPage = PostPageDTO.getPage_no();
         int totalPage = PostPageDTO.getTotal_page();
 
-        if( currentPage != startPage) {
+        if( currentPage != 1) {
             sb.append(getFullLink(baseUrl, connector, 1, "<<"));
+        } else {
+
+            sb.append("<span><<</span>").append("&nbsp;&nbsp;");
         }
 
         if (PostPageDTO.isHas_prev()) {
             int prevPage = startPage - 1;
             sb.append(getFullLink(baseUrl, connector, prevPage, "<"));
+        } else {
+            sb.append("<span><</span>").append("&nbsp;&nbsp;");
         }
 
         for(int i = startPage; i <= endPage; i++) {
@@ -65,10 +70,14 @@ public class PagingUtil {
         if(PostPageDTO.isHas_next()) {
             int nextPage = endPage + 1;
             sb.append(getFullLink(baseUrl, connector, nextPage, ">"));
+        } else {
+            sb.append("<span>></span>").append("&nbsp;&nbsp;");
         }
 
         if( currentPage != totalPage) {
             sb.append(getFullLink(baseUrl, connector, totalPage, ">>"));
+        } else {
+            sb.append("<span>>></span>").append("&nbsp;&nbsp;");
         }
 
         return sb.toString();

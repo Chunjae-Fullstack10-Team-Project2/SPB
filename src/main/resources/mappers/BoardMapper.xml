@@ -17,21 +17,24 @@
         </where>
     </select>
     <select id="getPosts" parameterType="net.spb.spb.dto.PostPageDTO" resultType="net.spb.spb.domain.PostVO">
-        select postIdx, postTitle, postContent, postMemberId, postCategory, postReadCnt, postCreatedAt, postUpdatedAt, postState
-        from tbl_post
+        select tp.postIdx, tp.postTitle, tp.postContent, tp.postMemberId, tp.postCategory, tp.postReadCnt, tp.postCreatedAt, tp.postUpdatedAt, tp.postState, count(tpl.postLikeIdx) as postLikeCnt
+        from tbl_post tp
+        left outer join tbl_post_like tpl
+        on tp.postIdx = tpl.postLikeRefIdx and tpl.postLikeRefType='POST'
         <where>
-            postState=1 and postCategory = #{postCategory}
+            tp.postState=1 and tp.postCategory = #{postCategory}
             <if test="search_word!=null and search_word!=''">
-                and ${search_type} like concat("%", #{search_word}, "%")
+                and tp.${search_type} like concat("%", #{search_word}, "%")
             </if>
             <if test="search_date1!=null">
-                and date(postCreatedAt) <![CDATA[>=]]> #{search_date1}
+                and date(tp.postCreatedAt) <![CDATA[>=]]> #{search_date1}
             </if>
             <if test="search_date2!=null">
-                and date(postCreatedAt) <![CDATA[<=]]> #{search_date2}
+                and date(tp.postCreatedAt) <![CDATA[<=]]> #{search_date2}
             </if>
         </where>
-        order by postCreatedAt desc
+        group by tp.postIdx
+        order by tp.postIdx desc
         limit #{page_skip_count}, #{page_size}
     </select>
     <select id="getPostByIdx" parameterType="java.lang.Integer" resultType="net.spb.spb.domain.PostVO">
@@ -40,6 +43,18 @@
         where 1=1
           and postState = 1
           and postIdx = #{postIdx}
+    </select>
+    <select id="getPostByIdxWithLike" parameterType="HashMap" resultType="net.spb.spb.domain.PostVO">
+        select tp.postIdx, tp.postTitle, tp.postContent, tp.postMemberId, tp.postCategory, tp.postReadCnt, tp.postCreatedAt, tp.postUpdatedAt, tp.postState
+             , count(tpl.postLikeIdx) as postLikeCnt, max(case when tpl.postLikeMemberId = #{memberId} then 1 else 0 end) as isLike
+        from tbl_post tp
+          left outer join tbl_post_like tpl
+          on tp.postIdx = tpl.postLikeRefIdx and tpl.postLikeRefType="POST"
+        where 1=1
+          and tp.postState = 1
+          and tp.postIdx = #{postIdx}
+        GROUP BY tpl.postLikeRefIdx
+        ;
     </select>
     <insert id="insertPost" parameterType="net.spb.spb.domain.PostVO" useGeneratedKeys="true" keyProperty="postIdx">
         insert into tbl_post (postTitle, postContent, postMemberId, postCategory) VALUES (#{postTitle}, #{postContent}, #{postMemberId}, #{postCategory})
@@ -55,6 +70,11 @@
     <update id="deletePost" parameterType="java.lang.Integer">
         update tbl_post
         set postState = 2
+        where postIdx = #{postIdx}
+    </update>
+    <update id="setReadCnt" parameterType="java.lang.Integer">
+        update tbl_post
+        set postReadCnt = postReadCnt + 1
         where postIdx = #{postIdx}
     </update>
 </mapper>

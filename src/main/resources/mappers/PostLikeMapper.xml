@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.PostLikeMapper">
+    <insert id="insertLike" parameterType="net.spb.spb.dto.PostLikeRequestDTO">
+        insert into tbl_post_like (postLikeRefIdx, postLikeRefType, postLikeMemberId)
+        values(#{postLikeRefIdx}, #{postLikeRefType}, #{postLikeMemberId})
+    </insert>
+    <delete id="deleteLike" parameterType="net.spb.spb.dto.PostLikeRequestDTO">
+        delete from tbl_post_like
+        where postLikeRefIdx = #{postLikeRefIdx}
+          and postLikeRefType= #{postLikeRefType}
+          and postLikeMemberId=#{postLikeMemberId}
+    </delete>
+</mapper>
