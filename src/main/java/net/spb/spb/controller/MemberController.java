@@ -6,11 +6,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 
+import net.spb.spb.dto.LoginDTO;
 import net.spb.spb.dto.MemberDTO;
 import net.spb.spb.service.MailService;
 import net.spb.spb.service.MemberServiceImpl;
 import net.spb.spb.service.NaverLoginService;
 import net.spb.spb.util.PasswordUtil;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -21,7 +23,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
+
 import jakarta.validation.Valid;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +40,9 @@ public class MemberController {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @GetMapping("/")
     public String main() {
@@ -59,8 +66,9 @@ public class MemberController {
         String naverMemberId = naverMemberDto.getMemberId();
 
         if (!memberService.existUser(naverMemberId)) {
-            model.addAttribute("memberDTO", naverMemberDto);
-            return "login/join";
+            // model.addAttribute("memberDTO", naverMemberDto);
+            session.setAttribute("memberDTO", naverMemberDto);
+            return "redirect:/join";
         }
 
         session.setAttribute("memberId", naverMemberId);
@@ -108,21 +116,39 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid @ModelAttribute MemberDTO memberDTO, BindingResult bindingResult,
+    public String login(@Valid @ModelAttribute LoginDTO loginDTO, BindingResult bindingResult,
                         @RequestParam(value = "checkIdSave", required = false) String checkIdSave,
                         @RequestParam(value = "checkAutoLogin", required = false) String checkAutoLogin,
+                        HttpServletRequest request,
                         HttpServletResponse response,
                         HttpSession session,
                         Model model) {
+
         if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", "아이디 혹은 비밀번호를 확인해주세요.");
             return "login/login";
         }
 
+        String memberId = loginDTO.getMemberId();
+        String memberPwd = loginDTO.getMemberPwd();
+
+        if (!memberId.matches("^[A-Za-z0-9]{4,15}$")) {
+            model.addAttribute("errorMessage", "아이디 형식이 올바르지 않습니다.");
+            return "login/login";
+        }
+
+        if (!memberPwd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{4,15}$")) {
+            model.addAttribute("errorMessage", "비밀번호 형식이 올바르지 않습니다.");
+            return "login/login";
+        }
+
+        MemberDTO memberDTO = modelMapper.map(loginDTO, MemberDTO.class);
+
         try {
-            String encryptedPassword = PasswordUtil.encryptPassword(memberDTO.getMemberPwd());
+            String encryptedPassword = PasswordUtil.encryptPassword(memberPwd);
             memberDTO.setMemberPwd(encryptedPassword);
         } catch (NoSuchAlgorithmException e) {
-            model.addAttribute("errorMessage", true);
+            model.addAttribute("errorMessage", "비밀번호 암호화 중 오류가 발생했습니다.");
             return "login/login";
         }
 
@@ -157,15 +183,21 @@ public class MemberController {
                 response.addCookie(autoCookie);
             }
 
-            return "redirect:/board/list";
+            return "redirect:/main";
         } else {
-            model.addAttribute("errorMessage", true);
+            model.addAttribute("errorMessage", "아이디를 확인해주세요.");
             return "login/login";
         }
     }
 
     @GetMapping("join")
-    public String join() {
+    public String join(HttpSession session, Model model) {
+        MemberDTO naverMemberDto = (MemberDTO) session.getAttribute("memberDTO");
+
+        if (naverMemberDto != null) {
+            model.addAttribute("memberDTO", naverMemberDto);
+            session.removeAttribute("memberDTO");
+        }
         return "login/join";
     }
 
@@ -244,12 +276,6 @@ public class MemberController {
     public String join(@Valid @ModelAttribute MemberDTO memberDTO, BindingResult bindingResult, HttpServletRequest request, HttpSession session, Model model) {
         if (bindingResult.hasErrors()) {
             return "login/join";
-        }
-
-        String memberEmail = memberDTO.getMemberEmail();
-        if (memberEmail != null && memberEmail.contains("@")) {
-            String memberEmail1 = memberEmail.split("@")[0];
-            model.addAttribute("memberEmail1", memberEmail1);
         }
 
         String sessionMemberId = (String) session.getAttribute("checkedMemberId");

@@ -37,16 +37,21 @@ public class NaverLoginService {
 
         JSONObject jsonResponse = new JSONObject(response);
         JSONObject responseObj = jsonResponse.getJSONObject("response");
+
         String id = responseObj.getString("id");
         if (id.length() > 20) {
             id = id.substring(0, 20);
         }
-        String email = responseObj.getString("email").split("@")[0];
+        String email = "";
+        if (!responseObj.getString("email").contains("@")) {
+            email = responseObj.getString("email");
+        } else {
+            email = responseObj.getString("email").split("@")[0];
+        }
         String name = responseObj.getString("name");
         String mobile = responseObj.getString("mobile").replace("-", "");
         String birthyear = responseObj.getString("birthyear");
         String birthday = responseObj.getString("birthday"); // MM-DD
-
         String birth = birthyear + birthday.replace("-", "");
 
         MemberDTO memberDTO = new MemberDTO();

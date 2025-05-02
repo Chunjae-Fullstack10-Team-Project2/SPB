@@ -2,7 +2,7 @@ package net.spb.spb.dto;
 
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 
 @NoArgsConstructor

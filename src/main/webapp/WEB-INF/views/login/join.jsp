@@ -202,9 +202,9 @@
         </div>
 
         <div class="input-group mb-3 align-items-stretch">
-<%--            <c:set var="memberEmail1" value="${fn:split(memberDTO.memberEmail, '@')}" />--%>
+            <c:set var="memberEmail1" value="${fn:split(memberDTO.memberEmail, '@')}" />
             <input type="text" class="form-control" name="memberEmail1" id="memberEmail1"
-                   value="${memberDTO.memberEmail != null ? memberEmail1 : ''}"
+                   value="${memberDTO.memberEmail != null ? memberEmail1[0] : ''}"
                    placeholder="이메일" required oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
             <span class="input-group-text">@</span>
             <select class="form-select" id="memberEmail2" name="memberEmail2" onchange="toggleCustomEmailInput(this)">

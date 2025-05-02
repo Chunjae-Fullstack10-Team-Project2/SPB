@@ -170,6 +170,10 @@
 <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js" type="text/javascript"></script>
 
 <script>
+    <c:if test="${not empty errorMessage}">
+    alert("${errorMessage}");
+    </c:if>
+
     document.getElementById("btnSubmit")?.addEventListener("click", function (e) {
         e.preventDefault();
         const memberId = document.getElementById("memberId");

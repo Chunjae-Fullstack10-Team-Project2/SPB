@@ -3,7 +3,9 @@ package net.spb.spb.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
+import net.spb.spb.dto.MemberDTO;
 import net.spb.spb.dto.QnaDTO;
+import net.spb.spb.service.MemberServiceImpl;
 import net.spb.spb.service.Qna.QnaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,9 @@ public class QnaController {
 
     @Autowired
     private QnaService qnaService;
+
+    @Autowired
+    private MemberServiceImpl memberService;
 
     @GetMapping("/list")
     public String qna(Model model) {
@@ -78,6 +83,14 @@ public class QnaController {
     public String answer(@RequestParam("qnaIdx") String qnaIdx, @ModelAttribute QnaDTO qnaDTO, HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
         qnaDTO.setQnaAMemberId(memberId);
+
+        MemberDTO memberDTO = memberService.getMemberById(memberId);
+        int memberGrade = Integer.parseInt(memberDTO.getMemberGrade());
+
+        if (memberGrade != 0 && memberGrade != 13) {
+            model.addAttribute("message", "답변 권한이 없습니다.");
+            return "qna/view";
+        }
 
         model.addAttribute("qnaDTO", qnaDTO);
         return "qna/answerRegist";
