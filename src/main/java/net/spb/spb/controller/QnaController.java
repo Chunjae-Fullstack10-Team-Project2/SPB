@@ -1,13 +1,15 @@
 package net.spb.spb.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.AnswerDTO;
-import net.spb.spb.dto.MemberDTO;
-import net.spb.spb.dto.QnaDTO;
-import net.spb.spb.service.MemberServiceImpl;
+import net.spb.spb.dto.PageRequestDTO;
+import net.spb.spb.dto.PageResponseDTO;
+import net.spb.spb.dto.qna.AnswerDTO;
+import net.spb.spb.dto.member.MemberDTO;
+import net.spb.spb.dto.qna.QnaDTO;
+import net.spb.spb.dto.qna.QnaSearchDTO;
+import net.spb.spb.service.member.MemberServiceImpl;
 import net.spb.spb.service.Qna.QnaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,9 +33,20 @@ public class QnaController {
     private MemberServiceImpl memberService;
 
     @GetMapping("/list")
-    public String qna(Model model) {
-        List<QnaDTO> qnaList = qnaService.qnaList();
+    public String qna(@ModelAttribute QnaSearchDTO searchDTO,
+                      @ModelAttribute PageRequestDTO pageRequestDTO,
+                      Model model) {
+
+        List<QnaDTO> qnaList = qnaService.searchQna(searchDTO, pageRequestDTO);
+        PageResponseDTO<QnaDTO> pageResponseDTO = PageResponseDTO.<QnaDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .totalCount(qnaService.totalCount(searchDTO))
+                .dtoList(qnaList)
+                .build();
+
+        model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("qnaList", qnaList);
+        model.addAttribute("searchDTO", searchDTO);
         return "qna/list";
     }
 
@@ -72,25 +85,36 @@ public class QnaController {
         model.addAttribute("qnaDTO", qnaDTO);
 
         String memberId = (String) session.getAttribute("memberId");
+        if (memberId == null) {
+            model.addAttribute("message", "로그인이 필요합니다.");
+            return "redirect:/login";
+        }
+
         MemberDTO memberDTO = memberService.getMemberById(memberId);
         if (memberDTO == null) {
             return "redirect:/login";
         }
 
-        int memberGrade = Integer.parseInt(memberDTO.getMemberGrade());
+        String memberGrade = memberDTO.getMemberGrade();
         session.setAttribute("memberGrade", memberGrade);
 
         return "qna/view";
     }
 
     @PostMapping("/delete")
-    public String delete(@RequestParam("qnaIdx") String qnaIdx, Model model) {
-        boolean result = qnaService.delete(qnaIdx);
-        if (result) {
-            model.addAttribute("message", "문의를 삭제했습니다.");
-            return "redirect:/list";
+    public String delete(@RequestParam("qnaIdx") String qnaIdx, Model model, HttpSession session) {
+        int memberGrade = Integer.parseInt(session.getAttribute("memberGrade").toString());
+        if (memberGrade != 0 && memberGrade != 13) {
+            boolean result = qnaService.delete(qnaIdx);
+            if (result) {
+                model.addAttribute("message", "문의를 삭제했습니다.");
+                return "redirect:/qna/list";
+            } else {
+                return "redirect:/qna/view?qnaIdx=" + qnaIdx + "&message=error";
+            }
+        } else {
+            return "redirect:/qna/view?qnaIdx=" + qnaIdx + "&message=unauthorized";
         }
-        return "redirect:/list";
     }
 
     @GetMapping("/regist/answer")
@@ -102,7 +126,7 @@ public class QnaController {
 
         qnaDTO.setQnaAMemberId(memberId);
 
-        int memberGrade = Integer.parseInt(qnaDTO.getQnaQMemberId());
+        int memberGrade = Integer.parseInt(session.getAttribute("memberGrade").toString());
         if (memberGrade != 0 && memberGrade != 13) {
             return "redirect:/qna/view?qnaIdx=" + qnaIdx + "&message=unauthorized";
         }

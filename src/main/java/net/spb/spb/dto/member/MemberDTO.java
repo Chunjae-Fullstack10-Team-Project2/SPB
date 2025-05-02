@@ -1,4 +1,4 @@
-package net.spb.spb.dto;
+package net.spb.spb.dto.member;
 
 import lombok.*;
 import jakarta.validation.constraints.*;

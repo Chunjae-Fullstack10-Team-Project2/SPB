@@ -1,6 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.spb.spb.mapper.QnaMapper">
+    <select id="searchQna" resultType="net.spb.spb.domain.QnaVO">
+        select * from tbl_qna
+        where qnaState = 1
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'qnaTitle'">
+                    AND qnaTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'qnaQContent'">
+                    AND qnaQContent LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'qnaQMemberId'">
+                    AND qnaQMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'qnaAContent'">
+                    AND qnaAContent LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'qnaAMemberId'">
+                    AND qnaAMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+        <if test="searchDTO.answered != null">
+            <if test="searchDTO.answered == 'Y'">
+                AND qnaAContent is not null
+            </if>
+            <if test="searchDTO.answered == 'N'">
+                AND qnaAContent is null
+            </if>
+        </if>
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            AND qnaCreatedAt between #{searchDTO.startDate} AND #{searchDTO.endDate}
+        </if>
+        order by qnaCreatedAt desc
+        limit #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
+    </select>
 
     <select id="qnaList" resultType="net.spb.spb.domain.QnaVO">
         select qnaIdx,
@@ -8,7 +44,8 @@
                qnaQContent,
                qnaState,
                qnaTitle,
-               qnaCreatedAt
+               qnaCreatedAt,
+               qnaAnsweredAt
         from tbl_qna
         where qnaState = 1
     </select>
@@ -24,7 +61,8 @@
                qnaCreatedAt,
                qnaAnsweredAt
         from tbl_qna
-        where qnaIdx = #{qnaIdx} and qnaState = 1
+        where qnaIdx = #{qnaIdx}
+          and qnaState = 1
     </select>
 
     <insert id="createQ" parameterType="String">
@@ -34,8 +72,8 @@
 
     <update id="updateA" parameterType="net.spb.spb.domain.QnaVO">
         UPDATE tbl_qna
-        SET qnaAMemberId = #{qnaAMemberId},
-            qnaAContent = #{qnaAContent},
+        SET qnaAMemberId  = #{qnaAMemberId},
+            qnaAContent   = #{qnaAContent},
             qnaAnsweredAt = NOW()
         WHERE qnaIdx = #{qnaIdx}
     </update>
@@ -47,4 +85,30 @@
             set q.qnaState = 2
         where q.qnaIdx = #{q.qnaIdx}
     </update>
+    <select id="totalCount" parameterType="net.spb.spb.dto.qna.QnaSearchDTO" resultType="int">
+        select count(qnaIdx)
+        from tbl_qna
+        <where>
+            qnaState = 1
+            <if test="searchWord != null and searchWord != ''">
+                <choose>
+                    <when test="searchType == 'qnaTitle'">
+                        AND qnaTitle LIKE CONCAT('%', #{searchWord}, '%')
+                    </when>
+                    <when test="searchType == 'qnaQContent'">
+                        AND qnaQContent LIKE CONCAT('%', #{searchWord}, '%')
+                    </when>
+                    <when test="searchType == 'qnaQMemberId'">
+                        AND qnaQMemberId LIKE CONCAT('%', #{searchWord}, '%')
+                    </when>
+                    <when test="searchType == 'qnaAContent'">
+                        AND qnaAContent LIKE CONCAT('%', #{searchWord}, '%')
+                    </when>
+                    <when test="searchType == 'qnaAMemberId'">
+                        AND qnaAMemberId LIKE CONCAT('%', #{searchWord}, '%')
+                    </when>
+                </choose>
+            </if>
+        </where>
+    </select>
 </mapper>
