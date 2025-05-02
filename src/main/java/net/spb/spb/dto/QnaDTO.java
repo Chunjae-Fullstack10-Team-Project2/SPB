@@ -15,7 +15,6 @@ public class QnaDTO {
     private String qnaIdx;
     @NotNull
     private String qnaQMemberId;
-    @NotNull
     private String qnaAMemberId;
     @NotNull
     private String qnaQContent;

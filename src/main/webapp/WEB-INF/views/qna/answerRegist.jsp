@@ -5,6 +5,8 @@
     <title>Title</title>
 </head>
 <body>
+<%@ include file="../common/header.jsp" %>
+
 <div class="qna-regist-container">
     <form name="frmRegist" method="post" class="needs-validation" novalidate>
         <div class="mb-3">

@@ -2,7 +2,9 @@ package net.spb.spb.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
+import net.spb.spb.dto.AnswerDTO;
 import net.spb.spb.dto.MemberDTO;
 import net.spb.spb.dto.QnaDTO;
 import net.spb.spb.service.MemberServiceImpl;
@@ -11,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -44,7 +48,7 @@ public class QnaController {
     }
 
     @PostMapping("/regist")
-    public String regist(@ModelAttribute QnaDTO qnaDTO, BindingResult bindingResult, HttpServletRequest request, HttpSession session, Model model) {
+    public String regist(@ModelAttribute QnaDTO qnaDTO, BindingResult bindingResult, HttpSession session, Model model) {
         if (bindingResult.hasErrors()) {
             return "qna/regist";
         }
@@ -63,9 +67,19 @@ public class QnaController {
     }
 
     @GetMapping("/view")
-    public String view(@RequestParam("qnaIdx") String qnaIdx, Model model) {
+    public String view(@RequestParam("qnaIdx") String qnaIdx, Model model, HttpSession session) {
         QnaDTO qnaDTO = qnaService.view(qnaIdx);
         model.addAttribute("qnaDTO", qnaDTO);
+
+        String memberId = (String) session.getAttribute("memberId");
+        MemberDTO memberDTO = memberService.getMemberById(memberId);
+        if (memberDTO == null) {
+            return "redirect:/login";
+        }
+
+        int memberGrade = Integer.parseInt(memberDTO.getMemberGrade());
+        session.setAttribute("memberGrade", memberGrade);
+
         return "qna/view";
     }
 
@@ -82,14 +96,15 @@ public class QnaController {
     @GetMapping("/regist/answer")
     public String answer(@RequestParam("qnaIdx") String qnaIdx, @ModelAttribute QnaDTO qnaDTO, HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
+        if (memberId == null) {
+            return "redirect:/login";
+        }
+
         qnaDTO.setQnaAMemberId(memberId);
 
-        MemberDTO memberDTO = memberService.getMemberById(memberId);
-        int memberGrade = Integer.parseInt(memberDTO.getMemberGrade());
-
+        int memberGrade = Integer.parseInt(qnaDTO.getQnaQMemberId());
         if (memberGrade != 0 && memberGrade != 13) {
-            model.addAttribute("message", "답변 권한이 없습니다.");
-            return "qna/view";
+            return "redirect:/qna/view?qnaIdx=" + qnaIdx + "&message=unauthorized";
         }
 
         model.addAttribute("qnaDTO", qnaDTO);
@@ -97,22 +112,35 @@ public class QnaController {
     }
 
     @PostMapping("/regist/answer")
-    public String answer(@RequestParam("qnaIdx") String qnaIdx, @ModelAttribute QnaDTO qnaDTO, BindingResult bindingResult, HttpSession session, Model model) {
+    public String answer(@RequestParam("qnaIdx") String qnaIdx,
+                         @Valid @ModelAttribute AnswerDTO answerDTO,
+                         BindingResult bindingResult,
+                         HttpSession session) {
         if (bindingResult.hasErrors()) {
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                System.out.println("필드: " + error.getField() + " / 메시지: " + error.getDefaultMessage());
+            }
             return "qna/answerRegist";
         }
-        String memberId = (String) session.getAttribute("memberId");
-        qnaDTO.setQnaAMemberId(memberId);
 
-        model.addAttribute("qnaDTO", qnaDTO);
+        String memberId = (String) session.getAttribute("memberId");
+        if (memberId == null) {
+            return "redirect:/login";
+        }
+
+        QnaDTO qnaDTO = new QnaDTO();
+        qnaDTO.setQnaIdx(qnaIdx);
+        qnaDTO.setQnaAMemberId(memberId);
+        qnaDTO.setQnaAContent(answerDTO.getQnaAContent());
+        qnaDTO.setQnaAnsweredAt(new Date());
 
         boolean result = qnaService.updateA(qnaDTO);
-        if (result) {
-            model.addAttribute("message", "답변을 등록했습니다.");
-            return "redirect:/view";
-        }
-        return "qna/view";
-    }
 
+        if (result) {
+            return "redirect:/qna/view?qnaIdx=" + qnaIdx + "&message=authorized";
+        } else {
+            return "redirect:/qna/view?qnaIdx=" + qnaIdx + "&message=error";
+        }
+    }
 
 }

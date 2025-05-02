@@ -32,7 +32,8 @@
                memberGrade,
                memberEmail,
                memberPhone,
-               memberJoinPath
+               memberJoinPath,
+               memberGrade
         from tbl_member
         where memberId = #{memberId}
     </select>

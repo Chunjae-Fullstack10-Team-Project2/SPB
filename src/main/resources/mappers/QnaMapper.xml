@@ -33,13 +33,11 @@
     </insert>
 
     <update id="updateA" parameterType="net.spb.spb.domain.QnaVO">
-        update tbl_qna as q
-            join tbl_member as m
-        on q.qnaAMemberId = m.memberId
-            set qnaAMemberId = #{qnaAMemberId}, qnaAContent = #{qnaAContent}, qnaAnsweredAt = now()
-        where qnaIdx = #{qnaIdx}
-          and (m.memberGrade = 13
-           or m.memberGrade = 0);
+        UPDATE tbl_qna
+        SET qnaAMemberId = #{qnaAMemberId},
+            qnaAContent = #{qnaAContent},
+            qnaAnsweredAt = NOW()
+        WHERE qnaIdx = #{qnaIdx}
     </update>
 
     <update id="delete" parameterType="net.spb.spb.domain.QnaVO">
@@ -48,7 +46,5 @@
         on q.qnaAMemberId = m.memberId
             set q.qnaState = 2
         where q.qnaIdx = #{q.qnaIdx}
-          and (m.memberGrade = 13
-           or m.memberGrade = 0);
     </update>
 </mapper>
