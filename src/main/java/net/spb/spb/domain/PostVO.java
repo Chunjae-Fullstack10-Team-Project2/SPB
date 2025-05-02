@@ -20,4 +20,6 @@ public class PostVO {
     private LocalDateTime postCreatedAt;
     private LocalDateTime postUpdatedAt;
     private short postState;
+    private int postLikeCnt;
+    private boolean isLike;
 }

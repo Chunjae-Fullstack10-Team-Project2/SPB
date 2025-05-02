@@ -26,4 +26,5 @@ public class MemberVO {
     private int memberIdx;
     private LocalDate memberPwdChangeDate;
     private LocalDate memberCreatedAt;
+    private String memberJoinPath;
 }

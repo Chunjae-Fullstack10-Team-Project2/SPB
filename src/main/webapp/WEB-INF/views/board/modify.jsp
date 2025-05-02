@@ -7,6 +7,7 @@ change this template use File | Settings | File Templates. --%>
     <title>봄콩이 자유게시판</title>
   </head>
   <body>
+  <%@ include file="../common/header.jsp" %>
     <div class="container">
       <h1>${category.displayName} 수정</h1>
       <form name="frmModify" action="/board/${category}/modify" method="post" enctype="multipart/form-data">
@@ -30,8 +31,8 @@ change this template use File | Settings | File Templates. --%>
           <input type="file" name="files" id="files" multiple/>
         </div>
         <div class="btn">
-          <button type="button">취소</button>
-          <button type="submit">등록</button>
+          <button type="button" class="btn btn-secondary">취소</button>
+          <button type="submit" class="btn btn-primary">등록</button>
         </div>
       </form>
     </div>
