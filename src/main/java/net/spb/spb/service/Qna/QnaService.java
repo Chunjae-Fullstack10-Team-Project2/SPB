@@ -2,14 +2,14 @@ package net.spb.spb.service.Qna;
 
 import net.spb.spb.dto.PageRequestDTO;
 import net.spb.spb.dto.qna.QnaDTO;
-import net.spb.spb.dto.qna.QnaSearchDTO;
+import net.spb.spb.dto.qna.SearchDTO;
 
 import java.util.List;
 
 public interface QnaService {
     List<QnaDTO> qnaList();
 
-    List<QnaDTO> searchQna(QnaSearchDTO searchDTO, PageRequestDTO pageRequestDTO);
+    List<QnaDTO> searchQna(SearchDTO searchDTO, PageRequestDTO pageRequestDTO);
 
     QnaDTO view(String qnaIdx);
 
@@ -19,5 +19,7 @@ public interface QnaService {
 
     boolean delete(String qnaIdx);
 
-    int totalCount(QnaSearchDTO searchDTO);
+    int totalCount(SearchDTO searchDTO);
+
+    List<QnaDTO> myQna(SearchDTO searchDTO, PageRequestDTO pageRequestDTO, String qnaQMemberId);
 }

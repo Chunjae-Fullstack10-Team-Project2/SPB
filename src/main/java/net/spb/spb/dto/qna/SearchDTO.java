@@ -4,7 +4,7 @@ import lombok.Data;
 
 
 @Data
-public class QnaSearchDTO {
+public class SearchDTO {
     private String searchWord;
     private String searchType;
     private String answered;
