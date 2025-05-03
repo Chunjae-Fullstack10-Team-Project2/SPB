@@ -21,16 +21,24 @@
             <param-value>/WEB-INF/servlet-context.xml</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
-
         <multipart-config>
-            <location>D:\\JAVA10\\project\\prj02\\SPB\\src\\upload</location>
+            <location></location>
             <max-file-size>10240000</max-file-size>
             <max-request-size>20480000</max-request-size>
-            <file-size-threshold>5120000</file-size-threshold>
+            <file-size-threshold>512000</file-size-threshold>
         </multipart-config>
     </servlet>
     <servlet-mapping>
         <servlet-name>appServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+    <context-param>
+        <param-name>naver.clientId</param-name>
+        <param-value>cnVwGS7uEm_5bo6jAIGr</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>naver.clientSecret</param-name>
+        <param-value>Rk6P2ytc2f</param-value>
+    </context-param>
 </web-app>

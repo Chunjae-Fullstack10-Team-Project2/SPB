@@ -10,9 +10,35 @@
                            http://www.springframework.org/schema/mvc
                            http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+    <context:component-scan base-package="net.spb.spb" />
+    <mvc:annotation-driven />
     <mvc:default-servlet-handler />
 
-    <!-- Spring MVC annotation 및 formatter -->
+    <mvc:resources mapping="/upload/**" location="file:#{uploadPath}"/>
+    <mvc:resources mapping="/resources/**" location="/resources/" />
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+    <context:component-scan base-package="net.spb.spb.controller" />
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/board/**/write"/>
+            <mvc:mapping path="/board/**/modify"/>
+            <mvc:mapping path="/board/**/delete"/>
+            <mvc:mapping path="/board/**/comment/**"/>
+            <mvc:mapping path="/board/**/like/**"/>
+            <mvc:exclude-mapping path="/login"/>
+            <bean class="net.spb.spb.interceptor.LoginCheckInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <!-- formatter -->
     <mvc:annotation-driven conversion-service="conversionService" />
 
     <bean id="conversionService"
@@ -25,18 +51,4 @@
         </property>
     </bean>
 
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/views/" />
-        <property name="suffix" value=".jsp" />
-    </bean>
-
-    <mvc:resources mapping="/resources/**" location="/resources/" />
-
-    <context:component-scan base-package="net.spb.spb.controller" />
-
-    <!-- file uploads -->
-    <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver" />
-    <bean id="uploadPath" class="java.lang.String">
-        <constructor-arg value="D:\\JAVA10\\project\\prj02\\SPB\\src\\upload" />
-    </bean>
 </beans>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.BoardFileMapper">
+    <insert id="insertPostFile" parameterType="net.spb.spb.domain.PostFileVO">
+        insert into tbl_post_file (postFileFileIdx, postFilePostIdx)
+        values (#{postFileFileIdx}, #{postFilePostIdx})
+    </insert>
+    <delete id="deletePostFile" parameterType="java.lang.Integer">
+        delete from tbl_post_file
+        where postFileIdx = #{postFileIdx}
+    </delete>
+    <delete id="deletePostFileByFileIdx" parameterType="java.lang.Integer">
+        delete from tbl_post_file
+        where postFileFileIdx = #{fileIdx}
+    </delete>
+    <select id="selectFile" parameterType="java.lang.Integer" resultType="net.spb.spb.domain.FileVO">
+        select tf.fileIdx, tf.fileName, tf.filePath, tf.fileExt
+        from tbl_file tf
+        inner join tbl_post_file tpf
+        on tf.fileIdx = tpf.postFileFileIdx
+        where tpf.postFilePostIdx = #{postIdx}
+    </select>
+</mapper>
