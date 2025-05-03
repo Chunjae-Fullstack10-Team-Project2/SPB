@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -5,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>학습 플랫폼 - 결제</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <style>
         * {
             margin: 0;
@@ -170,18 +172,16 @@
         <div class="section">
             <table class="order-items">
                 <th colspan="2">주문 내역</th>
-                <tr>
-                    <td>국어수업</td>
-                    <td class="price">19,800원</td>
-                </tr>
-                <tr>
-                    <td>영어수업</td>
-                    <td class="price">19,800원</td>
-                </tr>
+                <c:forEach var="lecture" items="${selectedLectures}">
+                    <tr>
+                        <td>${lecture.lectureTitle}</td>
+                        <td class="price">${lecture.lectureAmount}원</td>
+                    </tr>
+                </c:forEach>
             </table>
             <div class="total-row">
                 <div>총 금액</div>
-                <div>39,600원</div>
+                <div id="total-price">39,600원</div>
             </div>
         </div>
 
@@ -232,6 +232,13 @@
         creditCardRadio.addEventListener('change', togglePaymentForm);
         easyPaymentRadio.addEventListener('change', togglePaymentForm);
         bankTransferRadio.addEventListener('change', togglePaymentForm);
+
+        let total = 0;
+        document.querySelectorAll('.price').forEach(el => {
+            const price = parseInt(el.textContent.replace(/[^0-9]/g, ''));
+            total += price;
+        });
+        document.getElementById('total-price').textContent = total.toLocaleString() + '원';
     });
 
     // 결제 처리 함수
@@ -241,18 +248,63 @@
         const expiryDate = document.getElementById('expiry-date').value;
         const cvc = document.getElementById('cvc').value;
         const email = document.getElementById('email').value;
+        const totalPrice = document.getElementById('total-price').value;
 
-        if (document.getElementById('credit-card').checked) {
-            if (!cardNumber || !expiryDate || !cvc || !email) {
-                alert('모든 필드를 입력해주세요.');
-                return;
-            }
+        // if (document.getElementById('credit-card').checked) {
+        //     if (!cardNumber || !expiryDate || !cvc || !email) {
+        //         alert('모든 필드를 입력해주세요.');
+        //         return;
+        //     }
+        // }
+        const data = {
+            orderId : "dog109",
+            orderAmount : totalPrice
         }
-
+        $.ajax({
+            url: '/payment/insertOrder',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                goPayment();
+            },
+            error: function (xhr) {
+                console.error('등록 실패:', xhr.responseText);
+                alert("등록 중 오류가 발생했습니다.");
+            }
+        });
         // 실제로는 서버로 결제 정보를 전송하는 코드가 들어갈 자리
-        alert('결제가 완료되었습니다.');
+        //alert('결제가 완료되었습니다.');
         // 결제 완료 후 이동할 페이지
         // window.location.href = 'payment-complete.jsp';
+    }
+
+    function goPayment(){
+        $.ajax({
+            url:'/payment/kakaoPayReady',
+            type: 'POST',
+            data: JSON.stringify({
+                "cid": "TC0ONETIME",
+                "partner_order_id": "partner_order_id",
+                "partner_user_id": "partner_user_id",
+                "item_name": "초코파이",
+                "quantity": "1",
+                "total_amount": "2200",
+                "vat_amount": "200",
+                "tax_free_amount": "0",
+                "approval_url": "https://developers.kakao.com/success",
+                "fail_url": "https://developers.kakao.com/fail",
+                "cancel_url": "https://developers.kakao.com/cancel"
+            }),
+            contentType: "application/json",
+            success: function (response) {
+                console.log("response === " + response);
+                window.location.href = response.next_redirect_pc_url;
+            },
+            error: function (request,status,error) {
+                console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            }
+        });
     }
 
     // 주문 취소 함수

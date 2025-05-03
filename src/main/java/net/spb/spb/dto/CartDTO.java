@@ -18,5 +18,5 @@ public class CartDTO {
     private String lectureTitle;
     private String lectureTeacherId;
     private int lectureAmount;
-    private List<Integer> deleteCartItemIds;
+    private List<Integer> selectCartItemIds;
 }

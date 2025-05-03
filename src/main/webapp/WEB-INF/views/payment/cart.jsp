@@ -149,8 +149,10 @@
         <table class="cart-table">
             <thead>
             <tr>
-                <th width="5%">선택</th>
-                <th width="55%">제목</th>
+                <th width="10%">
+                    전체선택<br><input type="checkbox" id="checkAll">
+                </th>
+                <th width="50%">제목</th>
                 <th width="20%">금액</th>
                 <th width="20%">수강하기</th>
             </tr>
@@ -178,8 +180,7 @@
 
         <div class="button-group">
             <button type="button" class="btn" id="btnSelectDelete" onclick="cartDeleteSelected()">선택삭제</button>
-            <button type="button" class="btn" id="btnAllLecture">전체강좌수강</button>
-            <button type="button" class="btn" id="btnSelectLecture">선택강좌수강</button>
+            <button type="button" class="btn" id="btnSelectLecture" onclick="cartPayment()">선택강좌수강</button>
         </div>
     </div>
 </div>
@@ -187,6 +188,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const checkboxes = document.querySelectorAll('.checkbox');
+        const checkAll = document.getElementById('checkAll');
 
         function calculateTotal() {
             let total = 0;
@@ -202,13 +204,33 @@
             document.querySelector('.total-price').textContent = total.toLocaleString() + '원';
         }
 
-        // ✅ 페이지 로드 시 총액 초기 계산
-        calculateTotal();
+        if (checkAll) {
+            checkAll.addEventListener('change', function () {
+                checkboxes.forEach(function (checkbox) {
+                    checkbox.checked = checkAll.checked;
+                });
+                calculateTotal(); // 총합 재계산
+            });
+        }
 
-        // ✅ 체크박스 상태 변경 시 총액 재계산
-        checkboxes.forEach(function(checkbox) {
-            checkbox.addEventListener('change', calculateTotal);
+        // ✅ 개별 체크 변경 시 총합 계산 및 전체선택 체크 상태 동기화
+        checkboxes.forEach(function (checkbox) {
+            checkbox.addEventListener('change', function () {
+                calculateTotal();
+
+                // 일부라도 체크 해제되면 전체선택 체크 해제
+                if (!checkbox.checked) {
+                    checkAll.checked = false;
+                } else {
+                    // 모두 체크되었는지 확인
+                    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+                    checkAll.checked = allChecked;
+                }
+            });
         });
+
+        // 페이지 로드시 총합 계산
+        calculateTotal();
     });
 
     // 체크박스 전체 선택/해제 기능
@@ -239,23 +261,23 @@
 
     function cartDeleteSelected() {
         const checkedBoxes = document.querySelectorAll('.checkbox:checked');
-        const deleteCartItems = [];
+        const selectCartItemIds = [];
 
         checkedBoxes.forEach(box => {
             const lectureIdx = box.getAttribute('data-lecture-idx');
             if (lectureIdx) {
-                deleteCartItems.push(parseInt(lectureIdx));
+                selectCartItemIds.push(parseInt(lectureIdx));
             }
         });
 
-        if (deleteCartItems.length === 0) {
+        if (selectCartItemIds.length === 0) {
             alert("삭제할 강좌를 선택해주세요.");
             return;
         }
 
         const data = {
             cartMemberId: "dog109",
-            deleteCartItemIds: deleteCartItems
+            selectCartItemIds: selectCartItemIds
         };
 
         $.ajax({
@@ -272,6 +294,33 @@
                 alert("삭제 중 오류가 발생했습니다.");
             }
         });
+    }
+
+    function cartPayment(){
+        const checkedBoxes = document.querySelectorAll('.checkbox:checked');
+        const selectCartItemIds = [];
+
+        checkedBoxes.forEach(box => {
+            const lectureIdxStr = box.getAttribute('data-lecture-idx');
+            const parsedIdx = parseInt(lectureIdxStr, 10);
+
+            if (!isNaN(parsedIdx)) {
+                selectCartItemIds.push(parsedIdx);
+            }
+        });
+
+        console.log('선택된 강좌 ID: ', selectCartItemIds);
+
+        if (selectCartItemIds.length === 0) {
+            alert("수강 할 강좌를 선택해주세요.");
+            return;
+        }
+        //const query = selectCartItemIds.map(id => `lectureIdxList=${id}`).join('&');
+        //console.log('전송할 쿼리:', query);
+
+        const query = 'lectureIdxList='  + selectCartItemIds.join('&lectureIdxList=');
+        console.log("query == " + query);
+        window.location.href = `/payment/payment?`+query;
     }
 </script>
 </body>
