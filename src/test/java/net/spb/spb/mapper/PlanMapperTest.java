@@ -2,7 +2,7 @@ package net.spb.spb.mapper;
 
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.domain.PlanVO;
-import net.spb.spb.dto.PlanRequestDTO;
+import net.spb.spb.dto.PlanListRequestDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class PlanMapperTest {
 
     @Test
     public void testSelectList() {
-        PlanRequestDTO requestDTO = PlanRequestDTO.builder()
+        PlanListRequestDTO requestDTO = PlanListRequestDTO.builder()
                 .memberId("user1")
                 .currentMonth(YearMonth.now())
                 .build();

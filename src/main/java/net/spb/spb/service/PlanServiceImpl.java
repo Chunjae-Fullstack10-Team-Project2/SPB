@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.domain.PlanVO;
 import net.spb.spb.dto.PlanDTO;
-import net.spb.spb.dto.PlanRequestDTO;
+import net.spb.spb.dto.PlanListRequestDTO;
+import net.spb.spb.dto.PlanListResponseDTO;
+import net.spb.spb.dto.PlanResponseDTO;
 import net.spb.spb.mapper.PlanMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -29,19 +31,19 @@ public class PlanServiceImpl implements PlanServiceIf {
     }
 
     @Override
-    public List<PlanDTO> selectList(PlanRequestDTO requestDTO) {
+    public List<PlanListResponseDTO> selectList(PlanListRequestDTO requestDTO) {
         List<PlanVO> planVOList = planMapper.selectList(requestDTO);
-        List<PlanDTO> planDTOList =
+        List<PlanListResponseDTO> planDTOList =
                 planVOList.stream().map(
-                    vo -> modelMapper.map(vo, PlanDTO.class)
+                    vo -> modelMapper.map(vo, PlanListResponseDTO.class)
                 ).collect(Collectors.toList());
         return planDTOList;
     }
 
     @Override
-    public PlanDTO selectOne(int idx) {
+    public PlanResponseDTO selectOne(int idx) {
         PlanVO planVO = planMapper.selectOne(idx);
-        return modelMapper.map(planVO, PlanDTO.class);
+        return modelMapper.map(planVO, PlanResponseDTO.class);
     }
 
     @Override

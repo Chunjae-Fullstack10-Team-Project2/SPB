@@ -2,7 +2,9 @@ package net.spb.spb.service;
 
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.PlanDTO;
-import net.spb.spb.dto.PlanRequestDTO;
+import net.spb.spb.dto.PlanListRequestDTO;
+import net.spb.spb.dto.PlanListResponseDTO;
+import net.spb.spb.dto.PlanResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,17 +36,17 @@ public class PlanServiceTest {
 
     @Test
     public void testSelectList() {
-        PlanRequestDTO requestDTO = PlanRequestDTO.builder()
+        PlanListRequestDTO requestDTO = PlanListRequestDTO.builder()
                 .memberId("user1")
                 .currentMonth(YearMonth.now())
                 .build();
-        List<PlanDTO> list = planService.selectList(requestDTO);
+        List<PlanListResponseDTO> list = planService.selectList(requestDTO);
         log.info("PlanServiceTest >> testSelectList >> list : {}", list);
     }
 
     @Test
     public void testSelectOne() {
-        PlanDTO planDTO = planService.selectOne(1);
+        PlanResponseDTO planDTO = planService.selectOne(1);
         log.info("PlanServiceTest >> testSelectOne >> planDTO : {}", planDTO);
     }
 

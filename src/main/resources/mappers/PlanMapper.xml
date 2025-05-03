@@ -7,16 +7,16 @@
         values (#{planLectureIdx}, #{planMemberId}, #{planContent}, #{planDate})
     </insert>
 
-    <select id="selectList" parameterType="net.spb.spb.dto.PlanRequestDTO" resultType="net.spb.spb.domain.PlanVO">
-        select planIdx, planLectureIdx, planContent, planDate
+    <select id="selectList" parameterType="net.spb.spb.dto.PlanListRequestDTO" resultType="net.spb.spb.domain.PlanVO">
+        select planIdx, planLectureIdx, planMemberId, planContent, planDate, planState, planCreatedAt, planUpdatedAt
         from tbl_plan
         where planMemberId = #{memberId}
         and date_format(planDate, '%Y-%m') = #{currentMonth}
     </select>
 
     <select id="selectOne" parameterType="java.lang.Integer" resultType="net.spb.spb.domain.PlanVO">
-        select tp.planIdx as planIdx, tp.planLectureIdx as planLectureIdx, tl.lectureTitle as lectureTitle
-             , tp.planContent as planContent, tp.planDate as planDate
+        select tp.planIdx as planIdx, tp.planLectureIdx as planLectureIdx, tl.lectureTitle as lectureTitle, tp.planMemberId as planMemberId
+             , tp.planContent as planContent, tp.planDate as planDate, tp.planState as planState
              , tp.planCreatedAt as planCreatedAt, tp.planUpdatedAt as planUpdatedAt
         from tbl_plan as tp
         inner join tbl_lecture as tl on tp.planLectureIdx = tl.lectureIdx

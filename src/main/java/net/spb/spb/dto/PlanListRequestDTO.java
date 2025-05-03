@@ -11,7 +11,7 @@ import java.time.YearMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PlanRequestDTO {
+public class PlanListRequestDTO {
     private String memberId;
     private YearMonth currentMonth;
 }
