@@ -6,7 +6,7 @@
     <title>봄콩이 ${category.displayName}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-      td {
+      .article-board, .article-board td {
         font-size: 13px;
       }
       .article-board a {
@@ -27,6 +27,10 @@
       }
       .search-box {
         text-align: center;
+        font-size: 13px;
+      }
+      .btn {
+        font-size: 13px;
       }
     </style>
   </head>
@@ -39,7 +43,7 @@
         <div class="article-board">
           <div>
             ${postTotalCount}개의 글
-              <select name="page_size">
+              <select name="page_size" id="selectPageSize">
                 <option value="5" ${search.page_size eq "5" ? "selected":""}>5개씩</option>
                 <option value="10" ${search.page_size eq "10" ? "selected":""}>10개씩</option>
                 <option value="15" ${search.page_size eq "15" ? "selected":""}>15개씩</option>
@@ -117,10 +121,18 @@
   <script>
     document.getElementById('btnRegist').addEventListener('click', function() {
       window.location.href="write";
-    })
+    });
     document.getElementById('btnSearchInit').addEventListener('click', function() {
       window.location.href="list";
-    })
+    });
+    const selectPageSize = document.getElementById("selectPageSize");
+    selectPageSize.addEventListener('change', function() {
+      let pageSize = selectPageSize.value;
+      let currentUrl = window.location.href;
+      let newUrl = currentUrl.split('?')[0];
+      let newLocation = newUrl + "?page_size=" + pageSize;
+      window.location.href=newLocation;
+    });
   </script>
   </body>
 </html>

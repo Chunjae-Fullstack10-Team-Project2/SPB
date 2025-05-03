@@ -1,6 +1,7 @@
 package net.spb.spb.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.PostDTO;
@@ -49,9 +50,9 @@ public class BoardController {
     }
 
     @GetMapping("/{category}/view")
-    public String view(@PathVariable("category") BoardCategory category, @RequestParam("idx") int idx, Model model) {
+    public String view(@PathVariable("category") BoardCategory category, @RequestParam("idx") int idx, Model model, HttpSession session) {
         service.setReadCnt(idx);
-        String memberId = "user05"; // 세션에서 받은 아이디로 추후 변경 예정
+        String memberId = (String)session.getAttribute("memberId");
         HashMap<String, Object> param = new HashMap<>();
         param.put("postIdx", idx);
         param.put("memberId", memberId);
@@ -61,15 +62,15 @@ public class BoardController {
     }
 
     @GetMapping("/{category}/write")
-    public String write(@PathVariable("category") BoardCategory category, Model model) {
+    public String write(@PathVariable("category") BoardCategory category, Model model, HttpSession session) {
         return "board/regist";
     }
 
     @PostMapping("/{category}/write")
-    public String writePOST(@RequestParam(name="files") MultipartFile[] files, @PathVariable("category") BoardCategory category, @ModelAttribute PostDTO dto) throws IOException {
+    public String writePOST(@RequestParam(name="files") MultipartFile[] files, @PathVariable("category") BoardCategory category, @ModelAttribute PostDTO dto, HttpSession session) throws IOException {
 
         dto.setPostCategory(category.toString().toUpperCase());
-        dto.setPostMemberId("user01"); // 세션에서 받은 아이디로 추후 변경 예정
+        dto.setPostMemberId((String)session.getAttribute("memberId"));
 
         int postIdx = service.insertPost(dto);
 
@@ -91,24 +92,36 @@ public class BoardController {
     }
 
     @GetMapping("/{category}/modify")
-    public String modify(@PathVariable("category") BoardCategory category, @RequestParam("idx") int idx, Model model) {
-        PostDTO post = service.getPostByIdx(idx);
-        model.addAttribute("post", post);
+    public String modify(@PathVariable("category") BoardCategory category, @RequestParam("idx") int idx, Model model, HttpSession session) {
+        PostDTO postDTO = service.getPostByIdx(idx);
+        if (session.getAttribute("memberId").equals(postDTO.getPostMemberId())) {
+            int rtnResult = service.deletePost(postDTO.getPostIdx());
+            if (rtnResult < 1) {
+                return "";
+            }
+        }
+        model.addAttribute("post", postDTO);
         return "board/modify";
     }
 
     @PostMapping("/{category}/modify")
-    public String modifyPOST(@RequestParam(name="files") MultipartFile[] files, @PathVariable("category") BoardCategory category, @ModelAttribute PostDTO dto, @RequestParam(name="deleteFile", defaultValue="") String[] deleteFile) throws IOException {
+    public String modifyPOST(@RequestParam(name="files") MultipartFile[] files, @PathVariable("category") BoardCategory category, @ModelAttribute PostDTO postDTO, @RequestParam(name="deleteFile", defaultValue="") String[] deleteFile, HttpSession session) throws IOException {
+        if (session.getAttribute("memberId").equals(postDTO.getPostMemberId())) {
+            int rtnResult = service.deletePost(postDTO.getPostIdx());
+            if (rtnResult < 1) {
+                return "";
+            }
+        }
 
-        dto.setPostUpdatedAt(LocalDateTime.now());
-        service.modifyPost(dto);
+        postDTO.setPostUpdatedAt(LocalDateTime.now());
+        service.modifyPost(postDTO);
 
         // 파일 추가
         try {
             for(MultipartFile file : files) {
                 if(file != null && !file.isEmpty()) {
                     int fileIdx = fileUtil.uploadFile(file.getOriginalFilename(), file.getBytes());
-                    PostFileDTO postFileDTO = PostFileDTO.builder().postFilePostIdx(dto.getPostIdx()).postFileFileIdx(fileIdx).build();
+                    PostFileDTO postFileDTO = PostFileDTO.builder().postFilePostIdx(postDTO.getPostIdx()).postFileFileIdx(fileIdx).build();
                     boardFileService.insertBoardFile(postFileDTO);
                 }
             }
@@ -131,10 +144,12 @@ public class BoardController {
     }
 
     @PostMapping("/{category}/delete")
-    public String delete(@PathVariable("category") BoardCategory category, @RequestParam("idx") int idx) {
-        int rtnResult = service.deletePost(idx);
-        if (rtnResult < 1) {
-            return "";
+    public String delete(@PathVariable("category") BoardCategory category, @ModelAttribute PostDTO postDTO, HttpSession session) {
+        if(session.getAttribute("memberId").equals(postDTO.getPostMemberId())) {
+            int rtnResult = service.deletePost(postDTO.getPostIdx());
+            if (rtnResult < 1) {
+                return "";
+            }
         }
         return "redirect:/board/"+category+"/list";
     }

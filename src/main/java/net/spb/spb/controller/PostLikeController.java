@@ -1,5 +1,6 @@
 package net.spb.spb.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import net.spb.spb.dto.PostLikeRequestDTO;
 import net.spb.spb.service.PostLikeService;
@@ -14,16 +15,15 @@ public class PostLikeController {
     private final PostLikeService postLikeService;
 
     @PostMapping("/regist")
-    public String insertPostLike(@PathVariable("category") BoardCategory category, @ModelAttribute PostLikeRequestDTO postLikeRequestDTO) {
-        String memberId = "user05"; // 세션에서 받은 아이디로 추후 변경 예정
-        postLikeRequestDTO.setPostLikeMemberId(memberId);
+    public String insertPostLike(@PathVariable("category") BoardCategory category, @ModelAttribute PostLikeRequestDTO postLikeRequestDTO, HttpSession session) {
+        postLikeRequestDTO.setPostLikeMemberId((String)session.getAttribute("memberId"));
         postLikeService.insertLike(postLikeRequestDTO);
         return "redirect:/board/"+category+"/view?idx="+postLikeRequestDTO.getPostIdx();
     }
 
     @PostMapping("/delete")
-    public String deletePostLike(@PathVariable("category") BoardCategory category, @ModelAttribute PostLikeRequestDTO postLikeRequestDTO) {
-        String memberId = "user05"; // 세션에서 받은 아이디로 추후 변경 예정
+    public String deletePostLike(@PathVariable("category") BoardCategory category, @ModelAttribute PostLikeRequestDTO postLikeRequestDTO, HttpSession session) {
+        String memberId = (String)session.getAttribute("memberId");
         postLikeRequestDTO.setPostLikeMemberId(memberId);
         postLikeService.deleteLike(postLikeRequestDTO);
         return "redirect:/board/"+category+"/view?idx="+postLikeRequestDTO.getPostIdx();
