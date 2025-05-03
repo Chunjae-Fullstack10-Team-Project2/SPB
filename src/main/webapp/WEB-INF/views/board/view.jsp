@@ -11,17 +11,26 @@ change this template use File | Settings | File Templates. --%>
         display: flex;
         gap: 10px;
       }
+      .post-content-postimg img{
+        max-width: 100%;
+        max-height: 80vh;
+      }
+      .post-header-info-author {
+        font-size: 13px;
+      }
     </style>
   </head>
   <body>
   <%@ include file="../common/header.jsp" %>
     <div class="container">
-      <h1>${category.displayName} 🌱 - 상세 페이지</h1>
+      <div class="breadcrumbs">
+        <a href="/board/${category}/list">${category.displayName}</a> > 상세 페이지
+      </div>
       <div class="post">
           <input type="hidden" name="idx" value="${post.postIdx}" />
           <!-- 제목, 정보 영역 -->
           <div class="post-header">
-            <h2>${post.postTitle}</h2>
+            <h1 class="h2">${post.postTitle}</h1>
             <div class="post-header-info">
               <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
               <div class="post-header-info-author">
@@ -39,8 +48,10 @@ change this template use File | Settings | File Templates. --%>
             </div>
             <c:if test="${not empty post.postFiles}">
               <c:forEach items="${post.postFiles}" var="file">
-                <div class="post-content-postfile">
-                  <img src="/upload/${file.fileName}"/>
+                <div class="post-content-postimg">
+                  <a href="/upload/${file.fileName}" target="_blank">
+                    <img src="/upload/${file.fileName}"/>
+                  </a>
                 </div>
               </c:forEach>
             </c:if>
@@ -71,8 +82,9 @@ change this template use File | Settings | File Templates. --%>
               <form name="frmComment${postComment.postCommentIdx}" class="frmComment">
                 <input type="hidden" name="postCommentIdx" value="${postComment.postCommentIdx}"/>
                 <input type="hidden" name="postCommentRefPostIdx" value="${postComment.postCommentRefPostIdx}"/>
+                <input type="hidden" name="postCommentMemberId" value="${postComment.postCommentMemberId}"/>
 
-                <div class="comment-item">
+                <div class="comment-item" id="comment-item${postComment.postCommentIdx}">
                   <div class="post-comment">
                     <div class="post-comment-author-img">
                       <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
@@ -80,7 +92,9 @@ change this template use File | Settings | File Templates. --%>
                     </div>
                     <div class="post-comment-createdat-updatedat">
                       ${fn:replace(postComment.postCommentCreatedAt, 'T', ' ')}
+                      <c:if test="${not empty postComment.postCommentUpdatedAt}">
                       (수정: ${fn:replace(postComment.postCommentUpdatedAt, 'T', ' ')})
+                      </c:if>
                     </div>
                     <div class="comment-edit-delete-btn">
                       <input type="button" class="comment-btn edit-btn" style="border: 0px;background:none;" value="편집" onclick="enableEdit(this)" />
