@@ -1,4 +1,3 @@
-<%@ page import="java.util.Map" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -9,11 +8,11 @@
 <c:if test="${not empty responseDTO}">
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
-            <c:set var="baseUrl" value="${baseUrl}?searchType=${searchType}&searchWord=${searchWord}&orderField=${orderField}&orderSort=${orderSort}&page_no=" />
+            <c:set var="baseUrl" value="${baseUrl}?startDate=${searchDTO.startDate}&endDate=${searchDTO.endDate}&searchType=${searchDTO.searchType}&searchWord=${searchDTO.searchWord}&pageNo=" />
 
             <!-- << (첫 페이지) -->
             <c:choose>
-                <c:when test="${responseDTO.page_no > 1}">
+                <c:when test="${responseDTO.pageNo > 1}">
                     <li class="page-item">
                         <a class="page-link" href="${baseUrl}1" aria-label="First">
                             <span aria-hidden="true">&laquo;</span>
@@ -29,9 +28,9 @@
 
             <!-- < (이전 페이지) -->
             <c:choose>
-                <c:when test="${responseDTO.prev_page_flag}">
+                <c:when test="${responseDTO.prevPageFlag}">
                     <li class="page-item">
-                        <a class="page-link" href="${baseUrl}${responseDTO.page_no - 1}" aria-label="Previous">
+                        <a class="page-link" href="${baseUrl}${responseDTO.pageNo - 1}" aria-label="Previous">
                             <span aria-hidden="true">&lt;</span>
                         </a>
                     </li>
@@ -44,9 +43,9 @@
             </c:choose>
 
             <!-- 페이지 번호 -->
-            <c:forEach begin="${responseDTO.page_block_start}" end="${responseDTO.total_page}" var="i">
+            <c:forEach begin="${responseDTO.pageBlockStart}" end="${responseDTO.totalPage}" var="i">
                 <c:choose>
-                    <c:when test="${i == responseDTO.page_no}">
+                    <c:when test="${i == responseDTO.pageNo}">
                         <li class="page-item active">
                             <span class="page-link">${i}</span>
                         </li>
@@ -61,9 +60,9 @@
 
             <!-- > (다음 페이지) -->
             <c:choose>
-                <c:when test="${responseDTO.next_page_flag}">
+                <c:when test="${responseDTO.nextPageFlag}">
                     <li class="page-item">
-                        <a class="page-link" href="${baseUrl}${responseDTO.page_no + 1}" aria-label="Next">
+                        <a class="page-link" href="${baseUrl}${responseDTO.pageNo + 1}" aria-label="Next">
                             <span aria-hidden="true">&gt;</span>
                         </a>
                     </li>
@@ -77,9 +76,9 @@
 
             <!-- >> (마지막 페이지) -->
             <c:choose>
-                <c:when test="${responseDTO.page_no < responseDTO.total_page}">
+                <c:when test="${responseDTO.pageNo < responseDTO.totalPage}">
                     <li class="page-item">
-                        <a class="page-link" href="${baseUrl}${responseDTO.total_page}" aria-label="Last">
+                        <a class="page-link" href="${baseUrl}${responseDTO.totalPage}" aria-label="Last">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>

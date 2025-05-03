@@ -6,11 +6,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 
-import net.spb.spb.dto.LoginDTO;
-import net.spb.spb.dto.MemberDTO;
-import net.spb.spb.service.MailService;
-import net.spb.spb.service.MemberServiceImpl;
-import net.spb.spb.service.NaverLoginService;
+import net.spb.spb.dto.member.LoginDTO;
+import net.spb.spb.dto.member.MemberDTO;
+import net.spb.spb.service.member.MailService;
+import net.spb.spb.service.member.MemberServiceImpl;
+import net.spb.spb.service.member.NaverLoginService;
 import net.spb.spb.util.PasswordUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

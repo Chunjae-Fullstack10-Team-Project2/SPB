@@ -1,6 +1,6 @@
-package net.spb.spb.service;
+package net.spb.spb.service.member;
 
-import net.spb.spb.dto.MemberDTO;
+import net.spb.spb.dto.member.MemberDTO;
 
 public interface MemberServiceIf {
     int login(MemberDTO memberDTO);

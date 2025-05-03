@@ -1,7 +1,9 @@
 package net.spb.spb.service.Qna;
 
 import net.spb.spb.domain.QnaVO;
-import net.spb.spb.dto.QnaDTO;
+import net.spb.spb.dto.PageRequestDTO;
+import net.spb.spb.dto.qna.QnaDTO;
+import net.spb.spb.dto.qna.QnaSearchDTO;
 import net.spb.spb.mapper.QnaMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,12 @@ public class QnaServiceImpl implements QnaService {
     }
 
     @Override
+    public List<QnaDTO> searchQna(QnaSearchDTO searchDTO, PageRequestDTO pageRequestDTO) {
+        return qnaMapper.searchQna(searchDTO, pageRequestDTO);
+    }
+
+
+    @Override
     public QnaDTO view(String qnaIdx) {
         QnaVO qnaVO = qnaMapper.view(qnaIdx);
         return modelMapper.map(qnaVO, QnaDTO.class);
@@ -46,5 +54,10 @@ public class QnaServiceImpl implements QnaService {
     @Override
     public boolean delete(String qnaIdx) {
         return qnaMapper.delete(qnaIdx);
+    }
+
+    @Override
+    public int totalCount(QnaSearchDTO searchDTO) {
+        return qnaMapper.totalCount(searchDTO);
     }
 }

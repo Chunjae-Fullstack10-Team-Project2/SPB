@@ -1,7 +1,7 @@
-package net.spb.spb.service;
+package net.spb.spb.service.member;
 
 import jakarta.servlet.ServletContext;
-import net.spb.spb.dto.MemberDTO;
+import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.util.HttpUtil;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

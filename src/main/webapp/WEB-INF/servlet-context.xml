@@ -23,4 +23,16 @@
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
 
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/board/**/write"/>
+            <mvc:mapping path="/board/**/modify"/>
+            <mvc:mapping path="/board/**/delete"/>
+            <mvc:mapping path="/board/**/comment/**"/>
+            <mvc:mapping path="/board/**/like/**"/>
+            <mvc:exclude-mapping path="/login"/>
+            <bean class="net.spb.spb.interceptor.LoginCheckInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
 </beans>

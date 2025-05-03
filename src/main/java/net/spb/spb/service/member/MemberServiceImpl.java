@@ -1,7 +1,7 @@
-package net.spb.spb.service;
+package net.spb.spb.service.member;
 
 import net.spb.spb.domain.MemberVO;
-import net.spb.spb.dto.MemberDTO;
+import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.mapper.MemberMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
