@@ -15,7 +15,7 @@ import java.util.List;
 @Controller
 @Log4j2
 @RequiredArgsConstructor
-@RequestMapping("admin")
+@RequestMapping("/admin")
 public class AdminController {
 
     private final MemberServiceIf memberService;

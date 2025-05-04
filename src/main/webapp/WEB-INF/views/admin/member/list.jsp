@@ -118,7 +118,6 @@
                                     <input type="hidden" name="memberIdx" value="${member.memberIdx}"/>
                                     <input type="hidden" name="search_member_state" value="${searchDTO.search_member_state}">
                                     <input type="hidden" name="search_member_grade" value="${searchDTO.search_member_grade}">
-                                    <input type="hidden" name="search_type" value="${searchDTO.search_type}">
                                     <input type="hidden" name="search_word" value="${searchDTO.search_word}">
                                     <input type="hidden" name="page_no" value="${searchDTO.page_no}">
                                     <input type="hidden" name="page_size" value="${searchDTO.page_size}">
