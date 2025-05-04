@@ -27,7 +27,7 @@ public class AdminController {
     @PostMapping("/member/update")
     public String memberModify(@ModelAttribute MemberDTO memberDTO) {
         memberService.updateMemberByAdmin(memberDTO);
-        return "redirect:/admin/member/view?memberId="+memberDTO.getMemberId();
+        return "/admin/member/update-success";
     }
 
     @PostMapping("/member/state")
