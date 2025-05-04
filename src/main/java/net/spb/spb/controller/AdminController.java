@@ -1,7 +1,9 @@
 package net.spb.spb.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.spb.spb.dto.MemberPageDTO;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.service.member.MemberServiceIf;
 import org.springframework.stereotype.Controller;
@@ -19,8 +21,10 @@ public class AdminController {
     private final MemberServiceIf memberService;
 
     @GetMapping("/member/list")
-    public void memberList(Model model) {
-        List<MemberDTO> memberDTOs = memberService.getMembers();
+    public void memberList(@ModelAttribute MemberPageDTO memberPageDTO, Model model) {
+        if (memberPageDTO.getSearch_member_grade()!=null && memberPageDTO.getSearch_member_grade().trim().equals("")) memberPageDTO.setSearch_member_grade(null);
+        List<MemberDTO> memberDTOs = memberService.getMembers(memberPageDTO);
+        model.addAttribute("searchDTO", memberPageDTO);
         model.addAttribute("list", memberDTOs);
     }
 
@@ -31,9 +35,10 @@ public class AdminController {
     }
 
     @PostMapping("/member/state")
-    public String memberModifyState(@ModelAttribute MemberDTO memberDTO) {
+    public String memberModifyState(@ModelAttribute MemberPageDTO memberPageDTO, @ModelAttribute MemberDTO memberDTO) {
         memberService.updateMemberState(memberDTO);
-        return "redirect:/admin/member/list";
+        String query = memberPageDTO.toQueryString();
+        return "redirect:/admin/member/list?" + query;
     }
 
     @GetMapping("/member/view")
@@ -41,4 +46,5 @@ public class AdminController {
         MemberDTO memberDTO = memberService.getMemberById(memberId);
         model.addAttribute("memberDTO", memberDTO);
     }
+
 }
