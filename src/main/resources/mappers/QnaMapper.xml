@@ -84,26 +84,26 @@
         update tbl_qna set qnaState = 2 where qnaIdx = #{qnaIdx}
     </update>
 
-    <select id="totalCount" parameterType="net.spb.spb.dto.qna.SearchDTO" resultType="int">
+    <select id="totalCount" parameterType="net.spb.spb.dto.pagingsearch.SearchDTO" resultType="int">
         select count(qnaIdx)
         from tbl_qna
         <where>
             qnaState = 1
-            <if test="searchWord != null and searchWord != ''">
+            <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
                 <choose>
-                    <when test="searchType == 'qnaTitle'">
+                    <when test="searchDTO.searchType == 'qnaTitle'">
                         AND qnaTitle LIKE CONCAT('%', #{searchWord}, '%')
                     </when>
-                    <when test="searchType == 'qnaQContent'">
+                    <when test="searchDTO.searchType == 'qnaQContent'">
                         AND qnaQContent LIKE CONCAT('%', #{searchWord}, '%')
                     </when>
-                    <when test="searchType == 'qnaQMemberId'">
+                    <when test="searchDTO.searchType == 'qnaQMemberId'">
                         AND qnaQMemberId LIKE CONCAT('%', #{searchWord}, '%')
                     </when>
-                    <when test="searchType == 'qnaAContent'">
+                    <when test="searchDTO.searchType == 'qnaAContent'">
                         AND qnaAContent LIKE CONCAT('%', #{searchWord}, '%')
                     </when>
-                    <when test="searchType == 'qnaAMemberId'">
+                    <when test="searchDTO.searchType == 'qnaAMemberId'">
                         AND qnaAMemberId LIKE CONCAT('%', #{searchWord}, '%')
                     </when>
                 </choose>

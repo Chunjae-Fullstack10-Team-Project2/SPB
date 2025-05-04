@@ -1,4 +1,4 @@
-package net.spb.spb.dto;
+package net.spb.spb.dto.pagingsearch;
 
 import lombok.Builder;
 import lombok.Data;

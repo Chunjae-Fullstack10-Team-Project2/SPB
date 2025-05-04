@@ -1,9 +1,9 @@
 package net.spb.spb.mapper;
 
 import net.spb.spb.domain.QnaVO;
-import net.spb.spb.dto.PageRequestDTO;
+import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.qna.QnaDTO;
-import net.spb.spb.dto.qna.SearchDTO;
+import net.spb.spb.dto.pagingsearch.SearchDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public interface QnaMapper {
 
     boolean delete(String qnaIdx);
 
-    int totalCount(SearchDTO searchDTO);
+    int totalCount(@Param("searchDTO") SearchDTO searchDTO);
 
     List<QnaDTO> myQna(@Param("searchDTO") SearchDTO searchDTO,
                        @Param("pageDTO") PageRequestDTO pageRequestDTO,

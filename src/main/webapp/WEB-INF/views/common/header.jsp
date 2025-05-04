@@ -40,6 +40,7 @@
                     </ul>
                 </li>
                 <li><a href="/qna/list" class="nav-link px-2 link-body-emphasis">1:1 문의</a></li>
+                <li><a href="/faq/list" class="nav-link px-2 link-body-emphasis">FAQ</a></li>
             </ul>
 
             <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-4" role="search">

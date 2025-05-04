@@ -1,8 +1,8 @@
 package net.spb.spb.service.Qna;
 
-import net.spb.spb.dto.PageRequestDTO;
+import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.qna.QnaDTO;
-import net.spb.spb.dto.qna.SearchDTO;
+import net.spb.spb.dto.pagingsearch.SearchDTO;
 
 import java.util.List;
 
