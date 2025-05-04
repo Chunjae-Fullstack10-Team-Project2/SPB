@@ -1,6 +1,7 @@
 package net.spb.spb.mapper;
 
 import net.spb.spb.domain.MemberVO;
+import java.util.List;
 
 public interface MemberMapper {
     int login(MemberVO memberVO);
@@ -14,5 +15,11 @@ public interface MemberMapper {
     boolean updateMember(MemberVO memberVO);
 
     String getPwdById(String memberId);
+
+    List<MemberVO> getAllMembers();
+
+    boolean updateMemberState(MemberVO memberVO);
+
+    boolean updateMemberByAdmin(MemberVO memberVO);
 
 }

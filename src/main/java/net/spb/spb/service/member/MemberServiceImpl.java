@@ -6,6 +6,7 @@ import net.spb.spb.mapper.MemberMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class MemberServiceImpl implements MemberServiceIf {
@@ -54,6 +55,25 @@ public class MemberServiceImpl implements MemberServiceIf {
     @Override
     public String getPwdById(String memberId) {
         return memberMapper.getPwdById(memberId);
+    }
+
+
+    @Override
+    public List<MemberDTO> getMembers() {
+        List<MemberDTO> memberDTOs = memberMapper.getAllMembers().stream().map(memberVO -> modelMapper.map(memberVO, MemberDTO.class)).toList();
+        return memberDTOs;
+    }
+
+    @Override
+    public boolean updateMemberState(MemberDTO memberDTO) {
+        MemberVO memberVO = modelMapper.map(memberDTO, MemberVO.class);
+        return memberMapper.updateMemberState(memberVO);
+    }
+
+    @Override
+    public boolean updateMemberByAdmin(MemberDTO memberDTO) {
+        MemberVO memberVO = modelMapper.map(memberDTO, MemberVO.class);
+        return memberMapper.updateMemberByAdmin(memberVO);
     }
 
 }
