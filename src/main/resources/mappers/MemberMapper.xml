@@ -33,7 +33,7 @@
                memberEmail,
                memberPhone,
                memberJoinPath,
-               memberGrade
+               memberState
         from tbl_member
         where memberId = #{memberId}
     </select>
@@ -53,4 +53,35 @@
         from tbl_member
         where memberId = #{memberId}
     </select>
+
+    <select id="getAllMembers" resultType="net.spb.spb.domain.MemberVO">
+        select memberIdx,
+               memberId,
+               memberName,
+               memberBirth,
+               memberCreatedAt,
+               memberState,
+               memberGrade,
+               memberEmail,
+               memberPhone
+        from tbl_member
+        order by memberIdx desc
+    </select>
+
+    <update id="updateMemberState" parameterType="net.spb.spb.domain.MemberVO">
+        update tbl_member
+        set memberState = #{memberState}
+        where memberIdx = #{memberIdx}
+    </update>
+
+    <update id="updateMemberByAdmin" parameterType="net.spb.spb.domain.MemberVO">
+        update tbl_member
+        set memberState = #{memberState},
+            memberName    = #{memberName},
+            memberZipCode = #{memberZipCode},
+            memberAddr1   = #{memberAddr1},
+            memberAddr2   = #{memberAddr2},
+            memberGrade   = #{memberGrade}
+        where memberId = #{memberId}
+    </update>
 </mapper>
