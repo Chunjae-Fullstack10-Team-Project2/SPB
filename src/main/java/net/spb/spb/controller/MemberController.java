@@ -156,6 +156,7 @@ public class MemberController {
 
         if (returnValue == 1) {
             session.setAttribute("memberId", memberDTO.getMemberId());
+            session.setAttribute("memberGrade", memberDTO.getMemberGrade());
 
             if (checkIdSave != null) {
                 Cookie idCookie = new Cookie("saveId", memberDTO.getMemberId());
