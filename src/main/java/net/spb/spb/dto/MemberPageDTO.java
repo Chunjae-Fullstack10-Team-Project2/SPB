@@ -37,6 +37,9 @@ public class MemberPageDTO {
 
     @Builder.Default
     private String sort_by = "memberIdx";
+    @Builder.Default
+    private String sort_direction = "desc";
+
     private int total_count;
     private String linkUrl;
 

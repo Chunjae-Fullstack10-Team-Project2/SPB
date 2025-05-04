@@ -85,13 +85,41 @@
                 </colgroup>
                 <thead>
                 <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">아이디</th>
-                    <th scope="col">이름</th>
-                    <th scope="col">학년</th>
-                    <th scope="col">생년월일</th>
-                    <th scope="col">회원 가입일</th>
-                    <th scope="col">상태</th>
+                    <th scope="col">
+                        No
+                        <span class="sort-icons" onclick="sortBy('memberIdx', 'asc')">▲</span>
+                        <span class="sort-icons" onclick="sortBy('memberIdx', 'desc')">▼</span>
+                    </th>
+                    <th scope="col">
+                        아이디
+                        <span class="sort-icons" onclick="sortBy('memberId', 'asc')">▲</span>
+                        <span class="sort-icons" onclick="sortBy('memberId', 'desc')">▼</span>
+                    </th>
+                    <th scope="col">
+                        이름
+                        <span class="sort-icons" onclick="sortBy('memberName', 'asc')">▲</span>
+                        <span class="sort-icons" onclick="sortBy('memberName', 'desc')">▼</span>
+                    </th>
+                    <th scope="col">
+                        학년
+                        <span class="sort-icons" onclick="sortBy('memberGrade', 'asc')">▲</span>
+                        <span class="sort-icons" onclick="sortBy('memberGrade', 'desc')">▼</span>
+                    </th>
+                    <th scope="col">
+                        생년월일
+                        <span class="sort-icons" onclick="sortBy('memberBirth', 'asc')">▲</span>
+                        <span class="sort-icons" onclick="sortBy('memberBirth', 'desc')">▼</span>
+                    </th>
+                    <th scope="col">
+                        회원 가입일
+                        <span class="sort-icons" onclick="sortBy('memberCreatedAt', 'asc')">▲</span>
+                        <span class="sort-icons" onclick="sortBy('memberCreatedAt', 'desc')">▼</span>
+                    </th>
+                    <th scope="col">
+                        상태
+                        <span class="sort-icons" onclick="sortBy('memberState', 'asc')">▲</span>
+                        <span class="sort-icons" onclick="sortBy('memberState', 'desc')">▼</span>
+                    </th>
                     <th scope="col">삭제</th>
                 </tr>
                 </thead>
@@ -139,7 +167,6 @@
                                     </c:choose>
                                 </form>
                             </td>
-
                         </tr>
                     </c:forEach>
                 </tbody>
@@ -170,9 +197,14 @@
         updateQueryParam("search_member_grade", this.value);
     });
 
+    function sortBy(sortType, sortDirection) {
+        updateQueryParam("sort_by", sortType);
+        updateQueryParam("sort_direction", sortDirection);
+    }
+
     document.getElementById('btnReset').addEventListener('click', function() {
         window.location.href="list";
-    })
+    });
 </script>
 </body>
 </html>
