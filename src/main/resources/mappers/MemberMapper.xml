@@ -82,7 +82,8 @@
                 )
             </if>
         </where>
-        order by #{sort_by} desc
+        order by ${sort_by} ${sort_direction}
+        limit #{page_skip_count}, #{page_size}
     </select>
 
     <update id="updateMemberState" parameterType="net.spb.spb.domain.MemberVO">
@@ -101,4 +102,26 @@
             memberGrade   = #{memberGrade}
         where memberId = #{memberId}
     </update>
+
+    <select id="getMemberCount" resultType="java.lang.Integer" parameterType="net.spb.spb.dto.MemberPageDTO">
+        select count(memberIdx)
+        from tbl_member
+        <where>
+            1=1
+            <if test="search_member_state != null and search_member_state != ''">
+                and memberState = #{search_member_state}
+            </if>
+            <if test="search_member_grade != null and search_member_grade != ''">
+                <if test="search_member_grade gte 0 and search_member_grade lte 13">
+                    and memberGrade = #{search_member_grade}
+                </if>
+            </if>
+            <if test="search_word != null and search_word != ''">
+                and (
+                memberId like concat('%', #{search_word}, '%')
+                or memberName like concat('%', #{search_word}, '%')
+                )
+            </if>
+        </where>
+    </select>
 </mapper>

@@ -24,4 +24,5 @@ public interface MemberMapper {
 
     boolean updateMemberByAdmin(MemberVO memberVO);
 
+    int getMemberCount(MemberPageDTO memberPageDTO);
 }

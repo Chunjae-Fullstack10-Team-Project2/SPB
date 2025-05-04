@@ -22,4 +22,7 @@ public interface MemberServiceIf {
     boolean updateMemberState(MemberDTO memberDTO);
 
     boolean updateMemberByAdmin(MemberDTO memberDTO);
+
+    int getMemberCount(MemberPageDTO memberPageDTO);
+
 }

@@ -74,12 +74,12 @@
             </div>
             <table class="table">
                 <colgroup>
-                    <col span="1" style="width: 50px">
+                    <col span="1" style="width: 80px">
                     <col span="1">
                     <col span="1" style="width: 118px">
                     <col span="1" style="width: 118px">
                     <col span="1" style="width: 118px">
-                    <col span="1" style="width: 118px">
+                    <col span="1" style="width: 150px">
                     <col span="1" style="width: 150px">
                     <col span="1" style="width: 118px">
                 </colgroup>
@@ -169,6 +169,11 @@
                             </td>
                         </tr>
                     </c:forEach>
+                <tr>
+                    <td colspan="8">
+                        ${paging}
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -198,8 +203,10 @@
     });
 
     function sortBy(sortType, sortDirection) {
-        updateQueryParam("sort_by", sortType);
-        updateQueryParam("sort_direction", sortDirection);
+        const url = new URL(window.location.href);
+        url.searchParams.set("sort_by", sortType);
+        url.searchParams.set("sort_direction", sortDirection);
+        window.location.href = url.toString(); // ✅ 딱 한 번만 이동
     }
 
     document.getElementById('btnReset').addEventListener('click', function() {

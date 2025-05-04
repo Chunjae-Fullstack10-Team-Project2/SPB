@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.MemberPageDTO;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.service.member.MemberServiceIf;
+import net.spb.spb.util.PagingUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +22,18 @@ public class AdminController {
     private final MemberServiceIf memberService;
 
     @GetMapping("/member/list")
-    public void memberList(@ModelAttribute MemberPageDTO memberPageDTO, Model model) {
+    public void memberList(@ModelAttribute MemberPageDTO memberPageDTO, Model model, HttpServletRequest req) {
+        String baseUrl = req.getRequestURI();
+        memberPageDTO.setLinkUrl(PagingUtil.buildMemberLinkUrl(baseUrl, memberPageDTO));
         if (memberPageDTO.getSearch_member_grade()!=null && memberPageDTO.getSearch_member_grade().trim().equals("")) memberPageDTO.setSearch_member_grade(null);
+        int total_count = memberService.getMemberCount(memberPageDTO);
+        memberPageDTO.setTotal_count(total_count);
+        String paging = PagingUtil.pagingArea(memberPageDTO);
         List<MemberDTO> memberDTOs = memberService.getMembers(memberPageDTO);
         model.addAttribute("searchDTO", memberPageDTO);
         model.addAttribute("list", memberDTOs);
+        model.addAttribute("memberTotalCount", total_count);
+        model.addAttribute("paging", paging);
     }
 
     @PostMapping("/member/update")

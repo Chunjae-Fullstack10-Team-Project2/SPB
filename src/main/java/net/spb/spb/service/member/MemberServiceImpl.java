@@ -76,4 +76,9 @@ public class MemberServiceImpl implements MemberServiceIf {
         return memberMapper.updateMemberByAdmin(memberVO);
     }
 
+    @Override
+    public int getMemberCount(MemberPageDTO memberPageDTO) {
+        return memberMapper.getMemberCount(memberPageDTO);
+    }
+
 }
