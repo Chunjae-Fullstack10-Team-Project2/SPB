@@ -160,7 +160,7 @@
         </div>
 
         <div class="text-end d-grid gap-2">
-            <button type="submit" class="btn btn-warning" id="btnSubmitJoin">회원 정보 수정</button>
+            <button type="submit" class="btn btn-success" id="btnSubmitJoin">회원 정보 수정</button>
         </div>
     </form>
 </div>
