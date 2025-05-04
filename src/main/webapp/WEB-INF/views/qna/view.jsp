@@ -104,13 +104,24 @@
 
             <form id="frmDelete" method="post" action="/qna/delete" style="display: inline;">
                 <input type="hidden" name="qnaIdx" value="${qnaDTO.qnaIdx}"/>
-                <button type="submit" class="btn btn-danger">문의 삭제</button>
+                <button type="submit" id="btnDelete" class="btn btn-danger">문의 삭제</button>
             </form>
         </c:if>
     </div>
 </div>
 
 <script>
+    document.getElementById("btnDelete").addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (window.confirm('문의를 삭제하시겠습니까?')) {
+            document.getElementById("frmDelete").submit();
+        } else {
+            return;
+        }
+    });
+
     <c:if test="${not empty param.message}">
     const message = "${param.message}";
     if (message === 'authorized') {
