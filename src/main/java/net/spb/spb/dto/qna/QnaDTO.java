@@ -37,8 +37,8 @@ public class QnaDTO {
 
     private Date qnaAnsweredAt;
 
-    @Pattern(regexp = "^\\d{4}$", message = "비밀번호는 숫자 4자리여야 합니다.")
-    @Nullable
+//    @Pattern(regexp = "^\\d{4}$", message = "비밀번호는 숫자 4자리여야 합니다.")
+//    @Nullable
     private String qnaQPwd;
 }
 
