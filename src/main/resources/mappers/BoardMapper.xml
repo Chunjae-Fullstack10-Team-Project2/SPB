@@ -78,6 +78,12 @@
         where postIdx = #{postIdx}
     </update>
     <insert id="insertPostReport" parameterType="net.spb.spb.domain.PostReportVO">
-        insert into tbl_report (reportPostIdx, reportMemberId) values (#{reportPostIdx}, #{reportMemberId})
+        insert into tbl_report(reportPostIdx, reportMemberId) select #{reportPostIdx}, #{reportMemberId}
+        from dual
+        where not exists (
+            select 1
+            from tbl_report
+            where reportPostIdx = #{reportPostIdx} and reportMemberId = #{reportMemberId}
+        )
     </insert>
 </mapper>
