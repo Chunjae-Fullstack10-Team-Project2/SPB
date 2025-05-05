@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.PostDTO;
 import net.spb.spb.dto.PostFileDTO;
 import net.spb.spb.dto.PostPageDTO;
+import net.spb.spb.dto.PostReportDTO;
 import net.spb.spb.service.BoardFileService;
 import net.spb.spb.service.BoardServiceImpl;
 import net.spb.spb.util.BoardCategory;
@@ -152,5 +153,16 @@ public class BoardController {
             }
         }
         return "redirect:/board/"+category+"/list";
+    }
+
+    @PostMapping("/{category}/report/regist")
+    public String reportRegist(@PathVariable("category") BoardCategory category, @ModelAttribute PostReportDTO postReportDTO, HttpSession session) {
+        if(!session.getAttribute("memberId").equals(postReportDTO.getPostMemberId())) {
+            int rtnResult = service.insertPostReport(postReportDTO);
+            if (rtnResult < 1) {
+                log.info("report regist failed");
+            }
+        }
+        return "redirect:/board/"+category+"/view?idx="+postReportDTO.getReportPostIdx();
     }
 }

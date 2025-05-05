@@ -27,4 +27,6 @@ public interface QnaMapper {
     List<QnaDTO> myQna(@Param("searchDTO") SearchDTO searchDTO,
                        @Param("pageDTO") PageRequestDTO pageRequestDTO,
                        @Param("qnaQMemberId") String qnaQMemberId);
+
+    String getPwdByQnaIdx(String qnaIdx);
 }

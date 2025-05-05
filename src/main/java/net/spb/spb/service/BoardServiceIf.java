@@ -2,6 +2,7 @@ package net.spb.spb.service;
 
 import net.spb.spb.dto.PostDTO;
 import net.spb.spb.dto.PostPageDTO;
+import net.spb.spb.dto.PostReportDTO;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,4 +16,5 @@ public interface BoardServiceIf {
     PostDTO getPostByIdx(HashMap<String, Object> param);
     int getPostCount(PostPageDTO postPageDTO);
     int setReadCnt(int postIdx);
+    int insertPostReport(PostReportDTO postReportDTO);
 }
