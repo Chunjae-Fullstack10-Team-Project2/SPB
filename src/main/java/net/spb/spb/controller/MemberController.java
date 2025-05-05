@@ -43,13 +43,28 @@ public class MemberController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping("/")
-    public String main() {
-        return "common/main";
-    }
+    @GetMapping(path = {"/", "/main"})
+    public String main(HttpServletRequest request, HttpSession session) {
+        Cookie[] cookies = request.getCookies();
+        String autoLoginId = null;
 
-    @GetMapping("/main")
-    public String main2() {
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("autoLogin".equals(cookie.getName())) {
+                    autoLoginId = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (autoLoginId != null) {
+            MemberDTO autoLoginUser = new MemberDTO();
+            autoLoginUser.setMemberId(autoLoginId);
+
+            if (memberService.existUser(autoLoginId)) {
+                session.setAttribute("memberId", autoLoginId);
+            }
+        }
         return "common/main";
     }
 
@@ -76,38 +91,41 @@ public class MemberController {
 
     @GetMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-        Cookie[] cookies = request.getCookies();
-        String autoLoginId = null;
+//        Cookie[] cookies = request.getCookies();
+//        String autoLoginId = null;
 
-        String action = request.getParameter("action");
-        if (action != null && action.equals("logout")) {
-            request.getSession().invalidate();
+        if (session.getAttribute("memberId") != null) {
+            String action = request.getParameter("action");
+            if (action != null && action.equals("logout")) {
+                request.getSession().invalidate();
 
-            Cookie autoLoginCookie = new Cookie("autoLogin", null);
-            autoLoginCookie.setMaxAge(0);
-            autoLoginCookie.setPath("/");
-            response.addCookie(autoLoginCookie);
+                Cookie autoLoginCookie = new Cookie("autoLogin", null);
+                autoLoginCookie.setMaxAge(0);
+                autoLoginCookie.setPath("/");
+                response.addCookie(autoLoginCookie);
 
-            return "redirect:/login";
-        }
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("autoLogin".equals(cookie.getName())) {
-                    autoLoginId = cookie.getValue();
-                    break;
-                }
+                return "redirect:/login";
             }
         }
 
-        if (autoLoginId != null) {
-            MemberDTO autoLoginUser = new MemberDTO();
-            autoLoginUser.setMemberId(autoLoginId);
-
-            if (memberService.existUser(autoLoginId)) {
-                session.setAttribute("memberId", autoLoginId);
-            }
-        }
+//
+//        if (cookies != null) {
+//            for (Cookie cookie : cookies) {
+//                if ("autoLogin".equals(cookie.getName())) {
+//                    autoLoginId = cookie.getValue();
+//                    break;
+//                }
+//            }
+//        }
+//
+//        if (autoLoginId != null) {
+//            MemberDTO autoLoginUser = new MemberDTO();
+//            autoLoginUser.setMemberId(autoLoginId);
+//
+//            if (memberService.existUser(autoLoginId)) {
+//                session.setAttribute("memberId", autoLoginId);
+//            }
+//        }
 
         return "login/login";
     }
@@ -281,6 +299,11 @@ public class MemberController {
             return "login/join";
         }
 
+        // memberGrade가 13 또는 0이면 14로 변경 -> 관리자가 승인해줘야 함
+        if (memberDTO.getMemberGrade().equals("13") || memberDTO.getMemberGrade().equals("0")) {
+            memberDTO.setMemberGrade("14");
+        }
+
         String sessionMemberId = (String) session.getAttribute("checkedMemberId");
         String inputMemberId = request.getParameter("memberId");
         if (sessionMemberId != null && !sessionMemberId.equals(inputMemberId)) {
@@ -335,6 +358,7 @@ public class MemberController {
             memberDTO.setMemberPwd(encryptedPassword);
         } catch (NoSuchAlgorithmException e) {
             model.addAttribute("errorMessage", "비밀번호 암호화 오류가 발생했습니다.");
+            model.addAttribute("memberDTO", memberDTO);
             return "login/join";
         }
 
