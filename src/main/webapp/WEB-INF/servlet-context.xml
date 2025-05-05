@@ -30,6 +30,7 @@
             <mvc:mapping path="/board/**/delete"/>
             <mvc:mapping path="/board/**/comment/**"/>
             <mvc:mapping path="/board/**/like/**"/>
+            <mvc:mapping path="/board/**/report/**"/>
             <mvc:exclude-mapping path="/login"/>
             <bean class="net.spb.spb.interceptor.LoginCheckInterceptor"/>
         </mvc:interceptor>

@@ -77,4 +77,7 @@
         set postReadCnt = postReadCnt + 1
         where postIdx = #{postIdx}
     </update>
+    <insert id="insertPostReport" parameterType="net.spb.spb.domain.PostReportVO">
+        insert into tbl_report (reportPostIdx, reportMemberId) values (#{reportPostIdx}, #{reportMemberId})
+    </insert>
 </mapper>
