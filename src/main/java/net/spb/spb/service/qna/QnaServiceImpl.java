@@ -64,4 +64,9 @@ public class QnaServiceImpl implements QnaService {
     public List<QnaDTO> myQna(SearchDTO searchDTO, PageRequestDTO pageRequestDTO, String qnaQMemberId) {
         return qnaMapper.myQna(searchDTO, pageRequestDTO, qnaQMemberId);
     }
+
+    @Override
+    public String getPwdByQnaIdx(String qnaIdx) {
+        return qnaMapper.getPwdByQnaIdx(qnaIdx);
+    }
 }

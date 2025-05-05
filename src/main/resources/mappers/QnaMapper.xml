@@ -3,7 +3,7 @@
 <mapper namespace="net.spb.spb.mapper.QnaMapper">
     <select id="searchQna" resultType="net.spb.spb.domain.QnaVO">
         select qnaIdx, qnaQMemberId, qnaAMemberId, qnaQContent, qnaTitle, qnaAContent, qnaState, qnaCreatedAt,
-        qnaAnsweredAt
+        qnaAnsweredAt, qnaQPwd
         from tbl_qna
         where qnaState = 1
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
@@ -47,7 +47,8 @@
                qnaState,
                qnaTitle,
                qnaCreatedAt,
-               qnaAnsweredAt
+               qnaAnsweredAt,
+               qnaQPwd
         from tbl_qna
         where qnaState = 1
     </select>
@@ -61,15 +62,16 @@
                qnaState,
                qnaTitle,
                qnaCreatedAt,
-               qnaAnsweredAt
+               qnaAnsweredAt,
+               qnaQPwd
         from tbl_qna
         where qnaIdx = #{qnaIdx}
           and qnaState = 1
     </select>
 
-    <insert id="createQ" parameterType="String">
-        insert into tbl_qna(qnaQMemberId, qnaTitle, qnaQContent)
-        values (#{qnaQMemberId}, #{qnaTitle}, #{qnaQContent})
+    <insert id="createQ">
+        insert into tbl_qna(qnaQMemberId, qnaTitle, qnaQContent, qnaQPwd)
+        values (#{qnaQMemberId}, #{qnaTitle}, #{qnaQContent}, #{qnaQPwd})
     </insert>
 
     <update id="updateA" parameterType="net.spb.spb.domain.QnaVO">
@@ -148,5 +150,11 @@
         </if>
         order by qnaCreatedAt desc
         limit #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
+    </select>
+
+    <select id="getPwdByQnaIdx" parameterType="String" resultType="String">
+        select qnaQPwd
+        from tbl_qna
+        where qnaIdx = #{qnaIdx}
     </select>
 </mapper>

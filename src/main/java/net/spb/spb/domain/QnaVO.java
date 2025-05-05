@@ -27,4 +27,5 @@ public class QnaVO {
     @NotNull
     private Date qnaCreatedAt;
     private Date qnaAnsweredAt;
+    private int qnaQPwd;
 }
