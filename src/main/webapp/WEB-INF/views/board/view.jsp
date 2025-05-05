@@ -55,7 +55,14 @@ change this template use File | Settings | File Templates. --%>
                 </div>
               </c:forEach>
             </c:if>
-            <div class="post-content-ex"><button type="button" class="btn" id="btnShare">공유</button> | <button type="button" class="btn" id="btnReport">신고</button></div>
+            <div class="post-content-ex">
+              <button type="button" class="btn" id="btnShare">공유</button> |
+              <form name="frmReport" action="/board/${category}/report/regist" method="post" style="display: inline;">
+                <input type="hidden" name="reportPostIdx" value="${post.postIdx}"/>
+                <input type="hidden" name="reportMemberId" value="${sessionScope.memberId}"/>
+                <button type="submit" class="btn" id="btnReport">신고</button>
+              </form>
+            </div>
 
             <form name="frmDelete" id="frmDelete" method="post" action="/board/${category}/delete">
               <div class="post-content-btn">
