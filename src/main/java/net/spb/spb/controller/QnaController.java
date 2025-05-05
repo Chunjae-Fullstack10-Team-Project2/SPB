@@ -53,10 +53,6 @@ public class QnaController {
 
     @GetMapping("/regist")
     public String regist(@ModelAttribute QnaDTO qnaDTO, HttpSession session, Model model) {
-        if (qnaDTO.getQnaQPwd() != null) {
-            qnaDTO.setQnaQPwd(null);
-        }
-
         String memberId = (String) session.getAttribute("memberId");
         qnaDTO.setQnaQMemberId(memberId);
 
@@ -66,14 +62,13 @@ public class QnaController {
 
     @PostMapping("/regist")
     public String regist(@Valid @ModelAttribute QnaDTO qnaDTO, BindingResult bindingResult, HttpSession session, Model model) {
-        if (!qnaDTO.getQnaQPwd().equals("0") || !qnaDTO.getQnaQPwd().matches("^\\d{4}$")) {
-            model.addAttribute("message", "비밀번호는 숫자 네 자리여야 합니다.");
-            model.addAttribute("qnaDTO", qnaDTO);
-            return "qna/regist";
+        String pwd = qnaDTO.getQnaQPwd();
+        if (pwd != null && pwd.trim().isEmpty()) {
+            qnaDTO.setQnaQPwd(null);
         }
 
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("message", "문의 등록에 실패했습니다. 다시 시도해주세요.");
+        if (pwd != null && !pwd.trim().isEmpty() && !pwd.matches("^\\d{4}$")) {
+            model.addAttribute("message", "비밀번호는 숫자 네 자리여야 합니다.");
             model.addAttribute("qnaDTO", qnaDTO);
             return "qna/regist";
         }
