@@ -1,4 +1,4 @@
-package net.spb.spb.service.Qna;
+package net.spb.spb.service.qna;
 
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.qna.QnaDTO;

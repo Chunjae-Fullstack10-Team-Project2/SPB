@@ -11,8 +11,4 @@ public interface PostLikeMapper {
     int insertLike(PostLikeRequestDTO postLikeRequestDTO);
 
     int deleteLike(PostLikeRequestDTO postLikeRequestDTO);
-
-    List<PostLikeRequestDTO> listMyLikes(@Param("searchDTO") SearchDTO searchDTO, @Param("pageDTO") PageRequestDTO pageDTO, @Param("postLikeMemberId") String postLikeMemberId);
-
-    int totalCount(@Param("searchDTO") SearchDTO searchDTO, @Param("postLikeMemberId") String postLikeMemberId);
 }

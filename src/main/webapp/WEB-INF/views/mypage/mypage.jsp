@@ -198,7 +198,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="password" class="form-control" id="memberPwdCheck" placeholder="비밀번호를 입력하세요.">
+                    <input type="password" class="form-control" id="memberPwdConfirm" placeholder="비밀번호를 입력하세요.">
                     <div class="text-danger mt-2" id="pwdError" style="display: none;">비밀번호가 일치하지 않습니다.</div>
                 </div>
                 <div class="modal-footer">

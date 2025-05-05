@@ -8,7 +8,6 @@ import lombok.extern.log4j.Log4j2;
 
 import net.spb.spb.dto.member.LoginDTO;
 import net.spb.spb.dto.member.MemberDTO;
-import net.spb.spb.service.PostLikeService;
 import net.spb.spb.service.member.MailService;
 import net.spb.spb.service.member.MemberServiceImpl;
 import net.spb.spb.service.member.NaverLoginService;
@@ -16,8 +15,6 @@ import net.spb.spb.util.PasswordUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -109,7 +106,6 @@ public class MemberController {
 
             if (memberService.existUser(autoLoginId)) {
                 session.setAttribute("memberId", autoLoginId);
-                return "redirect:/board/list";
             }
         }
 

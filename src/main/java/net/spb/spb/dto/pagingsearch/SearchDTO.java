@@ -8,6 +8,7 @@ public class SearchDTO {
     private String searchWord;
     private String searchType;
     private String answered;
+    private String dateType;
     private String startDate;
     private String endDate;
 }
