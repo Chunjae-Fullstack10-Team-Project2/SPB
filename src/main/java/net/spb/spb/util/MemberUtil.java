@@ -27,7 +27,8 @@ public class MemberUtil {
             case "10": return "고1";
             case "11": return "고2";
             case "12": return "고3";
-            case "13": return "선생님";
+            case "13": return "교사";
+            case "14": return "기타";
             default: return "";
         }
     }

@@ -71,7 +71,7 @@
                 and memberState = #{search_member_state}
             </if>
             <if test="search_member_grade != null and search_member_grade != ''">
-                <if test="search_member_grade gte 0 and search_member_grade lte 13">
+                <if test="search_member_grade gte 0 and search_member_grade lte 14">
                     and memberGrade = #{search_member_grade}
                 </if>
             </if>
@@ -112,7 +112,7 @@
                 and memberState = #{search_member_state}
             </if>
             <if test="search_member_grade != null and search_member_grade != ''">
-                <if test="search_member_grade gte 0 and search_member_grade lte 13">
+                <if test="search_member_grade gte 0 and search_member_grade lte 14">
                     and memberGrade = #{search_member_grade}
                 </if>
             </if>
