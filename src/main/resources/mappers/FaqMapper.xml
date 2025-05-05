@@ -35,6 +35,9 @@
                     </when>
                 </choose>
             </if>
+            <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+                AND faqCreatedAt between #{searchDTO.startDate} AND #{searchDTO.endDate}
+            </if>
         </where>
     </select>
 
