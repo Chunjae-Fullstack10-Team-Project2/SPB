@@ -2,6 +2,7 @@ package net.spb.spb.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
+import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.PostLikeRequestDTO;
 import net.spb.spb.dto.PostReportDTO;
 import net.spb.spb.dto.member.MemberDTO;
@@ -65,8 +66,6 @@ public class MyPageController {
         String memberId = (String) session.getAttribute("memberId");
         String originalPwd = memberService.getPwdById(memberId);
         String encryptedPassword = PasswordUtil.encryptPassword(memberPwd);
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!encryptedPassword: " + encryptedPassword);
-        System.out.println("originalPwd: " + originalPwd);
 
         if (encryptedPassword != null && encryptedPassword.equals(originalPwd)) {
             return ResponseEntity.ok("success");
@@ -119,5 +118,28 @@ public class MyPageController {
         model.addAttribute("reportList", reportList);
         model.addAttribute("searchDTO", searchDTO);
         return "mypage/report";
+    }
+
+    @GetMapping("/order")
+    public String listLectureOrder(HttpSession session, Model model,
+                                 @ModelAttribute SearchDTO searchDTO,
+                                 @ModelAttribute PageRequestDTO pageRequestDTO) {
+        String orderMemberId = (String) session.getAttribute("memberId");
+
+        if (searchDTO.getDateType() == null || searchDTO.getDateType().isEmpty()) {
+            searchDTO.setDateType("orderCreatedAt");
+        }
+
+        List<OrderDTO> orderList = myPageService.listMyOrder(searchDTO, pageRequestDTO, orderMemberId);
+        PageResponseDTO<OrderDTO> pageResponseDTO = PageResponseDTO.<OrderDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .totalCount(myPageService.orderTotalCount(searchDTO, orderMemberId))
+                .dtoList(orderList)
+                .build();
+
+        model.addAttribute("responseDTO", pageResponseDTO);
+        model.addAttribute("orderList", orderList);
+        model.addAttribute("searchDTO", searchDTO);
+        return "mypage/order";
     }
 }

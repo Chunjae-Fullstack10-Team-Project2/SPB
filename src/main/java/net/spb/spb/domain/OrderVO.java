@@ -11,7 +11,7 @@ import lombok.extern.log4j.Log4j2;
 @ToString
 public class OrderVO {
     private int orderIdx;
-    private String orderId;
+    private String orderMemberId;
     private int orderAmount;
     private String orderStatus;
     private String orderCreatedAt;

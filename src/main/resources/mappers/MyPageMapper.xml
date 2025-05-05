@@ -74,10 +74,10 @@
     </select>
 
 
-    <!-- 신고 목록  -->
+    <!-- 신고한 자유게시판 게시글 목록  -->
     <select id="listMyReport">
         select reportIdx,
-        reportPostIdx,
+        reportRefIdx,
         reportMemberId,
         reportCreatedAt,
         reportState,
@@ -86,7 +86,7 @@
         postCreatedAt,
         postContent
         from tbl_report AS r
-        JOIN tbl_post AS p on r.reportIdx = p.postIdx
+        JOIN tbl_post AS p on r.reportRefIdx = p.postIdx
         where reportMemberId = #{reportMemberId}
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
@@ -117,7 +117,7 @@
     <select id="reportTotalCount" resultType="int" parameterType="String">
         select count(reportIdx)
         from tbl_report AS r
-        JOIN tbl_post AS p on r.reportIdx = p.postIdx
+        JOIN tbl_post AS p on r.reportRefIdx = p.postIdx
         where reportMemberId = #{reportMemberId}
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
@@ -139,6 +139,83 @@
                 </when>
                 <when test="searchDTO.dateType == 'postCreatedAt'">
                     AND postCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+            </choose>
+        </if>
+    </select>
+
+
+    <!-- 주문 목록  -->
+    <select id="listMyOrder">
+        select orderIdx,
+        orderMemberId,
+        orderAmount,
+        orderStatus,
+        orderCreatedAt,
+        orderUpdatedAt,
+        lectureIdx,
+        lectureTitle,
+        lectureDescription,
+        lectureTeacherId,
+        lectureCreatedAt,
+        lectureThumbnailImg,
+        lectureAmount
+        from tbl_order as o
+        join tbl_order_lecture as ol on o.orderIdx = ol.orderIdx
+        join tbl_lecture as l on ol.orderLectureIdx = l.lectureIdx
+        where orderMemberId = #{orderMemberId}
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'lectureTitle'">
+                    AND lectureTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'lectureTeacherId'">
+                    AND lectureTeacherId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'lectureDescription'">
+                    AND lectureDescription LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            <choose>
+                <when test="searchDTO.dateType == 'orderCreatedAt'">
+                    AND orderCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+                <when test="searchDTO.dateType == 'lectureCreatedAt'">
+                    AND lectureCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+            </choose>
+        </if>
+        limit #{pageDTO.pageSkipCount}
+        , #{pageDTO.pageSize}
+    </select>
+    <select id="orderTotalCount" resultType="int" parameterType="String">
+        select count(orderIdx)
+        from tbl_order as o
+        join tbl_order_lecture as ol on o.orderIdx = ol.orderIdx
+        join tbl_lecture as l on ol.orderLectureIdx = l.lectureIdx
+        where orderMemberId = #{orderMemberId}
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'lectureTitle'">
+                    AND lectureTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'lectureTeacherId'">
+                    AND lectureTeacherId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'lectureDescription'">
+                    AND lectureDescription LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            <choose>
+                <when test="searchDTO.dateType == 'orderCreatedAt'">
+                    AND orderCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+                <when test="searchDTO.dateType == 'lectureCreatedAt'">
+                    AND lectureCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
                 </when>
             </choose>
         </if>

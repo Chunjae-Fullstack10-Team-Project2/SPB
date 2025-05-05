@@ -163,6 +163,6 @@ public class BoardController {
                 log.info("report regist failed");
             }
         }
-        return "redirect:/board/"+category+"/view?idx="+postReportDTO.getReportPostIdx();
+        return "redirect:/board/"+category+"/view?idx="+postReportDTO.getReportRefIdx();
     }
 }
