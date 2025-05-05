@@ -3,6 +3,7 @@ package net.spb.spb.dto;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -17,8 +18,8 @@ public class OrderDTO {
     private String orderMemberId;
     private int orderAmount;
     private String orderStatus;
-    private String orderCreatedAt;
-    private String orderUpdatedAt;
+    private LocalDateTime orderCreatedAt;
+    private LocalDateTime orderUpdatedAt;
     private List<String> orderLectureList;
 
     //    tbl_order_lecture

@@ -3,7 +3,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>좋아요 누른 게시글</title>
+    <title>강좌 주문 내역</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -37,14 +37,14 @@
                     <a class="link-body-emphasis fw-semibold text-decoration-none" href="/mypage">마이페이지</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    신고 목록
+                    강좌 주문 내역
                 </li>
             </ol>
         </nav>
     </div>
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0">신고 목록</h3>
+            <h3 class="mb-0">강좌 주문 내역</h3>
         </div>
         <div class="search-box" style="max-width: 700px;">
             <form name="frmSearch" method="get" action="/mypage/order" class="mb-1 p-4">
@@ -55,7 +55,6 @@
                                 결제일자
                             </option>
                             <option value="lectureCreatedAt" ${param.dateType eq 'lectureCreatedAt' ? 'selected' : ''}>
-                                게시글
                                 강의 생성일자
                             </option>
                         </select>
@@ -96,8 +95,9 @@
             <table class="table table-hover text-center align-middle">
                 <thead class="table-light">
                 <tr>
-                    <th>번호</th>
-                    <th>강좌</th>
+                    <th>주문번호</th>
+                    <th>구매 강좌</th>
+                    <th>총액</th>
                     <th>구매일</th>
                 </tr>
                 </thead>
@@ -106,13 +106,16 @@
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
-<%--                            <a href="#"--%>
-<%--                               class="text-decoration-none text-dark">--%>
-<%--                                    ${orderDTO.lectureTitle}--%>
-<%--                            </a>--%>
-                            <c:forEach items="">
-<%--                                List로 한 번에 구매한 강좌들 다 나오게--%>
+                            <c:forEach items="${orderDTO.orderLectureList}" var="lectureTitle" varStatus="loop">
+                                <div class="mb-1">
+                                    <i class="bi bi-play-circle text-primary me-1"><a href="#"
+                                                                                      class="text-decoration-none text-dark"></a></i>
+                                        ${lectureTitle}
+                                </div>
                             </c:forEach>
+                        </td>
+                        <td><fmt:setLocale value="ko_KR"/>
+                            <fmt:formatNumber value="${orderDTO.orderAmount}" type="currency"/>
                         </td>
                         <td>${orderDTO.orderCreatedAt.toLocalDate()}</td>
                     </tr>
@@ -123,7 +126,7 @@
 
         <c:if test="${empty orderList}">
             <div class="alert alert-warning mt-4" role="alert">
-                게시글이 없습니다.
+                주문 내역이 없습니다.
             </div>
         </c:if>
 

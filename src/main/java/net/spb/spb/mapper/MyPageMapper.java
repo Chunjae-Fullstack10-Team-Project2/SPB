@@ -19,7 +19,7 @@ public interface MyPageMapper {
 
     int reportTotalCount(@Param("searchDTO") SearchDTO searchDTO, @Param("reportMemberId") String reportMemberId);
 
-    List<OrderDTO> listMyOrder(SearchDTO searchDTO, PageRequestDTO pageRequestDTO, String orderMemberId);
+    List<OrderDTO> listMyOrder(@Param("searchDTO") SearchDTO searchDTO, @Param("pageDTO") PageRequestDTO pageDTO, @Param("orderMemberId") String orderMemberId);
 
-    int orderTotalCount(SearchDTO searchDTO, String orderMemberId);
+    int orderTotalCount(@Param("searchDTO") SearchDTO searchDTO, @Param("orderMemberId") String orderMemberId);
 }
