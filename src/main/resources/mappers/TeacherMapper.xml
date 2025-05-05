@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.TeacherMapper">
+    <!--선생님 메인 조회-->
+    <select id="selectTeacher" resultType="net.spb.spb.domain.TeacherVO">
+        select teacherIdx, teacherName, teacherId, teacherIntro, teacherApproval, teacherProfileImg, teacherSubject
+        from tbl_teacher
+        where teacherId = #{teacherId}
+    </select>
+    <!--선생님 강좌 조회-->
+    <select id="selectTeacherLecture" resultType="net.spb.spb.domain.LectureVO">
+        select lectureIdx, lectureTitle, lectureThumbnailImg
+        from tbl_lecture
+        where lectureTeacherId = #{teacherId}
+        order by lectureIdx desc
+    </select>
+    <!--강좌 메인 조회-->
+    <select id="selectLectureMain" resultType="net.spb.spb.domain.LectureVO">
+        select lectureTitle, lectureDescription
+        from tbl_lecture
+        where lectureIdx = #{lectureIdx}
+    </select>
+    <!--강좌별 강의 조회-->
+    <select id="selectLectureChapter" resultType="net.spb.spb.domain.ChapterVO">
+        select chapterIdx, chapterName, chapterRuntime
+        from tbl_lecture_chapter
+        where chapterLectureIdx = #{lectureIdx}
+        order by chapterIdx asc
+    </select>
+
+</mapper>    
