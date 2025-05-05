@@ -4,6 +4,6 @@
 
 </head>
 <body>
-<%@ include file="header.jsp" %>
+<%@ include file="fixedHeader.jsp" %>
 </body>
 </html>

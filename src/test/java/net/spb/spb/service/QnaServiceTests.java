@@ -2,7 +2,7 @@ package net.spb.spb.service;
 
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.mapper.QnaMapper;
-import net.spb.spb.service.Qna.QnaService;
+import net.spb.spb.service.qna.QnaService;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;

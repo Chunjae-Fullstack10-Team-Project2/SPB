@@ -31,7 +31,7 @@
                 </a>
             </li>
             <li class="breadcrumb-item">
-                <a class="link-body-emphasis fw-semibold text-decoration-none" href="/qna/list">1:1 문의</a>
+                <a class="link-body-emphasis fw-semibold text-decoration-none" href="/qna/myQna">내가 한 문의</a>
             </li>
         </ol>
     </nav>
@@ -44,8 +44,7 @@
         </a>
     </div>
     <div class="search-box" style="max-width: 700px;">
-        <form name="frmSearch" method="get" action="/qna/list" class="mb-1 p-4">
-            <%--            border rounded shadow-sm bg-light--%>
+        <form name="frmSearch" method="get" action="/qna/myQna" class="mb-1 p-4">
             <div class="row g-2 align-items-center mb-3">
                 <div class="col-md-8">
                     <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택"

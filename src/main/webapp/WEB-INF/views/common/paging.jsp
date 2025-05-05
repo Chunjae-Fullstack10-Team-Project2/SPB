@@ -8,7 +8,7 @@
 <c:if test="${not empty responseDTO}">
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
-            <c:set var="baseUrl" value="${baseUrl}?startDate=${searchDTO.startDate}&endDate=${searchDTO.endDate}&searchType=${searchDTO.searchType}&searchWord=${searchDTO.searchWord}&pageNo=" />
+            <c:set var="baseUrl" value="${baseUrl}?dateType=${searchDTO.dateType}&startDate=${searchDTO.startDate}&endDate=${searchDTO.endDate}&searchType=${searchDTO.searchType}&searchWord=${searchDTO.searchWord}&pageNo=" />
 
             <!-- << (첫 페이지) -->
             <c:choose>
