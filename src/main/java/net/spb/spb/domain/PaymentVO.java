@@ -3,6 +3,8 @@ package net.spb.spb.domain;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
+import java.time.LocalDateTime;
+
 @Log4j2
 @Data
 @AllArgsConstructor
@@ -19,4 +21,7 @@ public class PaymentVO {
     private String paymentCanceledAt;
     private String paymentCreatedAt;
     private String paymentUpdateAt;
+    private String memberId;
+    private LocalDateTime paymentApprovedAt2;
+    private LocalDateTime paymentCanceledAt2;
 }

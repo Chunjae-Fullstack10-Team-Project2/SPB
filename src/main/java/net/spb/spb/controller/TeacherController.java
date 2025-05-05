@@ -1,11 +1,13 @@
 package net.spb.spb.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.CartDTO;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.TeacherDTO;
+import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.service.PaymentServiceIf;
 import net.spb.spb.service.TeacherServiceIf;
 import org.springframework.stereotype.Controller;
@@ -25,8 +27,13 @@ public class TeacherController {
     @GetMapping("/personal")
     public String teacherMain(
             @RequestParam("teacherId") String teacherId,
-            Model model
+            Model model, HttpSession session
     ) {
+        String memberId = (String) session.getAttribute("memberId");
+        MemberDTO memberDTO = paymentService.getMemberInfo(memberId);
+        log.info("memberDTO: "+memberDTO.toString());
+        model.addAttribute("member", memberDTO);
+
         TeacherDTO teacherDTO = teacherService.selectTeacher(teacherId);
         log.info("teacherDTO: {}",teacherDTO);
         List<LectureDTO> lectureList = teacherService.selectTeacherLecture(teacherId);

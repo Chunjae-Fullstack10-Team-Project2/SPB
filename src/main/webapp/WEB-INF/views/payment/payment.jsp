@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>학습 플랫폼 - 결제</title>
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
     <style>
         * {
             margin: 0;
@@ -147,33 +148,33 @@
     </style>
 </head>
 <body>
+<%@ include file="../common/header.jsp" %>
 <div class="page-container">
     <div class="content">
         <div class="payment-title">결제</div>
-
-        <div class="section">
-            <div class="section-title">결제 수단</div>
-            <div class="payment-methods">
-                <div class="payment-method">
-                    <input type="radio" id="credit-card" name="payment-method" checked>
-                    <label for="credit-card">신용카드</label>
-                </div>
-                <div class="payment-method">
-                    <input type="radio" id="easy-payment" name="payment-method">
-                    <label for="easy-payment">간편결제</label>
-                </div>
-                <div class="payment-method">
-                    <input type="radio" id="bank-transfer" name="payment-method">
-                    <label for="bank-transfer">무통장입금</label>
-                </div>
-            </div>
-        </div>
-
+        <table class="order-items">
+            <th colspan="2">구매자 정보</th>
+                <tr>
+                    <td>이름</td>
+                    <td id="mName">${member.memberName}</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td id="mEmail">${member.memberEmail}</td>
+                </tr>
+                <tr>
+                    <td>Phone</td>
+                    <td id="mPhone">${member.memberPhone}</td>
+                </tr>
+        </table>
+        <form id="frm">
         <div class="section">
             <table class="order-items">
                 <th colspan="2">주문 내역</th>
                 <c:forEach var="lecture" items="${selectedLectures}">
                     <tr>
+                        <input type="hidden" name ="lectureIdx" value="${lecture.lectureIdx}" />
+                        <input type="hidden" name="lectureTitle" value="${lecture.lectureTitle}" />
                         <td>${lecture.lectureTitle}</td>
                         <td class="price">${lecture.lectureAmount}원</td>
                     </tr>
@@ -184,54 +185,16 @@
                 <div id="total-price">39,600원</div>
             </div>
         </div>
-
-        <div class="section" id="credit-card-form">
-            <div class="form-group">
-                <label for="card-number" class="form-label">카드번호</label>
-                <input type="text" id="card-number" class="form-control" placeholder="0000-0000-0000-0000">
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="expiry-date" class="form-label">만료일</label>
-                    <input type="text" id="expiry-date" class="form-control" placeholder="MM/YY">
-                </div>
-                <div class="form-group">
-                    <label for="cvc" class="form-label">CVC</label>
-                    <input type="text" id="cvc" class="form-control" placeholder="123">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="email" class="form-label">이메일</label>
-                <input type="email" id="email" class="form-control" placeholder="example@email.com">
-            </div>
-        </div>
-
+        </form>
         <div class="button-group">
             <button type="button" class="btn btn-primary" onclick="processPayment()">결제하기</button>
             <button type="button" class="btn btn-secondary" onclick="cancelOrder()">주문 취소</button>
         </div>
     </div>
 </div>
-
 <script>
     // 결제 수단에 따른 폼 표시/숨김 처리
     document.addEventListener('DOMContentLoaded', function() {
-        const creditCardRadio = document.getElementById('credit-card');
-        const easyPaymentRadio = document.getElementById('easy-payment');
-        const bankTransferRadio = document.getElementById('bank-transfer');
-        const creditCardForm = document.getElementById('credit-card-form');
-
-        function togglePaymentForm() {
-            if (creditCardRadio.checked) {
-                creditCardForm.style.display = 'block';
-            } else {
-                creditCardForm.style.display = 'none';
-            }
-        }
-
-        creditCardRadio.addEventListener('change', togglePaymentForm);
-        easyPaymentRadio.addEventListener('change', togglePaymentForm);
-        bankTransferRadio.addEventListener('change', togglePaymentForm);
 
         let total = 0;
         document.querySelectorAll('.price').forEach(el => {
@@ -243,66 +206,29 @@
 
     // 결제 처리 함수
     function processPayment() {
-        // 입력값 검증
-        const cardNumber = document.getElementById('card-number').value;
-        const expiryDate = document.getElementById('expiry-date').value;
-        const cvc = document.getElementById('cvc').value;
-        const email = document.getElementById('email').value;
-        const totalPrice = document.getElementById('total-price').value;
 
-        // if (document.getElementById('credit-card').checked) {
-        //     if (!cardNumber || !expiryDate || !cvc || !email) {
-        //         alert('모든 필드를 입력해주세요.');
-        //         return;
-        //     }
-        // }
         const data = {
-            orderId : "dog109",
-            orderAmount : totalPrice
+            orderId : "${member.memberId}",
+            orderAmount : document.getElementById('total-price').textContent.replace("원","").replace(",",""),
+            orderLectureList : $("input[name='lectureIdx']").map(function () {
+                return $(this).val();
+            }).get()
         }
+
+        console.log(JSON.stringify(data));
+
         $.ajax({
             url: '/payment/insertOrder',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
-                goPayment();
-            },
-            error: function (xhr) {
-                console.error('등록 실패:', xhr.responseText);
-                alert("등록 중 오류가 발생했습니다.");
-            }
-        });
-        // 실제로는 서버로 결제 정보를 전송하는 코드가 들어갈 자리
-        //alert('결제가 완료되었습니다.');
-        // 결제 완료 후 이동할 페이지
-        // window.location.href = 'payment-complete.jsp';
-    }
-
-    function goPayment(){
-        $.ajax({
-            url:'/payment/kakaoPayReady',
-            type: 'POST',
-            data: JSON.stringify({
-                "cid": "TC0ONETIME",
-                "partner_order_id": "partner_order_id",
-                "partner_user_id": "partner_user_id",
-                "item_name": "초코파이",
-                "quantity": "1",
-                "total_amount": "2200",
-                "vat_amount": "200",
-                "tax_free_amount": "0",
-                "approval_url": "https://developers.kakao.com/success",
-                "fail_url": "https://developers.kakao.com/fail",
-                "cancel_url": "https://developers.kakao.com/cancel"
-            }),
-            contentType: "application/json",
-            success: function (response) {
-                console.log("response === " + response);
-                window.location.href = response.next_redirect_pc_url;
+                    var paymentMethod = $("input[name='payment-method']:checked").val();
+                requestPay(response);
             },
             error: function (request,status,error) {
                 console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                alert("등록 중 오류가 발생했습니다.");
             }
         });
     }
@@ -311,9 +237,60 @@
     function cancelOrder() {
         if (confirm('주문을 취소하시겠습니까?')) {
             // 장바구니 페이지로 이동
-            // window.location.href = 'cart.jsp';
+            window.location.href = '/payment/cart?memberId=${member.memberId}';
             alert('주문이 취소되었습니다.');
         }
+    }
+
+
+    function requestPay(orderIdx) {
+        const lectureTitleElements = document.querySelectorAll("input[name='lectureTitle']");
+        const lectureTitles = Array.from(lectureTitleElements).map(el => el.value);
+
+        let displayTitle = "";
+        if (lectureTitles.length === 1) {
+            displayTitle = lectureTitles[0];
+        } else if (lectureTitles.length > 1) {
+            displayTitle = lectureTitles[0]+' 외 '+ (lectureTitles.length - 1)+'건';
+        }
+
+        var IMP = window.IMP;
+        IMP.init("imp28817856");
+        IMP.request_pay({
+            pg: "html5_inicis.INIpayTest",
+            pay_method: "card",
+            merchant_uid: orderIdx,
+            name: displayTitle,
+            amount: document.getElementById('total-price').textContent.replace("원","").replace(",",""),
+            buyer_email: "${member.memberEmail}",
+            buyer_name: "${member.memberName}",
+            buyer_tel: "${member.memberPhone}",
+        }, function (rsp) {
+            console.log("rsp === " + rsp);
+            if (rsp.success) {
+                // POST 방식으로 imp_uid와 merchant_uid 전송
+                fetch("/payment/verify", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        imp_uid: rsp.imp_uid,
+                        merchant_uid: rsp.merchant_uid
+                    })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === "success") {
+                            alert("결제 성공 처리 완료!");
+                        } else {
+                            alert("결제 검증 실패: " + data.message);
+                        }
+                    });
+            } else {
+                alert("결제 실패: " + rsp.error_msg);
+            }
+        });
     }
 </script>
 </body>

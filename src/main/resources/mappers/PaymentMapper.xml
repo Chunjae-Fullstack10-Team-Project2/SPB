@@ -27,7 +27,7 @@
     </delete>
     <!--결제 강의 목록 조회-->
     <select id="findLecturesByIds">
-        select lectureTitle, lectureTeacherId, lectureThumbnailImg, lectureAmount
+        select lectureIdx, lectureTitle, lectureTeacherId, lectureThumbnailImg, lectureAmount
         from tbl_lecture
         where lectureIdx IN
         <foreach item="lectureIdx" collection="lectureIdxs" open="(" separator="," close=")">
@@ -39,4 +39,63 @@
         insert into tbl_order_info (orderId, orderAmount, orderCreatedAt, orderUpdatedAt)
         VALUES (#{orderId}, #{orderAmount}, NOW(), NOW())
     </insert>
+
+    <!--주문상품 테이블에 등록-->
+    <insert id="insertOrderLecture" parameterType="java.lang.Integer">
+        insert into tbl_order_lecture (orderIdx,orderLectureIdx)
+        VALUES (
+                (select MAX(orderIdx) from tbl_order_info where 1=1),
+                #{orderLectureIdx}
+               )
+    </insert>
+
+    <select id="getMaxOrderIdx">
+        select MAX(orderIdx) from tbl_order_info
+    </select>
+
+    <!--결제 테이블에 등록-->
+    <insert id="savePaymentInfo" parameterType="net.spb.spb.domain.PaymentVO" useGeneratedKeys="true" keyProperty="paymentIdx">
+        INSERT INTO tbl_payment
+        (paymentOrderIdx
+        , paymentMethod
+        , paymentStatus
+        , paymentTransactionId
+        , paymentApprovedAt
+        , paymentCanceledAt
+        , paymentCreatedAt
+        , paymentUpdatedAt)
+        VALUES
+        (
+         #{paymentOrderIdx}
+        ,#{paymentMethod}
+        ,#{paymentStatus}
+        ,#{paymentTransactionId}
+        ,#{paymentApprovedAt2}
+        ,null
+        ,now()
+        ,now()
+        );
+    </insert>
+
+    <!--결제 후 장바구니 내역 삭제-->
+    <delete id="processAfterPayment">
+        delete from tbl_cart where 1=1
+        and cartMemberId = #{memberId}
+        and cartLectureIdx in (select orderLectureIdx from tbl_order_lecture where orderIdx = #{paymentOrderIdx})
+    </delete>
+
+    <!--주문번호 내역 조회-->
+    <select id="selectOrder">
+        select orderIdx , orderId , orderAmount , orderStatus, orderCreatedAt , orderUpdatedAt
+        from tbl_order_info
+        where 1=1
+        and orderIdx = #{merchantUid}
+    </select>
+
+    <!--주문자 정보 조회-->
+    <select id="getMemberInfo">
+        select memberId, memberName, memberEmail, memberPhone
+        from tbl_member
+        where memberId = #{memberId}
+    </select>
 </mapper>    

@@ -2,11 +2,9 @@ package net.spb.spb.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.domain.CartVO;
-import net.spb.spb.domain.LectureVO;
-import net.spb.spb.domain.OrderVO;
-import net.spb.spb.domain.PaymentVO;
+import net.spb.spb.domain.*;
 import net.spb.spb.dto.*;
+import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.mapper.PaymentMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -70,4 +68,45 @@ public class PaymentServiceImpl implements PaymentServiceIf{
         int rtnResult = paymentMapper.insertOrder(orderVO);
         return rtnResult;
     }
+
+    @Override
+    public int insertOrderLecture(int orderLectureIdx) {
+        int rtnResult = paymentMapper.insertOrderLecture(orderLectureIdx);
+        return rtnResult;
+    }
+
+    @Override
+    public int getMaxOrderIdx() {
+        return paymentMapper.getMaxOrderIdx();
+    }
+
+    @Override
+    public int savePaymentInfo(PaymentDTO paymentDTO) {
+        PaymentVO paymentVO = modelMapper.map(paymentDTO, PaymentVO.class);
+        int rtnResult = paymentMapper.savePaymentInfo(paymentVO);
+        return rtnResult;
+    }
+
+    @Override
+    public int processAfterPayment(PaymentDTO paymentDTO) {
+        PaymentVO paymentVO = modelMapper.map(paymentDTO, PaymentVO.class);
+        int rtnResult = paymentMapper.processAfterPayment(paymentVO);
+        return rtnResult;
+    }
+
+    @Override
+    public OrderDTO findByMerchantUid(String merchantUid) {
+        OrderVO vo = paymentMapper.selectOrder(merchantUid);
+        OrderDTO dto = (vo != null ?modelMapper.map(vo, OrderDTO.class) : null);
+        return dto;
+    }
+
+    @Override
+    public MemberDTO getMemberInfo(String memberId) {
+        MemberVO memberVO = paymentMapper.getMemberInfo(memberId);
+        MemberDTO dto = (memberVO != null ?modelMapper.map(memberVO, MemberDTO.class) : null);
+        return dto;
+    }
+
+
 }

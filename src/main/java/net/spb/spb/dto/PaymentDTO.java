@@ -3,6 +3,8 @@ package net.spb.spb.dto;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
+import java.time.LocalDateTime;
+
 @Log4j2
 @Data
 @AllArgsConstructor
@@ -19,5 +21,8 @@ public class PaymentDTO {
     private String paymentCanceledAt;
     private String paymentCreatedAt;
     private String paymentUpdateAt;
+    private String memberId;
+    private LocalDateTime paymentApprovedAt2;
+    private LocalDateTime paymentCanceledAt2;
 
 }

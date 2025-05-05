@@ -73,7 +73,6 @@
             margin-bottom: 30px;
         }
 
-        /* Teacher Profile */
         .teacher-profile {
             display: flex;
             align-items: center;
@@ -125,21 +124,6 @@
             color: #666;
             margin-bottom: 15px;
         }
-
-        .badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-
-        .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            background-color: #f5f5f5;
-            color: #666;
-        }
-
         .section-header {
             display: flex;
             justify-content: space-between;
@@ -344,7 +328,7 @@
     function addCart(lectureIdx) {
         const data = {
             cartLectureIdx: lectureIdx,
-            cartMemberId: "dog109"
+            cartMemberId: "${member.memberId}"
         };
         $.ajax({
             url: '/payment/addCart',
@@ -361,7 +345,7 @@
                 }
                 const goCart = confirm("장바구니로 이동하시겠습니까?");
                 if(goCart){
-                    window.location.href = "/payment/cart?memberId=dog109";
+                    window.location.href = "/payment/cart?memberId=${member.memberId}";
                 }
             },
             error: function (xhr, status, error) {
