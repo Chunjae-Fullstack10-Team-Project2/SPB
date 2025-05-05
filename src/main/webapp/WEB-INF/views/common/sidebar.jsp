@@ -96,7 +96,7 @@
     <ul class="list-unstyled ps-0">
         <li class="mb-1">
             <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                    data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+                    data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
                 Home
             </button>
             <div class="collapse show" id="home-collapse">
@@ -135,11 +135,13 @@
             </button>
             <div class="collapse" id="orders-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="/mypage/likes" class="link-body-emphasis d-inline-flex text-decoration-none rounded">좋아요</a>
+                    <li><a href="/mypage/likes" class="link-body-emphasis d-inline-flex text-decoration-none rounded">좋아요 목록</a>
                     </li>
-                    <li><a href="/mypage/report" class="link-body-emphasis d-inline-flex text-decoration-none rounded">신고</a>
+                    <li><a href="/mypage/report" class="link-body-emphasis d-inline-flex text-decoration-none rounded">게시글 신고</a>
                     </li>
-                    <li><a href="/qna/myQna" class="link-body-emphasis d-inline-flex text-decoration-none rounded">문의</a>
+                    <li><a href="/qna/myQna" class="link-body-emphasis d-inline-flex text-decoration-none rounded">나의 문의</a>
+                    </li>
+                    <li><a href="/mypage/order" class="link-body-emphasis d-inline-flex text-decoration-none rounded">강좌 주문 내역</a>
                     </li>
                 </ul>
             </div>

@@ -147,7 +147,7 @@
 
     <!-- 주문 목록  -->
     <select id="listMyOrder">
-        select orderIdx,
+        select o.orderIdx,
         orderMemberId,
         orderAmount,
         orderStatus,
@@ -160,7 +160,7 @@
         lectureCreatedAt,
         lectureThumbnailImg,
         lectureAmount
-        from tbl_order as o
+        from tbl_order_info as o
         join tbl_order_lecture as ol on o.orderIdx = ol.orderIdx
         join tbl_lecture as l on ol.orderLectureIdx = l.lectureIdx
         where orderMemberId = #{orderMemberId}
@@ -191,8 +191,8 @@
         , #{pageDTO.pageSize}
     </select>
     <select id="orderTotalCount" resultType="int" parameterType="String">
-        select count(orderIdx)
-        from tbl_order as o
+        select count(o.orderIdx)
+        from tbl_order_info as o
         join tbl_order_lecture as ol on o.orderIdx = ol.orderIdx
         join tbl_lecture as l on ol.orderLectureIdx = l.lectureIdx
         where orderMemberId = #{orderMemberId}

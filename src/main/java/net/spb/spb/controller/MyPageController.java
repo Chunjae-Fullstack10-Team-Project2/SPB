@@ -21,7 +21,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Log4j2
@@ -122,23 +125,51 @@ public class MyPageController {
 
     @GetMapping("/order")
     public String listLectureOrder(HttpSession session, Model model,
-                                 @ModelAttribute SearchDTO searchDTO,
-                                 @ModelAttribute PageRequestDTO pageRequestDTO) {
+                                   @ModelAttribute SearchDTO searchDTO,
+                                   @ModelAttribute PageRequestDTO pageRequestDTO) {
         String orderMemberId = (String) session.getAttribute("memberId");
 
         if (searchDTO.getDateType() == null || searchDTO.getDateType().isEmpty()) {
             searchDTO.setDateType("orderCreatedAt");
         }
 
-        List<OrderDTO> orderList = myPageService.listMyOrder(searchDTO, pageRequestDTO, orderMemberId);
+        // 원본 flat 리스트
+        List<OrderDTO> rawOrderList = myPageService.listMyOrder(searchDTO, pageRequestDTO, orderMemberId);
+
+        // 주문번호 기준으로 그룹핑
+        Map<Integer, OrderDTO> orderMap = new LinkedHashMap<>();
+
+        for (OrderDTO item : rawOrderList) {
+            int orderIdx = item.getOrderIdx();
+
+            // 이미 저장된 주문이면 기존 DTO에 강의 추가
+            if (orderMap.containsKey(orderIdx)) {
+                orderMap.get(orderIdx).getOrderLectureList().add(item.getLectureTitle());
+            } else {
+                // 처음 보는 주문이면 새로운 DTO 생성 후 강의 추가
+                OrderDTO newOrder = new OrderDTO();
+                newOrder.setOrderIdx(orderIdx);
+                newOrder.setOrderMemberId(item.getOrderMemberId());
+                newOrder.setOrderCreatedAt(item.getOrderCreatedAt());
+                newOrder.setOrderAmount(item.getOrderAmount());
+                newOrder.setOrderStatus(item.getOrderStatus());
+                newOrder.setOrderLectureList(new ArrayList<>());
+                newOrder.getOrderLectureList().add(item.getLectureTitle());
+
+                orderMap.put(orderIdx, newOrder);
+            }
+        }
+
+        List<OrderDTO> finalOrderList = new ArrayList<>(orderMap.values());
+
         PageResponseDTO<OrderDTO> pageResponseDTO = PageResponseDTO.<OrderDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .totalCount(myPageService.orderTotalCount(searchDTO, orderMemberId))
-                .dtoList(orderList)
+                .dtoList(finalOrderList)
                 .build();
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("orderList", orderList);
+        model.addAttribute("orderList", finalOrderList); // 변경된 리스트 전달
         model.addAttribute("searchDTO", searchDTO);
         return "mypage/order";
     }
