@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 
 import net.spb.spb.dto.member.LoginDTO;
 import net.spb.spb.dto.member.MemberDTO;
+import net.spb.spb.service.PostLikeService;
 import net.spb.spb.service.member.MailService;
 import net.spb.spb.service.member.MemberServiceImpl;
 import net.spb.spb.service.member.NaverLoginService;
@@ -357,43 +358,4 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/mypage")
-    public String mypage(HttpSession session, Model model) {
-        String memberId = (String) session.getAttribute("memberId");
-        if (memberId == null) {
-            return "redirect:/login";
-        }
-        MemberDTO memberDTO = memberService.getMemberById(memberId);
-        model.addAttribute("memberDTO", memberDTO);
-
-        return "login/mypage";
-    }
-
-    @PostMapping("/mypage")
-    public String updateMyPage(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
-        String memberId = (String) session.getAttribute("memberId");
-        memberDTO.setMemberId(memberId);
-
-        boolean result = memberService.updateMember(memberDTO);
-        if (result) {
-            session.setAttribute("memberDTO", memberDTO);
-            return "redirect:/mypage";
-        } else {
-            model.addAttribute("errorMessage", "회원 정보 수정에 실패했습니다.");
-            return "login/mypage";
-        }
-    }
-
-    @PostMapping("/mypage/checkPwd")
-    @ResponseBody
-    public ResponseEntity<String> checkPassword(@RequestParam("memberPwd") String memberPwd, HttpSession session) {
-        String memberId = (String) session.getAttribute("memberId");
-        String originalPwd = memberService.getPwdById(memberId);
-
-        if (originalPwd != null && originalPwd.equals(memberPwd)) {
-            return ResponseEntity.ok("success");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("fail");
-        }
-    }
 }

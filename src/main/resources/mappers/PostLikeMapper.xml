@@ -11,4 +11,58 @@
           and postLikeRefType= #{postLikeRefType}
           and postLikeMemberId=#{postLikeMemberId}
     </delete>
+
+    <select id="listMyLikes">
+        select postLikeIdx,
+        postLikeRefIdx,
+        postLikeRefType,
+        postLikeMemberId,
+        postLikeCreatedAt,
+        postTitle,
+        postMemberId,
+        postCreatedAt,
+        postContent
+        from tbl_post_like AS l
+        JOIN tbl_post AS p on l.postLikeRefIdx = p.postIdx
+        where postLikeMemberId = #{postLikeMemberId}
+        and postLikeRefType = 'POST'
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'postTitle'">
+                    AND postTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'postContent'">
+                    AND postContent LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'postMemberId'">
+                    AND postMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            AND postLikeCreatedAt between #{searchDTO.startDate} AND #{searchDTO.endDate}
+        </if>
+        limit #{pageDTO.pageSkipCount}
+        , #{pageDTO.pageSize}
+    </select>
+    <select id="totalCount" resultType="int" parameterType="String">
+        select count(postLikeIdx)
+        from tbl_post_like AS l
+        JOIN tbl_post AS p on l.postLikeRefIdx = p.postIdx
+        where postLikeMemberId = #{postLikeMemberId}
+        and postLikeRefType = 'POST'
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'postTitle'">
+                    AND postTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'postContent'">
+                    AND postContent LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'postMemberId'">
+                    AND postMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+    </select>
 </mapper>
