@@ -40,6 +40,7 @@
                     </ul>
                 </li>
                 <li><a href="/qna/list" class="nav-link px-2 link-body-emphasis">1:1 문의</a></li>
+                <li><a href="/faq/list" class="nav-link px-2 link-body-emphasis">FAQ</a></li>
             </ul>
 
             <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-4" role="search">
@@ -62,7 +63,7 @@
                             <li><a class="dropdown-item" href="/login">로그인</a></li>
                         </c:if>
                         <c:if test="${not empty sessionScope.memberId}">
-                            <li><a class="dropdown-item" href="/qna/list">문의하기</a></li>
+                            <li><a class="dropdown-item" href="/qna/myQna">나의 문의</a></li>
                             <li><a class="dropdown-item" href="/mypage">마이페이지</a></li>
                             <li>
                                 <hr class="dropdown-divider">

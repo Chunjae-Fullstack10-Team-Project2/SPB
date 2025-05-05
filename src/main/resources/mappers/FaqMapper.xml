@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.FaqMapper">
+    <insert id="create">
+        insert into tbl_faq(faqQuestion, faqAnswer)
+        values (#{faqQuestion}, #{faqAnswer})
+    </insert>
+
+    <update id="update">
+        update tbl_faq
+        set faqQuestion = #{faqQuestion},
+            faqAnswer   = #{faqAnswer},
+            faqUpdatedAt = now()
+        where faqIdx = #{faqIdx}
+    </update>
+
+    <update id="delete">
+        update tbl_faq
+        set faqState = 2
+        where faqIdx = #{faqIdx}
+    </update>
+
+    <select id="totalCount" parameterType="net.spb.spb.dto.pagingsearch.SearchDTO" resultType="int">
+        select count(faqIdx)
+        from tbl_faq
+        <where>
+            faqState = 1
+            <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+                <choose>
+                    <when test="searchDTO.searchType == 'faqQuestion'">
+                        AND faqQuestion LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                    </when>
+                    <when test="searchDTO.searchType == 'faqAnswer'">
+                        AND faqAnswer LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                    </when>
+                </choose>
+            </if>
+            <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+                AND faqCreatedAt between #{searchDTO.startDate} AND #{searchDTO.endDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="faqList" resultType="net.spb.spb.domain.FaqVO">
+        select
+        faqIdx,
+        faqQuestion,
+        faqAnswer,
+        faqCreatedAt,
+        faqUpdatedAt,
+        faqState
+        from tbl_faq
+        where faqState = 1
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'faqQuestion'">
+                    AND faqQuestion LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'faqAnswer'">
+                    AND faqAnswer LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            AND faqCreatedAt between #{searchDTO.startDate} AND #{searchDTO.endDate}
+        </if>
+        order by faqCreatedAt desc
+        limit #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
+    </select>
+</mapper>

@@ -15,8 +15,6 @@ import net.spb.spb.util.PasswordUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -108,7 +106,6 @@ public class MemberController {
 
             if (memberService.existUser(autoLoginId)) {
                 session.setAttribute("memberId", autoLoginId);
-                return "redirect:/board/list";
             }
         }
 
@@ -156,6 +153,7 @@ public class MemberController {
 
         if (returnValue == 1) {
             session.setAttribute("memberId", memberDTO.getMemberId());
+            session.setAttribute("memberGrade", memberDTO.getMemberGrade());
 
             if (checkIdSave != null) {
                 Cookie idCookie = new Cookie("saveId", memberDTO.getMemberId());
@@ -356,43 +354,4 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/mypage")
-    public String mypage(HttpSession session, Model model) {
-        String memberId = (String) session.getAttribute("memberId");
-        if (memberId == null) {
-            return "redirect:/login";
-        }
-        MemberDTO memberDTO = memberService.getMemberById(memberId);
-        model.addAttribute("memberDTO", memberDTO);
-
-        return "login/mypage";
-    }
-
-    @PostMapping("/mypage")
-    public String updateMyPage(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
-        String memberId = (String) session.getAttribute("memberId");
-        memberDTO.setMemberId(memberId);
-
-        boolean result = memberService.updateMember(memberDTO);
-        if (result) {
-            session.setAttribute("memberDTO", memberDTO);
-            return "redirect:/mypage";
-        } else {
-            model.addAttribute("errorMessage", "회원 정보 수정에 실패했습니다.");
-            return "login/mypage";
-        }
-    }
-
-    @PostMapping("/mypage/checkPwd")
-    @ResponseBody
-    public ResponseEntity<String> checkPassword(@RequestParam("memberPwd") String memberPwd, HttpSession session) {
-        String memberId = (String) session.getAttribute("memberId");
-        String originalPwd = memberService.getPwdById(memberId);
-
-        if (originalPwd != null && originalPwd.equals(memberPwd)) {
-            return ResponseEntity.ok("success");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("fail");
-        }
-    }
 }

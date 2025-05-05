@@ -1,16 +1,17 @@
 package net.spb.spb.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.PageRequestDTO;
-import net.spb.spb.dto.PageResponseDTO;
+import net.spb.spb.dto.pagingsearch.PageRequestDTO;
+import net.spb.spb.dto.pagingsearch.PageResponseDTO;
 import net.spb.spb.dto.qna.AnswerDTO;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.dto.qna.QnaDTO;
-import net.spb.spb.dto.qna.QnaSearchDTO;
+import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.service.member.MemberServiceImpl;
-import net.spb.spb.service.Qna.QnaService;
+import net.spb.spb.service.qna.QnaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,8 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @Log4j2
@@ -33,9 +33,26 @@ public class QnaController {
     private MemberServiceImpl memberService;
 
     @GetMapping("/list")
-    public String qna(@ModelAttribute QnaSearchDTO searchDTO,
+    public String qna(@ModelAttribute SearchDTO searchDTO,
                       @ModelAttribute PageRequestDTO pageRequestDTO,
+                      HttpServletRequest request,
                       Model model) {
+//
+//        List<Map<String, String>> breadcrumbItems = new ArrayList<>();
+//        breadcrumbItems.add(Map.of("name", "1:1 문의", "url", "/qna/list"));
+//        request.setAttribute("breadcrumbItems", breadcrumbItems);
+//
+//        Map<String, Object> qnaSearchConfig = new HashMap<>();
+//        qnaSearchConfig.put("action", "/qna/list");
+//        qnaSearchConfig.put("showDateType", false);
+//        qnaSearchConfig.put("searchTypeOptions", List.of(
+//                Map.of("value", "qnaTitle", "label", "제목"),
+//                Map.of("value", "qnaQContent", "label", "질문 내용"),
+//                Map.of("value", "qnaQMemberId", "label", "질문 작성자"),
+//                Map.of("value", "qnaAContent", "label", "답변 내용"),
+//                Map.of("value", "qnaAMemberId", "label", "답변 작성자")
+//        ));
+//        request.setAttribute("qnaSearchConfig", qnaSearchConfig);
 
         List<QnaDTO> qnaList = qnaService.searchQna(searchDTO, pageRequestDTO);
         PageResponseDTO<QnaDTO> pageResponseDTO = PageResponseDTO.<QnaDTO>withAll()
@@ -105,6 +122,8 @@ public class QnaController {
     public String delete(@RequestParam("qnaIdx") String qnaIdx, Model model, HttpSession session) {
         int memberGrade = Integer.parseInt(session.getAttribute("memberGrade").toString());
         if (memberGrade != 0 && memberGrade != 13) {
+            return "redirect:/qna/view?qnaIdx=" + qnaIdx + "&message=unauthorized";
+        } else {
             boolean result = qnaService.delete(qnaIdx);
             if (result) {
                 model.addAttribute("message", "문의를 삭제했습니다.");
@@ -112,8 +131,6 @@ public class QnaController {
             } else {
                 return "redirect:/qna/view?qnaIdx=" + qnaIdx + "&message=error";
             }
-        } else {
-            return "redirect:/qna/view?qnaIdx=" + qnaIdx + "&message=unauthorized";
         }
     }
 
@@ -165,6 +182,26 @@ public class QnaController {
         } else {
             return "redirect:/qna/view?qnaIdx=" + qnaIdx + "&message=error";
         }
+    }
+
+    @GetMapping("/myQna")
+    public String myQna(Model model, HttpSession session,
+                        @ModelAttribute SearchDTO searchDTO,
+                        @ModelAttribute PageRequestDTO pageRequestDTO) {
+
+        String qnaQMemberId = (String) session.getAttribute("memberId");
+
+        List<QnaDTO> qnaList = qnaService.myQna(searchDTO, pageRequestDTO, qnaQMemberId);
+        PageResponseDTO<QnaDTO> pageResponseDTO = PageResponseDTO.<QnaDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .totalCount(qnaService.totalCount(searchDTO))
+                .dtoList(qnaList)
+                .build();
+
+        model.addAttribute("responseDTO", pageResponseDTO);
+        model.addAttribute("qnaList", qnaList);
+        model.addAttribute("searchDTO", searchDTO);
+        return "qna/list";
     }
 
 }

@@ -1,4 +1,4 @@
-package net.spb.spb.dto;
+package net.spb.spb.dto.pagingsearch;
 
 import lombok.*;
 import lombok.extern.log4j.Log4j2;

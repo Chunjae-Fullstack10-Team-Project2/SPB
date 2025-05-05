@@ -13,6 +13,7 @@ public class PostLikeService {
     public int insertLike(PostLikeRequestDTO postLikeRequestDTO) {
         return postLikeMapper.insertLike(postLikeRequestDTO);
     }
+
     public int deleteLike(PostLikeRequestDTO postLikeRequestDTO) {
         return postLikeMapper.deleteLike(postLikeRequestDTO);
     }

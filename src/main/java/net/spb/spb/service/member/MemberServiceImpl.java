@@ -1,6 +1,7 @@
 package net.spb.spb.service.member;
 
 import net.spb.spb.domain.MemberVO;
+import net.spb.spb.dto.MemberPageDTO;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.mapper.MemberMapper;
 import org.modelmapper.ModelMapper;
@@ -59,9 +60,8 @@ public class MemberServiceImpl implements MemberServiceIf {
 
 
     @Override
-    public List<MemberDTO> getMembers() {
-        List<MemberDTO> memberDTOs = memberMapper.getAllMembers().stream().map(memberVO -> modelMapper.map(memberVO, MemberDTO.class)).toList();
-        return memberDTOs;
+    public List<MemberDTO> getMembers(MemberPageDTO memberPageDTO) {
+        return memberMapper.getAllMembers(memberPageDTO).stream().map(memberVO -> modelMapper.map(memberVO, MemberDTO.class)).toList();
     }
 
     @Override
@@ -74,6 +74,11 @@ public class MemberServiceImpl implements MemberServiceIf {
     public boolean updateMemberByAdmin(MemberDTO memberDTO) {
         MemberVO memberVO = modelMapper.map(memberDTO, MemberVO.class);
         return memberMapper.updateMemberByAdmin(memberVO);
+    }
+
+    @Override
+    public int getMemberCount(MemberPageDTO memberPageDTO) {
+        return memberMapper.getMemberCount(memberPageDTO);
     }
 
 }
