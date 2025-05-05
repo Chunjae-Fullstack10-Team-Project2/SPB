@@ -1,6 +1,6 @@
 package net.spb.spb.mapper;
 
-import net.spb.spb.domain.PostReportVO;
+import net.spb.spb.domain.ReportVO;
 import net.spb.spb.domain.PostVO;
 import net.spb.spb.dto.PostPageDTO;
 
@@ -16,5 +16,5 @@ public interface BoardMapper {
     int modifyPost(PostVO vo);
     int deletePost(int postIdx);
     int setReadCnt(int postIdx);
-    int insertPostReport(PostReportVO postReportVO);
+    int insertPostReport(ReportVO reportVO);
 }

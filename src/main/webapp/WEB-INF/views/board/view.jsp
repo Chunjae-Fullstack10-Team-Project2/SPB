@@ -58,7 +58,7 @@ change this template use File | Settings | File Templates. --%>
             <div class="post-content-ex">
               <button type="button" class="btn" id="btnShare">공유</button> |
               <form name="frmReport" action="/board/${category}/report/regist" method="post" style="display: inline;">
-                <input type="hidden" name="reportPostIdx" value="${post.postIdx}"/>
+                <input type="hidden" name="reportRefIdx" value="${post.postIdx}"/>
                 <input type="hidden" name="reportMemberId" value="${sessionScope.memberId}"/>
                 <button type="submit" class="btn" id="btnReport">신고</button>
               </form>
@@ -130,7 +130,7 @@ change this template use File | Settings | File Templates. --%>
 
         <div class="post-comment-input">
           <form name="frmCommentRegist" id="frmCommentRegist" action="/board/${category}/comment/write" method="post">
-            <input type="hidden" name="postCommentMemberId" value="user01">
+            <input type="hidden" name="postCommentMemberId" value="${sessionScope.memberId}">
             <input type="hidden" name="postCommentRefPostIdx" value="${post.postIdx}"/>
             <div class="post-comment-input-comment">
               <textarea name="postCommentContent"></textarea>

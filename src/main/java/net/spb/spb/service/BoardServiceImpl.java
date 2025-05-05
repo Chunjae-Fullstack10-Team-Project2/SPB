@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.domain.FileVO;
 import net.spb.spb.domain.PostCommentVO;
-import net.spb.spb.domain.PostReportVO;
+import net.spb.spb.domain.ReportVO;
 import net.spb.spb.domain.PostVO;
 import net.spb.spb.dto.*;
 import net.spb.spb.mapper.BoardFileMapper;
@@ -146,6 +146,6 @@ public class BoardServiceImpl implements BoardServiceIf{
 
     @Override
     public int insertPostReport(PostReportDTO postReportDTO) {
-        return boardMapper.insertPostReport(modelMapper.map(postReportDTO, PostReportVO.class));
+        return boardMapper.insertPostReport(modelMapper.map(postReportDTO, ReportVO.class));
     }
 }

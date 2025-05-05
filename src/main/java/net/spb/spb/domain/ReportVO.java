@@ -9,9 +9,10 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PostReportVO {
+public class ReportVO {
     private String reportIdx;
-    private String reportPostIdx;
+    private String reportRefIdx;
+    private String reportRefType;
     private String reportMemberId;
     private Date reportCreatedAt;
     private String reportState;
