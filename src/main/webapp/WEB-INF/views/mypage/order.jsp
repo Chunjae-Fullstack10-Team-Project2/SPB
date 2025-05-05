@@ -37,25 +37,26 @@
                     <a class="link-body-emphasis fw-semibold text-decoration-none" href="/mypage">마이페이지</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    좋아요 누른 목록
+                    신고 목록
                 </li>
             </ol>
         </nav>
     </div>
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0">좋아요 누른 게시글</h3>
+            <h3 class="mb-0">신고 목록</h3>
         </div>
         <div class="search-box" style="max-width: 700px;">
-            <form name="frmSearch" method="get" action="/mypage/likes" class="mb-1 p-4">
+            <form name="frmSearch" method="get" action="/mypage/order" class="mb-1 p-4">
                 <div class="row g-2 align-items-center mb-3">
                     <div class="col-md-3">
                         <select name="dateType" class="form-select">
-                            <option value="postLikeCreatedAt" ${param.dateType eq 'postLikeCreatedAt' ? 'selected' : ''}>
-                                좋아요 누른 날짜
+                            <option value="orderCreatedAt" ${param.dateType eq 'orderCreatedAt' ? 'selected' : ''}>
+                                결제일자
                             </option>
-                            <option value="postCreatedAt" ${param.dateType eq 'postCreatedAt' ? 'selected' : ''}>게시글
-                                작성일자
+                            <option value="lectureCreatedAt" ${param.dateType eq 'lectureCreatedAt' ? 'selected' : ''}>
+                                게시글
+                                강의 생성일자
                             </option>
                         </select>
                     </div>
@@ -69,10 +70,14 @@
                 <div class="row g-2 align-items-center mb-3">
                     <div class="col-md-3">
                         <select name="searchType" class="form-select">
-                            <option value="postTitle" ${searchDTO.searchType eq "postTitle" ? "selected":""}>제목</option>
-                            <option value="postContent" ${searchDTO.searchType eq "postContent" ? "selected":""}>내용
+                            <option value="lectureTitle" ${searchDTO.searchType eq "lectureTitle" ? "selected":""}>강의
+                                제목
                             </option>
-                            <option value="postMemberId" ${searchDTO.searchType eq "postMemberId" ? "selected":""}>작성자
+                            <option value="lectureDescription" ${searchDTO.searchType eq "lectureDescription" ? "selected":""}>
+                                강의 설명
+                            </option>
+                            <option value="lectureTeacherId" ${searchDTO.searchType eq "lectureTeacherId" ? "selected":""}>
+                                선생님
                             </option>
                         </select>
                     </div>
@@ -87,35 +92,36 @@
                 </div>
             </form>
         </div>
-        <c:if test="${not empty likesList}">
+        <c:if test="${not empty orderList}">
             <table class="table table-hover text-center align-middle">
                 <thead class="table-light">
                 <tr>
                     <th>번호</th>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>작성일</th>
+                    <th>강좌</th>
+                    <th>구매일</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${likesList}" var="orderDTO" varStatus="status">
+                <c:forEach items="${orderList}" var="orderDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
-                            <a href="/post/detail?postIdx=${orderDTO.postLikeRefIdx}"
-                               class="text-decoration-none text-dark">
-                                    ${orderDTO.postTitle}
-                            </a>
+<%--                            <a href="#"--%>
+<%--                               class="text-decoration-none text-dark">--%>
+<%--                                    ${orderDTO.lectureTitle}--%>
+<%--                            </a>--%>
+                            <c:forEach items="">
+<%--                                List로 한 번에 구매한 강좌들 다 나오게--%>
+                            </c:forEach>
                         </td>
-                        <td>${orderDTO.postMemberId}</td>
-                        <td>${orderDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>${orderDTO.orderCreatedAt.toLocalDate()}</td>
                     </tr>
                 </c:forEach>
                 </tbody>
             </table>
         </c:if>
 
-        <c:if test="${empty likesList}">
+        <c:if test="${empty orderList}">
             <div class="alert alert-warning mt-4" role="alert">
                 게시글이 없습니다.
             </div>

@@ -12,10 +12,11 @@ import java.util.Date;
 @Builder
 public class PostReportDTO {
     private String reportIdx;
-    private String reportPostIdx;
+    private String reportRefIdx;
     private String reportMemberId;
     private Date reportCreatedAt;
     private String reportState;
+    private String reportRefType;
 
     // tbl_post
     private String postTitle, postMemberId, postContent;
