@@ -185,8 +185,8 @@
             </div>
 
             <div class="text-end d-grid gap-2">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pwdModal">정보 수정
-                </button>
+                <button type="button" class="btn btn-primary" id="btnUpdate" data-bs-toggle="modal" data-bs-target="#pwdModal">정보 수정</button>
+                <button type="button" class="btn btn-danger" id="btnQuit" data-bs-toggle="modal" data-bs-target="#pwdModal">탈퇴</button>
             </div>
         </form>
     </div>
@@ -234,6 +234,15 @@
             }
         }).open();
     }
+    let modalAction = '';
+
+    $('#btnUpdate').on('click', function () {
+        modalAction = 'update';
+    });
+
+    $('#btnQuit').on('click', function () {
+        modalAction = 'quit';
+    });
 
     function verifyPassword() {
         const inputPwd = $('#memberPwdConfirm').val();
@@ -241,7 +250,21 @@
             .done(function () {
                 $('#pwdError').hide();
                 $('#pwdModal').modal('hide');
-                $('#frmMyPage').submit();
+
+                if (modalAction === 'update') {
+                    $('#frmMyPage').submit();
+                } else if (modalAction === 'quit') {
+                    if (confirm("정말 탈퇴하시겠습니까?")) {
+                        $.post('/mypage/quit')
+                            .done(function (res) {
+                                alert("탈퇴가 완료되었습니다.");
+                                window.location.href = '/main';
+                            })
+                            .fail(function () {
+                                alert("탈퇴에 실패했습니다.");
+                            });
+                    }
+                }
             })
             .fail(function () {
                 $('#pwdError').show();
