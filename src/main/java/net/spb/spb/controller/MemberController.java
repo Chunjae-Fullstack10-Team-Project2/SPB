@@ -15,6 +15,7 @@ import net.spb.spb.util.PasswordUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +26,8 @@ import java.security.NoSuchAlgorithmException;
 
 import jakarta.validation.Valid;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +50,6 @@ public class MemberController {
     public String main(HttpServletRequest request, HttpSession session) {
         Cookie[] cookies = request.getCookies();
         String autoLoginId = null;
-
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("autoLogin".equals(cookie.getName())) {
@@ -65,14 +67,53 @@ public class MemberController {
                 session.setAttribute("memberId", autoLoginId);
             }
         }
+
+        // 비밀번호 변경 주기 확인
+        String memberId = (String) session.getAttribute("memberId");
+        if (memberId != null) {
+            MemberDTO memberDTO = memberService.getMemberById(memberId);
+
+            boolean isUpdated = memberService.updateMemberStatenPwdChangeDate(memberDTO);
+
+            if (isUpdated) {
+                session.setAttribute("memberDTO", memberDTO);
+                System.out.println("memberState: " + memberDTO.getMemberState());
+            }
+        }
         return "common/main";
+    }
+
+    @PostMapping("/updatePwdChangeDate")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updatePwdChangeDate(@RequestBody Map<String, String> requestData) {
+        String memberId = requestData.get("memberId");
+
+        // MemberDTO 가져오기
+        MemberDTO memberDTO = memberService.getMemberById(memberId);
+        if (memberDTO != null) {
+            // 날짜를 현재로 설정하고 상태를 "1"로 변경
+            memberDTO.setMemberPwdChangeDate(LocalDate.now());
+            memberDTO.setMemberState("1");
+
+            // 서비스 호출하여 DB 업데이트
+            boolean isUpdated = memberService.updateMemberStatenPwdChangeDate(memberDTO);
+
+            // 성공 여부 반환
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", isUpdated);
+            return ResponseEntity.ok(response);
+        }
+
+        // 실패 시
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/naver/callback")
     public String naverCallback(@RequestParam("code") String code,
                                 @RequestParam("state") String state,
-                                HttpSession session,
-                                Model model) throws Exception {
+                                HttpSession session) throws Exception {
 
         String accessToken = naverLoginService.getAccessToken(code, state);
         MemberDTO naverMemberDto = naverLoginService.getUserInfo(accessToken);
@@ -91,9 +132,6 @@ public class MemberController {
 
     @GetMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-//        Cookie[] cookies = request.getCookies();
-//        String autoLoginId = null;
-
         if (session.getAttribute("memberId") != null) {
             String action = request.getParameter("action");
             if (action != null && action.equals("logout")) {
@@ -107,26 +145,6 @@ public class MemberController {
                 return "redirect:/login";
             }
         }
-
-//
-//        if (cookies != null) {
-//            for (Cookie cookie : cookies) {
-//                if ("autoLogin".equals(cookie.getName())) {
-//                    autoLoginId = cookie.getValue();
-//                    break;
-//                }
-//            }
-//        }
-//
-//        if (autoLoginId != null) {
-//            MemberDTO autoLoginUser = new MemberDTO();
-//            autoLoginUser.setMemberId(autoLoginId);
-//
-//            if (memberService.existUser(autoLoginId)) {
-//                session.setAttribute("memberId", autoLoginId);
-//            }
-//        }
-
         return "login/login";
     }
 
