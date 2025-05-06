@@ -1,13 +1,9 @@
-package net.spb.spb.dto;
-
-import lombok.Data;
+package net.spb.spb.dto.mystudy;
 
 import java.time.LocalDate;
 
-@Data
-public class PlanListResponseDTO {
+public class PlanResponseDTO {
     private int planIdx;
-    private int planLectureIdx;
     private String planContent;
     private LocalDate planDate;
 }

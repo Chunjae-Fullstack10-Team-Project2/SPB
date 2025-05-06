@@ -1,34 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="net.spb.spb.mapper.PlanMapper">
-    <insert id="insert" parameterType="net.spb.spb.domain.PlanVO" useGeneratedKeys="true"
+<mapper namespace="net.spb.spb.mapper.mystudy.PlanMapper">
+    <insert id="insert" useGeneratedKeys="true"
         keyColumn="planIdx" keyProperty="planIdx">
         insert into tbl_plan (planLectureIdx, planMemberId, planContent, planDate)
         values (#{planLectureIdx}, #{planMemberId}, #{planContent}, #{planDate})
     </insert>
 
-    <select id="selectList" parameterType="net.spb.spb.dto.PlanListRequestDTO" resultType="net.spb.spb.domain.PlanVO">
-        select planIdx, planLectureIdx, planMemberId, planContent, planDate, planState, planCreatedAt, planUpdatedAt
+    <select id="selectList" resultType="net.spb.spb.dto.mystudy.PlanResponseDTO">
+        select planIdx, planContent, planDate
         from tbl_plan
         where planMemberId = #{memberId}
-        and date_format(planDate, '%Y-%m') = #{currentMonth}
+        and date_format(planDate, '%Y-%m') = #{date}
     </select>
 
-    <select id="selectOne" parameterType="java.lang.Integer" resultType="net.spb.spb.domain.PlanVO">
-        select tp.planIdx as planIdx, tp.planLectureIdx as planLectureIdx, tl.lectureTitle as lectureTitle, tp.planMemberId as planMemberId
-             , tp.planContent as planContent, tp.planDate as planDate, tp.planState as planState
+    <select id="selectTodayList" resultType="net.spb.spb.dto.mystudy.PlanDetailResponseDTO">
+        select tp.planIdx as planIdx, tp.planLectureIdx as planLectureIdx, tl.lectureTitle as lectureTitle
+             , tp.planContent as planContent, tp.planDate as planDate
+        from tbl_plan as tp
+        inner join tbl_lecture as tl on tp.planLectureIdx = tl.lectureIdx
+        where planMemberId = #{memberId}
+        and date_format(planDate, '%Y-%m-%d') = #{date}
+    </select>
+
+    <select id="selectByIdx" resultType="net.spb.spb.dto.mystudy.PlanDetailResponseDTO">
+        select tp.planIdx as planIdx, tp.planLectureIdx as planLectureIdx, tl.lectureTitle as lectureTitle
+             , tp.planMemberId as planMemberId
+             , tp.planContent as planContent, tp.planDate as planDate
              , tp.planCreatedAt as planCreatedAt, tp.planUpdatedAt as planUpdatedAt
         from tbl_plan as tp
         inner join tbl_lecture as tl on tp.planLectureIdx = tl.lectureIdx
         where tp.planIdx = #{planIdx}
     </select>
 
-    <update id="update" parameterType="net.spb.spb.domain.PlanVO">
+    <update id="update">
         update tbl_plan set planLectureIdx = #{planLectureIdx}, planContent = #{planContent}, planDate = #{planDate}, planUpdatedAt = now()
         where planIdx = #{planIdx}
     </update>
 
-    <delete id="delete" parameterType="java.lang.Integer">
+    <delete id="delete">
         delete from tbl_plan where planIdx = #{planIdx}
     </delete>
 </mapper>

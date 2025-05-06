@@ -15,11 +15,9 @@ import java.time.LocalDateTime;
 public class PlanVO {
     private int planIdx;
     private int planLectureIdx;
-    private String lectureTitle;
     private String planMemberId;
     private String planContent;
     private LocalDate planDate;
-    private int planState;
     private LocalDateTime planCreatedAt;
     private LocalDateTime planUpdatedAt;
 }

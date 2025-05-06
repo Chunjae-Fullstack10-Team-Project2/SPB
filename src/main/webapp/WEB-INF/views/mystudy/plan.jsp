@@ -29,7 +29,6 @@
                         <p class="card-title">2025-04-28</p>
                         <p class="card-subtitle">강의명</p>
                         <p class="card-text">메모</p>
-                        <span class="badge text-bg-secondary">수강전</span>
                     </div>
                 </div>
             </div>

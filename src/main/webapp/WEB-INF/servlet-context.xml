@@ -41,17 +41,4 @@
         </mvc:interceptor>
     </mvc:interceptors>
 
-    <!-- formatter -->
-    <mvc:annotation-driven conversion-service="conversionService" />
-
-    <bean id="conversionService"
-          class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
-        <property name="formatters">
-            <set>
-                <bean class="net.spb.spb.controller.formatter.LocalDateFormatter"/>
-                <bean class="net.spb.spb.controller.formatter.YearMonthFormatter" />
-            </set>
-        </property>
-    </bean>
-
 </beans>

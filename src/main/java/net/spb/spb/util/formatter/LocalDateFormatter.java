@@ -1,4 +1,4 @@
-package net.spb.spb.controller.formatter;
+package net.spb.spb.util.formatter;
 
 import org.springframework.format.Formatter;
 

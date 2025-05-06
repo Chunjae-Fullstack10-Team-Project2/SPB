@@ -33,13 +33,15 @@
         <property name="mapperLocations" value="classpath:/mappers/**/*.xml"/>
     </bean>
 
-    <mybatis:scan base-package="net.spb.spb.mapper"></mybatis:scan>
+    <mybatis:scan base-package="net.spb.spb.mapper" />
 
     <bean id="conversionService"
           class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
         <property name="formatters">
             <set>
                 <bean class="net.spb.spb.util.formatter.DateFormatter"/>
+                <bean class="net.spb.spb.util.formatter.LocalDateFormatter" />
+                <bean class="net.spb.spb.util.formatter.YearMonthFormatter" />
             </set>
         </property>
     </bean>
