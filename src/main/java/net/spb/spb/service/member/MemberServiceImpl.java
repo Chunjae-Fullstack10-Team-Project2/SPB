@@ -81,4 +81,10 @@ public class MemberServiceImpl implements MemberServiceIf {
         return memberMapper.getMemberCount(memberPageDTO);
     }
 
+    @Override
+    public boolean updateMemberStatenPwdChangeDate(MemberDTO memberDTO) {
+        MemberVO memberVO = modelMapper.map(memberDTO, MemberVO.class);
+        return memberMapper.updateMemberStatenPwdChangeDate(memberVO);
+    }
+
 }
