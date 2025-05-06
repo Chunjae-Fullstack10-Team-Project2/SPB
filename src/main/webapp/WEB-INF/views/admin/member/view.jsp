@@ -39,7 +39,11 @@
             </div>
             <div class="col-sm-4">
                 <select class="form-select" id="memberGrade" name="memberGrade">
-                    <option value="1" ${memberDTO.memberGrade == '0' ? 'selected' : ''}>관리자</option>
+                    <optgroup label="관리자">
+                        <option value="0" ${memberDTO.memberGrade == '0' ? 'selected' : ''}>관리자</option>
+                        <option value="13" ${memberDTO.memberGrade == '13' ? 'selected' : ''}>교사</option>
+                        <option value="14" ${memberDTO.memberGrade == '14' ? 'selected' : ''}>기타</option>
+                    </optgroup>
                     <optgroup label="초등학교">
                         <option value="1" ${memberDTO.memberGrade == '1' ? 'selected' : ''}>초1</option>
                         <option value="2" ${memberDTO.memberGrade == '2' ? 'selected' : ''}>초2</option>
@@ -57,9 +61,6 @@
                         <option value="10" ${memberDTO.memberGrade == '10' ? 'selected' : ''}>고1</option>
                         <option value="11" ${memberDTO.memberGrade == '11' ? 'selected' : ''}>고2</option>
                         <option value="12" ${memberDTO.memberGrade == '12' ? 'selected' : ''}>고3</option>
-                    </optgroup>
-                    <optgroup label="교사">
-                        <option value="13" ${memberDTO.memberGrade == '13' ? 'selected' : ''}>교사</option>
                     </optgroup>
                 </select>
             </div>

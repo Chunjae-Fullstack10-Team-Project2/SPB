@@ -2,6 +2,7 @@ package net.spb.spb.mapper;
 
 import net.spb.spb.domain.MemberVO;
 import net.spb.spb.dto.MemberPageDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -25,4 +26,6 @@ public interface MemberMapper {
     boolean updateMemberByAdmin(MemberVO memberVO);
 
     int getMemberCount(MemberPageDTO memberPageDTO);
+
+    boolean updateMemberStatenPwdChangeDate(MemberVO memberVO);
 }

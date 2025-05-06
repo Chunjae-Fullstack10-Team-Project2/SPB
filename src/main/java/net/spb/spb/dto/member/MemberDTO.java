@@ -50,4 +50,5 @@ public class MemberDTO {
 
     private LocalDate memberPwdChangeDate;
     private LocalDate memberCreatedAt;
+    private LocalDate memberLastLogin;
 }
