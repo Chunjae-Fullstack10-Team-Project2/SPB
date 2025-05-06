@@ -89,6 +89,15 @@ dependencies {
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.2'
     // https://mvnrepository.com/artifact/org.json/json
     implementation 'org.json:json:20240303'
+
+    // 아임포트 결제
+    implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
+
+    allprojects {
+        repositories {
+            maven { url 'https://jitpack.io' }
+        }
+    }
 }
 
 test {

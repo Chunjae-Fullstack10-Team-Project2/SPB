@@ -1,5 +1,6 @@
 package net.spb.spb.mapper;
 
+import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.PostLikeRequestDTO;
 import net.spb.spb.dto.PostReportDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
@@ -17,4 +18,8 @@ public interface MyPageMapper {
     List<PostReportDTO> listMyReport(@Param("searchDTO") SearchDTO searchDTO, @Param("pageDTO") PageRequestDTO pageRequestDTO, @Param("reportMemberId") String reportMemberId);
 
     int reportTotalCount(@Param("searchDTO") SearchDTO searchDTO, @Param("reportMemberId") String reportMemberId);
+
+    List<OrderDTO> listMyOrder(@Param("searchDTO") SearchDTO searchDTO, @Param("pageDTO") PageRequestDTO pageDTO, @Param("orderMemberId") String orderMemberId);
+
+    int orderTotalCount(@Param("searchDTO") SearchDTO searchDTO, @Param("orderMemberId") String orderMemberId);
 }

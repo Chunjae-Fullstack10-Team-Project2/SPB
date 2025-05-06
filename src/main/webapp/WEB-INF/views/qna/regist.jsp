@@ -46,7 +46,8 @@
                 <div class="mb-3">
                     <label for="qnaTitle" class="form-label">제목</label>
                     <input type="text" class="form-control" id="qnaTitle" name="qnaTitle"
-                           placeholder="제목을 입력하세요." required>
+                           placeholder="제목을 입력하세요." required
+                           value="${qnaDTO.qnaTitle != null ? qnaDTO.qnaTitle : ''}">
                 </div>
 
                 <div class="mb-3">
@@ -56,9 +57,17 @@
                 </div>
 
                 <div class="mb-3">
+                    <label for="qnaQPwd" class="form-label">비밀번호(선택)</label>
+                    <input type="text" class="form-control" id="qnaQPwd" name="qnaQPwd" maxlength="4"
+                           value="${qnaDTO.qnaQPwd}"
+                           oninput="this.value=this.value.replace(/[^0-9]/g, '')">
+                </div>
+
+                <div class="mb-3">
                     <label for="qnaQContent" class="form-label">내용</label>
                     <textarea class="form-control" id="qnaQContent" name="qnaQContent" rows="10"
-                              placeholder="문의 내용을 입력해주세요." style="resize: none;" required></textarea>
+                              placeholder="문의 내용을 입력해주세요." style="resize: none;"
+                              required>${qnaDTO.qnaQContent != null ? qnaDTO.qnaQContent : ''}</textarea>
                 </div>
 
                 <div class="d-flex justify-content-end gap-2">

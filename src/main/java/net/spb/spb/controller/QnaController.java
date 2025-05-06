@@ -1,6 +1,5 @@
 package net.spb.spb.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
@@ -13,6 +12,8 @@ import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.service.member.MemberServiceImpl;
 import net.spb.spb.service.qna.QnaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,24 +36,7 @@ public class QnaController {
     @GetMapping("/list")
     public String qna(@ModelAttribute SearchDTO searchDTO,
                       @ModelAttribute PageRequestDTO pageRequestDTO,
-                      HttpServletRequest request,
                       Model model) {
-//
-//        List<Map<String, String>> breadcrumbItems = new ArrayList<>();
-//        breadcrumbItems.add(Map.of("name", "1:1 문의", "url", "/qna/list"));
-//        request.setAttribute("breadcrumbItems", breadcrumbItems);
-//
-//        Map<String, Object> qnaSearchConfig = new HashMap<>();
-//        qnaSearchConfig.put("action", "/qna/list");
-//        qnaSearchConfig.put("showDateType", false);
-//        qnaSearchConfig.put("searchTypeOptions", List.of(
-//                Map.of("value", "qnaTitle", "label", "제목"),
-//                Map.of("value", "qnaQContent", "label", "질문 내용"),
-//                Map.of("value", "qnaQMemberId", "label", "질문 작성자"),
-//                Map.of("value", "qnaAContent", "label", "답변 내용"),
-//                Map.of("value", "qnaAMemberId", "label", "답변 작성자")
-//        ));
-//        request.setAttribute("qnaSearchConfig", qnaSearchConfig);
 
         List<QnaDTO> qnaList = qnaService.searchQna(searchDTO, pageRequestDTO);
         PageResponseDTO<QnaDTO> pageResponseDTO = PageResponseDTO.<QnaDTO>withAll()
@@ -69,7 +53,6 @@ public class QnaController {
 
     @GetMapping("/regist")
     public String regist(@ModelAttribute QnaDTO qnaDTO, HttpSession session, Model model) {
-
         String memberId = (String) session.getAttribute("memberId");
         qnaDTO.setQnaQMemberId(memberId);
 
@@ -78,8 +61,15 @@ public class QnaController {
     }
 
     @PostMapping("/regist")
-    public String regist(@ModelAttribute QnaDTO qnaDTO, BindingResult bindingResult, HttpSession session, Model model) {
-        if (bindingResult.hasErrors()) {
+    public String regist(@Valid @ModelAttribute QnaDTO qnaDTO, BindingResult bindingResult, HttpSession session, Model model) {
+        String pwd = qnaDTO.getQnaQPwd();
+        if (pwd != null && pwd.trim().isEmpty()) {
+            qnaDTO.setQnaQPwd(null);
+        }
+
+        if (pwd != null && !pwd.trim().isEmpty() && !pwd.matches("^\\d{4}$")) {
+            model.addAttribute("message", "비밀번호는 숫자 네 자리여야 합니다.");
+            model.addAttribute("qnaDTO", qnaDTO);
             return "qna/regist";
         }
 
@@ -204,4 +194,20 @@ public class QnaController {
         return "qna/list";
     }
 
+    @PostMapping("/checkPwd")
+    @ResponseBody
+    public ResponseEntity<String> checkPassword(@RequestParam("qnaQPwd") String qnaQPwd,
+                                                @RequestParam("qnaIdx") String qnaIdx) {
+        String originalPwd = qnaService.getPwdByQnaIdx(qnaIdx);
+
+        if (originalPwd == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("fail");
+        }
+
+        if (qnaQPwd != null && qnaQPwd.equals(originalPwd)) {
+            return ResponseEntity.ok("success");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("fail");
+        }
+    }
 }

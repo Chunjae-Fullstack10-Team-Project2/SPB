@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.domain.FileVO;
 import net.spb.spb.domain.PostCommentVO;
+import net.spb.spb.domain.PostReportVO;
 import net.spb.spb.domain.PostVO;
-import net.spb.spb.dto.FileDTO;
-import net.spb.spb.dto.PostCommentDTO;
-import net.spb.spb.dto.PostDTO;
-import net.spb.spb.dto.PostPageDTO;
+import net.spb.spb.dto.*;
 import net.spb.spb.mapper.BoardFileMapper;
 import net.spb.spb.mapper.BoardMapper;
 import net.spb.spb.mapper.CommentMapper;
@@ -144,5 +142,10 @@ public class BoardServiceImpl implements BoardServiceIf{
     @Override
     public int setReadCnt(int postIdx) {
         return boardMapper.setReadCnt(postIdx);
+    }
+
+    @Override
+    public int insertPostReport(PostReportDTO postReportDTO) {
+        return boardMapper.insertPostReport(modelMapper.map(postReportDTO, PostReportVO.class));
     }
 }

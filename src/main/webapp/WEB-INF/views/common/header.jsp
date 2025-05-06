@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%--<%@ page contentType="text/html;charset=UTF-8" language="java" %>--%>
 <html>
 <head>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -33,10 +33,10 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="listDropdown">
                         <li><a class="dropdown-item" href="/board/freeboard/list">자유게시판</a></li>
-                        <li><a class="dropdown-item" href="/board/EDUINFO/list">교육정보</a></li>
-                        <li><a class="dropdown-item" href="/board/UNIINFO/list">대학정보</a></li>
-                        <li><a class="dropdown-item" href="/board/EXACTIVITY/list">대외활동</a></li>
-                        <li><a class="dropdown-item" href="/board/REFERENCE/list">자료공유</a></li>
+                        <li><a class="dropdown-item" href="/board/eduinfo/list">교육정보</a></li>
+                        <li><a class="dropdown-item" href="/board/uniinfo/list">대학정보</a></li>
+                        <li><a class="dropdown-item" href="/board/exactivity/list">대외활동</a></li>
+                        <li><a class="dropdown-item" href="/board/reference/list">자료공유</a></li>
                     </ul>
                 </li>
                 <li><a href="/qna/list" class="nav-link px-2 link-body-emphasis">1:1 문의</a></li>
