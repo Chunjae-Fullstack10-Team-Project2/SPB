@@ -42,8 +42,6 @@
   <div class="sidebar-title">관리자 페이지</div>
   <ul class="sidebar-menu">
     <li><strong><a href="/admin/member/list">회원 목록</a></strong></li>
-    <li><a href="/admin/teacher/list">강사 목록</a></li>
-    <li><a href="/admin/teacher/regist">강사 등록</a></li>
     <li><a href="/admin/teacher/regist">강의 등록</a></li>
     <li><a href="/admin/report/">신고 내역</a>
     <li><a href="/admin/report/freeboard">자유게시판</a>
