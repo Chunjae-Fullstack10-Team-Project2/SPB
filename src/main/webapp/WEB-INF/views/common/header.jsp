@@ -19,13 +19,14 @@
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
-                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
-                    <use xlink:href="#bootstrap"/>
-                </svg>
+<%--                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">--%>
+<%--                    <use xlink:href="#bootstrap"/>--%>
+<%--                </svg>--%>
+    🌱
             </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/main" class="nav-link px-2 link-secondary">Home</a></li>
+                <li><a href="/main" class="nav-link px-2 link-secondary">홈</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle px-2 link-body-emphasis" href="#" id="listDropdown" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
@@ -40,12 +41,12 @@
                     </ul>
                 </li>
                 <li><a href="/qna/list" class="nav-link px-2 link-body-emphasis">1:1 문의</a></li>
-                <li><a href="/faq/list" class="nav-link px-2 link-body-emphasis">FAQ</a></li>
+                <li><a href="/faq/list" class="nav-link px-2 link-body-emphasis">자주 묻는 질문</a></li>
             </ul>
 
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-4" role="search">
-                <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
-            </form>
+<%--            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-4" role="search">--%>
+<%--                <input type="search" class="form-control" placeholder="Search..." aria-label="Search">--%>
+<%--            </form>--%>
 
             <div class="d-flex align-items-center">
                 <a href="#" class="me-4 link-body-emphasis text-decoration-none position-relative">

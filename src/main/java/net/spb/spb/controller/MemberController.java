@@ -27,6 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import jakarta.validation.Valid;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,27 +60,41 @@ public class MemberController {
             }
         }
 
-        if (autoLoginId != null) {
-            MemberDTO autoLoginUser = new MemberDTO();
-            autoLoginUser.setMemberId(autoLoginId);
-
-            if (memberService.existUser(autoLoginId)) {
-                session.setAttribute("memberId", autoLoginId);
-            }
+        if (autoLoginId != null && memberService.existMember(autoLoginId)) {
+            session.setAttribute("memberId", autoLoginId);
         }
 
-        // 비밀번호 변경 주기 확인
         String memberId = (String) session.getAttribute("memberId");
         if (memberId != null) {
             MemberDTO memberDTO = memberService.getMemberById(memberId);
 
-            boolean isUpdated = memberService.updateMemberStatenPwdChangeDate(memberDTO);
+            // 마지막 로그인 일자가 1년 경과
+            LocalDate lastLoginDate = memberDTO.getMemberLastLogin();
+            // 비밀번호 90일 이상 경과
+            LocalDate pwdChangeDate = memberDTO.getMemberPwdChangeDate();
 
-            if (isUpdated) {
-                session.setAttribute("memberDTO", memberDTO);
-                System.out.println("memberState: " + memberDTO.getMemberState());
+            if (lastLoginDate != null) {
+                long daysSinceLastLogin = ChronoUnit.DAYS.between(lastLoginDate, LocalDate.now());
+                if (daysSinceLastLogin >= 365) {
+                    memberDTO.setMemberState("5");
+                    memberService.updateMemberStateWithLogin("5", memberId);
+
+                }
+            } else if (pwdChangeDate != null) {
+                long dayBetween = ChronoUnit.DAYS.between(pwdChangeDate, LocalDate.now());
+                if (dayBetween >= 90) {
+                    memberDTO.setMemberState("3");
+                    memberService.updateMemberStateWithLogin("3", memberId);
+                }
             }
+
+            if (memberDTO.getMemberState().equals("1")) {
+                memberService.updateMemberLastLoginWithLogin(LocalDate.now().toString(), memberId);
+            }
+
+            session.setAttribute("memberDTO", memberDTO);
         }
+
         return "common/main";
     }
 
@@ -88,26 +103,30 @@ public class MemberController {
     public ResponseEntity<Map<String, Object>> updatePwdChangeDate(@RequestBody Map<String, String> requestData) {
         String memberId = requestData.get("memberId");
 
-        // MemberDTO 가져오기
         MemberDTO memberDTO = memberService.getMemberById(memberId);
         if (memberDTO != null) {
-            // 날짜를 현재로 설정하고 상태를 "1"로 변경
-            memberDTO.setMemberPwdChangeDate(LocalDate.now());
-            memberDTO.setMemberState("1");
+            String now = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            boolean updatedDate = memberService.updateMemberPwdChangeDateWithLogin(now, memberId);
+            boolean updatedState = memberService.updateMemberStateWithLogin("1", memberId);
 
-            // 서비스 호출하여 DB 업데이트
-            boolean isUpdated = memberService.updateMemberStatenPwdChangeDate(memberDTO);
-
-            // 성공 여부 반환
             Map<String, Object> response = new HashMap<>();
-            response.put("success", isUpdated);
+            response.put("success", updatedDate && updatedState);
             return ResponseEntity.ok(response);
         }
 
-        // 실패 시
         Map<String, Object> response = new HashMap<>();
         response.put("success", false);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/email/reactivate")
+    @ResponseBody
+    public void reactivateAccount(@RequestBody MemberDTO memberDTO) {
+        String memberId = memberDTO.getMemberId();
+
+        memberService.updateMemberStateWithLogin("1", memberId);
+        //memberService.updateMemberPwdChangeDateWithLogin(LocalDate.now().toString(), memberId);
+        memberService.updateMemberLastLoginWithLogin(LocalDate.now().toString(), memberId);
     }
 
     @GetMapping("/naver/callback")
@@ -120,7 +139,7 @@ public class MemberController {
 
         String naverMemberId = naverMemberDto.getMemberId();
 
-        if (!memberService.existUser(naverMemberId)) {
+        if (!memberService.existMember(naverMemberId)) {
             // model.addAttribute("memberDTO", naverMemberDto);
             session.setAttribute("memberDTO", naverMemberDto);
             return "redirect:/join";
@@ -152,7 +171,6 @@ public class MemberController {
     public String login(@Valid @ModelAttribute LoginDTO loginDTO, BindingResult bindingResult,
                         @RequestParam(value = "checkIdSave", required = false) String checkIdSave,
                         @RequestParam(value = "checkAutoLogin", required = false) String checkAutoLogin,
-                        HttpServletRequest request,
                         HttpServletResponse response,
                         HttpSession session,
                         Model model) {
@@ -191,10 +209,14 @@ public class MemberController {
             session.setAttribute("memberId", memberDTO.getMemberId());
             session.setAttribute("memberGrade", memberDTO.getMemberGrade());
 
+//            // 로그인 일자 오늘로
+//            String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+//            memberService.updateMemberLastLoginWithLogin(today, memberDTO.getMemberId());
+
+            // 아이디 저장 쿠키 처리
             if (checkIdSave != null) {
                 Cookie idCookie = new Cookie("saveId", memberDTO.getMemberId());
-                session.setAttribute("memberId", memberDTO.getMemberId());
-                idCookie.setMaxAge(60 * 60 * 24 * 1);
+                idCookie.setMaxAge(60 * 60 * 24); // 1일
                 idCookie.setPath("/");
                 response.addCookie(idCookie);
             } else {
@@ -204,10 +226,10 @@ public class MemberController {
                 response.addCookie(idCookie);
             }
 
+            // 자동 로그인 쿠키 처리
             if (checkAutoLogin != null) {
                 Cookie autoCookie = new Cookie("autoLogin", memberDTO.getMemberId());
-                session.setAttribute("memberId", memberDTO.getMemberId());
-                autoCookie.setMaxAge(60 * 60 * 24 * 1);
+                autoCookie.setMaxAge(60 * 60 * 24); // 1일
                 autoCookie.setPath("/");
                 response.addCookie(autoCookie);
             } else {
@@ -251,7 +273,7 @@ public class MemberController {
             return result;
         }
 
-        boolean existMember = memberService.existUser(memberId);
+        boolean existMember = memberService.existMember(memberId);
         if (existMember) {
             result.put("success", false);
             result.put("message", "이미 존재하는 아이디입니다.");
@@ -267,17 +289,19 @@ public class MemberController {
 
     @PostMapping("/email/verify")
     @ResponseBody
-    public Map<String, Object> verifyEmail(@ModelAttribute MemberDTO memberDTO, HttpSession session) {
+    public Map<String, Object> verifyEmail(@RequestBody MemberDTO memberDTO, HttpSession session) {
         String memberEmail = memberDTO.getMemberEmail();
         Map<String, Object> result = new HashMap<>();
 
         if (memberEmail != null && !memberEmail.isEmpty()) {
+            // 인증 코드 생성 및 이메일 전송
             String code = mailService.sendVerificationCode(memberEmail);
             session.setAttribute("emailAuthCode", code);
             session.setAttribute("memberEmail", memberEmail);
             session.setAttribute("emailVerified", false);
             session.setAttribute("emailAuthTime", System.currentTimeMillis());
 
+            // 인증 시도 횟수
             Integer emailTryCount = (Integer) session.getAttribute("emailTryCount");
             if (emailTryCount == null) {
                 emailTryCount = 0;
@@ -294,7 +318,7 @@ public class MemberController {
 
             result.put("success", true);
             result.put("message", "인증 코드가 전송되었습니다.");
-            result.put("emailTryCount", emailTryCount); // ajax로 바로 반영되게
+            result.put("emailTryCount", emailTryCount);
         } else {
             result.put("success", false);
             result.put("message", "이메일을 입력해주세요.");
@@ -306,8 +330,10 @@ public class MemberController {
 
     @PostMapping("/email/codeCheck")
     @ResponseBody
-    public Map<String, Object> checkEmailCode(@RequestParam("memberEmailCode") String memberEmailCode,
-                                              @ModelAttribute MemberDTO memberDTO, HttpSession session) {
+    public Map<String, Object> checkEmailCode(@RequestBody Map<String, String> data, HttpSession session) {
+        String memberEmailCode = data.get("memberEmailCode");
+        String memberEmail = data.get("memberEmail");
+
         String sessionCode = (String) session.getAttribute("emailAuthCode");
         Long authTime = (Long) session.getAttribute("emailAuthTime");
         Map<String, Object> result = new HashMap<>();
@@ -334,7 +360,6 @@ public class MemberController {
             result.put("message", "인증 코드가 일치하지 않습니다.");
         }
 
-        session.setAttribute("memberDTO", memberDTO);
         return result;
     }
 

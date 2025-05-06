@@ -9,7 +9,7 @@
     </select>
 
     <!--  존재하는 회원인지 + 아이디 중복 체크용  -->
-    <select id="existUser" parameterType="String" resultType="net.spb.spb.domain.MemberVO">
+    <select id="existMember" parameterType="String" resultType="net.spb.spb.domain.MemberVO">
         select memberIdx
         from tbl_member
         where memberId = #{memberId}
@@ -46,8 +46,26 @@
             memberZipCode = #{memberZipCode},
             memberAddr1   = #{memberAddr1},
             memberAddr2   = #{memberAddr2},
-            memberGrade   = #{memberGrade}
-        where memberId = #{memberId}
+            memberGrade   = #{memberGrade},
+            where memberId = #{memberId}
+    </update>
+
+    <update id="updateMemberStateWithLogin" parameterType="String">
+        update tbl_member
+        set memberState = #{memberState}
+            where memberId = #{memberId}
+    </update>
+
+    <update id="updateMemberPwdChangeDateWithLogin" parameterType="String">
+        update tbl_member
+        set memberPwdChangeDate = #{memberPwdChangeDate}
+            where memberId = #{memberId}
+    </update>
+
+    <update id="updateMemberLastLoginWithLogin" parameterType="String">
+        update tbl_member
+        set memberLastLogin = #{memberLastLogin}
+            where memberId = #{memberId}
     </update>
 
     <select id="getPwdById" parameterType="String" resultType="String">
@@ -126,13 +144,5 @@
             </if>
         </where>
     </select>
-
-    <!--  로그인 시  -->
-    <update id="updateMemberStatenPwdChangeDate" parameterType="net.spb.spb.domain.MemberVO">
-        update tbl_member
-        set memberState = #{memberState},
-            memberPwdChangeDate = #{memberPwdChangeDate}
-        where memberId = #{memberId}
-    </update>
 
 </mapper>
