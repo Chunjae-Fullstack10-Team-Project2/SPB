@@ -46,7 +46,7 @@
             memberZipCode = #{memberZipCode},
             memberAddr1   = #{memberAddr1},
             memberAddr2   = #{memberAddr2},
-            memberGrade   = #{memberGrade},
+            memberGrade   = #{memberGrade}
             where memberId = #{memberId}
     </update>
 

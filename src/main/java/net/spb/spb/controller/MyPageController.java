@@ -1,5 +1,8 @@
 package net.spb.spb.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.OrderDTO;
@@ -71,6 +74,25 @@ public class MyPageController {
         String encryptedPassword = PasswordUtil.encryptPassword(memberPwd);
 
         if (encryptedPassword != null && encryptedPassword.equals(originalPwd)) {
+            return ResponseEntity.ok("success");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("fail");
+        }
+    }
+
+    @PostMapping("/quit")
+    @ResponseBody
+    public ResponseEntity<String> quitMember(HttpSession session, HttpServletResponse response, HttpServletRequest request) {
+        String memberId = (String) session.getAttribute("memberId");
+
+        boolean isUpdated = memberService.updateMemberStateWithLogin("6", memberId);
+        if (isUpdated) {
+            request.getSession().invalidate();
+
+            Cookie autoLoginCookie = new Cookie("autoLogin", null);
+            autoLoginCookie.setMaxAge(0);
+            autoLoginCookie.setPath("/");
+            response.addCookie(autoLoginCookie);
             return ResponseEntity.ok("success");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("fail");
@@ -169,7 +191,7 @@ public class MyPageController {
                 .build();
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("orderList", finalOrderList); // 변경된 리스트 전달
+        model.addAttribute("orderList", finalOrderList);
         model.addAttribute("searchDTO", searchDTO);
         return "mypage/order";
     }
