@@ -33,7 +33,7 @@
                memberEmail,
                memberPhone,
                memberJoinPath,
-               memberGrade
+               memberState
         from tbl_member
         where memberId = #{memberId}
     </select>
@@ -52,5 +52,76 @@
         select memberPwd
         from tbl_member
         where memberId = #{memberId}
+    </select>
+
+    <select id="getAllMembers" resultType="net.spb.spb.domain.MemberVO" parameterType="net.spb.spb.dto.MemberPageDTO">
+        select memberIdx,
+               memberId,
+               memberName,
+               memberBirth,
+               memberCreatedAt,
+               memberState,
+               memberGrade,
+               memberEmail,
+               memberPhone
+        from tbl_member
+        <where>
+            1=1
+            <if test="search_member_state != null and search_member_state != ''">
+                and memberState = #{search_member_state}
+            </if>
+            <if test="search_member_grade != null and search_member_grade != ''">
+                <if test="search_member_grade gte 0 and search_member_grade lte 13">
+                    and memberGrade = #{search_member_grade}
+                </if>
+            </if>
+            <if test="search_word != null and search_word != ''">
+                and (
+                    memberId like concat('%', #{search_word}, '%')
+                    or memberName like concat('%', #{search_word}, '%')
+                )
+            </if>
+        </where>
+        order by ${sort_by} ${sort_direction}
+        limit #{page_skip_count}, #{page_size}
+    </select>
+
+    <update id="updateMemberState" parameterType="net.spb.spb.domain.MemberVO">
+        update tbl_member
+        set memberState = #{memberState}
+        where memberIdx = #{memberIdx}
+    </update>
+
+    <update id="updateMemberByAdmin" parameterType="net.spb.spb.domain.MemberVO">
+        update tbl_member
+        set memberState = #{memberState},
+            memberName    = #{memberName},
+            memberZipCode = #{memberZipCode},
+            memberAddr1   = #{memberAddr1},
+            memberAddr2   = #{memberAddr2},
+            memberGrade   = #{memberGrade}
+        where memberId = #{memberId}
+    </update>
+
+    <select id="getMemberCount" resultType="java.lang.Integer" parameterType="net.spb.spb.dto.MemberPageDTO">
+        select count(memberIdx)
+        from tbl_member
+        <where>
+            1=1
+            <if test="search_member_state != null and search_member_state != ''">
+                and memberState = #{search_member_state}
+            </if>
+            <if test="search_member_grade != null and search_member_grade != ''">
+                <if test="search_member_grade gte 0 and search_member_grade lte 13">
+                    and memberGrade = #{search_member_grade}
+                </if>
+            </if>
+            <if test="search_word != null and search_word != ''">
+                and (
+                memberId like concat('%', #{search_word}, '%')
+                or memberName like concat('%', #{search_word}, '%')
+                )
+            </if>
+        </where>
     </select>
 </mapper>

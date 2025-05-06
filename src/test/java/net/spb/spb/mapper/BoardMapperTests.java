@@ -72,7 +72,7 @@ public class BoardMapperTests {
         log.info("=============================");
         log.info("BoardMapperTests  >>  selectAll");
         log.info("=============================");
-        PostPageDTO postPageDTO = PostPageDTO.builder().postCategory("FREEBOARD").page_size(10).build();
+        PostPageDTO postPageDTO = PostPageDTO.builder().postCategory("FREEBOARD").build();
         List<PostVO> vos = boardMapper.getPosts(postPageDTO);
         for(PostVO vo: vos) {
             log.info("vo: "+vo);
@@ -99,7 +99,7 @@ public class BoardMapperTests {
 
     @Test
     public void getPostCount() {
-        PostPageDTO postPageDTO = PostPageDTO.builder().search_type("postTitle").search_word("제목").postCategory("UNIINFO").build();
+        PostPageDTO postPageDTO = PostPageDTO.builder().postCategory("UNIINFO").build();
         int rtnResult = boardMapper.getPostCount(postPageDTO);
         log.info("=============================");
         log.info("BoardMapperTests  >>  getPostCount");

@@ -15,8 +15,6 @@ import net.spb.spb.util.PasswordUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -45,13 +43,28 @@ public class MemberController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping("/")
-    public String main() {
-        return "common/main";
-    }
+    @GetMapping(path = {"/", "/main"})
+    public String main(HttpServletRequest request, HttpSession session) {
+        Cookie[] cookies = request.getCookies();
+        String autoLoginId = null;
 
-    @GetMapping("/main")
-    public String main2() {
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("autoLogin".equals(cookie.getName())) {
+                    autoLoginId = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (autoLoginId != null) {
+            MemberDTO autoLoginUser = new MemberDTO();
+            autoLoginUser.setMemberId(autoLoginId);
+
+            if (memberService.existUser(autoLoginId)) {
+                session.setAttribute("memberId", autoLoginId);
+            }
+        }
         return "common/main";
     }
 
@@ -78,39 +91,41 @@ public class MemberController {
 
     @GetMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-        Cookie[] cookies = request.getCookies();
-        String autoLoginId = null;
+//        Cookie[] cookies = request.getCookies();
+//        String autoLoginId = null;
 
-        String action = request.getParameter("action");
-        if (action != null && action.equals("logout")) {
-            request.getSession().invalidate();
+        if (session.getAttribute("memberId") != null) {
+            String action = request.getParameter("action");
+            if (action != null && action.equals("logout")) {
+                request.getSession().invalidate();
 
-            Cookie autoLoginCookie = new Cookie("autoLogin", null);
-            autoLoginCookie.setMaxAge(0);
-            autoLoginCookie.setPath("/");
-            response.addCookie(autoLoginCookie);
+                Cookie autoLoginCookie = new Cookie("autoLogin", null);
+                autoLoginCookie.setMaxAge(0);
+                autoLoginCookie.setPath("/");
+                response.addCookie(autoLoginCookie);
 
-            return "redirect:/login";
-        }
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("autoLogin".equals(cookie.getName())) {
-                    autoLoginId = cookie.getValue();
-                    break;
-                }
+                return "redirect:/login";
             }
         }
 
-        if (autoLoginId != null) {
-            MemberDTO autoLoginUser = new MemberDTO();
-            autoLoginUser.setMemberId(autoLoginId);
-
-            if (memberService.existUser(autoLoginId)) {
-                session.setAttribute("memberId", autoLoginId);
-                return "redirect:/board/list";
-            }
-        }
+//
+//        if (cookies != null) {
+//            for (Cookie cookie : cookies) {
+//                if ("autoLogin".equals(cookie.getName())) {
+//                    autoLoginId = cookie.getValue();
+//                    break;
+//                }
+//            }
+//        }
+//
+//        if (autoLoginId != null) {
+//            MemberDTO autoLoginUser = new MemberDTO();
+//            autoLoginUser.setMemberId(autoLoginId);
+//
+//            if (memberService.existUser(autoLoginId)) {
+//                session.setAttribute("memberId", autoLoginId);
+//            }
+//        }
 
         return "login/login";
     }
@@ -156,6 +171,7 @@ public class MemberController {
 
         if (returnValue == 1) {
             session.setAttribute("memberId", memberDTO.getMemberId());
+            session.setAttribute("memberGrade", memberDTO.getMemberGrade());
 
             if (checkIdSave != null) {
                 Cookie idCookie = new Cookie("saveId", memberDTO.getMemberId());
@@ -283,6 +299,11 @@ public class MemberController {
             return "login/join";
         }
 
+        // memberGrade가 13 또는 0이면 14로 변경 -> 관리자가 승인해줘야 함
+        if (memberDTO.getMemberGrade().equals("13") || memberDTO.getMemberGrade().equals("0")) {
+            memberDTO.setMemberGrade("14");
+        }
+
         String sessionMemberId = (String) session.getAttribute("checkedMemberId");
         String inputMemberId = request.getParameter("memberId");
         if (sessionMemberId != null && !sessionMemberId.equals(inputMemberId)) {
@@ -337,6 +358,7 @@ public class MemberController {
             memberDTO.setMemberPwd(encryptedPassword);
         } catch (NoSuchAlgorithmException e) {
             model.addAttribute("errorMessage", "비밀번호 암호화 오류가 발생했습니다.");
+            model.addAttribute("memberDTO", memberDTO);
             return "login/join";
         }
 
@@ -356,43 +378,4 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/mypage")
-    public String mypage(HttpSession session, Model model) {
-        String memberId = (String) session.getAttribute("memberId");
-        if (memberId == null) {
-            return "redirect:/login";
-        }
-        MemberDTO memberDTO = memberService.getMemberById(memberId);
-        model.addAttribute("memberDTO", memberDTO);
-
-        return "login/mypage";
-    }
-
-    @PostMapping("/mypage")
-    public String updateMyPage(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
-        String memberId = (String) session.getAttribute("memberId");
-        memberDTO.setMemberId(memberId);
-
-        boolean result = memberService.updateMember(memberDTO);
-        if (result) {
-            session.setAttribute("memberDTO", memberDTO);
-            return "redirect:/mypage";
-        } else {
-            model.addAttribute("errorMessage", "회원 정보 수정에 실패했습니다.");
-            return "login/mypage";
-        }
-    }
-
-    @PostMapping("/mypage/checkPwd")
-    @ResponseBody
-    public ResponseEntity<String> checkPassword(@RequestParam("memberPwd") String memberPwd, HttpSession session) {
-        String memberId = (String) session.getAttribute("memberId");
-        String originalPwd = memberService.getPwdById(memberId);
-
-        if (originalPwd != null && originalPwd.equals(memberPwd)) {
-            return ResponseEntity.ok("success");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("fail");
-        }
-    }
 }

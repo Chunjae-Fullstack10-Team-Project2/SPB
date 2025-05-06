@@ -1,9 +1,9 @@
-package net.spb.spb.service.Qna;
+package net.spb.spb.service.qna;
 
 import net.spb.spb.domain.QnaVO;
-import net.spb.spb.dto.PageRequestDTO;
+import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.qna.QnaDTO;
-import net.spb.spb.dto.qna.QnaSearchDTO;
+import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.mapper.QnaMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +28,9 @@ public class QnaServiceImpl implements QnaService {
     }
 
     @Override
-    public List<QnaDTO> searchQna(QnaSearchDTO searchDTO, PageRequestDTO pageRequestDTO) {
+    public List<QnaDTO> searchQna(SearchDTO searchDTO, PageRequestDTO pageRequestDTO) {
         return qnaMapper.searchQna(searchDTO, pageRequestDTO);
     }
-
 
     @Override
     public QnaDTO view(String qnaIdx) {
@@ -57,7 +56,17 @@ public class QnaServiceImpl implements QnaService {
     }
 
     @Override
-    public int totalCount(QnaSearchDTO searchDTO) {
+    public int totalCount(SearchDTO searchDTO) {
         return qnaMapper.totalCount(searchDTO);
+    }
+
+    @Override
+    public List<QnaDTO> myQna(SearchDTO searchDTO, PageRequestDTO pageRequestDTO, String qnaQMemberId) {
+        return qnaMapper.myQna(searchDTO, pageRequestDTO, qnaQMemberId);
+    }
+
+    @Override
+    public String getPwdByQnaIdx(String qnaIdx) {
+        return qnaMapper.getPwdByQnaIdx(qnaIdx);
     }
 }
