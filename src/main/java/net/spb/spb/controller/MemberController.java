@@ -258,9 +258,25 @@ public class MemberController {
             session.setAttribute("emailAuthCode", code);
             session.setAttribute("memberEmail", memberEmail);
             session.setAttribute("emailVerified", false);
+            session.setAttribute("emailAuthTime", System.currentTimeMillis());
+
+            Integer emailTryCount = (Integer) session.getAttribute("emailTryCount");
+            if (emailTryCount == null) {
+                emailTryCount = 0;
+            }
+
+            if (emailTryCount >= 3) {
+                result.put("success", false);
+                result.put("message", "이메일 인증 시도 횟수를 초과했습니다. 나중에 다시 시도해주세요.");
+                return result;
+            }
+
+            emailTryCount++;
+            session.setAttribute("emailTryCount", emailTryCount);
 
             result.put("success", true);
             result.put("message", "인증 코드가 전송되었습니다.");
+            result.put("emailTryCount", emailTryCount); // ajax로 바로 반영되게
         } else {
             result.put("success", false);
             result.put("message", "이메일을 입력해주세요.");
@@ -275,11 +291,26 @@ public class MemberController {
     public Map<String, Object> checkEmailCode(@RequestParam("memberEmailCode") String memberEmailCode,
                                               @ModelAttribute MemberDTO memberDTO, HttpSession session) {
         String sessionCode = (String) session.getAttribute("emailAuthCode");
+        Long authTime = (Long) session.getAttribute("emailAuthTime");
         Map<String, Object> result = new HashMap<>();
+
+        long currentTime = System.currentTimeMillis();
+        long fiveMinutesInMillis = 5 * 60 * 1000;
+
+        if (authTime == null || (currentTime - authTime) > fiveMinutesInMillis) {
+            session.removeAttribute("emailVerified");
+            session.removeAttribute("emailAuthCode");
+            result.put("success", false);
+            result.put("message", "인증 시간이 만료되었습니다. 다시 시도해주세요.");
+            return result;
+        }
 
         if (sessionCode != null && sessionCode.equals(memberEmailCode)) {
             result.put("success", true);
             session.setAttribute("emailVerified", true);
+            session.removeAttribute("emailTryCount");
+            session.removeAttribute("emailAuthCode");
+            session.removeAttribute("emailAuthTime");
         } else {
             result.put("success", false);
             result.put("message", "인증 코드가 일치하지 않습니다.");
@@ -365,8 +396,7 @@ public class MemberController {
         boolean result = memberService.join(memberDTO);
 
         if (result) {
-            session.removeAttribute("emailVerified");
-            session.removeAttribute("emailAuthCode");
+
             session.removeAttribute("memberEmail");
             model.addAttribute("errorMessage", "회원가입에 성공했습니다.");
             return "redirect:/login";
@@ -377,5 +407,4 @@ public class MemberController {
             return "login/join";
         }
     }
-
 }
