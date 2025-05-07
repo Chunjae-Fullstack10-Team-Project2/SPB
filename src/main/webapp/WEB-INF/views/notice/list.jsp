@@ -67,7 +67,6 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             padding: 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
             z-index: 999;
             min-width: 100px;
         }
@@ -109,11 +108,14 @@
         }
         .paging {
             margin-top: 20px;
-            text-align: center; /* 중앙 정렬 */
+            text-align: center;
+        }
+
+        .empty-list{
+            margin-top: 10px;
+            text-align: center;
         }
     </style>
-
-
 </head>
 <body>
 
@@ -131,7 +133,7 @@
 </form>
 
 
-<!-- 고정 공지 표시 영역 -->
+<!-- 고정 공지 섹션 -->
 <div id="fixedNoticeArea">
     <strong>📌 고정된 공지사항</strong>
     <ul id="fixedList">
@@ -162,10 +164,11 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach var="notice" items="${list}" varStatus="status">
+    <c:set var="currentNumber" value="${listNumber}" />
+    <c:set var="counter" value="0" />
+    <c:forEach var="notice" items="${list}">
         <tr>
-            <td>${(currentPage - 1) * size + status.index + 1}</td>
-
+            <td>${currentNumber - counter}</td> <!-- 감소된 값 출력 -->
             <td>
                 <a href="${pageContext.request.contextPath}/notice/view?noticeIdx=${notice.noticeIdx}" class="list-title">
                         ${notice.noticeTitle}
@@ -195,32 +198,28 @@
                 </div>
             </td>
         </tr>
+        <c:set var="counter" value="${counter + 1}" />
     </c:forEach>
+
     </tbody>
 </table>
 
+<c:if test="${list == null || list.isEmpty()}">
+    <div class="empty-list">
+        등록된 공지사항이 없습니다!
+    </div>
+</c:if>
+
 <!-- 페이징 -->
 <div class="paging">
-    <a href="${pageContext.request.contextPath}/notice/list?page=${1}&size=${size}"><< &nbsp;</a>
-    <a href="${pageContext.request.contextPath}/notice/list?page=${prevPage}&size=${size}">< &nbsp;</a>
-    <c:forEach var="i" begin="${startPage}" end="${endPage}">
-        <c:choose>
-            <c:when test="${i == currentPage}">
-                <strong>${i}</strong>
-            </c:when>
-            <c:otherwise>
-                <a href="${pageContext.request.contextPath}/notice/list?page=${i}&size=${size}">${i}</a>
-            </c:otherwise>
-        </c:choose>
-        &nbsp;
-    </c:forEach>
-    <a href="${pageContext.request.contextPath}/notice/list?page=${nextPage}&size=${size}">> &nbsp;</a>
-    <a href="${pageContext.request.contextPath}/notice/list?page=${totalPage}&size=${size}"> &nbsp;>></a>
+    ${pagination}
 </div>
 
 <div class="btn-container">
     <button type="button" class="btn" id="btnRegist">글 작성</button>
 </div>
+
+
 
 <script>
     document.getElementById('btnRegist').addEventListener('click', function () {
@@ -236,6 +235,8 @@
         });
         dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
     }
+
+
 
     function fix(noticeIdx) {
         fetch('${pageContext.request.contextPath}/notice/fix', {

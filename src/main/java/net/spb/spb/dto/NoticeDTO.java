@@ -40,4 +40,6 @@ public class NoticeDTO {
                 .noticeUpdatedAt(this.noticeUpdatedAt)
                 .build();
     }
+
+
 }

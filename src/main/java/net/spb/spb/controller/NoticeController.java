@@ -3,10 +3,14 @@ package net.spb.spb.controller;
 import lombok.RequiredArgsConstructor;
 import net.spb.spb.dto.NoticeDTO;
 import net.spb.spb.service.NoticeService;
+import net.spb.spb.util.Paging;
+import net.spb.spb.util.PagingUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -24,7 +28,7 @@ public class NoticeController {
                        @RequestParam(name = "searchType", required = false) String searchType,
                        Model model) throws Exception {
 
-        int offset = (page - 1) * size;
+        int offset = Paging.getOffset(page, size);
         List<NoticeDTO> list;
         int totalCount;
 
@@ -42,24 +46,29 @@ public class NoticeController {
         }
 
         List<NoticeDTO> fixedList = noticeService.getFixedNotices();
-        int totalPage = (int) Math.ceil((double) totalCount / size);
+        int totalPage = Paging.getTotalPage(totalCount, size);
 
-        int startPage = Math.max(1, page - 2);
-        int endPage = Math.min(totalPage, page + 2);
-        int prevPage = page > 1 ? page - 1 : 1;
-        int nextPage = page < totalPage ? page + 1 : totalPage;
+        String queryParams = "&size=" + size;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            queryParams += "&keyword=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8);
+            if (searchType != null) {
+                queryParams += "&searchType=" + searchType;
+            }
+        }
 
-        model.addAttribute("prevPage", prevPage);
-        model.addAttribute("nextPage", nextPage);
-        model.addAttribute("endPage", endPage);
-        model.addAttribute("startPage", startPage);
+        int listNumber = totalCount - offset;
+
+        String paginationHtml = PagingUtil.getPagination(page, totalPage, "/notice/list", queryParams);
+
         model.addAttribute("list", list);
         model.addAttribute("fixedList", fixedList);
+        model.addAttribute("pagination", paginationHtml);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("size", size);
         model.addAttribute("keyword", keyword);
         model.addAttribute("searchType", searchType);
+        model.addAttribute("listNumber", listNumber);
         return "notice/list";
     }
 
@@ -68,9 +77,12 @@ public class NoticeController {
         NoticeDTO dto = noticeService.getDetail(noticeIdx);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
         String createdAtStr = dto.getNoticeCreatedAt().format(formatter);
-        String updatedAtStr = dto.getNoticeUpdatedAt().format(formatter);
+
+        String updatedAtStr = null;
+        if (!dto.getNoticeCreatedAt().isEqual(dto.getNoticeUpdatedAt())) {
+            updatedAtStr = dto.getNoticeUpdatedAt().format(formatter);
+        }
 
         model.addAttribute("dto", dto);
         model.addAttribute("createdAtStr", createdAtStr);

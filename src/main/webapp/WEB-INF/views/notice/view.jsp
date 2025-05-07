@@ -7,7 +7,6 @@
     <title>공지사항 상세보기</title>
     <style>
         body {
-            font-family: sans-serif;
             padding: 40px;
             margin: 0;
         }
@@ -33,6 +32,7 @@
             overflow-y: auto;
             white-space: pre-line;
             background-color: #fafafa;
+            margin-top: 20px;
         }
 
         .btn-container {
@@ -64,13 +64,13 @@
     <div>
         작성자 : ${dto.noticeMemberId}
     </div>
-    <div>
+    <div style="margin-top: 5px">
         작성일 : ${createdAtStr}
-        <c:if test="${createdAtStr ne updatedAtStr}">
+        <c:if test="${not empty updatedAtStr}">
             &nbsp;&nbsp; 수정일 : ${updatedAtStr}
         </c:if>
     </div>
-</div>
+
 
 <div class="content-box">
     ${dto.noticeContent}

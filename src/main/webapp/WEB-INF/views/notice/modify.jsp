@@ -7,7 +7,6 @@
     <title>공지사항 수정</title>
     <style>
         body {
-            font-family: sans-serif;
             padding: 40px;
             margin: 0;
         }
