@@ -24,7 +24,7 @@ public class MyStudyController {
     private final StudentLectureServiceIf studentLectureService;
 
     @GetMapping("/lecture")
-    public String getStudentLecture(@ModelAttribute StudentLecturePageDTO pageDTO, Model model, HttpServletRequest req) {
+    public String list(@ModelAttribute("pageDTO") StudentLecturePageDTO pageDTO, Model model, HttpServletRequest req) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 

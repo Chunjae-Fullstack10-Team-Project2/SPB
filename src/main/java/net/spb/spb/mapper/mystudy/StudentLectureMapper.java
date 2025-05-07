@@ -8,10 +8,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface StudentLectureMapper {
-    public List<StudentLectureDTO> getStudentLectureList(@Param("memberId") String memberId);
-    public List<StudentLectureDTO> getStudentLectureList(@Param("memberId") String memberId, StudentLecturePageDTO pageDTO);
+    public List<StudentLectureDTO> getStudentLectureList(@Param("memberId") String memberId, @Param("pageDTO") StudentLecturePageDTO pageDTO);
 
-    public int getStudentLectureTotalCount(@Param("memberId") String memberId, StudentLecturePageDTO pageDTO);
+    public int getStudentLectureTotalCount(@Param("memberId") String memberId, @Param("pageDTO") StudentLecturePageDTO pageDTO);
 
     public LocalDateTime getLastWatchDate(@Param("memberId") String memberId, @Param("lectureIdx") int lectureIdx);
     public int getLectureProgress(@Param("memberId") String memberId, @Param("lectureIdx") int lectureIdx);

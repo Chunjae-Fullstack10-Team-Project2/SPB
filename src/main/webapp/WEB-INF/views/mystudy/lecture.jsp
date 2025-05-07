@@ -22,19 +22,19 @@
         <!-- 검색창 영역 -->
         <div class="search-box">
             <div class="search-status btn-group" role="group">
-                <input type="radio" class="btn-check" name="lecture_status" id="lecture_status_0" value="0" ${pageDTO.lecture_status eq 0 ? checked : ''} />
+                <input type="radio" class="btn-check" name="lecture_status" id="lecture_status_0" value="0" ${pageDTO.lecture_status == 0 ? 'checked' : ''} />
                 <label class="btn btn-outline-primary" for="lecture_status_0">수강전</label>
 
-                <input type="radio" class="btn-check" name="lecture_status" id="lecture_status_1" value="1" ${pageDTO.lecture_status eq 1 ? checked : ''} />
+                <input type="radio" class="btn-check" name="lecture_status" id="lecture_status_1" value="1" ${pageDTO.lecture_status == 1 ? 'checked' : ''} />
                 <label class="btn btn-outline-primary" for="lecture_status_1">수강중</label>
 
-                <input type="radio" class="btn-check" name="lecture_status" id="lecture_status_2" value="2" ${pageDTO.lecture_status eq 2 ? checked : ''} />
+                <input type="radio" class="btn-check" name="lecture_status" id="lecture_status_2" value="2" ${pageDTO.lecture_status == 2 ? 'checked' : ''} />
                 <label class="btn btn-outline-primary" for="lecture_status_2">수강완료</label>
             </div>
             <div class="search-word">
                 <select class="form-select" name="search_category">
-                    <option value="lectureTitle" ${pageDTO.search_category eq 'lectureTitle' ? selected : ''}>강의명</option>
-                    <option value="teacherName" ${pageDTO.search_category eq 'teacherName' ? selected : ''}>선생님</option>
+                    <option value="lectureTitle" ${pageDTO.search_category == 'lectureTitle' ? 'selected' : ''}>강의명</option>
+                    <option value="teacherName" ${pageDTO.search_category == 'teacherName' ? 'selected' : ''}>선생님</option>
                 </select>
                 <input class="form-control" type="text" name="search_word" value="${pageDTO.search_word}" placeholder="검색어를 입력하세요."/>
                 <button type="button" class="btn btn-primary" id="btnSearch">검색</button>
