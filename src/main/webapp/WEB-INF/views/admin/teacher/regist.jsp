@@ -36,7 +36,7 @@
           <a class="link-body-emphasis fw-semibold text-decoration-none" href="/admin/">관리자 페이지</a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
-          강좌 등록
+          선생님 등록
         </li>
       </ol>
     </nav>
@@ -46,45 +46,41 @@
 
     <div class="card shadow rounded">
       <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">강좌 등록</h5>
+        <h5 class="mb-0">선생님 등록</h5>
       </div>
       <div class="card-body">
         <form name="frmRegist" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
           <div class="mb-3">
-            <label for="lectureTitle" class="form-label">강좌명</label>
-            <input type="text" class="form-control" id="lectureTitle" name="lectureTitle"
-                   placeholder="강좌명을 입력하세요." required
-                   value="${lectureDTO.lectureTitle != null ? lectureDTO.lectureTitle : ''}">
+            <label for="teacherId" class="form-label">선생님 아이디</label>
+            <input type="text" class="form-control" id="teacherId" name="teacherId"
+                   placeholder="선생님 아이디를 입력하세요." required
+                   value="${memberDTO.memberId != null ? memberDTO.memberId : ''}">
           </div>
 
           <div class="mb-3">
-            <label for="lectureTeacherName" class="form-label">담당 선생님</label>
-            <input type="hidden" class="form-control" id="lectureTeacherId" name="lectureTeacherId"
-                   value="${lectureDTO.lectureTeacherId}">
-            <div class="input-group">
-              <input type="text" class="form-control" id="lectureTeacherName" name="lectureTeacherName"
-                     value="${lectureDTO.lectureTeacherName}" placeholder="담당 선생님을 입력하세요." required>
-              <button type="button" class="btn btn-outline-primary" onclick="openTeacherSearch()">선생님 검색</button>
-            </div>
+            <label for="teacherName" class="form-label">선생님 성함</label>
+            <input type="text" class="form-control" id="teacherName" name="teacherName"
+                   placeholder="선생님 성함을 입력하세요."
+                   value="${memberDTO.memberName}">
           </div>
 
           <div class="mb-3">
-            <label for="lectureTeacherId" class="form-label">강좌 가격</label>
-            <input type="text" class="form-control" id="lectureAmount" name="lectureAmount"
-                   placeholder="강좌 가격을 입력하세요."
-                   value="${lectureDTO.lectureAmount}">
+            <label for="teacherSubject" class="form-label">선생님 담당 과목</label>
+            <input type="text" class="form-control" id="teacherSubject" name="teacherSubject"
+                   placeholder="선생님 담당 과목을 입력하세요."
+                   value="">
           </div>
 
           <div class="mb-3">
-            <label for="file1" class="form-label">강좌 썸네일 이미지</label>
+            <label for="file1" class="form-label">선생님 이미지</label>
             <input type="file" class="form-control" id="file1" name="file1" accept="image/*">
           </div>
 
           <div class="mb-3">
-            <label for="lectureDescription" class="form-label">강좌 설명</label>
-            <textarea class="form-control" id="lectureDescription" name="lectureDescription" rows="10"
-                      placeholder="강좌 설명을 입력하세요." style="resize: none;"
-                      required>${lectureDTO.lectureDescription != null ? lectureDTO.lectureDescription : ''}</textarea>
+            <label for="teacherIntro" class="form-label">선생님 소개</label>
+            <textarea class="form-control" id="teacherIntro" name="teacherIntro" rows="10"
+                      placeholder="선생님 소개를 입력하세요." style="resize: none;"
+                      required></textarea>
           </div>
 
           <div class="d-flex justify-content-end gap-2">
@@ -97,15 +93,5 @@
   </div>
 
 </div>
-<script>
-  function openTeacherSearch() {
-    window.open('/admin/teacher/searchPopup','teacherSearch', 'width=600,height=800,scrollbars=yes,resizable=no');
-  }
-
-  function selectTeacher(id, name) {
-    document.getElementById('lectureTeacherId').value = id;
-    document.getElementById('lectureTeacherName').value = name+"("+id+")";
-  }
-</script>
 </body>
 </html>
