@@ -30,6 +30,14 @@
         th {
             font-weight: bold;
         }
+
+        .list-title a {
+            display: inline-block;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .dropdown-section {
             position: relative;
             display: inline-block;
@@ -143,8 +151,9 @@
     <c:forEach var="notice" items="${fixedList}">
         <tr>
             <td><img src="${pageContext.request.contextPath}/resources/images/fix.svg" class="fix-icon" alt="고정"></td>
-            <td>
-                <a href="${pageContext.request.contextPath}/notice/view?noticeIdx=${notice.noticeIdx}">
+            <td class="list-title">
+                <a href="${pageContext.request.contextPath}/notice/view?noticeIdx=${notice.noticeIdx}"
+                   title="${notice.noticeTitle}">
                         ${notice.noticeTitle}
                 </a>
             </td>
@@ -213,6 +222,7 @@
 </div>
 
 <script>
+    // toggle
     function toggleDropdown(imgElement) {
         const dropdown = imgElement.nextElementSibling;
         document.querySelectorAll('.dropdown-menu').forEach(menu => {
@@ -222,6 +232,7 @@
         });
         dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
     }
+
 </script>
 
 </body>
