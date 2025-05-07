@@ -88,20 +88,22 @@
             margin-top: 20px;
             text-align: center;
         }
-
         .paging a {
             text-decoration: none;
             margin: 0 5px;
             color: #4A4A4A;
         }
-
         .paging strong {
             margin: 0 5px;
             font-weight: bold;
             color: #000;
         }
-    </style>
 
+        .empty-list{
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 
@@ -136,20 +138,11 @@
     </tr>
     </thead>
     <tbody>
-    <c:set var="currentNumber" value="${listNumber}" />
-    <c:set var="counter" value="0" />
-    <c:forEach var="notice" items="${list}">
+
+    <!-- 고정된 공지사항 -->
+    <c:forEach var="notice" items="${fixedList}">
         <tr>
-            <td>
-                <c:choose>
-                    <c:when test="${notice.noticeIsFixed}">
-                        <img src="${pageContext.request.contextPath}/resources/images/fix.svg" class="fix-icon" alt="고정">
-                    </c:when>
-                    <c:otherwise>
-                        ${currentNumber - counter}
-                    </c:otherwise>
-                </c:choose>
-            </td>
+            <td><img src="${pageContext.request.contextPath}/resources/images/fix.svg" class="fix-icon" alt="고정"></td>
             <td>
                 <a href="${pageContext.request.contextPath}/notice/view?noticeIdx=${notice.noticeIdx}">
                         ${notice.noticeTitle}
@@ -160,36 +153,57 @@
                 <div class="dropdown-section">
                     <img class="bar-img" src="${pageContext.request.contextPath}/resources/images/bar.svg" onclick="toggleDropdown(this)" />
                     <div class="dropdown-menu">
-                        <form method="post" action="${pageContext.request.contextPath}/notice/delete"
-                              onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                        <form method="post" action="${pageContext.request.contextPath}/notice/unfix">
+                            <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
+                            <button type="submit" class="dropdown-button">고정 해제</button>
+                        </form>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </c:forEach>
+
+    <!-- 일반 공지사항 -->
+    <c:set var="currentNumber" value="${listNumber}" />
+    <c:set var="counter" value="0" />
+    <c:forEach var="notice" items="${list}">
+        <tr>
+            <td>${currentNumber - counter}</td>
+            <td>
+                <a href="${pageContext.request.contextPath}/notice/view?noticeIdx=${notice.noticeIdx}">
+                        ${notice.noticeTitle}
+                </a>
+            </td>
+            <td>${notice.noticeCreatedAt.toLocalDate()}</td>
+            <td>
+                <div class="dropdown-section">
+                    <img class="bar-img" src="${pageContext.request.contextPath}/resources/images/bar.svg" onclick="toggleDropdown(this)" />
+                    <div class="dropdown-menu">
+                        <form method="post" action="${pageContext.request.contextPath}/notice/delete">
                             <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
                             <button type="submit" class="dropdown-button">삭제</button>
                         </form>
-
-                        <c:choose>
-                            <c:when test="${notice.noticeIsFixed}">
-                                <form method="post" action="${pageContext.request.contextPath}/notice/unfix">
-                                    <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
-                                    <button type="submit" class="dropdown-button">고정 해제</button>
-                                </form>
-                            </c:when>
-                            <c:otherwise>
-                                <form method="post" action="${pageContext.request.contextPath}/notice/fix">
-                                    <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
-                                    <button type="submit" class="dropdown-button">상단 고정</button>
-                                </form>
-                            </c:otherwise>
-                        </c:choose>
+                        <form method="post" action="${pageContext.request.contextPath}/notice/fix">
+                            <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
+                            <button type="submit" class="dropdown-button">상단 고정</button>
+                        </form>
                     </div>
                 </div>
             </td>
         </tr>
         <c:set var="counter" value="${counter + 1}" />
     </c:forEach>
+
     </tbody>
 </table>
 
-<!-- 페이징  -->
+<c:if test="${list == null || list.isEmpty()}">
+    <div class="empty-list">
+        등록된 공지사항이 없습니다!
+    </div>
+</c:if>
+
+<!-- 페이징 처리 -->
 <div class="paging">
     ${pagination}
 </div>
@@ -199,7 +213,6 @@
 </div>
 
 <script>
-    <!-- 토글 -->
     function toggleDropdown(imgElement) {
         const dropdown = imgElement.nextElementSibling;
         document.querySelectorAll('.dropdown-menu').forEach(menu => {
@@ -209,13 +222,6 @@
         });
         dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
     }
-    document.addEventListener('click', function (event) {
-        if (!event.target.matches('.bar-img')) {
-            document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                menu.style.display = 'none';
-            });
-        }
-    });
 </script>
 
 </body>

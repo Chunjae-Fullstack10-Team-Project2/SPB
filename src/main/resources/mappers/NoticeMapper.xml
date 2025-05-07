@@ -15,7 +15,7 @@
             noticeCreatedAt,
             noticeUpdatedAt
         FROM tbl_notice
-        ORDER BY noticeIsFixed DESC, noticeCreatedAt DESC
+        ORDER BY noticeIsFixed DESC, noticeIdx ASC
     </select>
 
     <select id="selectOne" resultType="net.spb.spb.domain.NoticeVO">
@@ -70,6 +70,7 @@
             LIMIT #{size} OFFSET #{offset}
     </select>
 
+
     <select id="getSearchCount" resultType="int">
         SELECT COUNT(*) FROM tbl_notice
         WHERE noticeTitle LIKE CONCAT('%', #{keyword}, '%')
@@ -78,7 +79,7 @@
     <select id="searchList" resultType="net.spb.spb.domain.NoticeVO">
         SELECT * FROM tbl_notice
         WHERE noticeTitle LIKE CONCAT('%', #{keyword}, '%')
-        ORDER BY noticeIsFixed DESC, noticeCreatedAt DESC
+        ORDER BY noticeIsFixed DESC, noticeIdx ASC
             LIMIT #{size} OFFSET #{offset}
     </select>
 
@@ -90,7 +91,7 @@
     <select id="searchByTitle" resultType="net.spb.spb.domain.NoticeVO">
         SELECT * FROM tbl_notice
         WHERE noticeTitle LIKE CONCAT('%', #{keyword}, '%')
-        ORDER BY noticeIsFixed DESC, noticeCreatedAt DESC
+        ORDER BY noticeIsFixed DESC, noticeIdx ASC
             LIMIT #{size} OFFSET #{offset}
     </select>
 
@@ -102,7 +103,7 @@
     <select id="searchByContent" resultType="net.spb.spb.domain.NoticeVO">
         SELECT * FROM tbl_notice
         WHERE noticeContent LIKE CONCAT('%', #{keyword}, '%')
-        ORDER BY noticeIsFixed DESC, noticeCreatedAt DESC
+        ORDER BY noticeIsFixed DESC, noticeIdx ASC
             LIMIT #{size} OFFSET #{offset}
     </select>
 
@@ -117,5 +118,21 @@
         SET noticeIsFixed = 0
         WHERE noticeIdx = #{noticeIdx}
     </update>
+
+
+    <select id="getFixedNotices" resultType="net.spb.spb.domain.NoticeVO">
+        SELECT
+            noticeIdx,
+            noticeTitle,
+            noticeContent,
+            noticeMemberId,
+            noticeIsFixed,
+            noticeCreatedAt,
+            noticeUpdatedAt
+        FROM tbl_notice
+        WHERE noticeIsFixed = 1
+        ORDER BY noticeCreatedAt ASC, noticeIdx ASC
+    </select>
+
 
 </mapper>

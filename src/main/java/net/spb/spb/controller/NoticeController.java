@@ -45,6 +45,9 @@ public class NoticeController {
             list = noticeService.getListPaged(offset, size);
         }
 
+        // 고정된 공지사항
+        List<NoticeDTO> fixedList = noticeService.getFixedNotices();
+
         int totalPage = Paging.getTotalPage(totalCount, size);
 
         String queryParams = "&size=" + size;
@@ -67,8 +70,10 @@ public class NoticeController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("searchType", searchType);
         model.addAttribute("listNumber", listNumber);
+        model.addAttribute("fixedList", fixedList);
         return "notice/list";
     }
+
 
     @GetMapping("/view")
     public String view(@RequestParam("noticeIdx") int noticeIdx, Model model) throws Exception {

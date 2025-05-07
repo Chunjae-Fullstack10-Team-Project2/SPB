@@ -1,6 +1,7 @@
 package net.spb.spb.service;
 
 import lombok.RequiredArgsConstructor;
+import net.spb.spb.domain.NoticeVO;
 import net.spb.spb.dto.NoticeDTO;
 import net.spb.spb.mapper.NoticeMapper;
 import org.springframework.stereotype.Service;
@@ -106,6 +107,20 @@ public class NoticeServiceImpl implements NoticeService {
         return noticeMapper.searchByContent(keyword, offset, size).stream().map(NoticeDTO::new).collect(Collectors.toList());
     }
 
-
+    @Override
+    public List<NoticeDTO> getFixedNotices() throws Exception {
+        List<NoticeVO> fixedNotices = noticeMapper.getFixedNotices();
+        return fixedNotices.stream().map(notice -> {
+            NoticeDTO dto = new NoticeDTO();
+            dto.setNoticeIdx(notice.getNoticeIdx());
+            dto.setNoticeTitle(notice.getNoticeTitle());
+            dto.setNoticeContent(notice.getNoticeContent());
+            dto.setNoticeMemberId(notice.getNoticeMemberId());
+            dto.setNoticeIsFixed(notice.getNoticeIsFixed());
+            dto.setNoticeCreatedAt(notice.getNoticeCreatedAt());
+            dto.setNoticeUpdatedAt(notice.getNoticeUpdatedAt());
+            return dto;
+        }).collect(Collectors.toList());
+    }
 
 }

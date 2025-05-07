@@ -33,4 +33,7 @@ public interface NoticeService {
 
     int getSearchCountByContent(String keyword) throws Exception;
     List<NoticeDTO> searchByContent(String keyword, int offset, int size) throws Exception;
+
+    List<NoticeDTO> getFixedNotices() throws Exception;
+
 }
