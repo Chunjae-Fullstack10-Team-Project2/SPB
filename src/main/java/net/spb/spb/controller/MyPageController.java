@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -211,9 +212,72 @@ public class MyPageController {
                 .dtoList(finalOrderList)
                 .build();
 
-        model.addAttribute("responseDTO", pageResponseDTO);
+         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("orderList", finalOrderList);
         model.addAttribute("searchDTO", searchDTO);
         return "mypage/order";
+    }
+
+    @GetMapping("/changePwd")
+    public String changePwd(HttpSession session, Model model) {
+        String memberId = (String) session.getAttribute("memberId");
+        if (memberId == null) {
+            return "redirect:/login";
+        }
+
+        MemberDTO memberDTO = memberService.getMemberById(memberId);
+        model.addAttribute("memberDTO", memberDTO);
+
+        return "mypage/changePwd";
+    }
+
+    @PostMapping("/changePwd")
+    public String changePwd(@RequestParam("currentPwd") String currentPwd,
+                            @RequestParam("newPwd") String newPwd,
+                            @RequestParam("confirmPwd") String confirmPwd,
+                            HttpSession session,
+                            Model model) throws NoSuchAlgorithmException {
+
+        String memberId = (String) session.getAttribute("memberId");
+
+        if (memberId == null) return "redirect:/login";
+
+        String originalEncryptedPwd = memberService.getPwdById(memberId);
+        String encryptedCurrentPwd = PasswordUtil.encryptPassword(currentPwd);
+
+        if (!encryptedCurrentPwd.equals(originalEncryptedPwd)) {
+            model.addAttribute("message", "현재 비밀번호가 일치하지 않습니다.");
+            return "mypage/changePwd";
+        }
+
+        if (!currentPwd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{4,15}$")) {
+            model.addAttribute("message", "비밀번호 형식이 올바르지 않습니다.");
+            return "mypage/changePwd";
+        }
+
+        if (!newPwd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{4,15}$")) {
+            model.addAttribute("message", "비밀번호 형식이 올바르지 않습니다.");
+            return "mypage/changePwd";
+        }
+
+        if (!confirmPwd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{4,15}$")) {
+            model.addAttribute("message", "비밀번호 형식이 올바르지 않습니다.");
+            return "mypage/changePwd";
+        }
+
+        if (!newPwd.equals(confirmPwd)) {
+            model.addAttribute("message", "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            return "mypage/changePwd";
+        }
+
+        String encryptedNewPwd = PasswordUtil.encryptPassword(newPwd);
+        boolean result = myPageService.changePwd(encryptedNewPwd, memberId);
+
+        if (result) {
+            return "redirect:/mypage/changePwd";
+        } else {
+            model.addAttribute("message", "비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
+            return "mypage/changePwd";
+        }
     }
 }

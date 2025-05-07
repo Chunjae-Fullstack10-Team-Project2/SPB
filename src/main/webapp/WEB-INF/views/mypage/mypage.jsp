@@ -190,6 +190,9 @@
                 <button type="button" class="btn btn-danger" id="btnQuit" data-bs-toggle="modal"
                         data-bs-target="#pwdModal">탈퇴
                 </button>
+                <button type="button" class="btn btn-secondary" id="btnChangePwd" onclick="location.href='/mypage/changePwd'">
+                    비밀번호 변경
+                </button>
             </div>
         </form>
     </div>

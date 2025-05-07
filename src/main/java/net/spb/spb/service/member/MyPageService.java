@@ -50,4 +50,8 @@ public class MyPageService {
         if (orderIdxList == null || orderIdxList.isEmpty()) return Collections.emptyList();
         return myPageMapper.listLecturesByOrderIdxList(orderIdxList, searchDTO);
     }
+
+    public boolean changePwd(String memberPwd, String memberId) {
+        return myPageMapper.changePwd(memberPwd, memberId);
+    }
 }

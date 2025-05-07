@@ -183,7 +183,7 @@
 
 
     <!-- 주문 목록  -->
-    <select id="listMyOrder" >
+    <select id="listMyOrder">
         SELECT
         o.orderIdx,
         orderMemberId,
@@ -341,4 +341,11 @@
         </choose>
     </select>
 
+    <!--  비밀번호 변경  -->
+    <update id="changePwd">
+        update tbl_member
+        set memberPwd           = #{memberPwd},
+            memberPwdChangeDate = now()
+        where memberId = #{memberId}
+    </update>
 </mapper>

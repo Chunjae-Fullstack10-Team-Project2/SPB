@@ -122,7 +122,7 @@
                     </ul>
                 </li>
                 <li><a href="${cp}/qna/list" class="nav-link px-2 link-body-emphasis">1:1 문의</a></li>
-                <li><a href="${cp}/faq/list" class="nav-link px-2 link-body-emphasis">FAQ</a></li>
+                <li><a href="${cp}/faq/list" class="nav-link px-2 link-body-emphasis">자주 묻는 질문</a></li>
             </ul>
 
             <div class="d-flex align-items-center">
@@ -160,7 +160,7 @@
 
 <%-- Sidebar --%>
 <div class="flex-shrink-0 p-3 sidebar" id="sidebar">
-    <a href="${cp}/" class="d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom">
+    <a href="${cp}/" class="d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom text-dark">
         <span class="fs-5 fw-semibold">봄콩이</span>
     </a>
     <ul class="list-unstyled ps-0">
@@ -170,8 +170,8 @@
             </button>
             <div class="collapse show" id="home-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="#" class="d-inline-flex text-decoration-none rounded">어쩌구</a></li>
-                    <li><a href="#" class="d-inline-flex text-decoration-none rounded">Reports</a></li>
+                    <li><a href="#" class="d-inline-flex text-decoration-none rounded text-dark">어쩌구</a></li>
+                    <li><a href="#" class="d-inline-flex text-decoration-none rounded text-dark">Reports</a></li>
                 </ul>
             </div>
         </li>
@@ -181,7 +181,7 @@
             </button>
             <div class="collapse" id="dashboard-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="${cp}/board/freeboard/list" class="d-inline-flex text-decoration-none rounded">자유게시판</a></li>
+                    <li><a href="${cp}/board/freeboard/list" class="d-inline-flex text-decoration-none rounded text-dark">자유게시판</a></li>
                 </ul>
             </div>
         </li>
@@ -191,15 +191,16 @@
             </button>
             <div class="collapse" id="orders-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded">좋아요 목록</a></li>
-                    <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded">게시글 신고</a></li>
-                    <li><a href="${cp}/qna/myQna" class="d-inline-flex text-decoration-none rounded">나의 문의</a></li>
-                    <li><a href="${cp}/mypage/order" class="d-inline-flex text-decoration-none rounded">강좌 주문 내역</a></li>
+                    <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded text-dark">좋아요 목록</a></li>
+                    <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded text-dark">게시글 신고</a></li>
+                    <li><a href="${cp}/qna/myQna" class="d-inline-flex text-decoration-none rounded text-dark">나의 문의</a></li>
+                    <li><a href="${cp}/mypage/order" class="d-inline-flex text-decoration-none rounded text-dark">강좌 주문 내역</a></li>
                 </ul>
             </div>
         </li>
     </ul>
 </div>
+
 
 <script>
     function adjustSidebarPadding() {
