@@ -1,5 +1,6 @@
 package net.spb.spb.util;
 
+import net.spb.spb.dto.pagingsearch.MemberPageDTO;
 import net.spb.spb.dto.pagingsearch.PageDTO;
 import net.spb.spb.dto.pagingsearch.PostPageDTO;
 import net.spb.spb.dto.pagingsearch.ReportPageDTO;
@@ -32,7 +33,7 @@ public class PagingUtil {
         return linkUrl.toString();
     }
 
-    public static String buildMemberLinkUrl(String basePath, ReportPageDTO.MemberPageDTO dto) {
+    public static String buildMemberLinkUrl(String basePath, MemberPageDTO dto) {
         StringBuilder linkUrl = new StringBuilder(basePath);
         boolean hasQuery = false;
 
