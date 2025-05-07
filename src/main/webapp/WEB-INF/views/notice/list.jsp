@@ -118,6 +118,14 @@
     <button type="button" onclick="location.href='${pageContext.request.contextPath}/notice/list?size=${size}'">초기화</button>
 </form>
 
+<form method="get" action="${pageContext.request.contextPath}/notice/list">
+    <select name="size" onchange="this.form.submit()">
+        <option value="5" ${size == 5 ? 'selected' : ''}>5개</option>
+        <option value="10" ${size == 10 ? 'selected' : ''}>10개</option>
+        <option value="15" ${size == 15 ? 'selected' : ''}>15개</option>
+    </select>
+</form>
+
 <table>
     <thead>
     <tr>
