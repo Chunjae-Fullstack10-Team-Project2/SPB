@@ -1,4 +1,4 @@
-package net.spb.spb.dto;
+package net.spb.spb.dto.post;
 
 import lombok.*;
 import net.spb.spb.util.ReportRefType;

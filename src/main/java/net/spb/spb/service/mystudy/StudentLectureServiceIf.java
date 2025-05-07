@@ -1,7 +1,7 @@
 package net.spb.spb.service.mystudy;
 
 import net.spb.spb.dto.mystudy.StudentLectureDTO;
-import net.spb.spb.dto.mystudy.StudentLecturePageDTO;
+import net.spb.spb.dto.pagingsearch.StudentLecturePageDTO;
 
 import java.util.List;
 

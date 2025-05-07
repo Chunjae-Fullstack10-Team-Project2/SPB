@@ -1,7 +1,7 @@
 package net.spb.spb.mapper;
 
 import net.spb.spb.domain.ReportVO;
-import net.spb.spb.dto.ReportPageDTO;
+import net.spb.spb.dto.pagingsearch.ReportPageDTO;
 
 import java.util.List;
 

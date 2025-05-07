@@ -1,7 +1,7 @@
 package net.spb.spb.service;
 
-import net.spb.spb.dto.PostReportDTO;
-import net.spb.spb.dto.ReportPageDTO;
+import net.spb.spb.dto.post.PostReportDTO;
+import net.spb.spb.dto.pagingsearch.ReportPageDTO;
 import net.spb.spb.mapper.ReportMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

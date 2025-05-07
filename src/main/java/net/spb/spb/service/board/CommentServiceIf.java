@@ -1,6 +1,6 @@
-package net.spb.spb.service;
+package net.spb.spb.service.board;
 
-import net.spb.spb.dto.PostCommentDTO;
+import net.spb.spb.dto.post.PostCommentDTO;
 
 import java.util.List;
 

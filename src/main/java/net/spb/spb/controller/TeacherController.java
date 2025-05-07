@@ -3,7 +3,6 @@ package net.spb.spb.controller;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.CartDTO;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.TeacherDTO;
@@ -31,7 +30,6 @@ public class TeacherController {
     ) {
         String memberId = (String) session.getAttribute("memberId");
         MemberDTO memberDTO = paymentService.getMemberInfo(memberId);
-        log.info("memberDTO: "+memberDTO.toString());
         model.addAttribute("member", memberDTO);
 
         TeacherDTO teacherDTO = teacherService.selectTeacher(teacherId);

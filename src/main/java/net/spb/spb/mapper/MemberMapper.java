@@ -1,7 +1,7 @@
 package net.spb.spb.mapper;
 
 import net.spb.spb.domain.MemberVO;
-import net.spb.spb.dto.MemberPageDTO;
+import net.spb.spb.dto.pagingsearch.ReportPageDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 public interface MemberMapper {
     int login(MemberVO memberVO);
 
-    MemberVO existUser(String userId);
+    MemberVO existMember(String userId);
 
     boolean join(MemberVO memberVO);
 
@@ -17,15 +17,19 @@ public interface MemberMapper {
 
     boolean updateMember(MemberVO memberVO);
 
+    boolean updateMemberStateWithLogin(@Param("memberState") String memberState, @Param("memberId") String memberId);
+
+    boolean updateMemberPwdChangeDateWithLogin(@Param("memberPwdChangeDate") String memberPwdChangeDate, @Param("memberId") String memberId);
+
+    boolean updateMemberLastLoginWithLogin(@Param("memberLastLogin") String memberLastLogin, @Param("memberId") String memberId);
+
     String getPwdById(String memberId);
 
-    List<MemberVO> getAllMembers(MemberPageDTO memberPageDTO);
+    List<MemberVO> getAllMembers(ReportPageDTO.MemberPageDTO memberPageDTO);
 
     boolean updateMemberState(MemberVO memberVO);
 
     boolean updateMemberByAdmin(MemberVO memberVO);
 
-    int getMemberCount(MemberPageDTO memberPageDTO);
-
-    boolean updateMemberStatenPwdChangeDate(MemberVO memberVO);
+    int getMemberCount(ReportPageDTO.MemberPageDTO memberPageDTO);
 }

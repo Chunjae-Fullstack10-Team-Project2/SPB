@@ -99,6 +99,8 @@ dependencies {
             maven { url 'https://jitpack.io' }
         }
     }
+
+    implementation 'org.springframework:spring-web'
 }
 
 test {

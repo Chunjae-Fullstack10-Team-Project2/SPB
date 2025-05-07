@@ -1,7 +1,7 @@
 package net.spb.spb.mapper.mystudy;
 
 import net.spb.spb.dto.mystudy.StudentLectureDTO;
-import net.spb.spb.dto.mystudy.StudentLecturePageDTO;
+import net.spb.spb.dto.pagingsearch.StudentLecturePageDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;

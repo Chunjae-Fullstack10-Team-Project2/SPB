@@ -1,9 +1,9 @@
 package net.spb.spb.util;
 
-import net.spb.spb.dto.MemberPageDTO;
-import net.spb.spb.dto.PageDTO;
-import net.spb.spb.dto.PostPageDTO;
-import net.spb.spb.dto.mystudy.StudentLecturePageDTO;
+import net.spb.spb.dto.pagingsearch.PageDTO;
+import net.spb.spb.dto.pagingsearch.PostPageDTO;
+import net.spb.spb.dto.pagingsearch.ReportPageDTO;;
+import net.spb.spb.dto.pagingsearch.StudentLecturePageDTO;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -38,7 +38,7 @@ public class PagingUtil {
         return linkUrl.toString();
     }
 
-    public static String buildMemberLinkUrl(String basePath, MemberPageDTO dto) {
+    public static String buildMemberLinkUrl(String basePath, ReportPageDTO.MemberPageDTO dto) {
         StringBuilder linkUrl = new StringBuilder(basePath);
         boolean hasQuery = false;
 

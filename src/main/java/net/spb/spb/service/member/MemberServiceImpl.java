@@ -1,12 +1,13 @@
 package net.spb.spb.service.member;
 
 import net.spb.spb.domain.MemberVO;
-import net.spb.spb.dto.MemberPageDTO;
 import net.spb.spb.dto.member.MemberDTO;
+import net.spb.spb.dto.pagingsearch.ReportPageDTO;
 import net.spb.spb.mapper.MemberMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -29,8 +30,8 @@ public class MemberServiceImpl implements MemberServiceIf {
     }
 
     @Override
-    public boolean existUser(String userId) {
-        MemberVO memberVO = memberMapper.existUser(userId);
+    public boolean existMember(String userId) {
+        MemberVO memberVO = memberMapper.existMember(userId);
         return memberVO != null;
     }
 
@@ -54,13 +55,28 @@ public class MemberServiceImpl implements MemberServiceIf {
     }
 
     @Override
+    public boolean updateMemberStateWithLogin(String memberState, String memberId) {
+        return memberMapper.updateMemberStateWithLogin(memberState, memberId);
+    }
+
+    @Override
+    public boolean updateMemberPwdChangeDateWithLogin(String memberPwdChangeDate, String memberId) {
+        return memberMapper.updateMemberPwdChangeDateWithLogin(memberPwdChangeDate, memberId);
+    }
+
+    @Override
+    public boolean updateMemberLastLoginWithLogin(String memberLastLogin, String memberId) {
+        return memberMapper.updateMemberLastLoginWithLogin(memberLastLogin, memberId);
+    }
+
+    @Override
     public String getPwdById(String memberId) {
         return memberMapper.getPwdById(memberId);
     }
 
 
     @Override
-    public List<MemberDTO> getMembers(MemberPageDTO memberPageDTO) {
+    public List<MemberDTO> getMembers(ReportPageDTO.MemberPageDTO memberPageDTO) {
         return memberMapper.getAllMembers(memberPageDTO).stream().map(memberVO -> modelMapper.map(memberVO, MemberDTO.class)).toList();
     }
 
@@ -77,14 +93,8 @@ public class MemberServiceImpl implements MemberServiceIf {
     }
 
     @Override
-    public int getMemberCount(MemberPageDTO memberPageDTO) {
+    public int getMemberCount(ReportPageDTO.MemberPageDTO memberPageDTO) {
         return memberMapper.getMemberCount(memberPageDTO);
-    }
-
-    @Override
-    public boolean updateMemberStatenPwdChangeDate(MemberDTO memberDTO) {
-        MemberVO memberVO = modelMapper.map(memberDTO, MemberVO.class);
-        return memberMapper.updateMemberStatenPwdChangeDate(memberVO);
     }
 
 }

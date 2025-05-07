@@ -22,7 +22,7 @@
             line-height: 1.5;
         }
 
-        .container {
+        .tContainer {
             display: flex;
             max-width: 1200px;
             margin: 0 auto;
@@ -214,7 +214,7 @@
         }
 
         @media (max-width: 768px) {
-            .container {
+            .tContainer {
                 flex-direction: column;
             }
 
@@ -233,7 +233,7 @@
 </head>
 <body>
 <%@ include file="../common/header.jsp" %>
-<div class="container">
+<div class="tContainer">
     <aside class="sidebar">
         <div class="sidebar-title">SIDEMENU</div>
         <ul class="sidebar-menu">
@@ -326,9 +326,15 @@
     });
 
     function addCart(lectureIdx) {
+        const memberId = "${member.memberId}";
+        if (!memberId || memberId.trim() === "") {
+            alert("로그인이 필요합니다.");
+            window.location.href = "/login";
+            return;
+        }
         const data = {
             cartLectureIdx: lectureIdx,
-            cartMemberId: "${member.memberId}"
+            cartMemberId: memberId
         };
         $.ajax({
             url: '/payment/addCart',
@@ -350,9 +356,9 @@
             },
             error: function (xhr, status, error) {
                 console.error('오류 발생:', error);
-                console.error('상태 코드:', xhr.status); // 예: 400, 404, 500
-                console.error('서버 응답 텍스트:', xhr.responseText); // ← 실제 에러 메시지 (HTML/JSON 등)
-                console.error('status:', status); // 예: "error"
+                console.error('상태 코드:', xhr.status);
+                console.error('서버 응답 텍스트:', xhr.responseText);
+                console.error('status:', status);
             }
         });
     }

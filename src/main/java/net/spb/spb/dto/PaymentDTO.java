@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 public class PaymentDTO {
-    //private int paymentIdx;
     private int paymentOrderIdx;
     private String paymentMethod;
     private String paymentStatus;

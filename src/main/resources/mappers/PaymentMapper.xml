@@ -27,8 +27,9 @@
     </delete>
     <!--결제 강의 목록 조회-->
     <select id="findLecturesByIds">
-        select lectureIdx, lectureTitle, lectureTeacherId, lectureThumbnailImg, lectureAmount
-        from tbl_lecture
+        select lectureIdx, lectureTitle, lectureTeacherId, lectureThumbnailImg, lectureAmount,
+                (select teacherName from tbl_teacher where teacherId = a.lectureTeacherId)as lectureTeacherName
+        from tbl_lecture a
         where lectureIdx IN
         <foreach item="lectureIdx" collection="lectureIdxs" open="(" separator="," close=")">
             #{lectureIdx}
@@ -36,9 +37,15 @@
     </select>
     <!--주문 테이블 등록-->
     <insert id="insertOrder" parameterType="net.spb.spb.domain.OrderVO" useGeneratedKeys="true" keyProperty="orderIdx">
-        insert into tbl_order_info (orderId, orderAmount, orderCreatedAt, orderUpdatedAt)
-        VALUES (#{orderId}, #{orderAmount}, NOW(), NOW())
+        insert into tbl_order_info (orderMemberId, orderAmount, orderCreatedAt, orderUpdatedAt)
+        VALUES (#{orderMemberId}, #{orderAmount}, NOW(), NOW())
     </insert>
+
+    <update id="updatePaymentStatus">
+        UPDATE tbl_payment
+        SET paymentStatus = #{status}
+        WHERE paymentOrderIdx = #{merchantUid}
+    </update>
 
     <!--주문상품 테이블에 등록-->
     <insert id="insertOrderLecture" parameterType="java.lang.Integer">
@@ -71,7 +78,7 @@
         ,#{paymentStatus}
         ,#{paymentTransactionId}
         ,#{paymentApprovedAt2}
-        ,null
+        ,#{paymentCanceledAt2}
         ,now()
         ,now()
         );
@@ -86,7 +93,7 @@
 
     <!--주문번호 내역 조회-->
     <select id="selectOrder">
-        select orderIdx , orderId , orderAmount , orderStatus, orderCreatedAt , orderUpdatedAt
+        select orderIdx , orderMemberId , orderAmount , orderStatus, orderCreatedAt , orderUpdatedAt
         from tbl_order_info
         where 1=1
         and orderIdx = #{merchantUid}
@@ -98,4 +105,31 @@
         from tbl_member
         where memberId = #{memberId}
     </select>
+
+    <!--주문번호에 딸린 강좌번호 조회-->
+    <select id="getOrderLectureIdxs">
+        select orderLectureIdx
+        from tbl_order_lecture
+        where orderIdx = #{orderIdx}
+    </select>
+
+    <!--결제 정보 조회-->
+    <select id="getPaymentInfo">
+        select paymentMethod, paymentStatus, paymentApprovedAt, paymentCanceledAt
+        from tbl_payment
+        where paymentOrderIdx = #{orderIdx}
+    </select>
+
+    <!-- 주문내역 업데이트 -->
+    <update id="updateOrderInfo">
+        update tbl_order_info set
+        orderStatus = (case
+                           when #{paymentStatus} = 's' then 's'
+                           when #{paymentStatus} = 'f' then 'p'
+                        end
+                    ),
+        orderUpdatedAt = now()
+            where 1=1
+        and orderIdx = #{paymentOrderIdx}
+    </update>
 </mapper>    
