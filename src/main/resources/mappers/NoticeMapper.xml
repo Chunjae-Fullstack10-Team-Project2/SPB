@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.spb.spb.mapper.NoticeMapper">
+
+    <select id="selectAll" resultType="net.spb.spb.domain.NoticeVO">
+        SELECT
+            noticeIdx,
+            noticeTitle,
+            noticeContent,
+            noticeMemberId,
+            noticeIsFixed,
+            noticeCreatedAt,
+            noticeUpdatedAt
+        FROM tbl_notice
+        ORDER BY noticeIsFixed DESC, noticeCreatedAt DESC
+    </select>
+
+    <select id="selectOne" resultType="net.spb.spb.domain.NoticeVO">
+        SELECT
+            noticeIdx,
+            noticeTitle,
+            noticeContent,
+            noticeMemberId,
+            noticeIsFixed,
+            noticeCreatedAt,
+            noticeUpdatedAt
+        FROM tbl_notice
+        WHERE noticeIdx = #{noticeIdx}
+    </select>
+
+    <insert id="insert" parameterType="net.spb.spb.domain.NoticeVO">
+        INSERT INTO tbl_notice (
+            noticeTitle, noticeContent, noticeMemberId, noticeIsFixed
+        ) VALUES (
+                     #{noticeTitle}, #{noticeContent}, #{noticeMemberId}, #{noticeIsFixed}
+                 )
+    </insert>
+
+    <update id="update" parameterType="net.spb.spb.domain.NoticeVO">
+        UPDATE tbl_notice
+        SET
+            noticeTitle = #{noticeTitle},
+            noticeContent = #{noticeContent},
+            noticeIsFixed = #{noticeIsFixed}
+        WHERE noticeIdx = #{noticeIdx}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM tbl_notice WHERE noticeIdx = #{noticeIdx}
+    </delete>
+
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*) FROM tbl_notice
+    </select>
+
+    <select id="getListPaged" resultType="net.spb.spb.domain.NoticeVO">
+        SELECT
+            noticeIdx,
+            noticeTitle,
+            noticeContent,
+            noticeMemberId,
+            noticeIsFixed,
+            noticeCreatedAt,
+            noticeUpdatedAt
+        FROM tbl_notice
+        ORDER BY noticeIdx DESC
+            LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getFixedNotices" resultType="net.spb.spb.domain.NoticeVO">
+        SELECT
+            noticeIdx,
+            noticeTitle,
+            noticeContent,
+            noticeMemberId,
+            noticeIsFixed,
+            noticeCreatedAt,
+            noticeUpdatedAt
+        FROM tbl_notice
+        WHERE noticeIsFixed = 1
+        ORDER BY noticeCreatedAt DESC
+            LIMIT 3
+    </select>
+
+    <update id="fixNotice">
+        UPDATE tbl_notice
+        SET noticeIsFixed = 1
+        WHERE noticeIdx = #{noticeIdx}
+    </update>
+
+    <update id="unfixNotice">
+        UPDATE tbl_notice
+        SET noticeIsFixed = 0
+        WHERE noticeIdx = #{noticeIdx}
+    </update>
+
+    <select id="countFixedNotices" resultType="int">
+        SELECT COUNT(*) FROM tbl_notice WHERE noticeIsFixed = 1
+    </select>
+
+
+    <select id="getSearchCount" resultType="int">
+        SELECT COUNT(*) FROM tbl_notice
+        WHERE noticeTitle LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <select id="searchList" resultType="net.spb.spb.domain.NoticeVO">
+        SELECT * FROM tbl_notice
+        WHERE noticeTitle LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY noticeIsFixed DESC, noticeCreatedAt DESC
+            LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getSearchCountByTitle" resultType="int">
+        SELECT COUNT(*) FROM tbl_notice
+        WHERE noticeTitle LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <select id="searchByTitle" resultType="net.spb.spb.domain.NoticeVO">
+        SELECT * FROM tbl_notice
+        WHERE noticeTitle LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY noticeIsFixed DESC, noticeIdx DESC
+            LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getSearchCountByContent" resultType="int">
+        SELECT COUNT(*) FROM tbl_notice
+        WHERE noticeContent LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <select id="searchByContent" resultType="net.spb.spb.domain.NoticeVO">
+        SELECT * FROM tbl_notice
+        WHERE noticeContent LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY noticeIsFixed DESC, noticeIdx DESC
+            LIMIT #{size} OFFSET #{offset}
+    </select>
+
+
+
+</mapper>
