@@ -3,6 +3,12 @@ package net.spb.spb.util;
 import net.spb.spb.dto.pagingsearch.MemberPageDTO;
 import net.spb.spb.dto.pagingsearch.PageDTO;
 import net.spb.spb.dto.pagingsearch.PostPageDTO;
+import net.spb.spb.dto.pagingsearch.StudentLecturePageDTO;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PagingUtil {
     public static String buildBoardLinkUrl(String basePath, PostPageDTO dto) {
@@ -60,6 +66,25 @@ public class PagingUtil {
             linkUrl.append(hasQuery ? "&" : "?").append("sort_direction=").append(dto.getSort_direction());
             hasQuery = true;
         }
+        return linkUrl.toString();
+    }
+
+    public static String buildStudentLectureLinkUrl(String basePath, StudentLecturePageDTO dto) {
+        StringBuilder linkUrl = new StringBuilder(basePath);
+        List<String> params = new ArrayList<>();
+
+        if (dto.getLecture_status() > 0) {
+            params.add("lecture_status=" + dto.getLecture_status());
+        }
+        if (dto.getSearch_category() != null && dto.getSearch_word() != null && !dto.getSearch_category().isBlank() && !dto.getSearch_word().isBlank()) {
+            params.add("search_category=" + dto.getSearch_category());
+            params.add("search_word=" + URLEncoder.encode(dto.getSearch_word(), StandardCharsets.UTF_8));
+        }
+
+        if (!params.isEmpty()) {
+            linkUrl.append("?").append(String.join("&", params));
+        }
+
         return linkUrl.toString();
     }
 

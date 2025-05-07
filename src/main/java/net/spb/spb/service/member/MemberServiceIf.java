@@ -2,6 +2,7 @@ package net.spb.spb.service.member;
 
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.dto.pagingsearch.MemberPageDTO;
+import net.spb.spb.dto.pagingsearch.ReportPageDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
