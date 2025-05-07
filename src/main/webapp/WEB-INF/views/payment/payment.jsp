@@ -189,7 +189,6 @@
         <div class="button-group">
             <button type="button" class="btn btn-primary" onclick="processPayment()">결제하기</button>
             <button type="button" class="btn btn-secondary" onclick="cancelOrder()">주문 취소</button>
-            <a href="/payment/paymentDetail?orderIdx=2">구매 상세</a>
         </div>
     </div>
 </div>

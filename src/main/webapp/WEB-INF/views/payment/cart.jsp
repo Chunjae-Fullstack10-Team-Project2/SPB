@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -142,6 +142,7 @@
     </style>
 </head>
 <body>
+<%@ include file="../common/header.jsp" %>
 <div class="page-container">
     <div class="content">
         <div class="cart-title">장바구니</div>
@@ -276,7 +277,7 @@
         }
 
         const data = {
-            cartMemberId: "dog109",
+            cartMemberId: "${memberId}",
             selectCartItemIds: selectCartItemIds
         };
 

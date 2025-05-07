@@ -14,7 +14,7 @@
             font-family: 'Malgun Gothic', sans-serif;
         }
 
-        .container {
+        .lecture-container {
             max-width: 1000px;
             margin: 0 auto;
             border: 1px solid #ccc;
@@ -94,7 +94,9 @@
     </style>
 </head>
 <body>
-<div class="container">
+<%@ include file="../common/header.jsp" %>
+<%@ include file="../common/fixedHeader.jsp" %>
+<div class="lecture-container">
     <div class="content">
         <div class="title">강좌 페이지</div>
 

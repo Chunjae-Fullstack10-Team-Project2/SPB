@@ -70,7 +70,8 @@
         , paymentApprovedAt
         , paymentCanceledAt
         , paymentCreatedAt
-        , paymentUpdatedAt)
+        , paymentUpdatedAt
+        , paymentPgTid)
         VALUES
         (
          #{paymentOrderIdx}
@@ -81,13 +82,14 @@
         ,#{paymentCanceledAt2}
         ,now()
         ,now()
+        ,#{paymentPgTid}
         );
     </insert>
 
     <!--결제 후 장바구니 내역 삭제-->
     <delete id="processAfterPayment">
         delete from tbl_cart where 1=1
-        and cartMemberId = #{memberId}
+        and cartMemberId = #{paymentMemberId}
         and cartLectureIdx in (select orderLectureIdx from tbl_order_lecture where orderIdx = #{paymentOrderIdx})
     </delete>
 
@@ -115,7 +117,7 @@
 
     <!--결제 정보 조회-->
     <select id="getPaymentInfo">
-        select paymentMethod, paymentStatus, paymentApprovedAt, paymentCanceledAt
+        select paymentMethod, paymentStatus, paymentApprovedAt, paymentCanceledAt, paymentPgTid
         from tbl_payment
         where paymentOrderIdx = #{orderIdx}
     </select>
@@ -132,4 +134,11 @@
             where 1=1
         and orderIdx = #{paymentOrderIdx}
     </update>
+
+    <!--장바구니 카운트 조회-->
+    <select id="getCartCount">
+        select count(*)
+        from tbl_cart
+        where cartMemberId = #{memberId}
+    </select>
 </mapper>    

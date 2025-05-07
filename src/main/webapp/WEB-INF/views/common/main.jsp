@@ -22,7 +22,6 @@
 </head>
 <body>
 <%@include file="sidebarHeader.jsp" %>
-<%@include file="sidebar.jsp" %>
 <div class="content" style="margin-left: 280px; margin-top: 100px;">
 
     <div class="modal fade" id="pwdChangeModal" tabindex="-1" aria-labelledby="pwdChangeModalLabel" aria-hidden="true">

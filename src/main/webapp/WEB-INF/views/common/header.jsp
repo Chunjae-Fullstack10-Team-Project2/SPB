@@ -70,9 +70,9 @@
             <%--            </form>--%>
 
             <div class="d-flex align-items-center">
-                <a href="#" class="me-4 link-body-emphasis text-decoration-none position-relative">
+                <a href="payment/cart?memberId=${sessionScope.memberId}" class="me-4 link-body-emphasis text-decoration-none position-relative">
                     <i class="bi bi-cart" style="font-size: 1.4rem;"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                    <span id="cart-count-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
                 </a>
 
                 <div class="dropdown text-end ms-2">
@@ -97,5 +97,19 @@
         </div>
     </div>
 </header>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/payment/cartCount',
+            type: 'GET',
+            success: function (count) {
+                $('#cart-count-badge').text(count);
+            },
+            error: function () {
+                console.warn("장바구니 수량 조회 실패");
+            }
+        });
+    });
+</script>
 </body>
 </html>

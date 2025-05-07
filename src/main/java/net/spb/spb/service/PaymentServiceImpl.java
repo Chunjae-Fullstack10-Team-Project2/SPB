@@ -1,5 +1,6 @@
 package net.spb.spb.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.domain.*;
@@ -28,6 +29,7 @@ public class PaymentServiceImpl implements PaymentServiceIf{
     private final ModelMapper modelMapper;
     private final PaymentMapper paymentMapper;
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
     @Override
     public List<CartDTO> selectCart(String memberId) {
@@ -154,9 +156,14 @@ public class PaymentServiceImpl implements PaymentServiceIf{
                 "https://api.iamport.kr/payments/cancel", request, Map.class);
 
         // 결제 상태 DB 업데이트
-        paymentMapper.updatePaymentStatus(merchantUid, "CANCELLED");
+        paymentMapper.updatePaymentStatus(merchantUid, "c");
 
         return response.getBody();
+    }
+
+    @Override
+    public int getCartCount(String memberId) {
+        return paymentMapper.getCartCount(memberId);
     }
 
     private String getAccessToken() throws Exception {
@@ -167,7 +174,9 @@ public class PaymentServiceImpl implements PaymentServiceIf{
         body.put("imp_key", "5308452081165714");
         body.put("imp_secret", "k9aHUjxe7p8EHezB3AqXUCJ50XHQ9BydDigbryzrMxeXWvDfseFzy1HQ8bjXGqAuBSoWSJYytsnApRL1");
 
-        HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
+        String jsonBody = objectMapper.writeValueAsString(body);
+
+        HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
 
         ResponseEntity<Map> response = restTemplate.postForEntity(
                 "https://api.iamport.kr/users/getToken", request, Map.class);
