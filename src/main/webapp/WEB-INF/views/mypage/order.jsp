@@ -1,3 +1,6 @@
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -16,7 +19,7 @@
 <%@ include file="../common/fixedHeader.jsp" %>
 <%@ include file="../common/sidebar.jsp" %>
 
-<div class="content" style="margin-left: 280px; margin-top: 100px;">
+<div class="content">
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
         <symbol id="house-door-fill" viewBox="0 0 16 16">
             <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
@@ -46,51 +49,22 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">강좌 주문 내역</h3>
         </div>
-        <div class="search-box" style="max-width: 700px;">
-            <form name="frmSearch" method="get" action="/mypage/order" class="mb-1 p-4">
-                <div class="row g-2 align-items-center mb-3">
-                    <div class="col-md-3">
-                        <select name="dateType" class="form-select">
-                            <option value="orderCreatedAt" ${param.dateType eq 'orderCreatedAt' ? 'selected' : ''}>
-                                결제일자
-                            </option>
-                            <option value="lectureCreatedAt" ${param.dateType eq 'lectureCreatedAt' ? 'selected' : ''}>
-                                강의 생성일자
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-8">
-                        <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택"
-                               autocomplete="off"
-                               value="${not empty param.datefilter ? param.datefilter : ''}"/>
-                    </div>
-                </div>
+        <%
+            List<Map<String, String>> dateOptions = new ArrayList<>();
+            dateOptions.add(Map.of("value", "orderCreatedAt", "label", "결제일자"));
+            dateOptions.add(Map.of("value", "lectureCreatedAt", "label", "강의 생성일자"));
+            request.setAttribute("dateOptions", dateOptions);
 
-                <div class="row g-2 align-items-center mb-3">
-                    <div class="col-md-3">
-                        <select name="searchType" class="form-select">
-                            <option value="lectureTitle" ${searchDTO.searchType eq "lectureTitle" ? "selected":""}>강의
-                                제목
-                            </option>
-                            <option value="lectureDescription" ${searchDTO.searchType eq "lectureDescription" ? "selected":""}>
-                                강의 설명
-                            </option>
-                            <option value="lectureTeacherId" ${searchDTO.searchType eq "lectureTeacherId" ? "selected":""}>
-                                선생님
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-5">
-                        <input type="text" name="searchWord" class="form-control" placeholder="검색어 입력"
-                               value="${searchDTO.searchWord}"/>
-                    </div>
-                    <div class="col-md-3 d-flex gap-1">
-                        <button type="submit" class="btn btn-primary flex-fill" id="btnSearch">검색</button>
-                        <button type="button" class="btn btn-link text-decoration-none" id="btnReset">초기화</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+            List<Map<String, String>> searchTypeOptions = new ArrayList<>();
+            searchTypeOptions.add(Map.of("value", "lectureTitle", "label", "강의 제목"));
+            searchTypeOptions.add(Map.of("value", "lectureDescription", "label", "강의 설명"));
+            searchTypeOptions.add(Map.of("value", "lectureTeacherId", "label", "선생님"));
+            request.setAttribute("searchTypeOptions", searchTypeOptions);
+        %>
+        <jsp:include page="../common/searchBox.jsp">
+            <jsp:param name="searchAction" value="/mypage/order"/>
+        </jsp:include>
+
         <c:if test="${not empty orderList}">
             <table class="table table-hover text-center align-middle">
                 <thead class="table-light">
@@ -136,66 +110,6 @@
     </div>
 </div>
 <script>
-    $(function () {
-        $('input[name="datefilter"]')
-            .daterangepicker({
-                autoUpdateInput: false,
-                locale: {
-                    format: "YYYY-MM-DD",
-                    separator: " - ",
-                    applyLabel: "확인",
-                    cancelLabel: "취소",
-                    customRangeLabel: "Custom",
-                    weekLabel: "주",
-                    daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
-                    monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
-                    firstDay: 1
-                }
-            });
-
-        $('input[name="datefilter"]').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
-        });
-
-        $('#btnSearch').click(function (e) {
-            e.preventDefault();
-
-            var url = new URL(window.location.href);
-            var params = url.searchParams;
-
-            var datefilter = $('input[name="datefilter"]').val();
-            if (datefilter) {
-                var dates = datefilter.split(' - ');
-                params.set('startDate', dates[0]);
-                params.set('endDate', dates[1]);
-            } else {
-                params.delete('startDate');
-                params.delete('endDate');
-            }
-
-            params.set('searchType', $('select[name="searchType"]').val());
-            params.set('searchWord', $('input[name="searchWord"]').val());
-
-            window.location.href = url.toString();
-        });
-
-        $('#btnReset').click(function () {
-            $('input[name="searchWord"]').val('');
-            $('select[name="searchType"]').val('qnaTitle');
-            $('input[name="datefilter"]').val('');
-
-            var url = new URL(window.location.href);
-            var params = url.searchParams;
-            params.delete('datefilter');
-            params.delete('startDate');
-            params.delete('endDate');
-            params.delete('searchType');
-            params.delete('searchWord');
-
-            window.location.href = url.toString();
-        });
-    });
-
     <c:if test="${not empty message}">
     alert("${message}");
     </c:if>

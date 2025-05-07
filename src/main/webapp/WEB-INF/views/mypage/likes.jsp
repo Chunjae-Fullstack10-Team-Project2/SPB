@@ -1,3 +1,6 @@
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -36,63 +39,79 @@
         </nav>
     </div>
     <div class="container my-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="mb-0">좋아요 누른 게시글</h3>
-                </div>
-        <div class="search-box" style="max-width: 700px;">
-            <form name="frmSearch" method="get" action="/mypage/likes" class="mb-1 p-4">
-                <div class="row g-2 align-items-center mb-3">
-                    <div class="col-md-3">
-                        <select name="dateType" class="form-select">
-                            <option value="postLikeCreatedAt" ${param.dateType eq 'postLikeCreatedAt' ? 'selected' : ''}>
-                                좋아요 누른 날짜
-                            </option>
-                            <option value="postCreatedAt" ${param.dateType eq 'postCreatedAt' ? 'selected' : ''}>게시글
-                                작성일자
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-8">
-                        <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택"
-                               autocomplete="off"
-                               value="${not empty param.datefilter ? param.datefilter : ''}"/>
-                    </div>
-                </div>
-
-                <div class="row g-2 align-items-center mb-3">
-                    <div class="col-md-3">
-                        <select name="searchType" class="form-select">
-                            <option value="postTitle" ${searchDTO.searchType eq "postTitle" ? "selected":""}>제목</option>
-                            <option value="postContent" ${searchDTO.searchType eq "postContent" ? "selected":""}>내용
-                            </option>
-                            <option value="postMemberId" ${searchDTO.searchType eq "postMemberId" ? "selected":""}>작성자
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-5">
-                        <input type="text" name="searchWord" class="form-control" placeholder="검색어 입력"
-                               value="${searchDTO.searchWord}"/>
-                    </div>
-                    <div class="col-md-3 d-flex gap-1">
-                        <button type="submit" class="btn btn-primary flex-fill" id="btnSearch">검색</button>
-                        <button type="button" class="btn btn-link text-decoration-none" id="btnReset">초기화</button>
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-2">
-                        <select name="pageSize" class="form-select" onchange="this.form.submit()">
-                            <option disabled selected>선택</option>
-                            <option value="1" ${pageDTO.pageSize == 1 ? "selected" : ""}>1개씩 보기</option>
-                            <option value="5" ${pageDTO.pageSize == 5 ? "selected" : ""}>5개씩 보기</option>
-                            <option value="10" ${pageDTO.pageSize == 10 ? "selected" : ""}>10개씩 보기</option>
-                            <option value="15" ${pageDTO.pageSize == 15 ? "selected" : ""}>15개씩 보기</option>
-                            <option value="100" ${pageDTO.pageSize == 100 ? "selected" : ""}>100개씩 보기</option>
-                        </select>
-                    </div>
-                </div>
-            </form>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">좋아요 누른 게시글</h3>
         </div>
+        <%
+            List<Map<String, String>> dateOptions = new ArrayList<>();
+            dateOptions.add(Map.of("value", "postLikeCreatedAt", "label", "좋아요 누른 날짜"));
+            dateOptions.add(Map.of("value", "postCreatedAt", "label", "게시글 작성일자"));
+            request.setAttribute("dateOptions", dateOptions);
+
+            List<Map<String, String>> searchTypeOptions = new ArrayList<>();
+            searchTypeOptions.add(Map.of("value", "postTitle", "label", "제목"));
+            searchTypeOptions.add(Map.of("value", "postContent", "label", "내용"));
+            searchTypeOptions.add(Map.of("value", "postMemberId", "label", "작성자"));
+            request.setAttribute("searchTypeOptions", searchTypeOptions);
+        %>
+        <jsp:include page="../common/searchBox.jsp">
+            <jsp:param name="searchAction" value="/mypage/likes"/>
+        </jsp:include>
+
+        <%--        <div class="search-box" style="max-width: 700px;">--%>
+        <%--            <form name="frmSearch" method="get" action="/mypage/likes" class="mb-1 p-4">--%>
+        <%--                <div class="row g-2 align-items-center mb-3">--%>
+        <%--                    <div class="col-md-3">--%>
+        <%--                        <select name="dateType" class="form-select">--%>
+        <%--                            <option value="postLikeCreatedAt" ${param.dateType eq 'postLikeCreatedAt' ? 'selected' : ''}>--%>
+        <%--                                좋아요 누른 날짜--%>
+        <%--                            </option>--%>
+        <%--                            <option value="postCreatedAt" ${param.dateType eq 'postCreatedAt' ? 'selected' : ''}>게시글--%>
+        <%--                                작성일자--%>
+        <%--                            </option>--%>
+        <%--                        </select>--%>
+        <%--                    </div>--%>
+        <%--                    <div class="col-md-8">--%>
+        <%--                        <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택"--%>
+        <%--                               autocomplete="off"--%>
+        <%--                               value="${not empty param.datefilter ? param.datefilter : ''}"/>--%>
+        <%--                    </div>--%>
+        <%--                </div>--%>
+
+        <%--                <div class="row g-2 align-items-center mb-3">--%>
+        <%--                    <div class="col-md-3">--%>
+        <%--                        <select name="searchType" class="form-select">--%>
+        <%--                            <option value="postTitle" ${searchDTO.searchType eq "postTitle" ? "selected":""}>제목</option>--%>
+        <%--                            <option value="postContent" ${searchDTO.searchType eq "postContent" ? "selected":""}>내용--%>
+        <%--                            </option>--%>
+        <%--                            <option value="postMemberId" ${searchDTO.searchType eq "postMemberId" ? "selected":""}>작성자--%>
+        <%--                            </option>--%>
+        <%--                        </select>--%>
+        <%--                    </div>--%>
+        <%--                    <div class="col-md-5">--%>
+        <%--                        <input type="text" name="searchWord" class="form-control" placeholder="검색어 입력"--%>
+        <%--                               value="${searchDTO.searchWord}"/>--%>
+        <%--                    </div>--%>
+        <%--                    <div class="col-md-3 d-flex gap-1">--%>
+        <%--                        <button type="submit" class="btn btn-primary flex-fill" id="btnSearch">검색</button>--%>
+        <%--                        <button type="button" class="btn btn-link text-decoration-none" id="btnReset">초기화</button>--%>
+        <%--                    </div>--%>
+        <%--                </div>--%>
+
+        <%--                <div class="row mb-3">--%>
+        <%--                    <div class="col-md-2">--%>
+        <%--                        <select name="pageSize" class="form-select" onchange="this.form.submit()">--%>
+        <%--                            <option disabled selected>선택</option>--%>
+        <%--                            <option value="1" ${pageDTO.pageSize == 1 ? "selected" : ""}>1개씩 보기</option>--%>
+        <%--                            <option value="5" ${pageDTO.pageSize == 5 ? "selected" : ""}>5개씩 보기</option>--%>
+        <%--                            <option value="10" ${pageDTO.pageSize == 10 ? "selected" : ""}>10개씩 보기</option>--%>
+        <%--                            <option value="15" ${pageDTO.pageSize == 15 ? "selected" : ""}>15개씩 보기</option>--%>
+        <%--                            <option value="100" ${pageDTO.pageSize == 100 ? "selected" : ""}>100개씩 보기</option>--%>
+        <%--                        </select>--%>
+        <%--                    </div>--%>
+        <%--                </div>--%>
+        <%--            </form>--%>
+        <%--        </div>--%>
         <form id="frmSort" method="get" action="/mypage/likes">
             <input type="hidden" name="pageSize" value="${responseDTO.pageSize}"/>
             <input type="hidden" name="searchWord" value="${searchDTO.searchWord}"/>
@@ -177,65 +196,7 @@
         document.getElementById('frmSort').submit();
     }
 
-    $(function () {
-        $('input[name="datefilter"]')
-            .daterangepicker({
-                autoUpdateInput: false,
-                locale: {
-                    format: "YYYY-MM-DD",
-                    separator: " - ",
-                    applyLabel: "확인",
-                    cancelLabel: "취소",
-                    customRangeLabel: "Custom",
-                    weekLabel: "주",
-                    daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
-                    monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
-                    firstDay: 1
-                }
-            });
 
-        $('input[name="datefilter"]').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
-        });
-
-        $('#btnSearch').click(function (e) {
-            e.preventDefault();
-
-            var url = new URL(window.location.href);
-            var params = url.searchParams;
-
-            var datefilter = $('input[name="datefilter"]').val();
-            if (datefilter) {
-                var dates = datefilter.split(' - ');
-                params.set('startDate', dates[0]);
-                params.set('endDate', dates[1]);
-            } else {
-                params.delete('startDate');
-                params.delete('endDate');
-            }
-
-            params.set('searchType', $('select[name="searchType"]').val());
-            params.set('searchWord', $('input[name="searchWord"]').val());
-
-            window.location.href = url.toString();
-        });
-
-        $('#btnReset').click(function () {
-            $('input[name="searchWord"]').val('');
-            $('select[name="searchType"]').val('qnaTitle');
-            $('input[name="datefilter"]').val('');
-
-            var url = new URL(window.location.href);
-            var params = url.searchParams;
-            params.delete('datefilter');
-            params.delete('startDate');
-            params.delete('endDate');
-            params.delete('searchType');
-            params.delete('searchWord');
-
-            window.location.href = url.toString();
-        });
-    });
 
     <c:if test="${not empty message}">
     alert("${message}");

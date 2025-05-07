@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <html>
 <head>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
@@ -7,31 +9,32 @@
 </head>
 <body>
 <div class="search-box" style="max-width: 700px;">
-    <form name="frmSearch" method="get" action="${searchConfig.action}" class="mb-1 p-4">
+    <form name="frmSearch" method="get" action="${searchAction}" class="mb-1 p-4">
         <div class="row g-2 align-items-center mb-3">
-            <c:if test="${searchConfig.showDateType}">
-                <div class="col-md-3">
+            <div class="col-md-3">
+                <c:if test="${not empty dateOptions}">
                     <select name="dateType" class="form-select">
-                        <c:forEach var="option" items="${searchConfig.dateTypeOptions}">
-                            <option value="${option.value}" ${param.dateType eq option.value ? 'selected' : ''}>
-                                    ${option.label}
+                        <c:forEach var="item" items="${dateOptions}">
+                            <option value="${item.value}" ${param.dateType eq item.value ? 'selected' : ''}>
+                                    ${item.label}
                             </option>
                         </c:forEach>
                     </select>
-                </div>
-            </c:if>
-            <div class="${searchConfig.showDateType ? 'col-md-8' : 'col-md-12'}">
-                <input type="text" name="datefilter" class="form-control" placeholder="기간 선택"
-                       autocomplete="off" value="${param.datefilter}"/>
+                </c:if>
+            </div>
+            <div class="col-md-8">
+                <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택"
+                       autocomplete="off"
+                       value="${not empty param.datefilter ? param.datefilter : ''}"/>
             </div>
         </div>
 
         <div class="row g-2 align-items-center mb-3">
             <div class="col-md-3">
                 <select name="searchType" class="form-select">
-                    <c:forEach var="option" items="${searchConfig.searchTypeOptions}">
-                        <option value="${option.value}" ${searchDTO.searchType eq option.value ? "selected":""}>
-                                ${option.label}
+                    <c:forEach var="item" items="${searchTypeOptions}">
+                        <option value="${item.value}" ${searchDTO.searchType eq item.value ? "selected" : ""}>
+                                ${item.label}
                         </option>
                     </c:forEach>
                 </select>
@@ -41,7 +44,7 @@
                        value="${searchDTO.searchWord}"/>
             </div>
             <div class="col-md-3 d-flex gap-1">
-                <button type="submit" class="btn btn-primary flex-fill">검색</button>
+                <button type="submit" class="btn btn-primary flex-fill" id="btnSearch">검색</button>
                 <button type="button" class="btn btn-link text-decoration-none" id="btnReset">초기화</button>
             </div>
         </div>
