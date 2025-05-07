@@ -6,10 +6,7 @@ import com.siot.IamportRestClient.response.Payment;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.CartDTO;
-import net.spb.spb.dto.LectureDTO;
-import net.spb.spb.dto.OrderDTO;
-import net.spb.spb.dto.PaymentDTO;
+import net.spb.spb.dto.*;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.service.PaymentServiceIf;
 import org.springframework.core.annotation.Order;
@@ -36,6 +33,7 @@ public class PaymentController {
     private final PaymentServiceIf paymentService;
 
     private final IamportClient iamportClient;
+
     private String tId = "";
     private String partnerOrderId ="";
     @GetMapping("/cart")
@@ -85,6 +83,9 @@ public class PaymentController {
         List<LectureDTO> selectedLectures = paymentService.findLecturesByIds(lectureIdxList);
         log.info("selectedLectures: "+selectedLectures);
         model.addAttribute("selectedLectures", selectedLectures);
+        int totalAmount = selectedLectures.stream().mapToInt(LectureDTO::getLectureAmount).sum();
+        model.addAttribute("totalAmount", selectedLectures.stream().mapToInt(LectureDTO::getLectureAmount).sum());
+        log.info(totalAmount);
         return "payment/payment";
     }
 
@@ -141,7 +142,15 @@ public class PaymentController {
 
                 paymentDTO.setPaymentApprovedAt2(zonedDateTime.toLocalDateTime());
 
-                paymentService.savePaymentInfo(paymentDTO);
+                if(payment.getCancelledAt() != null ){
+                    zonedDateTime = ZonedDateTime.parse(payment.getCancelledAt().toString(), formatter);
+
+                    paymentDTO.setPaymentCanceledAt2(zonedDateTime.toLocalDateTime());
+                }
+
+                paymentService.savePaymentInfo(paymentDTO); //결제테이블에 등록
+
+                paymentService.updateOrderInfo(paymentDTO); //주문테이블 업데이트
 
                 // ⬇️ 예: 강의 등록, 장바구니 비우기 등
                 paymentService.processAfterPayment(paymentDTO);
@@ -149,6 +158,34 @@ public class PaymentController {
                         "status", "success"
                 ));
             } else {
+
+                PaymentDTO paymentDTO = new PaymentDTO();
+                paymentDTO.setPaymentTransactionId ((String) payment.getImpUid());
+                paymentDTO.setPaymentOrderIdx(Integer.parseInt(merchantUid));
+                paymentDTO.setMemberId(memberId);
+                paymentDTO.setPaymentMethod(payment.getPayMethod());
+                //paymentDTO.setTotalAmount((Integer) ((Map) body.get("amount")).get("total"));
+                //paymentDTO.setItemName((String) body.get("item_name"));
+                paymentDTO.setPaymentStatus("f");
+                //paymentDTO.setPaymentApprovedAt(payment.getPaidAt().toString());
+
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+                ZonedDateTime zonedDateTime = ZonedDateTime.parse(payment.getPaidAt().toString(), formatter);
+
+                paymentDTO.setPaymentApprovedAt2(zonedDateTime.toLocalDateTime());
+
+                if(payment.getCancelledAt() != null ){
+                    zonedDateTime = ZonedDateTime.parse(payment.getCancelledAt().toString(), formatter);
+
+                    paymentDTO.setPaymentCanceledAt2(zonedDateTime.toLocalDateTime());
+                }
+
+
+                paymentService.savePaymentInfo(paymentDTO); //결제테이블에 등록
+
+                paymentService.updateOrderInfo(paymentDTO); //주문테이블 업데이트
+
                 return ResponseEntity.badRequest().body(Map.of(
                         "status", "fail",
                         "message", "결제 상태 비정상"
@@ -162,5 +199,44 @@ public class PaymentController {
             ));
         }
     }
+
+    @GetMapping("/paymentDetail")
+    public String paymentDetail(@RequestParam("orderIdx") int orderIdx, Model model, HttpSession session){
+        try {
+            String memberId = (String) session.getAttribute("memberId");
+            MemberDTO memberDTO = paymentService.getMemberInfo(memberId);
+            model.addAttribute("member", memberDTO);
+            model.addAttribute("orderIdx", orderIdx);
+            List<LectureDTO> lectureDTO = paymentService.getOrderLectureInfo(orderIdx);
+            model.addAttribute("lectureDTO", lectureDTO);
+            log.info("lectureDTO === " + lectureDTO);
+            if(lectureDTO.size()>0){
+                model.addAttribute("lectureDTOSize", lectureDTO.size());
+            }
+            PaymentDTO paymentDTO = paymentService.getPaymentInfo(orderIdx);
+            model.addAttribute("paymentDTO", paymentDTO);
+            log.info("paymentDTO === " + paymentDTO);
+        }catch (Exception e){
+            System.out.println("🔥 예외 발생: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return "payment/paymentDetail";
+    }
+
+    @PostMapping("/cancel")
+    @ResponseBody
+    public ResponseEntity<?>  cancel(@RequestBody CancelRequestDTO dto){
+        try {
+            Map<String, Object> result = paymentService.cancelPayment(dto.getMerchant_uid(), dto.getReason(), dto.getAmount());
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("결제 취소에 실패했습니다." + e.getMessage());
+        }
+    }
+
+
 
 }

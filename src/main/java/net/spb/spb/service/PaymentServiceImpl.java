@@ -7,10 +7,17 @@ import net.spb.spb.dto.*;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.mapper.PaymentMapper;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +27,7 @@ import java.util.stream.Collectors;
 public class PaymentServiceImpl implements PaymentServiceIf{
     private final ModelMapper modelMapper;
     private final PaymentMapper paymentMapper;
+    private final RestTemplate restTemplate;
 
     @Override
     public List<CartDTO> selectCart(String memberId) {
@@ -108,5 +116,64 @@ public class PaymentServiceImpl implements PaymentServiceIf{
         return dto;
     }
 
+    @Override
+    public List<LectureDTO> getOrderLectureInfo(int orderIdx) {
+        List<Integer> orderLectureidxs = paymentMapper.getOrderLectureIdxs(orderIdx);
+        return findLecturesByIds(orderLectureidxs);
+    }
+
+    @Override
+    public PaymentDTO getPaymentInfo(int orderIdx) {
+        PaymentVO paymentVO = paymentMapper.getPaymentInfo(orderIdx);
+        log.info("paymentVO: "+paymentVO);
+        PaymentDTO dto = (paymentVO != null?modelMapper.map(paymentVO, PaymentDTO.class):null);
+        return dto;
+    }
+
+    @Override
+    public void updateOrderInfo(PaymentDTO paymentDTO) {
+        PaymentVO paymentVO = modelMapper.map(paymentDTO, PaymentVO.class);
+        paymentMapper.updateOrderInfo(paymentVO);
+    }
+
+    @Override
+    public Map<String, Object> cancelPayment(String merchantUid, String reason, int amount) throws Exception {
+        String token = getAccessToken();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("imp_uid", merchantUid);
+        body.put("amount", amount);
+        body.put("reason", reason);
+
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+        ResponseEntity<Map> response = restTemplate.postForEntity(
+                "https://api.iamport.kr/payments/cancel", request, Map.class);
+
+        // 결제 상태 DB 업데이트
+        paymentMapper.updatePaymentStatus(merchantUid, "CANCELLED");
+
+        return response.getBody();
+    }
+
+    private String getAccessToken() throws Exception {
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, String> body = new HashMap<>();
+        body.put("imp_key", "5308452081165714");
+        body.put("imp_secret", "k9aHUjxe7p8EHezB3AqXUCJ50XHQ9BydDigbryzrMxeXWvDfseFzy1HQ8bjXGqAuBSoWSJYytsnApRL1");
+
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
+
+        ResponseEntity<Map> response = restTemplate.postForEntity(
+                "https://api.iamport.kr/users/getToken", request, Map.class);
+
+        Map<String, Object> responseBody = (Map<String, Object>) response.getBody().get("response");
+        return responseBody.get("access_token").toString();
+    }
 
 }

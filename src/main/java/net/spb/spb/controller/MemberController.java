@@ -15,6 +15,7 @@ import net.spb.spb.util.PasswordUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +26,9 @@ import java.security.NoSuchAlgorithmException;
 
 import jakarta.validation.Valid;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +51,6 @@ public class MemberController {
     public String main(HttpServletRequest request, HttpSession session) {
         Cookie[] cookies = request.getCookies();
         String autoLoginId = null;
-
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("autoLogin".equals(cookie.getName())) {
@@ -57,29 +60,86 @@ public class MemberController {
             }
         }
 
-        if (autoLoginId != null) {
-            MemberDTO autoLoginUser = new MemberDTO();
-            autoLoginUser.setMemberId(autoLoginId);
-
-            if (memberService.existUser(autoLoginId)) {
-                session.setAttribute("memberId", autoLoginId);
-            }
+        if (autoLoginId != null && memberService.existMember(autoLoginId)) {
+            session.setAttribute("memberId", autoLoginId);
         }
+
+        String memberId = (String) session.getAttribute("memberId");
+        if (memberId != null) {
+            MemberDTO memberDTO = memberService.getMemberById(memberId);
+
+            // 마지막 로그인 일자가 1년 경과
+            LocalDate lastLoginDate = memberDTO.getMemberLastLogin();
+            // 비밀번호 90일 이상 경과
+            LocalDate pwdChangeDate = memberDTO.getMemberPwdChangeDate();
+
+            if (lastLoginDate != null) {
+                long daysSinceLastLogin = ChronoUnit.DAYS.between(lastLoginDate, LocalDate.now());
+                if (daysSinceLastLogin >= 365) {
+                    memberDTO.setMemberState("5");
+                    memberService.updateMemberStateWithLogin("5", memberId);
+
+                }
+            } else if (pwdChangeDate != null) {
+                long dayBetween = ChronoUnit.DAYS.between(pwdChangeDate, LocalDate.now());
+                if (dayBetween >= 90) {
+                    memberDTO.setMemberState("3");
+                    memberService.updateMemberStateWithLogin("3", memberId);
+                }
+            }
+
+            if (memberDTO.getMemberState().equals("1")) {
+                memberService.updateMemberLastLoginWithLogin(LocalDate.now().toString(), memberId);
+            }
+
+            session.setAttribute("memberDTO", memberDTO);
+        }
+
         return "common/main";
+    }
+
+    @PostMapping("/updatePwdChangeDate")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updatePwdChangeDate(@RequestBody Map<String, String> requestData) {
+        String memberId = requestData.get("memberId");
+
+        MemberDTO memberDTO = memberService.getMemberById(memberId);
+        if (memberDTO != null) {
+            String now = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            boolean updatedDate = memberService.updateMemberPwdChangeDateWithLogin(now, memberId);
+            boolean updatedState = memberService.updateMemberStateWithLogin("1", memberId);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", updatedDate && updatedState);
+            return ResponseEntity.ok(response);
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/email/reactivate")
+    @ResponseBody
+    public void reactivateAccount(@RequestBody MemberDTO memberDTO) {
+        String memberId = memberDTO.getMemberId();
+
+        memberService.updateMemberStateWithLogin("1", memberId);
+        //memberService.updateMemberPwdChangeDateWithLogin(LocalDate.now().toString(), memberId);
+        memberService.updateMemberLastLoginWithLogin(LocalDate.now().toString(), memberId);
     }
 
     @GetMapping("/naver/callback")
     public String naverCallback(@RequestParam("code") String code,
                                 @RequestParam("state") String state,
-                                HttpSession session,
-                                Model model) throws Exception {
+                                HttpSession session) throws Exception {
 
         String accessToken = naverLoginService.getAccessToken(code, state);
         MemberDTO naverMemberDto = naverLoginService.getUserInfo(accessToken);
 
         String naverMemberId = naverMemberDto.getMemberId();
 
-        if (!memberService.existUser(naverMemberId)) {
+        if (!memberService.existMember(naverMemberId)) {
             // model.addAttribute("memberDTO", naverMemberDto);
             session.setAttribute("memberDTO", naverMemberDto);
             return "redirect:/join";
@@ -91,9 +151,6 @@ public class MemberController {
 
     @GetMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-//        Cookie[] cookies = request.getCookies();
-//        String autoLoginId = null;
-
         if (session.getAttribute("memberId") != null) {
             String action = request.getParameter("action");
             if (action != null && action.equals("logout")) {
@@ -107,26 +164,6 @@ public class MemberController {
                 return "redirect:/login";
             }
         }
-
-//
-//        if (cookies != null) {
-//            for (Cookie cookie : cookies) {
-//                if ("autoLogin".equals(cookie.getName())) {
-//                    autoLoginId = cookie.getValue();
-//                    break;
-//                }
-//            }
-//        }
-//
-//        if (autoLoginId != null) {
-//            MemberDTO autoLoginUser = new MemberDTO();
-//            autoLoginUser.setMemberId(autoLoginId);
-//
-//            if (memberService.existUser(autoLoginId)) {
-//                session.setAttribute("memberId", autoLoginId);
-//            }
-//        }
-
         return "login/login";
     }
 
@@ -134,7 +171,6 @@ public class MemberController {
     public String login(@Valid @ModelAttribute LoginDTO loginDTO, BindingResult bindingResult,
                         @RequestParam(value = "checkIdSave", required = false) String checkIdSave,
                         @RequestParam(value = "checkAutoLogin", required = false) String checkAutoLogin,
-                        HttpServletRequest request,
                         HttpServletResponse response,
                         HttpSession session,
                         Model model) {
@@ -173,10 +209,14 @@ public class MemberController {
             session.setAttribute("memberId", memberDTO.getMemberId());
             session.setAttribute("memberGrade", memberDTO.getMemberGrade());
 
+//            // 로그인 일자 오늘로
+//            String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+//            memberService.updateMemberLastLoginWithLogin(today, memberDTO.getMemberId());
+
+            // 아이디 저장 쿠키 처리
             if (checkIdSave != null) {
                 Cookie idCookie = new Cookie("saveId", memberDTO.getMemberId());
-                session.setAttribute("memberId", memberDTO.getMemberId());
-                idCookie.setMaxAge(60 * 60 * 24 * 1);
+                idCookie.setMaxAge(60 * 60 * 24); // 1일
                 idCookie.setPath("/");
                 response.addCookie(idCookie);
             } else {
@@ -186,10 +226,10 @@ public class MemberController {
                 response.addCookie(idCookie);
             }
 
+            // 자동 로그인 쿠키 처리
             if (checkAutoLogin != null) {
                 Cookie autoCookie = new Cookie("autoLogin", memberDTO.getMemberId());
-                session.setAttribute("memberId", memberDTO.getMemberId());
-                autoCookie.setMaxAge(60 * 60 * 24 * 1);
+                autoCookie.setMaxAge(60 * 60 * 24); // 1일
                 autoCookie.setPath("/");
                 response.addCookie(autoCookie);
             } else {
@@ -233,7 +273,7 @@ public class MemberController {
             return result;
         }
 
-        boolean existMember = memberService.existUser(memberId);
+        boolean existMember = memberService.existMember(memberId);
         if (existMember) {
             result.put("success", false);
             result.put("message", "이미 존재하는 아이디입니다.");
@@ -249,18 +289,36 @@ public class MemberController {
 
     @PostMapping("/email/verify")
     @ResponseBody
-    public Map<String, Object> verifyEmail(@ModelAttribute MemberDTO memberDTO, HttpSession session) {
+    public Map<String, Object> verifyEmail(@RequestBody MemberDTO memberDTO, HttpSession session) {
         String memberEmail = memberDTO.getMemberEmail();
         Map<String, Object> result = new HashMap<>();
 
         if (memberEmail != null && !memberEmail.isEmpty()) {
+            // 인증 코드 생성 및 이메일 전송
             String code = mailService.sendVerificationCode(memberEmail);
             session.setAttribute("emailAuthCode", code);
             session.setAttribute("memberEmail", memberEmail);
             session.setAttribute("emailVerified", false);
+            session.setAttribute("emailAuthTime", System.currentTimeMillis());
+
+            // 인증 시도 횟수
+            Integer emailTryCount = (Integer) session.getAttribute("emailTryCount");
+            if (emailTryCount == null) {
+                emailTryCount = 0;
+            }
+
+            if (emailTryCount >= 3) {
+                result.put("success", false);
+                result.put("message", "이메일 인증 시도 횟수를 초과했습니다. 나중에 다시 시도해주세요.");
+                return result;
+            }
+
+            emailTryCount++;
+            session.setAttribute("emailTryCount", emailTryCount);
 
             result.put("success", true);
             result.put("message", "인증 코드가 전송되었습니다.");
+            result.put("emailTryCount", emailTryCount);
         } else {
             result.put("success", false);
             result.put("message", "이메일을 입력해주세요.");
@@ -272,20 +330,36 @@ public class MemberController {
 
     @PostMapping("/email/codeCheck")
     @ResponseBody
-    public Map<String, Object> checkEmailCode(@RequestParam("memberEmailCode") String memberEmailCode,
-                                              @ModelAttribute MemberDTO memberDTO, HttpSession session) {
+    public Map<String, Object> checkEmailCode(@RequestBody Map<String, String> data, HttpSession session) {
+        String memberEmailCode = data.get("memberEmailCode");
+        String memberEmail = data.get("memberEmail");
+
         String sessionCode = (String) session.getAttribute("emailAuthCode");
+        Long authTime = (Long) session.getAttribute("emailAuthTime");
         Map<String, Object> result = new HashMap<>();
+
+        long currentTime = System.currentTimeMillis();
+        long fiveMinutesInMillis = 5 * 60 * 1000;
+
+        if (authTime == null || (currentTime - authTime) > fiveMinutesInMillis) {
+            session.removeAttribute("emailVerified");
+            session.removeAttribute("emailAuthCode");
+            result.put("success", false);
+            result.put("message", "인증 시간이 만료되었습니다. 다시 시도해주세요.");
+            return result;
+        }
 
         if (sessionCode != null && sessionCode.equals(memberEmailCode)) {
             result.put("success", true);
             session.setAttribute("emailVerified", true);
+            session.removeAttribute("emailTryCount");
+            session.removeAttribute("emailAuthCode");
+            session.removeAttribute("emailAuthTime");
         } else {
             result.put("success", false);
             result.put("message", "인증 코드가 일치하지 않습니다.");
         }
 
-        session.setAttribute("memberDTO", memberDTO);
         return result;
     }
 
@@ -365,8 +439,7 @@ public class MemberController {
         boolean result = memberService.join(memberDTO);
 
         if (result) {
-            session.removeAttribute("emailVerified");
-            session.removeAttribute("emailAuthCode");
+
             session.removeAttribute("memberEmail");
             model.addAttribute("errorMessage", "회원가입에 성공했습니다.");
             return "redirect:/login";
@@ -377,5 +450,4 @@ public class MemberController {
             return "login/join";
         }
     }
-
 }

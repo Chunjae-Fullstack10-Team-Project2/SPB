@@ -1,4 +1,4 @@
-package net.spb.spb.service;
+package net.spb.spb.service.board;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -7,6 +7,10 @@ import net.spb.spb.domain.PostCommentVO;
 import net.spb.spb.domain.ReportVO;
 import net.spb.spb.domain.PostVO;
 import net.spb.spb.dto.*;
+import net.spb.spb.dto.post.PostCommentDTO;
+import net.spb.spb.dto.post.PostDTO;
+import net.spb.spb.dto.pagingsearch.PostPageDTO;
+import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.mapper.BoardFileMapper;
 import net.spb.spb.mapper.BoardMapper;
 import net.spb.spb.mapper.CommentMapper;
@@ -20,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class BoardServiceImpl implements BoardServiceIf{
+public class BoardServiceImpl implements BoardServiceIf {
 
     private final BoardMapper boardMapper;
     private final ModelMapper modelMapper;

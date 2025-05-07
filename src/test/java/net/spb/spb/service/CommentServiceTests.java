@@ -1,7 +1,8 @@
 package net.spb.spb.service;
 
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.PostCommentDTO;
+import net.spb.spb.dto.post.PostCommentDTO;
+import net.spb.spb.service.board.CommentServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

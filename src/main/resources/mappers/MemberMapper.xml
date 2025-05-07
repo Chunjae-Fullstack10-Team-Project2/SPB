@@ -8,8 +8,8 @@
           and memberPwd = #{memberPwd}
     </select>
 
-<!--  존재하는 회원인지 + 아이디 중복 체크용  -->
-    <select id="existUser" parameterType="String" resultType="net.spb.spb.domain.MemberVO">
+    <!--  존재하는 회원인지 + 아이디 중복 체크용  -->
+    <select id="existMember" parameterType="String" resultType="net.spb.spb.domain.MemberVO">
         select memberIdx
         from tbl_member
         where memberId = #{memberId}
@@ -33,7 +33,9 @@
                memberEmail,
                memberPhone,
                memberJoinPath,
-               memberState
+               memberState,
+               memberPwdChangeDate,
+               memberLastLogin
         from tbl_member
         where memberId = #{memberId}
     </select>
@@ -45,7 +47,25 @@
             memberAddr1   = #{memberAddr1},
             memberAddr2   = #{memberAddr2},
             memberGrade   = #{memberGrade}
-        where memberId = #{memberId}
+            where memberId = #{memberId}
+    </update>
+
+    <update id="updateMemberStateWithLogin" parameterType="String">
+        update tbl_member
+        set memberState = #{memberState}
+            where memberId = #{memberId}
+    </update>
+
+    <update id="updateMemberPwdChangeDateWithLogin" parameterType="String">
+        update tbl_member
+        set memberPwdChangeDate = #{memberPwdChangeDate}
+            where memberId = #{memberId}
+    </update>
+
+    <update id="updateMemberLastLoginWithLogin" parameterType="String">
+        update tbl_member
+        set memberLastLogin = #{memberLastLogin}
+            where memberId = #{memberId}
     </update>
 
     <select id="getPwdById" parameterType="String" resultType="String">
@@ -54,16 +74,16 @@
         where memberId = #{memberId}
     </select>
 
-    <select id="getAllMembers" resultType="net.spb.spb.domain.MemberVO" parameterType="net.spb.spb.dto.MemberPageDTO">
+    <select id="getAllMembers" resultType="net.spb.spb.domain.MemberVO" parameterType="net.spb.spb.dto.pagingsearch.MemberPageDTO">
         select memberIdx,
-               memberId,
-               memberName,
-               memberBirth,
-               memberCreatedAt,
-               memberState,
-               memberGrade,
-               memberEmail,
-               memberPhone
+        memberId,
+        memberName,
+        memberBirth,
+        memberCreatedAt,
+        memberState,
+        memberGrade,
+        memberEmail,
+        memberPhone
         from tbl_member
         <where>
             1=1
@@ -71,14 +91,14 @@
                 and memberState = #{search_member_state}
             </if>
             <if test="search_member_grade != null and search_member_grade != ''">
-                <if test="search_member_grade gte 0 and search_member_grade lte 13">
+                <if test="search_member_grade gte 0 and search_member_grade lte 14">
                     and memberGrade = #{search_member_grade}
                 </if>
             </if>
             <if test="search_word != null and search_word != ''">
                 and (
-                    memberId like concat('%', #{search_word}, '%')
-                    or memberName like concat('%', #{search_word}, '%')
+                memberId like concat('%', #{search_word}, '%')
+                or memberName like concat('%', #{search_word}, '%')
                 )
             </if>
         </where>
@@ -94,7 +114,7 @@
 
     <update id="updateMemberByAdmin" parameterType="net.spb.spb.domain.MemberVO">
         update tbl_member
-        set memberState = #{memberState},
+        set memberState   = #{memberState},
             memberName    = #{memberName},
             memberZipCode = #{memberZipCode},
             memberAddr1   = #{memberAddr1},
@@ -103,7 +123,7 @@
         where memberId = #{memberId}
     </update>
 
-    <select id="getMemberCount" resultType="java.lang.Integer" parameterType="net.spb.spb.dto.MemberPageDTO">
+    <select id="getMemberCount" resultType="java.lang.Integer" parameterType="net.spb.spb.dto.pagingsearch.MemberPageDTO">
         select count(memberIdx)
         from tbl_member
         <where>
@@ -112,7 +132,7 @@
                 and memberState = #{search_member_state}
             </if>
             <if test="search_member_grade != null and search_member_grade != ''">
-                <if test="search_member_grade gte 0 and search_member_grade lte 13">
+                <if test="search_member_grade gte 0 and search_member_grade lte 14">
                     and memberGrade = #{search_member_grade}
                 </if>
             </if>
@@ -124,4 +144,5 @@
             </if>
         </where>
     </select>
+
 </mapper>

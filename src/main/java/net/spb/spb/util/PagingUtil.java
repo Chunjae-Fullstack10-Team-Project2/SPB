@@ -1,8 +1,8 @@
 package net.spb.spb.util;
 
-import net.spb.spb.dto.MemberPageDTO;
-import net.spb.spb.dto.PageDTO;
-import net.spb.spb.dto.PostPageDTO;
+import net.spb.spb.dto.pagingsearch.MemberPageDTO;
+import net.spb.spb.dto.pagingsearch.PageDTO;
+import net.spb.spb.dto.pagingsearch.PostPageDTO;
 
 public class PagingUtil {
     public static String buildBoardLinkUrl(String basePath, PostPageDTO dto) {

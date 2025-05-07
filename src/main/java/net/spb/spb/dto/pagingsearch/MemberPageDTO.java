@@ -1,4 +1,4 @@
-package net.spb.spb.dto;
+package net.spb.spb.dto.pagingsearch;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;

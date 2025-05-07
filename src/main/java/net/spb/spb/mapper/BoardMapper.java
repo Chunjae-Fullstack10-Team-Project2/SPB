@@ -2,7 +2,7 @@ package net.spb.spb.mapper;
 
 import net.spb.spb.domain.ReportVO;
 import net.spb.spb.domain.PostVO;
-import net.spb.spb.dto.PostPageDTO;
+import net.spb.spb.dto.pagingsearch.PostPageDTO;
 
 import java.util.HashMap;
 import java.util.List;

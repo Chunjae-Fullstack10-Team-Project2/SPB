@@ -1,4 +1,4 @@
-package net.spb.spb.dto;
+package net.spb.spb.dto.pagingsearch;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class PostPageDTO extends PageDTO{
+public class PostPageDTO extends PageDTO {
 
     private String postCategory;
 

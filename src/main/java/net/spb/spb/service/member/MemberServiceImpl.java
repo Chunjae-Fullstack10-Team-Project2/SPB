@@ -1,12 +1,14 @@
 package net.spb.spb.service.member;
 
 import net.spb.spb.domain.MemberVO;
-import net.spb.spb.dto.MemberPageDTO;
 import net.spb.spb.dto.member.MemberDTO;
+import net.spb.spb.dto.pagingsearch.MemberPageDTO;
+import net.spb.spb.dto.pagingsearch.ReportPageDTO;
 import net.spb.spb.mapper.MemberMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -29,8 +31,8 @@ public class MemberServiceImpl implements MemberServiceIf {
     }
 
     @Override
-    public boolean existUser(String userId) {
-        MemberVO memberVO = memberMapper.existUser(userId);
+    public boolean existMember(String userId) {
+        MemberVO memberVO = memberMapper.existMember(userId);
         return memberVO != null;
     }
 
@@ -51,6 +53,21 @@ public class MemberServiceImpl implements MemberServiceIf {
     public boolean updateMember(MemberDTO memberDTO) {
         MemberVO memberVO = modelMapper.map(memberDTO, MemberVO.class);
         return memberMapper.updateMember(memberVO);
+    }
+
+    @Override
+    public boolean updateMemberStateWithLogin(String memberState, String memberId) {
+        return memberMapper.updateMemberStateWithLogin(memberState, memberId);
+    }
+
+    @Override
+    public boolean updateMemberPwdChangeDateWithLogin(String memberPwdChangeDate, String memberId) {
+        return memberMapper.updateMemberPwdChangeDateWithLogin(memberPwdChangeDate, memberId);
+    }
+
+    @Override
+    public boolean updateMemberLastLoginWithLogin(String memberLastLogin, String memberId) {
+        return memberMapper.updateMemberLastLoginWithLogin(memberLastLogin, memberId);
     }
 
     @Override

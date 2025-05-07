@@ -1,8 +1,8 @@
 package net.spb.spb.mapper;
 
 import net.spb.spb.dto.OrderDTO;
-import net.spb.spb.dto.PostLikeRequestDTO;
-import net.spb.spb.dto.PostReportDTO;
+import net.spb.spb.dto.post.PostLikeRequestDTO;
+import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
 import org.apache.ibatis.annotations.Param;
@@ -19,7 +19,7 @@ public interface MyPageMapper {
 
     int reportTotalCount(@Param("searchDTO") SearchDTO searchDTO, @Param("reportMemberId") String reportMemberId);
 
-    List<OrderDTO> listMyOrder(SearchDTO searchDTO, PageRequestDTO pageRequestDTO, String orderMemberId);
+    List<OrderDTO> listMyOrder(@Param("searchDTO") SearchDTO searchDTO, @Param("pageDTO") PageRequestDTO pageDTO, @Param("orderMemberId") String orderMemberId);
 
-    int orderTotalCount(SearchDTO searchDTO, String orderMemberId);
+    int orderTotalCount(@Param("searchDTO") SearchDTO searchDTO, @Param("orderMemberId") String orderMemberId);
 }

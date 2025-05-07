@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.spb.spb.mapper.BoardMapper">
-    <select id="getPostCount" parameterType="net.spb.spb.dto.PostPageDTO" resultType="java.lang.Integer">
+    <select id="getPostCount" parameterType="net.spb.spb.dto.pagingsearch.PostPageDTO" resultType="java.lang.Integer">
         select count(postIdx) from tbl_post
         <where>
             postState=1 and postCategory = #{postCategory}
@@ -16,7 +16,7 @@
             </if>
         </where>
     </select>
-    <select id="getPosts" parameterType="net.spb.spb.dto.PostPageDTO" resultType="net.spb.spb.domain.PostVO">
+    <select id="getPosts" parameterType="net.spb.spb.dto.pagingsearch.PostPageDTO" resultType="net.spb.spb.domain.PostVO">
         select tp.postIdx, tp.postTitle, tp.postContent, tp.postMemberId, tp.postCategory, tp.postReadCnt, tp.postCreatedAt, tp.postUpdatedAt, tp.postState, count(tpl.postLikeIdx) as postLikeCnt
         from tbl_post tp
         left outer join tbl_post_like tpl

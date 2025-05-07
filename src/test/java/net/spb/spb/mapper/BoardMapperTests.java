@@ -2,7 +2,7 @@ package net.spb.spb.mapper;
 
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.domain.PostVO;
-import net.spb.spb.dto.PostPageDTO;
+import net.spb.spb.dto.pagingsearch.PostPageDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

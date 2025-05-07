@@ -3,8 +3,11 @@ package net.spb.spb.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.MemberPageDTO;
+import net.spb.spb.dto.pagingsearch.MemberPageDTO;
+import net.spb.spb.dto.post.PostReportDTO;
+import net.spb.spb.dto.pagingsearch.ReportPageDTO;
 import net.spb.spb.dto.member.MemberDTO;
+import net.spb.spb.service.ReportService;
 import net.spb.spb.service.member.MemberServiceIf;
 import net.spb.spb.util.PagingUtil;
 import org.springframework.stereotype.Controller;
@@ -20,6 +23,7 @@ import java.util.List;
 public class AdminController {
 
     private final MemberServiceIf memberService;
+    private final ReportService reportService;
 
     @GetMapping("/member/list")
     public void memberList(@ModelAttribute MemberPageDTO memberPageDTO, Model model, HttpServletRequest req) {
@@ -53,6 +57,13 @@ public class AdminController {
     public void memberView(@RequestParam("memberId")String memberId, Model model) {
         MemberDTO memberDTO = memberService.getMemberById(memberId);
         model.addAttribute("memberDTO", memberDTO);
+    }
+
+    @GetMapping("/report/list")
+    public void reportList(@ModelAttribute ReportPageDTO reportPageDTO, Model model) {
+        List<PostReportDTO> reports = reportService.getReports(reportPageDTO);
+        model.addAttribute("search", reportPageDTO);
+        model.addAttribute("reports", reports);
     }
 
 }

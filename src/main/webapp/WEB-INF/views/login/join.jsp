@@ -291,11 +291,16 @@
                 <input type="text" class="form-control" id="memberEmailCode" name="memberEmailCode" placeholder="인증 코드"
                        maxlength="6" required value="${memberEmailCode != null ? memberEmailCode : ''}"
                        <c:if test="${memberDTO.memberJoinPath eq '2'}">disabled</c:if> >
+
                 <button type="button" class="btn btn-outline-secondary" id="btnMemberEmailCodeAuth"
                         onclick="checkEmailCode()"
                         <c:if test="${memberDTO.memberJoinPath eq '2'}">disabled</c:if> >
                     인증 코드 확인
                 </button>
+            </div>
+            <div class="mb-2">
+                <span id="emailCountWarning" class="warning-text"></span>
+                <span id="emailAuthTimeWarning" class="warning-text"></span>
             </div>
             <div class="col-sm-2">
                 <c:if test="${not empty emailCheckMessage}">
@@ -330,6 +335,187 @@
 </div>
 
 <script>
+    let emailAuthTimer;
+    let emailAuthTimeLimit = 300;
+
+    function startEmailAuthTimer() {
+        clearInterval(emailAuthTimer);
+        emailAuthTimeLimit = 300;
+
+        emailAuthTimer = setInterval(function () {
+            const minutes = Math.floor(emailAuthTimeLimit / 60);
+            const seconds = emailAuthTimeLimit % 60;
+
+            const timeDisplay = "남은 인증 시간: " + minutes + ":" + (seconds < 10 ? '0' + seconds : seconds);
+
+            document.getElementById('emailAuthTimeWarning').textContent = timeDisplay;
+
+            if (emailAuthTimeLimit <= 0) {
+                clearInterval(emailAuthTimer);
+                document.getElementById('emailAuthTimeWarning').textContent = '인증 시간이 만료되었습니다.';
+                document.getElementById('memberEmailCode').disabled = true;
+                document.getElementById('btnMemberEmailCodeAuth').disabled = true;
+
+                // 다시 메일 보낼 수 있도록 버튼 활성화
+                document.getElementById('btnMemberEmailCodeSend').disabled = false;
+                document.getElementById('memberEmail1').readOnly = false;
+            }
+
+            emailAuthTimeLimit--;
+        }, 1000);
+    }
+
+    function sendEmailCode() {
+        let memberEmail1 = document.getElementById("memberEmail1").value.trim();
+        let memberEmail2 = document.getElementById("memberEmail2").value;
+
+        if (memberEmail2 === "custom") {
+            memberEmail2 = document.getElementById("memberEmailCustom").value.trim();
+        }
+
+        let memberEmail = memberEmail1 + '@' + memberEmail2;
+        document.querySelector('input[name="memberEmail"]').value = memberEmail;
+
+        if (!memberEmail || memberEmail.indexOf('@') === -1) {
+            alert('이메일을 올바르게 입력하세요.');
+            document.getElementById('memberEmail1').focus();
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/email/verify',
+            contentType: 'application/json',
+            data: JSON.stringify({ memberEmail: memberEmail }),
+            success: function (response) {
+                if (response.success) {
+                    alert('인증 코드가 전송되었습니다.');
+                    document.getElementById('memberEmail1').readOnly = true;
+                    document.getElementById('btnMemberEmailCodeSend').disabled = true;
+
+                    const count = response.emailTryCount;
+                    const emailCountWarning = document.getElementById('emailCountWarning');
+                    emailCountWarning.innerHTML = "<strong>인증 횟수 " + count + "/3회</strong>";
+
+                    startEmailAuthTimer();
+                } else {
+                    alert('이메일 인증 코드 전송 실패: ' + response.message);
+                }
+            },
+            error: function (xhr) {
+                alert("인증 코드 전송 실패: " + xhr.status);
+            }
+        });
+    }
+
+    function checkEmailCode() {
+        const memberEmailCode = document.getElementById('memberEmailCode').value.trim();
+        const memberEmail = document.getElementById('memberEmail').value.trim();
+
+        if (!memberEmailCode) {
+            alert('인증 코드를 입력하세요.');
+            document.getElementById('memberEmailCode').focus();
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/email/codeCheck',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                memberEmailCode: memberEmailCode,
+                memberEmail: memberEmail
+            }),
+            success: function (response) {
+                if (response.success) {
+                    alert('인증 코드 확인에 성공하였습니다.');
+                    document.getElementById('memberEmailCode').readOnly = true;
+                    document.getElementById('btnMemberEmailCodeAuth').disabled = true;
+                } else {
+                    alert('인증 코드 확인 실패: ' + response.message);
+                }
+            },
+            error: function (xhr) {
+                alert("인증 코드 확인 실패: " + xhr.status);
+            }
+        });
+    }
+
+    // function sendEmailCode() {
+    //     let memberEmail1 = document.getElementById("memberEmail1").value.trim();
+    //     let memberEmail2 = document.getElementById("memberEmail2").value;
+    //
+    //     if (memberEmail2 === "custom") {
+    //         memberEmail2 = document.getElementById("memberEmailCustom").value.trim();
+    //     }
+    //
+    //     let memberEmail = memberEmail1 + '@' + memberEmail2;
+    //     document.querySelector('input[name="memberEmail"]').value = memberEmail;
+    //
+    //     if (!memberEmail || memberEmail.indexOf('@') === -1) {
+    //         alert('이메일을 올바르게 입력하세요.');
+    //         document.getElementById('memberEmail1').focus();
+    //         return;
+    //     }
+    //
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: '/email/verify',
+    //         data: {memberEmail: memberEmail},
+    //         success: function (response) {
+    //             if (response.success) {
+    //                 alert('인증 코드가 전송되었습니다.');
+    //
+    //                 document.getElementById('memberEmail1').readOnly = true;
+    //                 document.getElementById('btnMemberEmailCodeSend').disabled = true;
+    //
+    //                 const count = response.emailTryCount;
+    //                 const emailCountWarning = document.getElementById('emailCountWarning');
+    //                 emailCountWarning.innerHTML = "<strong>인증 횟수 " + count + "/3회</strong>";
+    //
+    //                 startEmailAuthTimer();
+    //             } else {
+    //                 alert('이메일 인증 코드 전송 실패: ' + response.message);
+    //             }
+    //         },
+    //         error: function (xhr) {
+    //             alert("인증 코드 전송 실패: " + xhr.status);
+    //         }
+    //     });
+    // }
+    //
+    // function checkEmailCode() {
+    //     const memberEmailCode = document.getElementById('memberEmailCode').value.trim();
+    //
+    //     if (!memberEmailCode) {
+    //         alert('인증 코드를 입력하세요.');
+    //         document.getElementById('memberEmailCode').focus();
+    //         return;
+    //     }
+    //
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: '/email/codeCheck',
+    //         data: {memberEmailCode: memberEmailCode},
+    //         success: function (response) {
+    //             if (response.success) {
+    //                 alert('인증 코드 확인에 성공하였습니다.');
+    //                 document.getElementById('memberEmailCode').readOnly = true;
+    //                 document.getElementById('btnMemberEmailCodeAuth').disabled = true;
+    //             } else {
+    //                 alert('인증 코드 확인 실패: ' + response.message);
+    //             }
+    //         },
+    //         error: function (xhr) {
+    //             alert("인증 코드 확인 실패: " + xhr.status);
+    //         }
+    //     });
+    // }
+
+    <c:if test="${not empty errorMessage}">
+    alert("${errorMessage}");
+    </c:if>
+
     const idRegEx = /^[a-zA-Z0-9]{4,20}$/;
     const pwdRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{4,15}$/;
 
@@ -377,7 +563,12 @@
             minYear: 1901,
             maxYear: parseInt(moment().format('YYYY'), 10),
             locale: {
-                format: 'YYYYMMDD'
+                format: 'YYYYMMDD',
+                applyLabel: "확인",
+                cancelLabel: "취소",
+                daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+                monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+                firstDay: 0 // 일요일부터
             }
         });
     });
@@ -458,74 +649,6 @@
             message.textContent = "";
         }
     }
-
-    function sendEmailCode() {
-        let memberEmail1 = document.getElementById("memberEmail1").value.trim();
-        let memberEmail2 = document.getElementById("memberEmail2").value;
-
-        if (memberEmail2 === "custom") {
-            memberEmail2 = document.getElementById("memberEmailCustom").value.trim();
-        }
-
-        let memberEmail = memberEmail1 + '@' + memberEmail2;
-        document.querySelector('input[name="memberEmail"]').value = memberEmail;
-
-        if (!memberEmail || memberEmail.indexOf('@') === -1) {
-            alert('이메일을 올바르게 입력하세요.');
-            document.getElementById('memberEmail1').focus();
-            return;
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: '/email/verify',
-            data: {memberEmail: memberEmail},
-            success: function (response) {
-                if (response.success) {
-                    alert('인증 코드가 전송되었습니다.');
-                    document.getElementById('memberEmail1').readOnly = true;
-                    document.getElementById('btnMemberEmailCodeSend').disabled = true;
-                } else {
-                    alert('이메일 인증 코드 전송 실패: ' + response.message);
-                }
-            },
-            error: function (xhr) {
-                alert("인증 코드 전송 실패: " + xhr.status);
-            }
-        });
-    }
-
-    function checkEmailCode() {
-        const memberEmailCode = document.getElementById('memberEmailCode').value.trim();
-
-        if (!memberEmailCode) {
-            alert('인증 코드를 입력하세요.');
-            document.getElementById('memberEmailCode').focus();
-            return;
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: '/email/codeCheck',
-            data: {memberEmailCode: memberEmailCode},
-            success: function (response) {
-                if (response.success) {
-                    alert('인증 코드 확인에 성공하였습니다.');
-                    document.getElementById('memberEmailCode').readOnly = true;
-                    document.getElementById('btnMemberEmailCodeAuth').disabled = true;
-                } else {
-                    alert('인증 코드 확인 실패: ' + response.message);
-                }
-            },
-            error: function (xhr) {
-                alert("인증 코드 확인 실패: " + xhr.status);
-            }
-        });
-    }
-
-    <c:if test="${not empty errorMessage}">
-    alert("${errorMessage}");
-    </c:if>
 
     const btnSubmitJoin = document.getElementById("btnSubmitJoin");
     btnSubmitJoin?.addEventListener("click", (e) => {
