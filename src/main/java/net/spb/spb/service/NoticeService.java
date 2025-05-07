@@ -19,13 +19,11 @@ public interface NoticeService {
 
     List<NoticeDTO> getListPaged(int offset, int size) throws Exception;
 
-    List<NoticeDTO> getFixedNotices();
 
     void fixNotice(int noticeIdx);
 
     void unfixNotice(int noticeIdx);
 
-    int countFixedNotices();
 
     int getSearchCount(String keyword) throws Exception;
     List<NoticeDTO> searchList(String keyword, int offset, int size) throws Exception;

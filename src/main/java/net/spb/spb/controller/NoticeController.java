@@ -45,7 +45,6 @@ public class NoticeController {
             list = noticeService.getListPaged(offset, size);
         }
 
-        List<NoticeDTO> fixedList = noticeService.getFixedNotices();
         int totalPage = Paging.getTotalPage(totalCount, size);
 
         String queryParams = "&size=" + size;
@@ -61,7 +60,6 @@ public class NoticeController {
         String paginationHtml = PagingUtil.getPagination(page, totalPage, "/notice/list", queryParams);
 
         model.addAttribute("list", list);
-        model.addAttribute("fixedList", fixedList);
         model.addAttribute("pagination", paginationHtml);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPage", totalPage);
@@ -124,17 +122,14 @@ public class NoticeController {
     }
 
     @PostMapping("/fix")
-    @ResponseBody
-    public String fixNotice(@RequestParam int noticeIdx) {
-        if (noticeService.countFixedNotices() >= 3) return "LIMIT";
+    public String fixNotice(@RequestParam(name = "noticeIdx") int noticeIdx) {
         noticeService.fixNotice(noticeIdx);
-        return "OK";
+        return "redirect:/notice/list";
     }
 
     @PostMapping("/unfix")
-    @ResponseBody
-    public String unfixNotice(@RequestParam int noticeIdx) {
+    public String unfixNotice(@RequestParam(name = "noticeIdx") int noticeIdx) {
         noticeService.unfixNotice(noticeIdx);
-        return "OK";
+        return "redirect:/notice/list";
     }
 }

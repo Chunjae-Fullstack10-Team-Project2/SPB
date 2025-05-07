@@ -26,7 +26,6 @@ public interface NoticeMapper {
     List<NoticeVO> getFixedNotices();
 
     void fixNotice(@Param("noticeIdx") int noticeIdx);
-
     void unfixNotice(@Param("noticeIdx") int noticeIdx);
 
     int countFixedNotices();

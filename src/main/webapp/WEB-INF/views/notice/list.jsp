@@ -14,11 +14,9 @@
         h2 {
             margin-bottom: 20px;
         }
-        .notice-input-section{
+        .notice-input-section {
             margin-bottom: 20px;
-
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -31,28 +29,6 @@
         }
         th {
             font-weight: bold;
-        }
-        a {
-            text-decoration: none;
-        }
-        .list-title {
-            display: inline-block;
-            max-width: 250px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            vertical-align: middle;
-        }
-        .date-delete-button {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-        }
-        .bar-img {
-            margin-left: 5px;
-            width: 20px;
-            cursor: pointer;
         }
         .dropdown-section {
             position: relative;
@@ -68,7 +44,7 @@
             border-radius: 4px;
             padding: 6px;
             z-index: 999;
-            min-width: 100px;
+            min-width: 120px;
         }
         .dropdown-menu form {
             margin: 0;
@@ -85,6 +61,15 @@
         .dropdown-button:hover {
             background-color: #f2f2f2;
         }
+        .bar-img {
+            margin-left: 5px;
+            width: 20px;
+            cursor: pointer;
+        }
+        .fix-icon {
+            width: 20px;
+            height: 20px;
+        }
         .btn-container {
             margin-top: 20px;
             text-align: right;
@@ -99,23 +84,24 @@
         .btn:hover {
             background: #f5f5f5;
         }
-        #fixedNoticeArea {
-            margin-bottom: 20px;
-        }
-        #fixedList li {
-            list-style: none;
-            margin: 4px 0;
-        }
         .paging {
             margin-top: 20px;
             text-align: center;
         }
 
-        .empty-list{
-            margin-top: 10px;
-            text-align: center;
+        .paging a {
+            text-decoration: none;
+            margin: 0 5px;
+            color: #4A4A4A;
+        }
+
+        .paging strong {
+            margin: 0 5px;
+            font-weight: bold;
+            color: #000;
         }
     </style>
+
 </head>
 <body>
 
@@ -132,35 +118,13 @@
     <button type="button" onclick="location.href='${pageContext.request.contextPath}/notice/list?size=${size}'">초기화</button>
 </form>
 
-
-<!-- 고정 공지 섹션 -->
-<div id="fixedNoticeArea">
-    <strong>📌 고정된 공지사항</strong>
-    <ul id="fixedList">
-        <c:forEach var="fixed" items="${fixedList}">
-            <li>
-                <a href="${pageContext.request.contextPath}/notice/view?noticeIdx=${fixed.noticeIdx}">
-                        ${fixed.noticeTitle}
-                </a>
-            </li>
-        </c:forEach>
-    </ul>
-</div>
-
-<form id="sizeForm" method="get" action="${pageContext.request.contextPath}/notice/list">
-    <select id="sizeSelect" name="size" onchange="document.getElementById('sizeForm').submit();">
-        <option value="5" ${param.size == '5' ? 'selected' : ''}>5</option>
-        <option value="10" ${param.size == '10' ? 'selected' : ''}>10</option>
-        <option value="15" ${param.size == '15' ? 'selected' : ''}>15</option>
-    </select>
-</form>
-
 <table>
     <thead>
     <tr>
         <th>번호</th>
         <th>제목</th>
         <th>작성일</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
@@ -168,64 +132,66 @@
     <c:set var="counter" value="0" />
     <c:forEach var="notice" items="${list}">
         <tr>
-            <td>${currentNumber - counter}</td> <!-- 감소된 값 출력 -->
             <td>
-                <a href="${pageContext.request.contextPath}/notice/view?noticeIdx=${notice.noticeIdx}" class="list-title">
+                <c:choose>
+                    <c:when test="${notice.noticeIsFixed}">
+                        <img src="${pageContext.request.contextPath}/resources/images/fix.svg" class="fix-icon" alt="고정">
+                    </c:when>
+                    <c:otherwise>
+                        ${currentNumber - counter}
+                    </c:otherwise>
+                </c:choose>
+            </td>
+            <td>
+                <a href="${pageContext.request.contextPath}/notice/view?noticeIdx=${notice.noticeIdx}">
                         ${notice.noticeTitle}
                 </a>
             </td>
+            <td>${notice.noticeCreatedAt.toLocalDate()}</td>
             <td>
-                <div class="date-delete-button">
-                    <span>${notice.noticeCreatedAt.toLocalDate()}</span>
-                    <div class="dropdown-section">
-                        <img class="bar-img" src="${pageContext.request.contextPath}/resources/images/bar.svg" onclick="toggleDropdown(this)" />
-                        <div class="dropdown-menu">
-                            <form method="post" action="${pageContext.request.contextPath}/notice/delete"
-                                  onsubmit="return confirm('정말 삭제하시겠습니까?');">
-                                <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
-                                <button type="submit" class="dropdown-button">삭제</button>
-                            </form>
-                            <c:choose>
-                                <c:when test="${notice.noticeIsFixed}">
-                                    <button type="button" class="dropdown-button" onclick="unfix('${notice.noticeIdx}')">고정 해제</button>
-                                </c:when>
-                                <c:otherwise>
-                                    <button type="button" class="dropdown-button" onclick="fix('${notice.noticeIdx}')">고정</button>
-                                </c:otherwise>
-                            </c:choose>
-                        </div>
+                <div class="dropdown-section">
+                    <img class="bar-img" src="${pageContext.request.contextPath}/resources/images/bar.svg" onclick="toggleDropdown(this)" />
+                    <div class="dropdown-menu">
+                        <form method="post" action="${pageContext.request.contextPath}/notice/delete"
+                              onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                            <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
+                            <button type="submit" class="dropdown-button">삭제</button>
+                        </form>
+
+                        <c:choose>
+                            <c:when test="${notice.noticeIsFixed}">
+                                <form method="post" action="${pageContext.request.contextPath}/notice/unfix">
+                                    <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
+                                    <button type="submit" class="dropdown-button">고정 해제</button>
+                                </form>
+                            </c:when>
+                            <c:otherwise>
+                                <form method="post" action="${pageContext.request.contextPath}/notice/fix">
+                                    <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
+                                    <button type="submit" class="dropdown-button">상단 고정</button>
+                                </form>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
             </td>
         </tr>
         <c:set var="counter" value="${counter + 1}" />
     </c:forEach>
-
     </tbody>
 </table>
 
-<c:if test="${list == null || list.isEmpty()}">
-    <div class="empty-list">
-        등록된 공지사항이 없습니다!
-    </div>
-</c:if>
-
-<!-- 페이징 -->
+<!-- 페이징  -->
 <div class="paging">
     ${pagination}
 </div>
 
 <div class="btn-container">
-    <button type="button" class="btn" id="btnRegist">글 작성</button>
+    <button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/regist'">글 작성</button>
 </div>
 
-
-
 <script>
-    document.getElementById('btnRegist').addEventListener('click', function () {
-        window.location.href = "regist";
-    });
-
+    <!-- 토글 -->
     function toggleDropdown(imgElement) {
         const dropdown = imgElement.nextElementSibling;
         document.querySelectorAll('.dropdown-menu').forEach(menu => {
@@ -235,35 +201,6 @@
         });
         dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
     }
-
-
-
-    function fix(noticeIdx) {
-        fetch('${pageContext.request.contextPath}/notice/fix', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: 'noticeIdx=' + noticeIdx
-        }).then(res => res.text()).then(result => {
-            if (result === 'OK') {
-                alert('고정되었습니다.');
-                location.reload();
-            } else if (result === 'LIMIT') {
-                alert('고정 공지사항은 최대 3개까지만 가능합니다.');
-            }
-        });
-    }
-
-    function unfix(noticeIdx) {
-        fetch('${pageContext.request.contextPath}/notice/unfix', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: 'noticeIdx=' + noticeIdx
-        }).then(res => res.text()).then(() => {
-            alert('고정 해제되었습니다.');
-            location.reload();
-        });
-    }
-
     document.addEventListener('click', function (event) {
         if (!event.target.matches('.bar-img')) {
             document.querySelectorAll('.dropdown-menu').forEach(menu => {

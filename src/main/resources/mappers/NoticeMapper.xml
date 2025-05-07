@@ -66,41 +66,9 @@
             noticeCreatedAt,
             noticeUpdatedAt
         FROM tbl_notice
-        ORDER BY noticeIdx DESC
+        ORDER BY noticeIsFixed DESC, noticeCreatedAt DESC
             LIMIT #{size} OFFSET #{offset}
     </select>
-
-    <select id="getFixedNotices" resultType="net.spb.spb.domain.NoticeVO">
-        SELECT
-            noticeIdx,
-            noticeTitle,
-            noticeContent,
-            noticeMemberId,
-            noticeIsFixed,
-            noticeCreatedAt,
-            noticeUpdatedAt
-        FROM tbl_notice
-        WHERE noticeIsFixed = 1
-        ORDER BY noticeCreatedAt DESC
-            LIMIT 3
-    </select>
-
-    <update id="fixNotice">
-        UPDATE tbl_notice
-        SET noticeIsFixed = 1
-        WHERE noticeIdx = #{noticeIdx}
-    </update>
-
-    <update id="unfixNotice">
-        UPDATE tbl_notice
-        SET noticeIsFixed = 0
-        WHERE noticeIdx = #{noticeIdx}
-    </update>
-
-    <select id="countFixedNotices" resultType="int">
-        SELECT COUNT(*) FROM tbl_notice WHERE noticeIsFixed = 1
-    </select>
-
 
     <select id="getSearchCount" resultType="int">
         SELECT COUNT(*) FROM tbl_notice
@@ -122,7 +90,7 @@
     <select id="searchByTitle" resultType="net.spb.spb.domain.NoticeVO">
         SELECT * FROM tbl_notice
         WHERE noticeTitle LIKE CONCAT('%', #{keyword}, '%')
-        ORDER BY noticeIsFixed DESC, noticeIdx DESC
+        ORDER BY noticeIsFixed DESC, noticeCreatedAt DESC
             LIMIT #{size} OFFSET #{offset}
     </select>
 
@@ -134,10 +102,20 @@
     <select id="searchByContent" resultType="net.spb.spb.domain.NoticeVO">
         SELECT * FROM tbl_notice
         WHERE noticeContent LIKE CONCAT('%', #{keyword}, '%')
-        ORDER BY noticeIsFixed DESC, noticeIdx DESC
+        ORDER BY noticeIsFixed DESC, noticeCreatedAt DESC
             LIMIT #{size} OFFSET #{offset}
     </select>
 
+    <update id="fixNotice">
+        UPDATE tbl_notice
+        SET noticeIsFixed = 1
+        WHERE noticeIdx = #{noticeIdx}
+    </update>
 
+    <update id="unfixNotice">
+        UPDATE tbl_notice
+        SET noticeIsFixed = 0
+        WHERE noticeIdx = #{noticeIdx}
+    </update>
 
 </mapper>

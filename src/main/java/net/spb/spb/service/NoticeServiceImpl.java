@@ -58,29 +58,20 @@ public class NoticeServiceImpl implements NoticeService {
                 .map(NoticeDTO::new)
                 .collect(Collectors.toList());
     }
+    
 
     @Override
-    public List<NoticeDTO> getFixedNotices() {
-        return noticeMapper.getFixedNotices()
-                .stream()
-                .map(NoticeDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    @Override
+    @Transactional
     public void fixNotice(int noticeIdx) {
         noticeMapper.fixNotice(noticeIdx);
     }
 
     @Override
+    @Transactional
     public void unfixNotice(int noticeIdx) {
         noticeMapper.unfixNotice(noticeIdx);
     }
 
-    @Override
-    public int countFixedNotices() {
-        return noticeMapper.countFixedNotices();
-    }
 
     @Override
     public int getSearchCount(String keyword) throws Exception {
