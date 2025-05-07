@@ -3,7 +3,8 @@
 <mapper namespace="net.spb.spb.mapper.MyPageMapper">
     <!-- 좋아요 목록  -->
     <select id="listMyLikes">
-        select postLikeIdx,
+        SELECT
+        postLikeIdx,
         postLikeRefIdx,
         postLikeRefType,
         postLikeMemberId,
@@ -12,10 +13,11 @@
         postMemberId,
         postCreatedAt,
         postContent
-        from tbl_post_like AS l
-        JOIN tbl_post AS p on l.postLikeRefIdx = p.postIdx
-        where postLikeMemberId = #{postLikeMemberId}
-        and postLikeRefType = 'POST'
+        FROM tbl_post_like AS l
+        JOIN tbl_post AS p ON l.postLikeRefIdx = p.postIdx
+        WHERE postLikeMemberId = #{postLikeMemberId}
+        AND postLikeRefType = 'POST'
+
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
                 <when test="searchDTO.searchType == 'postTitle'">
@@ -29,7 +31,8 @@
                 </when>
             </choose>
         </if>
-        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+        <if test="searchDTO.startDate != null and searchDTO.startDate != ''
+       and searchDTO.endDate != null and searchDTO.endDate != ''">
             <choose>
                 <when test="searchDTO.dateType == 'postLikeCreatedAt'">
                     AND postLikeCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
@@ -39,9 +42,27 @@
                 </when>
             </choose>
         </if>
-        limit #{pageDTO.pageSkipCount}
-        , #{pageDTO.pageSize}
+        <choose>
+            <when test="searchDTO.sortColumn != null and searchDTO.sortOrder != null">
+                ORDER BY
+                <choose>
+                    <when test="searchDTO.sortColumn == 'postTitle'">postTitle</when>
+                    <when test="searchDTO.sortColumn == 'postMemberId'">postMemberId</when>
+                    <when test="searchDTO.sortColumn == 'postCreatedAt'">postCreatedAt</when>
+                    <otherwise>postCreatedAt</otherwise>
+                </choose>
+                <choose>
+                    <when test="searchDTO.sortOrder == 'asc'">ASC</when>
+                    <otherwise>DESC</otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY postCreatedAt DESC
+            </otherwise>
+        </choose>
+        LIMIT #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
     </select>
+
     <select id="likesTotalCount" resultType="int" parameterType="String">
         select count(postLikeIdx)
         from tbl_post_like AS l

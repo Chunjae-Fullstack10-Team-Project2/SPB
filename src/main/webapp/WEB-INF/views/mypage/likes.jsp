@@ -4,19 +4,12 @@
 <html>
 <head>
     <title>좋아요 누른 게시글</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
 </head>
 <body>
 <%@ include file="../common/fixedHeader.jsp" %>
 <%@ include file="../common/sidebar.jsp" %>
 
-<div class="content" style="margin-left: 280px; margin-top: 100px;">
+<div class="content">
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
         <symbol id="house-door-fill" viewBox="0 0 16 16">
             <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
@@ -37,15 +30,15 @@
                     <a class="link-body-emphasis fw-semibold text-decoration-none" href="/mypage">마이페이지</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    좋아요 누른 목록
+                    좋아요 누른 게시글
                 </li>
             </ol>
         </nav>
     </div>
     <div class="container my-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0">좋아요 누른 게시글</h3>
-        </div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0">좋아요 누른 게시글</h3>
+                </div>
         <div class="search-box" style="max-width: 700px;">
             <form name="frmSearch" method="get" action="/mypage/likes" class="mb-1 p-4">
                 <div class="row g-2 align-items-center mb-3">
@@ -85,16 +78,63 @@
                         <button type="button" class="btn btn-link text-decoration-none" id="btnReset">초기화</button>
                     </div>
                 </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-2">
+                        <select name="pageSize" class="form-select" onchange="this.form.submit()">
+                            <option disabled selected>선택</option>
+                            <option value="1" ${pageDTO.pageSize == 1 ? "selected" : ""}>1개씩 보기</option>
+                            <option value="5" ${pageDTO.pageSize == 5 ? "selected" : ""}>5개씩 보기</option>
+                            <option value="10" ${pageDTO.pageSize == 10 ? "selected" : ""}>10개씩 보기</option>
+                            <option value="15" ${pageDTO.pageSize == 15 ? "selected" : ""}>15개씩 보기</option>
+                            <option value="100" ${pageDTO.pageSize == 100 ? "selected" : ""}>100개씩 보기</option>
+                        </select>
+                    </div>
+                </div>
             </form>
         </div>
+        <form id="frmSort" method="get" action="/mypage/likes">
+            <input type="hidden" name="pageSize" value="${responseDTO.pageSize}"/>
+            <input type="hidden" name="searchWord" value="${searchDTO.searchWord}"/>
+            <input type="hidden" name="searchType" value="${searchDTO.searchType}"/>
+            <input type="hidden" name="dateType" value="${searchDTO.dateType}"/>
+            <input type="hidden" name="startDate" value="${searchDTO.startDate}"/>
+            <input type="hidden" name="endDate" value="${searchDTO.endDate}"/>
+            <input type="hidden" name="sortColumn" id="sortColumn" value="${searchDTO.sortColumn}"/>
+            <input type="hidden" name="sortOrder" id="sortOrder" value="${searchDTO.sortOrder}"/>
+        </form>
         <c:if test="${not empty likesList}">
             <table class="table table-hover text-center align-middle">
                 <thead class="table-light">
                 <tr>
                     <th>번호</th>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>작성일</th>
+
+                    <th>
+                        <a href="javascript:void(0);" onclick="applySort('postTitle')">
+                            제목
+                            <c:if test="${searchDTO.sortColumn eq 'postTitle'}">
+                                ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
+                            </c:if>
+                        </a>
+                    </th>
+
+                    <th>
+                        <a href="javascript:void(0);" onclick="applySort('postMemberId')">
+                            작성자
+                            <c:if test="${searchDTO.sortColumn eq 'postMemberId'}">
+                                ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
+                            </c:if>
+                        </a>
+                    </th>
+
+                    <th>
+                        <a href="javascript:void(0);" onclick="applySort('postCreatedAt')">
+                            작성일
+                            <c:if test="${searchDTO.sortColumn eq 'postCreatedAt'}">
+                                ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
+                            </c:if>
+                        </a>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -127,6 +167,16 @@
     </div>
 </div>
 <script>
+    function applySort(column) {
+        const currentColumn = '${searchDTO.sortColumn}';
+        const currentOrder = '${searchDTO.sortOrder}';
+        const nextOrder = (currentColumn === column && currentOrder === 'asc') ? 'desc' : 'asc';
+
+        document.getElementById('sortColumn').value = column;
+        document.getElementById('sortOrder').value = nextOrder;
+        document.getElementById('frmSort').submit();
+    }
+
     $(function () {
         $('input[name="datefilter"]')
             .daterangepicker({

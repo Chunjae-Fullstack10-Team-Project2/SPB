@@ -3,7 +3,7 @@
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
     <style>
         .sidebar {
             position: fixed;
@@ -88,9 +88,9 @@
 <body>
 <div class="flex-shrink-0 p-3 sidebar" style="padding-top: 100px !important;">
     <a href="/" class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
-<%--        <svg class="bi pe-none me-2" width="30" height="24" aria-hidden="true">--%>
-<%--            <use xlink:href="#bootstrap"/>--%>
-<%--        </svg>--%>
+        <%--        <svg class="bi pe-none me-2" width="30" height="24" aria-hidden="true">--%>
+        <%--            <use xlink:href="#bootstrap"/>--%>
+        <%--        </svg>--%>
         <span class="fs-5 fw-semibold">봄콩이</span>
     </a>
     <ul class="list-unstyled ps-0">

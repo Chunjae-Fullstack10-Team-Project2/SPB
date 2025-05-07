@@ -102,22 +102,47 @@ public class MyPageController {
     public String listPostLikes(HttpSession session, Model model,
                                 @ModelAttribute SearchDTO searchDTO,
                                 @ModelAttribute PageRequestDTO pageRequestDTO) {
+
         String postLikeMemberId = (String) session.getAttribute("memberId");
 
         if (searchDTO.getDateType() == null || searchDTO.getDateType().isEmpty()) {
             searchDTO.setDateType("postLikeCreatedAt");
         }
 
+        if ("".equals(searchDTO.getStartDate())) {
+            searchDTO.setStartDate(null);
+        }
+        if ("".equals(searchDTO.getEndDate())) {
+            searchDTO.setEndDate(null);
+        }
+        if ("".equals(searchDTO.getSearchWord())) {
+            searchDTO.setSearchWord(null);
+        }
+        if ("".equals(searchDTO.getSearchType())) {
+            searchDTO.setSearchType(null);
+        }
+        if ("".equals(searchDTO.getSortColumn())) {
+            searchDTO.setSortColumn(null);
+        }
+        if ("".equals(searchDTO.getSortOrder())) {
+            searchDTO.setSortOrder(null);
+        }
+
+        pageRequestDTO.setPageSkipCount(pageRequestDTO.getPageSkipCount());
+
         List<PostLikeRequestDTO> likesList = myPageService.listMyLikes(searchDTO, pageRequestDTO, postLikeMemberId);
+        int totalCount = myPageService.likesTotalCount(searchDTO, postLikeMemberId);
+
         PageResponseDTO<PostLikeRequestDTO> pageResponseDTO = PageResponseDTO.<PostLikeRequestDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
-                .totalCount(myPageService.likesTotalCount(searchDTO, postLikeMemberId))
+                .totalCount(totalCount)
                 .dtoList(likesList)
                 .build();
 
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("likesList", likesList);
         model.addAttribute("searchDTO", searchDTO);
+
         return "mypage/likes";
     }
 
