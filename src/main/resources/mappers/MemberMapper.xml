@@ -74,7 +74,7 @@
         where memberId = #{memberId}
     </select>
 
-    <select id="getAllMembers" resultType="net.spb.spb.domain.MemberVO" parameterType="net.spb.spb.dto.pagingsearch.ReportPageDTO.MemberPageDTO">
+    <select id="getAllMembers" resultType="net.spb.spb.domain.MemberVO" parameterType="net.spb.spb.dto.pagingsearch.MemberPageDTO">
         select memberIdx,
         memberId,
         memberName,
@@ -123,7 +123,7 @@
         where memberId = #{memberId}
     </update>
 
-    <select id="getMemberCount" resultType="java.lang.Integer" parameterType="net.spb.spb.dto.pagingsearch.ReportPageDTO.MemberPageDTO">
+    <select id="getMemberCount" resultType="java.lang.Integer" parameterType="net.spb.spb.dto.pagingsearch.MemberPageDTO">
         select count(memberIdx)
         from tbl_member
         <where>
