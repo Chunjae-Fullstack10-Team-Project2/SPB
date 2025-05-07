@@ -1,7 +1,7 @@
 package net.spb.spb.mapper;
 
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.PostLikeRequestDTO;
+import net.spb.spb.dto.post.PostLikeRequestDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

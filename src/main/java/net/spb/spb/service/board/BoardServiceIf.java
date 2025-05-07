@@ -1,8 +1,8 @@
-package net.spb.spb.service;
+package net.spb.spb.service.board;
 
-import net.spb.spb.dto.PostDTO;
-import net.spb.spb.dto.PostPageDTO;
-import net.spb.spb.dto.PostReportDTO;
+import net.spb.spb.dto.post.PostDTO;
+import net.spb.spb.dto.pagingsearch.PostPageDTO;
+import net.spb.spb.dto.post.PostReportDTO;
 
 import java.util.HashMap;
 import java.util.List;

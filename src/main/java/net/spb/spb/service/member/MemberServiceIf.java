@@ -1,11 +1,9 @@
 package net.spb.spb.service.member;
 
-import net.spb.spb.domain.MemberVO;
-import net.spb.spb.dto.MemberPageDTO;
 import net.spb.spb.dto.member.MemberDTO;
+import net.spb.spb.dto.pagingsearch.ReportPageDTO;
 import org.apache.ibatis.annotations.Param;
 
-import java.lang.reflect.Member;
 import java.util.List;
 
 public interface MemberServiceIf {
@@ -25,11 +23,11 @@ public interface MemberServiceIf {
     boolean updateMemberLastLoginWithLogin(@Param("memberLastLogin") String memberLastLogin, @Param("memberId") String memberId);
     String getPwdById(String memberId);
 
-    List<MemberDTO> getMembers(MemberPageDTO memberPageDTO);
+    List<MemberDTO> getMembers(ReportPageDTO.MemberPageDTO memberPageDTO);
 
     boolean updateMemberState(MemberDTO memberDTO);
 
     boolean updateMemberByAdmin(MemberDTO memberDTO);
 
-    int getMemberCount(MemberPageDTO memberPageDTO);
+    int getMemberCount(ReportPageDTO.MemberPageDTO memberPageDTO);
 }

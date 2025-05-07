@@ -2,19 +2,11 @@ package net.spb.spb.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import net.spb.spb.dto.PostLikeRequestDTO;
-import net.spb.spb.dto.PostReportDTO;
-import net.spb.spb.dto.pagingsearch.PageRequestDTO;
-import net.spb.spb.dto.pagingsearch.PageResponseDTO;
-import net.spb.spb.dto.pagingsearch.SearchDTO;
-import net.spb.spb.dto.qna.QnaDTO;
-import net.spb.spb.service.PostLikeService;
+import net.spb.spb.dto.post.PostLikeRequestDTO;
+import net.spb.spb.service.board.PostLikeService;
 import net.spb.spb.util.BoardCategory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor

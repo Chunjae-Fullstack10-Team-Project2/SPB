@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.spb.spb.mapper.ReportMapper">
-    <select id="getReports" parameterType="net.spb.spb.dto.ReportPageDTO" resultType="net.spb.spb.domain.ReportVO">
+    <select id="getReports" parameterType="net.spb.spb.dto.pagingsearch.ReportPageDTO" resultType="net.spb.spb.domain.ReportVO">
         select reportIdx, reportRefIdx, reportRefType, reportCreatedAt, reportState, reportMemberId
         from tbl_report
         <where>

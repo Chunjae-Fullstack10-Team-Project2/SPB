@@ -1,8 +1,8 @@
 package net.spb.spb.mapper;
 
 import net.spb.spb.dto.OrderDTO;
-import net.spb.spb.dto.PostLikeRequestDTO;
-import net.spb.spb.dto.PostReportDTO;
+import net.spb.spb.dto.post.PostLikeRequestDTO;
+import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
 import org.apache.ibatis.annotations.Param;
