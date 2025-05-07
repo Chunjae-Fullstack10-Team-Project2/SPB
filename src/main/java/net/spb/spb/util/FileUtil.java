@@ -18,11 +18,16 @@ public class FileUtil {
     @Resource(name="uploadPath")
     private String uploadDir;
 
-    public int uploadFile(String orgName, byte[] fileData) throws Exception {
+    public String saveFileLocal(String orgName, byte[] fileData) throws Exception {
         UUID uuid = UUID.randomUUID();
         String saveName = uuid + orgName;
         File targetFile = new File(uploadDir + saveName);
         FileCopyUtils.copy(fileData, targetFile);
+        return saveName;
+    }
+
+    public int uploadFile(String orgName, byte[] fileData) throws Exception {
+        String saveName = saveFileLocal(orgName, fileData);
         FileDTO fileDTO = FileDTO.builder()
                 .fileName(saveName)
                 .fileExt(orgName.substring(orgName.lastIndexOf(".")))

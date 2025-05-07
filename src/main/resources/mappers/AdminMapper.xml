@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.AdminMapper">
+    <insert id="insertLecture" parameterType="net.spb.spb.domain.LectureVO">
+        insert into tbl_lecture (lectureTitle, lectureDescription, lectureTeacherId, lectureThumbnailImg, lectureAmount)
+        values (#{lectureTitle}, #{lectureDescription}, #{lectureTeacherId}, #{lectureThumbnailImg}, #{lectureAmount})
+    </insert>
+
+</mapper>
