@@ -69,7 +69,7 @@
 
                         <label for="planLecture" class="form-label">강좌</label>
                         <select class="form-select mb-3" name="planLectureIdx" id="planLecture">
-                            <option selected>강좌를 선택하세요.</option>
+                            <option value="" selected>강좌를 선택하세요.</option>
                             <c:forEach items="${lectureList}" var="lecture">
                                 <option value="${lecture.lectureRegisterRefIdx}">${lecture.lectureTitle}</option>
                             </c:forEach>
