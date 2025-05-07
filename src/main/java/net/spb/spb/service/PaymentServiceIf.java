@@ -7,6 +7,7 @@ import net.spb.spb.dto.PaymentDTO;
 import net.spb.spb.dto.member.MemberDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PaymentServiceIf {
     public List<CartDTO> selectCart(String memberId);
@@ -21,4 +22,8 @@ public interface PaymentServiceIf {
     public int processAfterPayment(PaymentDTO paymentDTO);
     public OrderDTO findByMerchantUid(String merchantUid);
     public MemberDTO getMemberInfo(String memberId);
+    public List<LectureDTO> getOrderLectureInfo(int orderIdx);
+    public PaymentDTO getPaymentInfo(int orderIdx);
+    public void updateOrderInfo(PaymentDTO paymentDTO);
+    public Map<String, Object> cancelPayment(String merchantUid, String reason, int amount) throws Exception;
 }
