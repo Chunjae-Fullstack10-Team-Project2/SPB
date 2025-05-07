@@ -21,7 +21,7 @@
     </style>
 </head>
 <body>
-<%@include file="fixedHeader.jsp" %>
+<%@include file="sidebarHeader.jsp" %>
 <%@include file="sidebar.jsp" %>
 <div class="content" style="margin-left: 280px; margin-top: 100px;">
 

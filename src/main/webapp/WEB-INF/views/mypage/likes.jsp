@@ -9,8 +9,7 @@
     <title>좋아요 누른 게시글</title>
 </head>
 <body>
-<%@ include file="../common/fixedHeader.jsp" %>
-<%@ include file="../common/sidebar.jsp" %>
+<%@ include file="../common/sidebarHeader.jsp" %>
 
 <div class="content">
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -53,81 +52,15 @@
             searchTypeOptions.add(Map.of("value", "postContent", "label", "내용"));
             searchTypeOptions.add(Map.of("value", "postMemberId", "label", "작성자"));
             request.setAttribute("searchTypeOptions", searchTypeOptions);
+            request.setAttribute("searchAction", "/mypage/likes");
         %>
-        <jsp:include page="../common/searchBox.jsp">
-            <jsp:param name="searchAction" value="/mypage/likes"/>
-        </jsp:include>
+        <jsp:include page="../common/searchBox.jsp" />
 
-        <%--        <div class="search-box" style="max-width: 700px;">--%>
-        <%--            <form name="frmSearch" method="get" action="/mypage/likes" class="mb-1 p-4">--%>
-        <%--                <div class="row g-2 align-items-center mb-3">--%>
-        <%--                    <div class="col-md-3">--%>
-        <%--                        <select name="dateType" class="form-select">--%>
-        <%--                            <option value="postLikeCreatedAt" ${param.dateType eq 'postLikeCreatedAt' ? 'selected' : ''}>--%>
-        <%--                                좋아요 누른 날짜--%>
-        <%--                            </option>--%>
-        <%--                            <option value="postCreatedAt" ${param.dateType eq 'postCreatedAt' ? 'selected' : ''}>게시글--%>
-        <%--                                작성일자--%>
-        <%--                            </option>--%>
-        <%--                        </select>--%>
-        <%--                    </div>--%>
-        <%--                    <div class="col-md-8">--%>
-        <%--                        <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택"--%>
-        <%--                               autocomplete="off"--%>
-        <%--                               value="${not empty param.datefilter ? param.datefilter : ''}"/>--%>
-        <%--                    </div>--%>
-        <%--                </div>--%>
-
-        <%--                <div class="row g-2 align-items-center mb-3">--%>
-        <%--                    <div class="col-md-3">--%>
-        <%--                        <select name="searchType" class="form-select">--%>
-        <%--                            <option value="postTitle" ${searchDTO.searchType eq "postTitle" ? "selected":""}>제목</option>--%>
-        <%--                            <option value="postContent" ${searchDTO.searchType eq "postContent" ? "selected":""}>내용--%>
-        <%--                            </option>--%>
-        <%--                            <option value="postMemberId" ${searchDTO.searchType eq "postMemberId" ? "selected":""}>작성자--%>
-        <%--                            </option>--%>
-        <%--                        </select>--%>
-        <%--                    </div>--%>
-        <%--                    <div class="col-md-5">--%>
-        <%--                        <input type="text" name="searchWord" class="form-control" placeholder="검색어 입력"--%>
-        <%--                               value="${searchDTO.searchWord}"/>--%>
-        <%--                    </div>--%>
-        <%--                    <div class="col-md-3 d-flex gap-1">--%>
-        <%--                        <button type="submit" class="btn btn-primary flex-fill" id="btnSearch">검색</button>--%>
-        <%--                        <button type="button" class="btn btn-link text-decoration-none" id="btnReset">초기화</button>--%>
-        <%--                    </div>--%>
-        <%--                </div>--%>
-
-        <%--                <div class="row mb-3">--%>
-        <%--                    <div class="col-md-2">--%>
-        <%--                        <select name="pageSize" class="form-select" onchange="this.form.submit()">--%>
-        <%--                            <option disabled selected>선택</option>--%>
-        <%--                            <option value="1" ${pageDTO.pageSize == 1 ? "selected" : ""}>1개씩 보기</option>--%>
-        <%--                            <option value="5" ${pageDTO.pageSize == 5 ? "selected" : ""}>5개씩 보기</option>--%>
-        <%--                            <option value="10" ${pageDTO.pageSize == 10 ? "selected" : ""}>10개씩 보기</option>--%>
-        <%--                            <option value="15" ${pageDTO.pageSize == 15 ? "selected" : ""}>15개씩 보기</option>--%>
-        <%--                            <option value="100" ${pageDTO.pageSize == 100 ? "selected" : ""}>100개씩 보기</option>--%>
-        <%--                        </select>--%>
-        <%--                    </div>--%>
-        <%--                </div>--%>
-        <%--            </form>--%>
-        <%--        </div>--%>
-        <form id="frmSort" method="get" action="/mypage/likes">
-            <input type="hidden" name="pageSize" value="${responseDTO.pageSize}"/>
-            <input type="hidden" name="searchWord" value="${searchDTO.searchWord}"/>
-            <input type="hidden" name="searchType" value="${searchDTO.searchType}"/>
-            <input type="hidden" name="dateType" value="${searchDTO.dateType}"/>
-            <input type="hidden" name="startDate" value="${searchDTO.startDate}"/>
-            <input type="hidden" name="endDate" value="${searchDTO.endDate}"/>
-            <input type="hidden" name="sortColumn" id="sortColumn" value="${searchDTO.sortColumn}"/>
-            <input type="hidden" name="sortOrder" id="sortOrder" value="${searchDTO.sortOrder}"/>
-        </form>
         <c:if test="${not empty likesList}">
             <table class="table table-hover text-center align-middle">
                 <thead class="table-light">
                 <tr>
                     <th>번호</th>
-
                     <th>
                         <a href="javascript:void(0);" onclick="applySort('postTitle')">
                             제목
@@ -136,7 +69,6 @@
                             </c:if>
                         </a>
                     </th>
-
                     <th>
                         <a href="javascript:void(0);" onclick="applySort('postMemberId')">
                             작성자
@@ -145,7 +77,6 @@
                             </c:if>
                         </a>
                     </th>
-
                     <th>
                         <a href="javascript:void(0);" onclick="applySort('postCreatedAt')">
                             작성일
@@ -186,18 +117,6 @@
     </div>
 </div>
 <script>
-    function applySort(column) {
-        const currentColumn = '${searchDTO.sortColumn}';
-        const currentOrder = '${searchDTO.sortOrder}';
-        const nextOrder = (currentColumn === column && currentOrder === 'asc') ? 'desc' : 'asc';
-
-        document.getElementById('sortColumn').value = column;
-        document.getElementById('sortOrder').value = nextOrder;
-        document.getElementById('frmSort').submit();
-    }
-
-
-
     <c:if test="${not empty message}">
     alert("${message}");
     </c:if>

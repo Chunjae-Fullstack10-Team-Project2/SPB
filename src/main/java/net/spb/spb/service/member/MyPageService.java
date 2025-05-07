@@ -7,8 +7,10 @@ import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.mapper.MyPageMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -38,5 +40,14 @@ public class MyPageService {
 
     public int orderTotalCount(SearchDTO searchDTO, String orderMemberId) {
         return myPageMapper.orderTotalCount(searchDTO, orderMemberId);
+    }
+
+    public List<Integer> getPagedOrderIdxList(SearchDTO searchDTO, PageRequestDTO pageRequestDTO, String memberId) {
+        return myPageMapper.listMyOrdersByPage(searchDTO, pageRequestDTO, memberId);
+    }
+
+    public List<OrderDTO> getOrdersWithLectures(List<Integer> orderIdxList, SearchDTO searchDTO) {
+        if (orderIdxList == null || orderIdxList.isEmpty()) return Collections.emptyList();
+        return myPageMapper.listLecturesByOrderIdxList(orderIdxList, searchDTO);
     }
 }

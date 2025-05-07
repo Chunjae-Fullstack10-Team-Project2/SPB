@@ -1,3 +1,6 @@
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -13,10 +16,10 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
 </head>
 <body>
-<%@ include file="../common/fixedHeader.jsp" %>
+<%@ include file="../common/sidebarHeader.jsp" %>
 <%@ include file="../common/sidebar.jsp" %>
 
-<div class="content" style="margin-left: 280px; margin-top: 100px;">
+<div class="content">
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
         <symbol id="house-door-fill" viewBox="0 0 16 16">
             <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
@@ -46,47 +49,22 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">신고 목록</h3>
         </div>
-        <div class="search-box" style="max-width: 700px;">
-            <form name="frmSearch" method="get" action="/mypage/report" class="mb-1 p-4">
-                <div class="row g-2 align-items-center mb-3">
-                    <div class="col-md-3">
-                        <select name="dateType" class="form-select">
-                            <option value="reportCreatedAt" ${param.dateType eq 'reportCreatedAt' ? 'selected' : ''}>
-                                신고일자
-                            </option>
-                            <option value="postCreatedAt" ${param.dateType eq 'postCreatedAt' ? 'selected' : ''}>게시글
-                                작성일자
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-8">
-                        <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택"
-                               autocomplete="off"
-                               value="${not empty param.datefilter ? param.datefilter : ''}"/>
-                    </div>
-                </div>
+        <%
+            List<Map<String, String>> dateOptions = new ArrayList<>();
+            dateOptions.add(Map.of("value", "reportCreatedAt", "label", "신고일자"));
+            dateOptions.add(Map.of("value", "postCreatedAt", "label", "게시글 작성일자"));
+            request.setAttribute("dateOptions", dateOptions);
 
-                <div class="row g-2 align-items-center mb-3">
-                    <div class="col-md-3">
-                        <select name="searchType" class="form-select">
-                            <option value="postTitle" ${searchDTO.searchType eq "postTitle" ? "selected":""}>제목</option>
-                            <option value="postContent" ${searchDTO.searchType eq "postContent" ? "selected":""}>내용
-                            </option>
-                            <option value="postMemberId" ${searchDTO.searchType eq "postMemberId" ? "selected":""}>작성자
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-5">
-                        <input type="text" name="searchWord" class="form-control" placeholder="검색어 입력"
-                               value="${searchDTO.searchWord}"/>
-                    </div>
-                    <div class="col-md-3 d-flex gap-1">
-                        <button type="submit" class="btn btn-primary flex-fill" id="btnSearch">검색</button>
-                        <button type="button" class="btn btn-link text-decoration-none" id="btnReset">초기화</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+            List<Map<String, String>> searchTypeOptions = new ArrayList<>();
+            searchTypeOptions.add(Map.of("value", "postTitle", "label", "제목"));
+            searchTypeOptions.add(Map.of("value", "postContent", "label", "내용"));
+            searchTypeOptions.add(Map.of("value", "postMemberId", "label", "작성자"));
+            request.setAttribute("searchTypeOptions", searchTypeOptions);
+        %>
+        <jsp:include page="../common/searchBox.jsp">
+            <jsp:param name="searchAction" value="/mypage/report"/>
+        </jsp:include>
+
         <c:if test="${not empty reportList}">
             <table class="table table-hover text-center align-middle">
                 <thead class="table-light">
@@ -101,14 +79,30 @@
                 <c:forEach items="${reportList}" var="orderDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
-                        <td class="text-start">
-                            <a href="#"
-                               class="text-decoration-none text-dark">
-                                    ${orderDTO.postTitle}
+                        <th>
+                            <a href="javascript:void(0);" onclick="applySort('postTitle')">
+                                제목
+                                <c:if test="${searchDTO.sortColumn eq 'postTitle'}">
+                                    ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
+                                </c:if>
                             </a>
-                        </td>
-                        <td>${orderDTO.postMemberId}</td>
-                        <td>${orderDTO.postCreatedAt.toLocalDate()}</td>
+                        </th>
+                        <th>
+                            <a href="javascript:void(0);" onclick="applySort('postMemberId')">
+                                작성자
+                                <c:if test="${searchDTO.sortColumn eq 'postMemberId'}">
+                                    ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
+                                </c:if>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="javascript:void(0);" onclick="applySort('postCreatedAt')">
+                                작성일
+                                <c:if test="${searchDTO.sortColumn eq 'postCreatedAt'}">
+                                    ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
+                                </c:if>
+                            </a>
+                        </th>
                     </tr>
                 </c:forEach>
                 </tbody>

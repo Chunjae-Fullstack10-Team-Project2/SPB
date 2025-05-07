@@ -191,7 +191,7 @@ public class QnaController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("qnaList", qnaList);
         model.addAttribute("searchDTO", searchDTO);
-        return "qna/list";
+        return "mypage/myQna";
     }
 
     @PostMapping("/checkPwd")

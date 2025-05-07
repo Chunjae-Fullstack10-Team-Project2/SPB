@@ -7,17 +7,9 @@
 <html>
 <head>
     <title>강좌 주문 내역</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
 </head>
 <body>
-<%@ include file="../common/fixedHeader.jsp" %>
-<%@ include file="../common/sidebar.jsp" %>
+<%@ include file="../common/sidebarHeader.jsp" %>
 
 <div class="content">
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -60,10 +52,10 @@
             searchTypeOptions.add(Map.of("value", "lectureDescription", "label", "강의 설명"));
             searchTypeOptions.add(Map.of("value", "lectureTeacherId", "label", "선생님"));
             request.setAttribute("searchTypeOptions", searchTypeOptions);
+            request.setAttribute("searchAction", "/mypage/order");
+
         %>
-        <jsp:include page="../common/searchBox.jsp">
-            <jsp:param name="searchAction" value="/mypage/order"/>
-        </jsp:include>
+        <jsp:include page="../common/searchBox.jsp"/>
 
         <c:if test="${not empty orderList}">
             <table class="table table-hover text-center align-middle">
@@ -71,8 +63,22 @@
                 <tr>
                     <th>주문번호</th>
                     <th>구매 강좌</th>
-                    <th>총액</th>
-                    <th>구매일</th>
+                    <th>
+                        <a href="javascript:void(0);" onclick="applySort('orderAmount')">
+                            총액
+                            <c:if test="${searchDTO.sortColumn eq 'orderAmount'}">
+                                ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
+                            </c:if>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="javascript:void(1);" onclick="applySort('orderCreatedAt')">
+                            구매일
+                            <c:if test="${searchDTO.sortColumn eq 'orderCreatedAt'}">
+                                ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
+                            </c:if>
+                        </a>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
