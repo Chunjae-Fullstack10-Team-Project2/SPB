@@ -7,6 +7,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="assets/css/bootstrap-5.0.0-alpha.min.css">
+    <link rel="stylesheet" href="assets/css/LineIcons.2.0.css">
+    <link rel="stylesheet" href="assets/css/animate.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+
     <style>
         .warning-text {
             color: red;
@@ -16,7 +21,7 @@
     </style>
 </head>
 <body>
-<%@include file="fixedHeader.jsp" %>
+<%@include file="sidebarHeader.jsp" %>
 <%@include file="sidebar.jsp" %>
 <div class="content" style="margin-left: 280px; margin-top: 100px;">
 
@@ -64,11 +69,9 @@
             </div>
         </div>
     </div>
-
 </div>
 
 <script>
-
     <c:if test="${sessionScope.memberDTO.memberState == '3'}">
     const modal = new bootstrap.Modal(document.getElementById('pwdChangeModal'), {
         backdrop: 'static',

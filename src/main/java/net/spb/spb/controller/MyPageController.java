@@ -102,22 +102,47 @@ public class MyPageController {
     public String listPostLikes(HttpSession session, Model model,
                                 @ModelAttribute SearchDTO searchDTO,
                                 @ModelAttribute PageRequestDTO pageRequestDTO) {
+
         String postLikeMemberId = (String) session.getAttribute("memberId");
 
         if (searchDTO.getDateType() == null || searchDTO.getDateType().isEmpty()) {
             searchDTO.setDateType("postLikeCreatedAt");
         }
 
+        if ("".equals(searchDTO.getStartDate())) {
+            searchDTO.setStartDate(null);
+        }
+        if ("".equals(searchDTO.getEndDate())) {
+            searchDTO.setEndDate(null);
+        }
+        if ("".equals(searchDTO.getSearchWord())) {
+            searchDTO.setSearchWord(null);
+        }
+        if ("".equals(searchDTO.getSearchType())) {
+            searchDTO.setSearchType(null);
+        }
+        if ("".equals(searchDTO.getSortColumn())) {
+            searchDTO.setSortColumn(null);
+        }
+        if ("".equals(searchDTO.getSortOrder())) {
+            searchDTO.setSortOrder(null);
+        }
+
+        pageRequestDTO.setPageSkipCount(pageRequestDTO.getPageSkipCount());
+
         List<PostLikeRequestDTO> likesList = myPageService.listMyLikes(searchDTO, pageRequestDTO, postLikeMemberId);
+        int totalCount = myPageService.likesTotalCount(searchDTO, postLikeMemberId);
+
         PageResponseDTO<PostLikeRequestDTO> pageResponseDTO = PageResponseDTO.<PostLikeRequestDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
-                .totalCount(myPageService.likesTotalCount(searchDTO, postLikeMemberId))
+                .totalCount(totalCount)
                 .dtoList(likesList)
                 .build();
 
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("likesList", likesList);
         model.addAttribute("searchDTO", searchDTO);
+
         return "mypage/likes";
     }
 
@@ -148,44 +173,41 @@ public class MyPageController {
     public String listLectureOrder(HttpSession session, Model model,
                                    @ModelAttribute SearchDTO searchDTO,
                                    @ModelAttribute PageRequestDTO pageRequestDTO) {
-        String orderMemberId = (String) session.getAttribute("memberId");
+        String memberId = (String) session.getAttribute("memberId");
 
         if (searchDTO.getDateType() == null || searchDTO.getDateType().isEmpty()) {
             searchDTO.setDateType("orderCreatedAt");
         }
 
-        // 원본 flat 리스트
-        List<OrderDTO> rawOrderList = myPageService.listMyOrder(searchDTO, pageRequestDTO, orderMemberId);
+        // 1. 페이징 대상인 주문번호만 가져옴
+        List<Integer> pagedOrderIdxList = myPageService.getPagedOrderIdxList(searchDTO, pageRequestDTO, memberId);
 
-        // 주문번호 기준으로 그룹핑
-        Map<Integer, OrderDTO> orderMap = new LinkedHashMap<>();
+        // 2. 주문번호 리스트 기반으로 주문+강좌 전체 조회
+        List<OrderDTO> flatList = myPageService.getOrdersWithLectures(pagedOrderIdxList, searchDTO);
 
-        for (OrderDTO item : rawOrderList) {
-            int orderIdx = item.getOrderIdx();
-
-            // 이미 저장된 주문이면 기존 DTO에 강의 추가
-            if (orderMap.containsKey(orderIdx)) {
-                orderMap.get(orderIdx).getOrderLectureList().add(item.getLectureTitle());
-            } else {
-                // 처음 보는 주문이면 새로운 DTO 생성 후 강의 추가
-                OrderDTO newOrder = new OrderDTO();
-                newOrder.setOrderIdx(orderIdx);
-                newOrder.setOrderMemberId(item.getOrderMemberId());
-                newOrder.setOrderCreatedAt(item.getOrderCreatedAt());
-                newOrder.setOrderAmount(item.getOrderAmount());
-                newOrder.setOrderStatus(item.getOrderStatus());
-                newOrder.setOrderLectureList(new ArrayList<>());
-                newOrder.getOrderLectureList().add(item.getLectureTitle());
-
-                orderMap.put(orderIdx, newOrder);
-            }
+        // 3. 주문 단위로 그룹핑
+        Map<Integer, OrderDTO> grouped = new LinkedHashMap<>();
+        for (OrderDTO dto : flatList) {
+            int orderIdx = dto.getOrderIdx();
+            grouped.computeIfAbsent(orderIdx, idx -> {
+                OrderDTO od = new OrderDTO();
+                od.setOrderIdx(idx);
+                od.setOrderMemberId(dto.getOrderMemberId());
+                od.setOrderCreatedAt(dto.getOrderCreatedAt());
+                od.setOrderAmount(dto.getOrderAmount());
+                od.setOrderStatus(dto.getOrderStatus());
+                od.setOrderLectureList(new ArrayList<>());
+                return od;
+            }).getOrderLectureList().add(dto.getLectureTitle());
         }
 
-        List<OrderDTO> finalOrderList = new ArrayList<>(orderMap.values());
+        List<OrderDTO> finalOrderList = new ArrayList<>(grouped.values());
+
+        int totalCount = myPageService.orderTotalCount(searchDTO, memberId);
 
         PageResponseDTO<OrderDTO> pageResponseDTO = PageResponseDTO.<OrderDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
-                .totalCount(myPageService.orderTotalCount(searchDTO, orderMemberId))
+                .totalCount(totalCount)
                 .dtoList(finalOrderList)
                 .build();
 
