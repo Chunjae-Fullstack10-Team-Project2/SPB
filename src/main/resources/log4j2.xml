@@ -4,17 +4,17 @@
     <Appenders>
         <Console name="CONSOLE" target="SYSTEM_OUT">
             <PatternLayout
-                    pattern="%highlight{%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue}"
+                    pattern="%highlight{%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue, TRACE=cyan}"
                     charset="UTF-8"
                     disableAnsi="false"
                     noConsoleNoAnsi="false" />
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="INFO" additivity="false">
+        <Root level="INFO">
             <AppenderRef ref="CONSOLE" />
         </Root>
-        <logger name="net.fullstack10" level="INFO" additivity="false">
+        <logger name="net.spb.spb" level="INFO" additivity="false">
             <AppenderRef ref="CONSOLE" />
         </logger>
     </Loggers>
