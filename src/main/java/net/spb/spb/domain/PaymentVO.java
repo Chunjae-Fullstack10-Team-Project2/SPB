@@ -21,7 +21,8 @@ public class PaymentVO {
     private String paymentCanceledAt;
     private String paymentCreatedAt;
     private String paymentUpdateAt;
-    private String memberId;
+    private String paymentMemberId;
     private LocalDateTime paymentApprovedAt2;
     private LocalDateTime paymentCanceledAt2;
+    private String paymentPgTid;
 }
