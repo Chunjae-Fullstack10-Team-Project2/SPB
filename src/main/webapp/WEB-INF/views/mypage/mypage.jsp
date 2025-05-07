@@ -70,7 +70,6 @@
 </head>
 <body>
 <%@ include file="../common/sidebarHeader.jsp" %>
-<%@ include file="../common/sidebar.jsp" %>
 
 <div class="content">
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">

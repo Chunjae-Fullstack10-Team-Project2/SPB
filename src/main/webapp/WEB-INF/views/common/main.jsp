@@ -3,9 +3,6 @@
 <html>
 <head>
     <title>메인 페이지</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <link rel="stylesheet" href="assets/css/bootstrap-5.0.0-alpha.min.css">
     <link rel="stylesheet" href="assets/css/LineIcons.2.0.css">
@@ -22,8 +19,7 @@
 </head>
 <body>
 <%@include file="sidebarHeader.jsp" %>
-<div class="content" style="margin-left: 280px; margin-top: 100px;">
-
+<div class="content">
     <div class="modal fade" id="pwdChangeModal" tabindex="-1" aria-labelledby="pwdChangeModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

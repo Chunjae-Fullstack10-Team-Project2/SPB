@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<c:set var="cp" value="${pageContext.request.contextPath}" />
+
 <html>
 <head>
     <%-- Bootstrap, Icons --%>
@@ -95,31 +97,32 @@
 </head>
 <body>
 
-<%-- 헤더 --%>
+<%-- Header --%>
 <header class="p-3 border-bottom">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-between">
-            <a href="/main" class="d-flex align-items-center mb-2 mb-lg-0 text-decoration-none">
-                <img width="40" src="../resources/img/spb_single_logo.png">
+            <a href="${cp}/main" class="d-flex align-items-center mb-2 mb-lg-0 text-decoration-none">
+                <img width="40" src="${cp}/resources/img/spb_single_logo.png" alt="로고">
             </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/main" class="nav-link px-2 link-secondary">봄콩이</a></li>
+                <li><a href="${cp}/main" class="nav-link px-2 link-secondary">봄콩이</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle px-2 link-body-emphasis" href="#" id="listDropdown" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
                         게시판
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/board/freeboard/list">자유게시판</a></li>
-                        <li><a class="dropdown-item" href="/board/eduinfo/list">교육정보</a></li>
-                        <li><a class="dropdown-item" href="/board/uniinfo/list">대학정보</a></li>
-                        <li><a class="dropdown-item" href="/board/exactivity/list">대외활동</a></li>
-                        <li><a class="dropdown-item" href="/board/reference/list">자료공유</a></li>
+                        <li><a class="dropdown-item" href="${cp}/board/freeboard/list">자유게시판</a></li>
+                        <li><a class="dropdown-item" href="${cp}/board/eduinfo/list">교육정보</a></li>
+                        <li><a class="dropdown-item" href="${cp}/board/uniinfo/list">대학정보</a></li>
+                        <li><a class="dropdown-item" href="${cp}/board/exactivity/list">대외활동</a></li>
+                        <li><a class="dropdown-item" href="${cp}/board/reference/list">자료공유</a></li>
+                        <li><a class="dropdown-item" href="${cp}/board/news">뉴스</a></li>
                     </ul>
                 </li>
-                <li><a href="/qna/list" class="nav-link px-2 link-body-emphasis">1:1 문의</a></li>
-                <li><a href="/faq/list" class="nav-link px-2 link-body-emphasis">FAQ</a></li>
+                <li><a href="${cp}/qna/list" class="nav-link px-2 link-body-emphasis">1:1 문의</a></li>
+                <li><a href="${cp}/faq/list" class="nav-link px-2 link-body-emphasis">FAQ</a></li>
             </ul>
 
             <div class="d-flex align-items-center">
@@ -137,16 +140,16 @@
                 <div class="dropdown text-end">
                     <a href="#" class="d-block text-decoration-none dropdown-toggle"
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                        <img src="https://github.com/mdo.png" alt="프로필" width="32" height="32" class="rounded-circle">
                     </a>
                     <ul class="dropdown-menu text-small">
                         <c:if test="${empty sessionScope.memberId}">
-                            <li><a class="dropdown-item" href="/login">로그인</a></li>
+                            <li><a class="dropdown-item" href="${cp}/login">로그인</a></li>
                         </c:if>
                         <c:if test="${not empty sessionScope.memberId}">
-                            <li><a class="dropdown-item" href="/mypage">마이페이지</a></li>
+                            <li><a class="dropdown-item" href="${cp}/mypage">마이페이지</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/login?action=logout">로그아웃</a></li>
+                            <li><a class="dropdown-item" href="${cp}/login?action=logout">로그아웃</a></li>
                         </c:if>
                     </ul>
                 </div>
@@ -155,9 +158,9 @@
     </div>
 </header>
 
-<%-- 사이드바 --%>
+<%-- Sidebar --%>
 <div class="flex-shrink-0 p-3 sidebar" id="sidebar">
-    <a href="/" class="d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom">
+    <a href="${cp}/" class="d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom">
         <span class="fs-5 fw-semibold">봄콩이</span>
     </a>
     <ul class="list-unstyled ps-0">
@@ -178,7 +181,7 @@
             </button>
             <div class="collapse" id="dashboard-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="/board/freeboard/list" class="d-inline-flex text-decoration-none rounded">자유게시판</a></li>
+                    <li><a href="${cp}/board/freeboard/list" class="d-inline-flex text-decoration-none rounded">자유게시판</a></li>
                 </ul>
             </div>
         </li>
@@ -188,10 +191,10 @@
             </button>
             <div class="collapse" id="orders-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="/mypage/likes" class="d-inline-flex text-decoration-none rounded">좋아요 목록</a></li>
-                    <li><a href="/mypage/report" class="d-inline-flex text-decoration-none rounded">게시글 신고</a></li>
-                    <li><a href="/qna/myQna" class="d-inline-flex text-decoration-none rounded">나의 문의</a></li>
-                    <li><a href="/mypage/order" class="d-inline-flex text-decoration-none rounded">강좌 주문 내역</a></li>
+                    <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded">좋아요 목록</a></li>
+                    <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded">게시글 신고</a></li>
+                    <li><a href="${cp}/qna/myQna" class="d-inline-flex text-decoration-none rounded">나의 문의</a></li>
+                    <li><a href="${cp}/mypage/order" class="d-inline-flex text-decoration-none rounded">강좌 주문 내역</a></li>
                 </ul>
             </div>
         </li>
@@ -202,13 +205,11 @@
     function adjustSidebarPadding() {
         const header = document.querySelector('header');
         const sidebar = document.getElementById('sidebar');
-
         if (header && sidebar) {
             const headerHeight = header.offsetHeight;
             sidebar.style.marginTop = headerHeight + 'px';
         }
     }
-
     window.addEventListener('load', adjustSidebarPadding);
     window.addEventListener('resize', adjustSidebarPadding);
 

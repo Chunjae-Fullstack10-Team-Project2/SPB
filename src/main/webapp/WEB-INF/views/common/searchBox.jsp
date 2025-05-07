@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html>
 <head>
@@ -8,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
 </head>
 <body>
-<div class="search-box" >
+<div class="search-box">
     <form name="frmSearch" method="get" action="${searchAction}" class="mb-1 p-4">
         <div class="row g-2 align-items-center mb-3">
             <c:if test="${not empty dateOptions}">
@@ -59,6 +60,16 @@
                     <option value="100" ${pageDTO.pageSize == 100 ? "selected" : ""}>100개씩 보기</option>
                 </select>
             </div>
+            <c:if test="${fn:contains(currentURI, '/qna/')}">
+                <div class="col-md-2">
+                    <select name="answered" id="answered" class="form-select" onchange="this.form.submit()">
+                        <option value="">답변 여부</option>
+                        <option value="1" ${searchDTO.answered == 1 ? 'selected' : ''}>답변</option>
+                        <option value="2" ${searchDTO.answered == 2 ? 'selected' : ''}>미답변</option>
+                    </select>
+                </div>
+            </c:if>
+
         </div>
     </form>
 </div>
