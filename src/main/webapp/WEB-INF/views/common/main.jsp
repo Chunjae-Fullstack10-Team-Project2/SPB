@@ -9,61 +9,61 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/css/animate.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/css/main.css">
 
-<%--    <style>--%>
-<%--        .warning-text {--%>
-<%--            color: red;--%>
-<%--            font-size: 0.8rem;--%>
-<%--            margin: 0.2rem 0 0 0.2rem;--%>
-<%--        }--%>
-<%--    </style>--%>
+    <%--    <style>--%>
+    <%--        .warning-text {--%>
+    <%--            color: red;--%>
+    <%--            font-size: 0.8rem;--%>
+    <%--            margin: 0.2rem 0 0 0.2rem;--%>
+    <%--        }--%>
+    <%--    </style>--%>
 </head>
 <body>
 <%@include file="header.jsp" %>
 <%--<div class="content-nonside">--%>
-    <div class="modal fade" id="pwdChangeModal" tabindex="-1" aria-labelledby="pwdChangeModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="pwdChangeModalLabel">비밀번호 변경 안내</h5>
-                </div>
-                <div class="modal-body">
-                    <p>비밀번호를 변경하신지 90일이 지났습니다.<br>비밀번호를 변경하시겠습니까?</p>
-                </div>
-                <div class="modal-footer">
-                    <a href="/changePwd" class="btn btn-primary">예</a>
-                    <button type="button" class="btn btn-secondary" id="btnRemindLater">90일 후 다시 알림</button>
-                </div>
+<div class="modal fade" id="pwdChangeModal" tabindex="-1" aria-labelledby="pwdChangeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pwdChangeModalLabel">비밀번호 변경 안내</h5>
+            </div>
+            <div class="modal-body">
+                <p>비밀번호를 변경하신지 90일이 지났습니다.<br>비밀번호를 변경하시겠습니까?</p>
+            </div>
+            <div class="modal-footer">
+                <a href="/changePwd" class="btn btn-primary">예</a>
+                <button type="button" class="btn btn-secondary" id="btnRemindLater">90일 후 다시 알림</button>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="emailVerifyModal" tabindex="-1" aria-labelledby="emailVerifyModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">이메일 인증 필요</h5>
+<div class="modal fade" id="emailVerifyModal" tabindex="-1" aria-labelledby="emailVerifyModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">이메일 인증 필요</h5>
+            </div>
+            <div class="modal-body">
+                <p>휴면 상태입니다. 이메일 인증 후 서비스를 이용해주세요.</p>
+                <div class="mb-3">
+                    <input type="email" class="form-control" id="emailInput"
+                           value="${sessionScope.memberDTO.memberEmail}" readonly>
                 </div>
-                <div class="modal-body">
-                    <p>휴면 상태입니다. 이메일 인증 후 서비스를 이용해주세요.</p>
-                    <div class="mb-3">
-                        <input type="email" class="form-control" id="emailInput"
-                               value="${sessionScope.memberDTO.memberEmail}" readonly>
-                    </div>
-                    <button id="btnSendEmail" class="btn btn-primary w-100 mb-2">인증코드 전송</button>
+                <button id="btnSendEmail" class="btn btn-primary w-100 mb-2">인증코드 전송</button>
 
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="codeInput" placeholder="인증코드 입력" maxlength="6">
-                    </div>
-                    <div class="mb-2">
-                        <span id="emailCountWarning" class="warning-text text-danger"></span>
-                        <span id="emailAuthTimeWarning" class="warning-text text-danger"></span>
-                    </div>
-                    <button id="btnCheckCode" class="btn btn-success w-100">인증 확인</button>
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="codeInput" placeholder="인증코드 입력" maxlength="6">
                 </div>
+                <div class="mb-2">
+                    <span id="emailCountWarning" class="warning-text text-danger"></span>
+                    <span id="emailAuthTimeWarning" class="warning-text text-danger"></span>
+                </div>
+                <button id="btnCheckCode" class="btn btn-success w-100">인증 확인</button>
             </div>
         </div>
     </div>
+</div>
 <%--</div>--%>
 
 <!--[if lte IE 9]>
@@ -101,12 +101,8 @@
                         <div class="col-xl-8 col-lg-10 mx-auto">
                             <div class="carousel-content text-center">
                                 <div class="section-title">
-                                    <h2 class="text-white">Bootstrap 5 One Page Template</h2>
-                                    <p class="text-white">We Crafted an awesome design library that is
-                                        robust and intuitive to use. No matter you're building a business
-                                        presentation
-                                        websit or a complex web application our design blocks can easily be
-                                        adapted for your needs.</p>
+                                    <h2 class="text-white">당신의 성장을 위한 첫 걸음</h2>
+                                    <p class="text-white">봄콩에서 시작하세요. 초등부터 고등까지, 단계별 맞춤 인강으로 실력을 키워드립니다.</p>
                                 </div>
                                 <a href="javascript:void(0)" class="theme-btn border-btn">Read More</a>
                             </div>
@@ -121,11 +117,8 @@
                         <div class="col-xl-8 col-lg-10 mx-auto">
                             <div class="carousel-content text-center">
                                 <div class="section-title">
-                                    <h2 class="text-white">Get Started with Mighty Bootstrap 5</h2>
-                                    <p class="text-white">Create Stunning Websites in Easier
-                                        and Effecient Way! No matter you're building a business
-                                        presentation websit or a complex web application our design blocks can easily be
-                                        adapted for your needs.</p>
+                                    <h2 class="text-white">오늘의 공부가 내일을 바꿉니다</h2>
+                                    <p class="text-white">검증된 강사진, 탄탄한 커리큘럼, 그리고 당신의 열정. 봄콩에서 만나보세요.</p>
                                 </div>
                                 <a href="javascript:void(0)" class="theme-btn border-btn">Read More</a>
                             </div>
@@ -155,9 +148,8 @@
             <div class="col-xl-6 col-lg-7 col-md-9 mx-auto">
                 <div class="section-title text-center mb-55">
                     <span class="wow fadeInDown" data-wow-delay=".2s">Features</span>
-                    <h2 class="wow fadeInUp" data-wow-delay=".4s">Why Choose?</h2>
-                    <p class="wow fadeInUp" data-wow-delay=".6s">At vero eos et accusamus et iusto odio dignissimos
-                        ducimus quiblanditiis praesentium</p>
+                    <h2 class="wow fadeInUp" data-wow-delay=".4s">왜 봄콩일까요?</h2>
+                    <p class="wow fadeInUp" data-wow-delay=".6s">학생의 성장을 가장 먼저 생각하는, 믿을 수 있는 온라인 학습 플랫폼입니다.</p>
                 </div>
             </div>
         </div>
@@ -169,9 +161,8 @@
                         <i class="lni lni-layers"></i>
                     </div>
                     <div class="box-content-style feature-content">
-                        <h4>Bootstrap 5</h4>
-                        <p>Lorem ipsum dolor sit amet, adipscing elitr, sed diam nonumy eirmod tempor ividunt
-                            labor dolore magna.</p>
+                        <h4>수준별 맞춤 강의</h4>
+                        <p>학년별·레벨별 강좌로 누구나 자기 페이스에 맞춰 학습할 수 있어요.</p>
                     </div>
                 </div>
             </div>
@@ -181,9 +172,8 @@
                         <i class="lni lni-brush-alt"></i>
                     </div>
                     <div class="box-content-style feature-content">
-                        <h4>Awesome Design</h4>
-                        <p>Lorem ipsum dolor sit amet, adipscing elitr, sed diam nonumy eirmod tempor ividunt
-                            labor dolore magna.</p>
+                        <h4>전문 강사진</h4>
+                        <p>경험 많은 강사들의 명쾌한 설명으로 개념을 쉽게 이해할 수 있습니다.</p>
                     </div>
                 </div>
             </div>
@@ -193,9 +183,8 @@
                         <i class="lni lni-pointer-up"></i>
                     </div>
                     <div class="box-content-style feature-content">
-                        <h4>One-page Template</h4>
-                        <p>Lorem ipsum dolor sit amet, adipscing elitr, sed diam nonumy eirmod tempor ividunt
-                            labor dolore magna.</p>
+                        <h4>성장 추적 시스템</h4>
+                        <p>나의 학습 진도와 이해도를 데이터로 확인하며 실력을 점검해요.</p>
                     </div>
                 </div>
             </div>
@@ -212,11 +201,13 @@
                 <div class="col-xl-6 col-lg-6">
                     <div class="about-img-wrapper">
                         <div class="about-img position-relative d-inline-block wow fadeInLeft" data-wow-delay=".3s">
-                            <img src="${pageContext.request.contextPath}/resources/assets/img/about/about-img.png" alt="">
+                            <img src="${pageContext.request.contextPath}/resources/assets/img/about/about-img.png"
+                                 alt="">
 
                             <div class="about-experience">
-                                <h3>5 Year Of Working Experience</h3>
-                                <p>We Crafted an aweso design library that is robust and intuitive to use.</p>
+                                <h2 class="mb-40 wow fadeInRight" data-wow-delay=".4s">학생의 가능성을 키우는 공간, 봄콩</h2>
+                                <p class="mb-45 wow fadeInUp" data-wow-delay=".6s">우리는 단순한 인강 플랫폼이 아닙니다. 봄콩은 학생 한 명 한 명이
+                                    스스로 성장할 수 있도록 돕는 디지털 학습 환경을 제공합니다.</p>
                             </div>
                         </div>
                     </div>
@@ -224,29 +215,26 @@
                 <div class="col-xl-6 col-lg-6">
                     <div class="about-content-wrapper">
                         <div class="section-title">
-                            <span class="wow fadeInUp" data-wow-delay=".2s">About Us</span>
-                            <h2 class="mb-40 wow fadeInRight" data-wow-delay=".4s">Built-With Boostrap 5, a New
-                                Experiance</h2>
+                            <span class="wow fadeInUp" data-wow-delay=".2s">봄콩 소개</span>
+                            <h2 class="mb-40 wow fadeInRight" data-wow-delay=".4s">학생의 가능성을 키우는 온라인 클래스</h2>
                         </div>
                         <div class="about-content">
-                            <p class="mb-45 wow fadeInUp" data-wow-delay=".6s">We Crafted an awesome design library
-                                that is robust and intuitive to use. No matter you're building a business
-                                presentation websit or a complex web application our design</p>
+                            <p class="mb-45 wow fadeInUp" data-wow-delay=".6s">
+                                봄콩은 봄처럼 생동감 있게 자라는 학생들을 위한 교육 플랫폼입니다.
+                                검증된 강사진, 학년별 커리큘럼, 그리고 성장 데이터 기반 학습 시스템으로
+                                스스로 학습하고 성장할 수 있는 환경을 제공합니다.
+                            </p>
                             <div class="counter-up wow fadeInUp" data-wow-delay=".5s">
                                 <div class="counter">
-                                    <span id="secondo" class="countup count color-1" cup-end="30"
-                                          cup-append="k">10</span>
-                                    <h4>Happy Client</h4>
-                                    <p>We Crafted an awesome design <br class="d-none d-md-block d-lg-none d-xl-block">
-                                        library that is robust and</p>
+                                    <span id="secondo" class="countup count color-1" cup-end="10" cup-append="k">10</span>
+                                    <h4>누적 수강생</h4>
+                                    <p>많은 학생들이 봄콩을 통해<br class="d-none d-md-block d-lg-none d-xl-block">학습 역량을 키웠습니다</p>
                                 </div>
-<%--                                <div class="counter">--%>
-<%--                                    <span id="secondo" class="countup count color-2" cup-end="42"--%>
-<%--                                          cup-append="k">5</span>--%>
-<%--                                    <h4>Project Done</h4>--%>
-<%--                                    <p>We Crafted an awesome design <br class="d-none d-md-block d-lg-none d-xl-block">--%>
-<%--                                        library that is robust and</p>--%>
-<%--                                </div>--%>
+                                <div class="counter">
+                                    <span id="secondo" class="countup count color-2" cup-end="95" cup-append="%">95</span>
+                                    <h4>만족도</h4>
+                                    <p>실제 수강생 리뷰 기준 <br class="d-none d-md-block d-lg-none d-xl-block">만족도 95% 이상</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -263,10 +251,9 @@
         <div class="row">
             <div class="col-xl-6 col-lg-7 col-md-9 mx-auto">
                 <div class="section-title text-center mb-55">
-                    <span class="wow fadeInDown" data-wow-delay=".2s">Services</span>
-                    <h2 class="wow fadeInUp" data-wow-delay=".4s">Our Best Services</h2>
-                    <p class="wow fadeInUp" data-wow-delay=".6s">At vero eos et accusamus et iusto odio
-                        dignissimos ducimus quiblanditiis praesentium</p>
+                    <span class="wow fadeInDown" data-wow-delay=".2s">봄콩 서비스</span>
+                    <h2 class="wow fadeInUp" data-wow-delay=".4s">당신의 성장을 돕는 학습 경험</h2>
+                    <p class="wow fadeInUp" data-wow-delay=".6s">봄콩은 단순한 강의 제공을 넘어, 학생 한 명 한 명의 학습 여정을 함께합니다.</p>
                 </div>
             </div>
         </div>
@@ -275,72 +262,66 @@
             <div class="col-lg-4 col-md-6">
                 <div class="service-box box-style">
                     <div class="service-icon box-icon-style">
-                        <i class="lni lni-leaf"></i>
+                        <i class="lni lni-video"></i>
                     </div>
                     <div class="box-content-style service-content">
-                        <h4>Clean & Refreshing</h4>
-                        <p>Lorem ipsum dolor sit amet, adipscing elitr, sed diam nonumy eirmod tempor ividunt
-                            labor dolore magna.</p>
+                        <h4>전문 강사진의 영상 강의</h4>
+                        <p>검증된 선생님들의 체계적인 커리큘럼으로<br>기초부터 심화까지 탄탄하게 배울 수 있어요.</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6">
                 <div class="service-box box-style">
                     <div class="service-icon box-icon-style">
-                        <i class="lni lni-bootstrap"></i>
+                        <i class="lni lni-bulb"></i>
                     </div>
                     <div class="box-content-style service-content">
-                        <h4>Solid Bootstrap 5</h4>
-                        <p>Lorem ipsum dolor sit amet, adipscing elitr, sed diam nonumy eirmod tempor ividunt
-                            labor dolore magna.</p>
+                        <h4>자기주도 학습 지원</h4>
+                        <p>개인 학습 스케줄 설정과 진도 체크로<br>스스로 학습하는 습관을 기를 수 있습니다.</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6">
                 <div class="service-box box-style">
                     <div class="service-icon box-icon-style">
-                        <i class="lni lni-briefcase"></i>
+                        <i class="lni lni-comments-alt"></i>
                     </div>
                     <div class="box-content-style service-content">
-                        <h4>Crafted for Business</h4>
-                        <p>Lorem ipsum dolor sit amet, adipscing elitr, sed diam nonumy eirmod tempor ividunt
-                            labor dolore magna.</p>
+                        <h4>질문 & 커뮤니티</h4>
+                        <p>언제든 질문하고 토론할 수 있는 커뮤니티를 통해<br>같이 공부하고 서로 도울 수 있어요.</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6">
                 <div class="service-box box-style">
                     <div class="service-icon box-icon-style">
-                        <i class="lni lni-bolt"></i>
+                        <i class="lni lni-book"></i>
                     </div>
                     <div class="box-content-style service-content">
-                        <h4>Speed Optimized</h4>
-                        <p>Lorem ipsum dolor sit amet, adipscing elitr, sed diam nonumy eirmod tempor ividunt
-                            labor dolore magna.</p>
+                        <h4>학습 자료 제공</h4>
+                        <p>강의에 맞는 요약 자료, 문제지, 복습 노트 등을<br>함께 제공해 학습 효과를 높입니다.</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6">
                 <div class="service-box box-style">
                     <div class="service-icon box-icon-style">
-                        <i class="lni lni-infinite"></i>
+                        <i class="lni lni-bar-chart"></i>
                     </div>
                     <div class="box-content-style service-content">
-                        <h4>Fully Customizable</h4>
-                        <p>Lorem ipsum dolor sit amet, adipscing elitr, sed diam nonumy eirmod tempor ividunt
-                            labor dolore magna.</p>
+                        <h4>학습 분석 리포트</h4>
+                        <p>진도율, 반복 학습, 오답률 등을 분석해<br>나만의 학습 리포트를 받아볼 수 있어요.</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6">
                 <div class="service-box box-style">
                     <div class="service-icon box-icon-style">
-                        <i class="lni lni-reload"></i>
+                        <i class="lni lni-support"></i>
                     </div>
                     <div class="box-content-style service-content">
-                        <h4>Regular Updates</h4>
-                        <p>Lorem ipsum dolor sit amet, adipscing elitr, sed diam nonumy eirmod tempor ividunt
-                            labor dolore magna.</p>
+                        <h4>1:1 학습 지원</h4>
+                        <p>관리 선생님과의 1:1 피드백 시스템으로<br>궁금한 점과 고민을 함께 해결할 수 있습니다.</p>
                     </div>
                 </div>
             </div>
@@ -349,151 +330,123 @@
 </section>
 <!-- ========================= service-section end ========================= -->
 
-<!-- ========================= portfolio-section start ========================= -->
-<section id="portfolio" class="portfolio-section pt-130">
-    <section id="team" class="contact-section cta-bg img-bg pt-110 pb-100"
-             style="background-image: url('${pageContext.request.contextPath}/resources/assets/img/bg/cta-bg.jpg');">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-xl-5 col-lg-7">
-                    <div class="section-title mb-60">
-                        <span class="text-white wow fadeInDown" data-wow-delay=".2s"
-                              style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInDown;">Hey</span>
-                        <h2 class="text-white wow fadeInUp" data-wow-delay=".4s"
-                            style="visibility: visible; animation-delay: 0.4s; animation-name: fadeInUp;">You are using
-                            free lite version of Fancy</h2>
-                        <p class="text-white wow fadeInUp" data-wow-delay=".6s"
-                           style="visibility: visible; animation-delay: 0.6s; animation-name: fadeInUp;">Please,
-                            purchase full version of template to get all elements, section and permission to remove
-                            credits.</p>
-                    </div>
-                </div>
-                <div class="col-xl-7 col-lg-5">
-                    <div class="contact-btn text-left text-lg-right">
-                        <a href="https://rebrand.ly/fancy-ud" rel="nofollow" class="theme-btn">Purchase Now</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-</section>
-<!-- ========================= portfolio-section end ========================= -->
-
 <!-- ========================= process-section start ========================= -->
 <section id="process" class="process-section pt-100 pb-100">
     <div class="container">
         <div class="row">
             <div class="col-xl-6 col-lg-7 col-md-9 mx-auto">
                 <div class="section-title text-center mb-55">
-                    <span class="wow fadeInDown" data-wow-delay=".2s">Process</span>
-                    <h2 class="wow fadeInUp" data-wow-delay=".4s">Working Process</h2>
-                    <p class="wow fadeInUp" data-wow-delay=".6s">At vero eos et accusamus et iusto odio
-                        dignissimos ducimus quiblanditiis praesentium</p>
+                    <span class="wow fadeInDown" data-wow-delay=".2s">이용 절차</span>
+                    <h2 class="wow fadeInUp" data-wow-delay=".4s">봄콩에서 공부하는 과정</h2>
+                    <p class="wow fadeInUp" data-wow-delay=".6s">간단한 절차로 원하는 강좌를 수강해보세요!</p>
                 </div>
             </div>
         </div>
         <div class="row align-items-center time-line">
+
             <div class="col-12">
                 <div class="single-timeline">
                     <div class="row align-items-center">
                         <div class="col-lg-5 order-last order-lg-first">
                             <div class="timeline-content left-content text-lg-right">
                                 <div class="box-icon-style">
-                                    <i class="lni lni-search-alt"></i>
+                                    <i class="lni lni-users"></i>
                                 </div>
-                                <h4 class="mb-10">Research</h4>
-                                <p>At vero eos et accusamus et iusto odio dignissimos quiblanditiis praesentium
-                                    At vero eos et accusamus et iusto odio dignissimos ducimusm.</p>
+                                <h4 class="mb-10">1. 강사 탐색</h4>
+                                <p>과목별로 다양한 강사님의 소개와<br>강의 스타일을 미리 확인해보세요.</p>
                             </div>
                         </div>
                         <div class="col-lg-2"></div>
                         <div class="col-lg-5">
                             <div class="timeline-img">
-                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-1.png" alt="">
+                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-1.png" alt="강사 탐색">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="col-12">
                 <div class="single-timeline">
                     <div class="row align-items-center">
                         <div class="col-lg-5">
                             <div class="timeline-img">
-                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-2.png" alt="">
+                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-2.png" alt="회원가입">
                             </div>
                         </div>
                         <div class="col-lg-2"></div>
                         <div class="col-lg-5">
                             <div class="timeline-content right-content text-left">
                                 <div class="box-icon-style">
-                                    <i class="lni lni-layers"></i>
+                                    <i class="lni lni-key"></i>
                                 </div>
-                                <h4 class="mb-10">Design</h4>
-                                <p>At vero eos et accusamus et iusto odio dignissimos quiblanditiis praesentium
-                                    At vero eos et accusamus et iusto odio dignissimos ducimusm.</p>
+                                <h4 class="mb-10">2. 회원가입</h4>
+                                <p>이메일 인증만으로 간단하게 가입하고<br>내 학습 공간을 만들 수 있어요.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="col-12">
                 <div class="single-timeline">
                     <div class="row align-items-center">
                         <div class="col-lg-5 order-last order-lg-first">
                             <div class="timeline-content left-content text-lg-right">
                                 <div class="box-icon-style">
-                                    <i class="lni lni-code-alt"></i>
+                                    <i class="lni lni-shopping-basket"></i>
                                 </div>
-                                <h4 class="mb-10">Code</h4>
-                                <p>At vero eos et accusamus et iusto odio dignissimos quiblanditiis praesentium
-                                    At vero eos et accusamus et iusto odio dignissimos ducimusm.</p>
+                                <h4 class="mb-10">3. 강좌 담기</h4>
+                                <p>듣고 싶은 강의를 장바구니에 담고<br>필요한 자료도 미리 확인해보세요.</p>
                             </div>
                         </div>
                         <div class="col-lg-2"></div>
                         <div class="col-lg-5">
                             <div class="timeline-img">
-                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-3.png" alt="">
+                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-3.png" alt="강좌 담기">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="col-12">
                 <div class="single-timeline">
                     <div class="row align-items-center">
                         <div class="col-lg-5">
                             <div class="timeline-img">
-                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-4.png" alt="">
+                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-4.png" alt="결제 및 수강">
                             </div>
                         </div>
                         <div class="col-lg-2"></div>
                         <div class="col-lg-5">
                             <div class="timeline-content right-content text-left">
                                 <div class="box-icon-style">
-                                    <i class="lni lni-rocket"></i>
+                                    <i class="lni lni-credit-cards"></i>
                                 </div>
-                                <h4 class="mb-10">Launch</h4>
-                                <p>At vero eos et accusamus et iusto odio dignissimos quiblanditiis praesentium
-                                    At vero eos et accusamus et iusto odio dignissimos ducimusm.</p>
+                                <h4 class="mb-10">4. 결제 및 수강</h4>
+                                <p>결제를 완료하면 바로 수강 시작!<br>내 학습 진도는 자동으로 저장됩니다.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </section>
 <!-- ========================= process-section end ========================= -->
 
 <!-- ========================= subscribe-section start ========================= -->
-<section class="subscribe-section pt-70 pb-70 img-bg" style="background-image: url('${pageContext.request.contextPath}/resources/assets/img/bg/common-bg.svg')">
+<section class="subscribe-section pt-100 pb-100 img-bg"
+         style="background-image: url('${pageContext.request.contextPath}/resources/assets/img/bg/common-bg.svg')">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-xl-6 col-lg-6">
                 <div class="section-title mb-30">
-                    <span class="text-white wow fadeInDown" data-wow-delay=".2s">Subscribe</span>
-                    <h2 class="text-white mb-40 wow fadeInUp" data-wow-delay=".4s">Subscribe Our Newsletter</h2>
+                    <span class="text-white wow fadeInDown" data-wow-delay=".2s">지금 바로 체험해보세요!</span>
+                    <h2 class="text-white mb-40 wow fadeInUp" data-wow-delay=".4s">회원가입하고 오늘부터 무료 강의를 체험해보세요. 봄콩과 함께라면 공부가
+                        즐거워집니다.</h2>
                 </div>
             </div>
             <div class="col-xl-6 col-lg-6">
@@ -513,7 +466,8 @@
         <div class="row">
             <div class="col-xl-3 col-lg-4 col-md-6">
                 <div class="footer-widget mb-60 wow fadeInLeft" data-wow-delay=".2s">
-                    <a href="index.html" class="logo mb-30"><img src="${pageContext.request.contextPath}/resources/assets/img/logo/logo.svg" alt="logo"></a>
+                    <a href="index.html" class="logo mb-30"><img
+                            src="${pageContext.request.contextPath}/resources/assets/img/logo/logo.svg" alt="logo"></a>
                     <p class="mb-30 footer-desc">We Crafted an awesome desig library that is robust and intuitive to
                         use. No matter you're building a business presentation websit.</p>
                 </div>
