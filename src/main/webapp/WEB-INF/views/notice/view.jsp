@@ -65,9 +65,9 @@
         작성자 : ${dto.noticeMemberId}
     </div>
     <div>
-        작성일 : ${dto.noticeCreatedAt}
-        <c:if test="${dto.noticeCreatedAt ne dto.noticeUpdatedAt}">
-            &nbsp;&nbsp; 수정일 : ${dto.noticeUpdatedAt}
+        작성일 : ${createdAtStr}
+        <c:if test="${createdAtStr ne updatedAtStr}">
+            &nbsp;&nbsp; 수정일 : ${updatedAtStr}
         </c:if>
     </div>
 </div>

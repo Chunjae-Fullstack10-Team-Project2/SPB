@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
@@ -65,7 +66,16 @@ public class NoticeController {
     @GetMapping("/view")
     public String view(@RequestParam("noticeIdx") int noticeIdx, Model model) throws Exception {
         NoticeDTO dto = noticeService.getDetail(noticeIdx);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        String createdAtStr = dto.getNoticeCreatedAt().format(formatter);
+        String updatedAtStr = dto.getNoticeUpdatedAt().format(formatter);
+
         model.addAttribute("dto", dto);
+        model.addAttribute("createdAtStr", createdAtStr);
+        model.addAttribute("updatedAtStr", updatedAtStr);
+
         return "notice/view";
     }
 
