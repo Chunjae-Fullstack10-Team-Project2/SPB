@@ -19,4 +19,5 @@ public class LectureVO {
     private Date lectureCreateAt;
     private String lectureThumbnailImg;
     private int lectureAmount;
+    private String lectureTeacherName;
 }

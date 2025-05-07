@@ -189,6 +189,7 @@
         <div class="button-group">
             <button type="button" class="btn btn-primary" onclick="processPayment()">결제하기</button>
             <button type="button" class="btn btn-secondary" onclick="cancelOrder()">주문 취소</button>
+            <a href="/payment/paymentDetail?orderIdx=2">구매 상세</a>
         </div>
     </div>
 </div>
@@ -208,7 +209,7 @@
     function processPayment() {
 
         const data = {
-            orderId : "${member.memberId}",
+            orderMemberId : "${member.memberId}",
             orderAmount : document.getElementById('total-price').textContent.replace("원","").replace(",",""),
             orderLectureList : $("input[name='lectureIdx']").map(function () {
                 return $(this).val();
@@ -282,7 +283,8 @@
                     .then(res => res.json())
                     .then(data => {
                         if (data.status === "success") {
-                            alert("결제 성공 처리 완료!");
+                            alert("결제가 완료되었습니다.");
+                            window.location.href="/payment/paymentDetail?orderIdx="+orderIdx;
                         } else {
                             alert("결제 검증 실패: " + data.message);
                         }
