@@ -67,7 +67,7 @@
                     </ul>
                 </li>
                 <li><a href="${cp}/qna/list" class="nav-link px-2 link-body-emphasis">1:1 문의</a></li>
-                <li><a href="${cp}/faq/list" class="nav-link px-2 link-body-emphasis">FAQ</a></li>
+                <li><a href="${cp}/faq/list" class="nav-link px-2 link-body-emphasis">자주 묻는 질문</a></li>
             </ul>
 
             <div class="d-flex align-items-center">
