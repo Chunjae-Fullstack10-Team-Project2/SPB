@@ -1,9 +1,9 @@
-package net.spb.spb.service;
+package net.spb.spb.service.member;
 
 import lombok.RequiredArgsConstructor;
 import net.spb.spb.dto.OrderDTO;
-import net.spb.spb.dto.PostLikeRequestDTO;
-import net.spb.spb.dto.PostReportDTO;
+import net.spb.spb.dto.post.PostLikeRequestDTO;
+import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.mapper.MyPageMapper;

@@ -1,8 +1,9 @@
 package net.spb.spb.service;
 
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.PostDTO;
-import net.spb.spb.dto.PostPageDTO;
+import net.spb.spb.dto.post.PostDTO;
+import net.spb.spb.dto.pagingsearch.PostPageDTO;
+import net.spb.spb.service.board.BoardServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

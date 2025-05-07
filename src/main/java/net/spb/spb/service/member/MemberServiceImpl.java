@@ -1,14 +1,13 @@
 package net.spb.spb.service.member;
 
 import net.spb.spb.domain.MemberVO;
-import net.spb.spb.dto.MemberPageDTO;
 import net.spb.spb.dto.member.MemberDTO;
+import net.spb.spb.dto.pagingsearch.ReportPageDTO;
 import net.spb.spb.mapper.MemberMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Member;
 import java.util.List;
 
 @Service
@@ -77,7 +76,7 @@ public class MemberServiceImpl implements MemberServiceIf {
 
 
     @Override
-    public List<MemberDTO> getMembers(MemberPageDTO memberPageDTO) {
+    public List<MemberDTO> getMembers(ReportPageDTO.MemberPageDTO memberPageDTO) {
         return memberMapper.getAllMembers(memberPageDTO).stream().map(memberVO -> modelMapper.map(memberVO, MemberDTO.class)).toList();
     }
 
@@ -94,7 +93,7 @@ public class MemberServiceImpl implements MemberServiceIf {
     }
 
     @Override
-    public int getMemberCount(MemberPageDTO memberPageDTO) {
+    public int getMemberCount(ReportPageDTO.MemberPageDTO memberPageDTO) {
         return memberMapper.getMemberCount(memberPageDTO);
     }
 

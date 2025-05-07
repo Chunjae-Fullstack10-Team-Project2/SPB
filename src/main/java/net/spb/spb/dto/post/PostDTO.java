@@ -1,6 +1,7 @@
-package net.spb.spb.dto;
+package net.spb.spb.dto.post;
 
 import lombok.*;
+import net.spb.spb.dto.FileDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;

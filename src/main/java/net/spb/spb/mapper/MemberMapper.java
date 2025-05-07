@@ -1,7 +1,7 @@
 package net.spb.spb.mapper;
 
 import net.spb.spb.domain.MemberVO;
-import net.spb.spb.dto.MemberPageDTO;
+import net.spb.spb.dto.pagingsearch.ReportPageDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -25,11 +25,11 @@ public interface MemberMapper {
 
     String getPwdById(String memberId);
 
-    List<MemberVO> getAllMembers(MemberPageDTO memberPageDTO);
+    List<MemberVO> getAllMembers(ReportPageDTO.MemberPageDTO memberPageDTO);
 
     boolean updateMemberState(MemberVO memberVO);
 
     boolean updateMemberByAdmin(MemberVO memberVO);
 
-    int getMemberCount(MemberPageDTO memberPageDTO);
+    int getMemberCount(ReportPageDTO.MemberPageDTO memberPageDTO);
 }
