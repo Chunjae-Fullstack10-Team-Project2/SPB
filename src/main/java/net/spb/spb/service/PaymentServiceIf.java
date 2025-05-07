@@ -26,4 +26,5 @@ public interface PaymentServiceIf {
     public PaymentDTO getPaymentInfo(int orderIdx);
     public void updateOrderInfo(PaymentDTO paymentDTO);
     public Map<String, Object> cancelPayment(String merchantUid, String reason, int amount) throws Exception;
+    public int getCartCount(String memberId);
 }

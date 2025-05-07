@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -87,6 +87,8 @@
                 onclick="openCancelModal(${orderIdx}, ${totalAmount})">
             취소
         </button>
+        <a href="https://iniweb.inicis.com/DefaultWebApp/mall/cr/cm/mCmReceipt_head.jsp?noTid=${paymentDTO.paymentPgTid}"
+                    target="_blank" class="btn btn-sm btn-outline-primary">영수증</a>
     </div>
 </div>
 <!-- 취소 모달 -->
@@ -108,10 +110,13 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                 <button type="button" class="btn btn-danger" onclick="submitCancel()">취소하기</button>
+
+            </a>
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -146,7 +151,7 @@
                 amount: parseInt(amount)
             }),
             success: function (response) {
-                alert("결제 취소가 완료되었습니다.");
+                alert("결제 취소가 완료되었습니다. 환불까지 다소 시간이 소요될 수 있습니다.");
                 location.reload();
             },
             error: function (request, status, error) {

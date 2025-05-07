@@ -9,18 +9,14 @@ import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.*;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.service.PaymentServiceIf;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -44,6 +40,7 @@ public class PaymentController {
         List<CartDTO> cartList = paymentService.selectCart(memberId);
         log.info("cartList: "+cartList);
         model.addAttribute("cartList", cartList);
+        model.addAttribute("memberId", memberId);
         return "payment/cart";
     }
 
@@ -115,7 +112,7 @@ public class PaymentController {
         try {
             IamportResponse<Payment> response = iamportClient.paymentByImpUid(impUid);
             Payment payment = response.getResponse();
-
+            log.info("pgTid: "+payment.getPgTid());
             OrderDTO order = paymentService.findByMerchantUid(merchantUid);
 
             if (order.getOrderAmount() != payment.getAmount().intValue()) {
@@ -129,11 +126,12 @@ public class PaymentController {
                 PaymentDTO paymentDTO = new PaymentDTO();
                 paymentDTO.setPaymentTransactionId ((String) payment.getImpUid());
                 paymentDTO.setPaymentOrderIdx(Integer.parseInt(merchantUid));
-                paymentDTO.setMemberId(memberId);
+                paymentDTO.setPaymentMemberId(memberId);
                 paymentDTO.setPaymentMethod(payment.getPayMethod());
                 //paymentDTO.setTotalAmount((Integer) ((Map) body.get("amount")).get("total"));
                 //paymentDTO.setItemName((String) body.get("item_name"));
                 paymentDTO.setPaymentStatus("s");
+                paymentDTO.setPaymentPgTid(payment.getPgTid());
                 //paymentDTO.setPaymentApprovedAt(payment.getPaidAt().toString());
 
 
@@ -160,11 +158,11 @@ public class PaymentController {
             } else {
 
                 PaymentDTO paymentDTO = new PaymentDTO();
-                paymentDTO.setPaymentTransactionId ((String) payment.getImpUid());
+                paymentDTO.setPaymentTransactionId (payment.getImpUid());
                 paymentDTO.setPaymentOrderIdx(Integer.parseInt(merchantUid));
-                paymentDTO.setMemberId(memberId);
+                paymentDTO.setPaymentMemberId(memberId);
                 paymentDTO.setPaymentMethod(payment.getPayMethod());
-                //paymentDTO.setTotalAmount((Integer) ((Map) body.get("amount")).get("total"));
+                paymentDTO.setPaymentPgTid(payment.getPgTid());
                 //paymentDTO.setItemName((String) body.get("item_name"));
                 paymentDTO.setPaymentStatus("f");
                 //paymentDTO.setPaymentApprovedAt(payment.getPaidAt().toString());
@@ -237,6 +235,12 @@ public class PaymentController {
         }
     }
 
-
+    @GetMapping("/cartCount")
+    @ResponseBody
+    public int getCartCount(HttpSession session) {
+        String memberId = (String) session.getAttribute("memberId");
+        if (memberId == null) return 0;
+        return paymentService.getCartCount(memberId);
+    }
 
 }

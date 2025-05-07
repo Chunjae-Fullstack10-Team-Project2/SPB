@@ -13,7 +13,7 @@
             font-family: 'Malgun Gothic', sans-serif;
         }
 
-        .container {
+        .teacher-container {
             max-width: 1000px;
             margin: 0 auto;
             border: 1px solid #ccc;
@@ -107,7 +107,8 @@
     </style>
 </head>
 <body>
-<div class="container">
+<%@ include file="../common/header.jsp" %>
+<div class="teacher-container">
     <div class="content">
         <div class="title">선생님 페이지</div>
         <div class="search-area">
