@@ -151,14 +151,13 @@
                 if (date.getTime() === selectedDate.getTime()) dateDiv.classList.add('selected');
 
                 dateDiv.classList.add(getDayOfWeekClassName(date.getDay()));
-                dateDiv.addEventListener('click', () => {
+                dateDiv.addEventListener('click', async () => {
                     const prevSelected = calendarDate.querySelector('.selected');
                     if (prevSelected) prevSelected.classList.remove('selected');
 
                     selectedDate = date;
                     dateDiv.classList.add('selected');
-
-                    getPlansByDay(selectedDate);
+                    renderDayPlans(await getPlansByDay(date));
                 });
 
                 dateDiv.appendChild(dateSpan);
