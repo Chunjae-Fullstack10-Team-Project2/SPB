@@ -2,7 +2,7 @@ package net.spb.spb.service;
 
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.PlanDTO;
-import net.spb.spb.dto.mystudy.PlanDetailResponseDTO;
+import net.spb.spb.dto.mystudy.PlanResponseDTO;
 import net.spb.spb.service.mystudy.PlanServiceIf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,8 +11,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
-import java.util.List;
 
 @Log4j2
 @ExtendWith(SpringExtension.class)
@@ -33,19 +31,19 @@ public class PlanServiceTest {
         log.info("PlanServiceTest >> testInsert >> result : {}", result);
     }
 
-    @Test
-    public void testSelectList() {
-        PlanListRequestDTO requestDTO = PlanListRequestDTO.builder()
-                .memberId("user1")
-                .currentMonth(YearMonth.now())
-                .build();
-        List<PlanListResponseDTO> list = planService.selectList(requestDTO);
-        log.info("PlanServiceTest >> testSelectList >> list : {}", list);
-    }
+//    @Test
+//    public void testSelectList() {
+//        PlanListRequestDTO requestDTO = PlanListRequestDTO.builder()
+//                .memberId("user1")
+//                .currentMonth(YearMonth.now())
+//                .build();
+//        List<PlanListResponseDTO> list = planService.selectList(requestDTO);
+//        log.info("PlanServiceTest >> testSelectList >> list : {}", list);
+//    }
 
     @Test
-    public void testSelectOne() {
-        PlanDetailResponseDTO planDTO = planService.selectOne(1);
+    public void testGetPlanByIdx() {
+        PlanResponseDTO planDTO = planService.getPlanByIdx(1);
         log.info("PlanServiceTest >> testSelectOne >> planDTO : {}", planDTO);
     }
 

@@ -7,23 +7,23 @@
         values (#{planLectureIdx}, #{planMemberId}, #{planContent}, #{planDate})
     </insert>
 
-    <select id="selectList" resultType="net.spb.spb.dto.mystudy.PlanResponseDTO">
-        select planIdx, planContent, planDate
-        from tbl_plan
-        where planMemberId = #{memberId}
-        and date_format(planDate, '%Y-%m') = #{date}
-    </select>
-
-    <select id="selectTodayList" resultType="net.spb.spb.dto.mystudy.PlanDetailResponseDTO">
+    <select id="selectPlanListByDay" resultType="net.spb.spb.dto.mystudy.PlanResponseDTO">
         select tp.planIdx as planIdx, tp.planLectureIdx as planLectureIdx, tl.lectureTitle as lectureTitle
              , tp.planContent as planContent, tp.planDate as planDate
         from tbl_plan as tp
         inner join tbl_lecture as tl on tp.planLectureIdx = tl.lectureIdx
-        where planMemberId = #{memberId}
-        and date_format(planDate, '%Y-%m-%d') = #{date}
+        where tp.planMemberId = #{memberId}
+        and tp.planDate = #{date}
     </select>
 
-    <select id="selectByIdx" resultType="net.spb.spb.dto.mystudy.PlanDetailResponseDTO">
+    <select id="selectPlanListByMonth" resultType="net.spb.spb.dto.mystudy.PlanResponseDTO">
+        select planIdx, planContent, planDate
+        from tbl_plan as tp
+        where planMemberId = #{memberId}
+          and planDate between #{date1} and #{date2}
+    </select>
+
+    <select id="selectPlanByIdx" resultType="net.spb.spb.dto.mystudy.PlanResponseDTO">
         select tp.planIdx as planIdx, tp.planLectureIdx as planLectureIdx, tl.lectureTitle as lectureTitle
              , tp.planMemberId as planMemberId
              , tp.planContent as planContent, tp.planDate as planDate

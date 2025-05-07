@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.domain.PlanVO;
 import net.spb.spb.dto.PlanDTO;
-import net.spb.spb.dto.mystudy.PlanDetailResponseDTO;
 import net.spb.spb.dto.mystudy.PlanResponseDTO;
 import net.spb.spb.mapper.mystudy.PlanMapper;
 import org.modelmapper.ModelMapper;
@@ -12,9 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -32,18 +29,18 @@ public class PlanService implements PlanServiceIf {
     }
 
     @Override
-    public List<PlanResponseDTO> selectList(String memberId, YearMonth date) {
-        return planMapper.selectList(memberId, date);
+    public List<PlanResponseDTO> getPlanListByDay(String memberId, LocalDate date) {
+        return planMapper.selectPlanListByDay(memberId, date);
     }
 
     @Override
-    public List<PlanDetailResponseDTO> selectTodayList(String memberId, LocalDate date) {
-        return planMapper.selectTodayList(memberId, date);
+    public List<PlanResponseDTO> getPlanListByMonth(String memberId, LocalDate date1, LocalDate date2) {
+        return planMapper.selectPlanListByMonth(memberId, date1, date2);
     }
 
     @Override
-    public PlanDetailResponseDTO selectOne(int idx) {
-        return planMapper.selectOne(idx);
+    public PlanResponseDTO getPlanByIdx(int idx) {
+        return planMapper.selectPlanByIdx(idx);
     }
 
     @Override

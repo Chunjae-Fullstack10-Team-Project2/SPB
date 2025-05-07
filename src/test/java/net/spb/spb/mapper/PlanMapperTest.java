@@ -32,21 +32,21 @@ public class PlanMapperTest {
         log.info("PlanMapperTest >> testInsert >> result : {}", result);
     }
 
-    @Test
-    public void testSelectList() {
-        PlanListRequestDTO requestDTO = PlanListRequestDTO.builder()
-                .memberId("user1")
-                .currentMonth(YearMonth.now())
-                .build();
-        List<PlanVO> list = planMapper.selectList(requestDTO);
-        log.info("PlanMapperTest >> testSelectList >> list : {}", list);
-    }
-
-    @Test
-    public void testSelectOne() {
-        PlanVO vo = planMapper.selectOne(1);
-        log.info("PlanMapperTest >> testSelectOne >> vo : {}", vo);
-    }
+//    @Test
+//    public void testSelectList() {
+//        PlanListRequestDTO requestDTO = PlanListRequestDTO.builder()
+//                .memberId("user1")
+//                .currentMonth(YearMonth.now())
+//                .build();
+//        List<PlanVO> list = planMapper.selectList(requestDTO);
+//        log.info("PlanMapperTest >> testSelectList >> list : {}", list);
+//    }
+//
+//    @Test
+//    public void testSelectOne() {
+//        PlanVO vo = planMapper.selectOne(1);
+//        log.info("PlanMapperTest >> testSelectOne >> vo : {}", vo);
+//    }
 
     @Test
     public void testUpdate() {

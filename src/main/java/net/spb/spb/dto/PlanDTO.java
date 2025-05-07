@@ -18,7 +18,6 @@ public class PlanDTO {
     private String planMemberId;
     private String planContent;
     private LocalDate planDate;
-    private int planState;
     private LocalDateTime planCreatedAt;
     private LocalDateTime planUpdatedAt;
 }
