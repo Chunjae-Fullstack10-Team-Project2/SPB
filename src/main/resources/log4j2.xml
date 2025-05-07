@@ -1,17 +1,21 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- https://logging.apache.org/log4j/2.x/manual/configuration.html -->
-<configuration status="INFO">
+<Configuration status="INFO">
     <Appenders>
         <Console name="CONSOLE" target="SYSTEM_OUT">
-            <PatternLayout charset="UTF-8" pattern="%d{hh:mm:ss.SSS} [%t] %-5level %logger{36} -%msg%n" />
+            <PatternLayout
+                    pattern="%highlight{%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue, TRACE=cyan}"
+                    charset="UTF-8"
+                    disableAnsi="false"
+                    noConsoleNoAnsi="false" />
         </Console>
     </Appenders>
-    <loggers>
-        <logger name="net.spb" level="INFO" additivity="false">
-            <Appender-ref ref="CONSOLE" />
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="CONSOLE" />
+        </Root>
+        <logger name="net.spb.spb" level="INFO" additivity="false">
+            <AppenderRef ref="CONSOLE" />
         </logger>
-        <root level="INFO" additivity="false">
-            <Appender-ref ref="CONSOLE" />
-        </root>
-    </loggers>
-</configuration>
+    </Loggers>
+</Configuration>

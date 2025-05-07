@@ -2,6 +2,11 @@ package net.spb.spb.util;
 
 import net.spb.spb.dto.pagingsearch.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PagingUtil {
     public static String buildLinkUrl(String basePath, PostPageDTO dto) {
         StringBuilder linkUrl = new StringBuilder(basePath);
@@ -87,6 +92,28 @@ public class PagingUtil {
         return linkUrl.toString();
     }
 
+    public static String buildStudentLectureLinkUrl(String basePath, StudentLecturePageDTO dto) {
+        StringBuilder linkUrl = new StringBuilder(basePath);
+        List<String> params = new ArrayList<>();
+
+        if (dto.getPage_size() > 0) {
+            params.add("page_size=" + dto.getPage_size());
+        }
+        if (dto.getLecture_status() > 0) {
+            params.add("lecture_status=" + dto.getLecture_status());
+        }
+        if (dto.getSearch_category() != null && dto.getSearch_word() != null && !dto.getSearch_category().isBlank() && !dto.getSearch_word().isBlank()) {
+            params.add("search_category=" + dto.getSearch_category());
+            params.add("search_word=" + URLEncoder.encode(dto.getSearch_word(), StandardCharsets.UTF_8));
+        }
+
+        if (!params.isEmpty()) {
+            linkUrl.append("?").append(String.join("&", params));
+        }
+
+        return linkUrl.toString();
+    }
+
     public static <T extends PageDTO> String pagingArea(T pageDTO) {
         if (pageDTO.getTotal_count() < 1) {
             return "";
@@ -138,6 +165,7 @@ public class PagingUtil {
 
         return sb.toString();
     }
+
     private static String getFullLink(String baseUrl, String connector, int page_no, String s) {
         return "<a href='" + baseUrl + connector + "page_no=" + page_no + "'>" + s + "</a>" + "&nbsp;&nbsp;";
     }
