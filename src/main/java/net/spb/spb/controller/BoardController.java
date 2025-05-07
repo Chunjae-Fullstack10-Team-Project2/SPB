@@ -4,15 +4,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.spb.spb.dto.pagingsearch.PageRequestDTO;
+import net.spb.spb.dto.pagingsearch.PageResponseDTO;
+import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.dto.post.PostDTO;
 import net.spb.spb.dto.post.PostFileDTO;
 import net.spb.spb.dto.pagingsearch.PostPageDTO;
 import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.service.board.BoardFileService;
 import net.spb.spb.service.board.BoardServiceImpl;
+import net.spb.spb.service.board.NaverNewsService;
 import net.spb.spb.util.BoardCategory;
 import net.spb.spb.util.FileUtil;
 import net.spb.spb.util.PagingUtil;
+import org.json.JSONArray;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Log4j2
@@ -32,6 +40,9 @@ public class BoardController {
     private final BoardServiceImpl service;
     private final BoardFileService boardFileService;
     private final FileUtil fileUtil;
+
+    @Autowired
+    private NaverNewsService naverNewsService;
 
     @GetMapping("/{category}/list")
     public String list(@PathVariable("category") BoardCategory category, Model model, @ModelAttribute PostPageDTO postPageDTO, HttpServletRequest req) {
@@ -53,7 +64,7 @@ public class BoardController {
     @GetMapping("/{category}/view")
     public String view(@PathVariable("category") BoardCategory category, @RequestParam("idx") int idx, Model model, HttpSession session) {
         service.setReadCnt(idx);
-        String memberId = (String)session.getAttribute("memberId");
+        String memberId = (String) session.getAttribute("memberId");
         HashMap<String, Object> param = new HashMap<>();
         param.put("postIdx", idx);
         param.put("memberId", memberId);
@@ -68,17 +79,17 @@ public class BoardController {
     }
 
     @PostMapping("/{category}/write")
-    public String writePOST(@RequestParam(name="files") MultipartFile[] files, @PathVariable("category") BoardCategory category, @ModelAttribute PostDTO dto, HttpSession session) throws IOException {
+    public String writePOST(@RequestParam(name = "files") MultipartFile[] files, @PathVariable("category") BoardCategory category, @ModelAttribute PostDTO dto, HttpSession session) throws IOException {
 
         dto.setPostCategory(category.toString().toUpperCase());
-        dto.setPostMemberId((String)session.getAttribute("memberId"));
+        dto.setPostMemberId((String) session.getAttribute("memberId"));
 
         int postIdx = service.insertPost(dto);
 
         // 파일 처리
         try {
-            for(MultipartFile file : files) {
-                if(file != null && !file.isEmpty()) {
+            for (MultipartFile file : files) {
+                if (file != null && !file.isEmpty()) {
                     log.info("BoardController >> writePOST >> file upload");
                     int fileIdx = fileUtil.uploadFile(file.getOriginalFilename(), file.getBytes());
                     PostFileDTO postFileDTO = PostFileDTO.builder().postFilePostIdx(postIdx).postFileFileIdx(fileIdx).build();
@@ -89,7 +100,7 @@ public class BoardController {
             log.info(e.getMessage());
         }
 
-        return "redirect:/board/"+category+ "/list";
+        return "redirect:/board/" + category + "/list";
     }
 
     @GetMapping("/{category}/modify")
@@ -106,7 +117,7 @@ public class BoardController {
     }
 
     @PostMapping("/{category}/modify")
-    public String modifyPOST(@RequestParam(name="files") MultipartFile[] files, @PathVariable("category") BoardCategory category, @ModelAttribute PostDTO postDTO, @RequestParam(name="deleteFile", defaultValue="") String[] deleteFile, HttpSession session) throws IOException {
+    public String modifyPOST(@RequestParam(name = "files") MultipartFile[] files, @PathVariable("category") BoardCategory category, @ModelAttribute PostDTO postDTO, @RequestParam(name = "deleteFile", defaultValue = "") String[] deleteFile, HttpSession session) throws IOException {
         if (session.getAttribute("memberId").equals(postDTO.getPostMemberId())) {
             int rtnResult = service.deletePost(postDTO.getPostIdx());
             if (rtnResult < 1) {
@@ -119,8 +130,8 @@ public class BoardController {
 
         // 파일 추가
         try {
-            for(MultipartFile file : files) {
-                if(file != null && !file.isEmpty()) {
+            for (MultipartFile file : files) {
+                if (file != null && !file.isEmpty()) {
                     int fileIdx = fileUtil.uploadFile(file.getOriginalFilename(), file.getBytes());
                     PostFileDTO postFileDTO = PostFileDTO.builder().postFilePostIdx(postDTO.getPostIdx()).postFileFileIdx(fileIdx).build();
                     boardFileService.insertBoardFile(postFileDTO);
@@ -132,12 +143,12 @@ public class BoardController {
 
         // 파일 삭제
         for (String file : deleteFile) {
-            String fileName = file.substring(file.indexOf("|")+1);
+            String fileName = file.substring(file.indexOf("|") + 1);
             int fileIdx = Integer.parseInt(file.substring(0, file.indexOf("|")));
             try {
                 fileUtil.deleteFile(fileName);
                 boardFileService.deleteBoardFileByFileIdx(fileIdx);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 log.info(e.getMessage());
             }
         }
@@ -146,23 +157,84 @@ public class BoardController {
 
     @PostMapping("/{category}/delete")
     public String delete(@PathVariable("category") BoardCategory category, @ModelAttribute PostDTO postDTO, HttpSession session) {
-        if(session.getAttribute("memberId").equals(postDTO.getPostMemberId())) {
+        if (session.getAttribute("memberId").equals(postDTO.getPostMemberId())) {
             int rtnResult = service.deletePost(postDTO.getPostIdx());
             if (rtnResult < 1) {
                 return "";
             }
         }
-        return "redirect:/board/"+category+"/list";
+        return "redirect:/board/" + category + "/list";
     }
 
     @PostMapping("/{category}/report/regist")
     public String reportRegist(@PathVariable("category") BoardCategory category, @ModelAttribute PostReportDTO postReportDTO, HttpSession session) {
-        if(!session.getAttribute("memberId").equals(postReportDTO.getPostMemberId())) {
+        if (!session.getAttribute("memberId").equals(postReportDTO.getPostMemberId())) {
             int rtnResult = service.insertPostReport(postReportDTO);
             if (rtnResult < 1) {
                 log.info("report regist failed");
             }
         }
-        return "redirect:/board/"+category+"/view?idx="+postReportDTO.getReportRefIdx();
+        return "redirect:/board/" + category + "/view?idx=" + postReportDTO.getReportRefIdx();
     }
+
+    @GetMapping("/news")
+    public String listNews(Model model,
+                           @ModelAttribute SearchDTO searchDTO,
+                           @ModelAttribute PageRequestDTO pageRequestDTO) throws Exception {
+
+        String keyword = (searchDTO.getSearchWord() == null || searchDTO.getSearchWord().isBlank())
+                ? "네이버"
+                : searchDTO.getSearchWord();
+
+        List<Map<String, Object>> fullList = naverNewsService.searchNewsList(keyword);
+
+        // 3. 내부 검색 필터링 (searchType 기준)
+        String searchType = searchDTO.getSearchType();
+        if (searchType != null && !searchType.isBlank()) {
+            fullList = fullList.stream()
+                    .filter(news -> {
+                        Object field = news.get(searchType);
+                        return field != null && field.toString().toLowerCase().contains(searchDTO.getSearchWord().toLowerCase());
+                    })
+                    .toList();
+        }
+
+        // 4. 정렬 처리
+        String sortColumn = searchDTO.getSortColumn() != null ? searchDTO.getSortColumn() : "pubDate";
+        String sortOrder = searchDTO.getSortOrder() != null ? searchDTO.getSortOrder() : "desc";
+
+        Comparator<Map<String, Object>> comparator = Comparator.comparing(
+                news -> {
+                    Object value = news.get(sortColumn);
+                    return value != null ? value.toString() : "";
+                },
+                Comparator.naturalOrder()
+        );
+
+        if ("desc".equalsIgnoreCase(sortOrder)) {
+            comparator = comparator.reversed();
+        }
+
+        fullList = fullList.stream().sorted(comparator).toList();
+
+        // 5. 페이징
+        int total = fullList.size();
+        int start = pageRequestDTO.getPageSkipCount();
+        int end = Math.min(start + pageRequestDTO.getPageSize(), total);
+        List<Map<String, Object>> pageList = (start >= total) ? List.of() : fullList.subList(start, end);
+
+        // 6. 결과 전달
+        PageResponseDTO<Map<String, Object>> pageResponseDTO = PageResponseDTO.<Map<String, Object>>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .totalCount(total)
+                .dtoList(pageList)
+                .build();
+
+        model.addAttribute("newsList", pageList);
+        model.addAttribute("responseDTO", pageResponseDTO);
+        model.addAttribute("searchDTO", searchDTO);
+
+        return "board/news/news";
+    }
+
 }

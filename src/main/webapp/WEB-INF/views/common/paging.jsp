@@ -58,7 +58,7 @@
             </c:choose>
 
             <!-- 페이지 번호 -->
-            <c:forEach begin="${responseDTO.pageBlockStart}" end="${responseDTO.totalPage}" var="i">
+            <c:forEach begin="${responseDTO.pageBlockStart}" end="${responseDTO.pageBlockEnd}" var="i">
                 <c:choose>
                     <c:when test="${i == responseDTO.pageNo}">
                         <li class="page-item active">
