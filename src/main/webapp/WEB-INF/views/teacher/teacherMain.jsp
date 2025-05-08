@@ -1,3 +1,6 @@
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -72,24 +75,55 @@
 <div class="content">
     <div class="container my-5">
         <h3 class="mb-4">과목별 선생님</h3>
-
-        <!-- 과목 탭 -->
-        <div class="subject-tab">
+            <%
+            List<Map<String, String>> searchTypeOptions = new ArrayList<>();
+            searchTypeOptions.add(Map.of("value", "lectureTeacherId", "label", "선생님"));
+            request.setAttribute("searchTypeOptions", searchTypeOptions);
+            request.setAttribute("searchAction", "/teacher/main");
+            request.setAttribute("isTeacher", "Y");
+        %>
+        <jsp:include page="../common/searchBox.jsp"/>
+        <div class="d-flex flex-wrap gap-2 border-bottom pb-2 mb-4">
+            <a href="/teacher/main"
+               class="btn btn-outline-secondary rounded-pill
+              ${empty param.subject ? 'active btn-primary text-white border-primary' : ''}">
+                전체
+            </a>
             <c:forEach var="subject" items="${subjectList}">
-                <a href="?subject=${subject}" class="${param.subject eq subject ? 'active' : ''}">
+                <a href="?subject=${subject}"
+                   class="btn btn-outline-secondary rounded-pill
+                      ${param.subject eq subject ? 'active btn-primary text-white border-primary' : ''}">
                         ${subject}
                 </a>
             </c:forEach>
         </div>
 
-        <!-- 선생님 리스트 -->
-        <div class="teacher-list">
-            <c:forEach var="teacher" items="${teacherDTO}">
-                <div class="teacher-card" data-id="${teacher.teacherId}">
-                    <img src="${teacher.teacherProfileImg}" alt="${teacher.teacherName}">
-                    <div class="name">${teacher.teacherName} 선생님</div>
-                </div>
-            </c:forEach>
+        <div class="row row-cols-2 row-cols-md-4 g-4">
+            <c:choose>
+                <c:when test="${not empty teacherDTO}">
+                    <c:forEach var="teacher" items="${teacherDTO}">
+                        <div class="col">
+                            <div class="card text-center h-100 border-0 shadow-sm" role="button"
+                                 onclick="location.href='/teacher/personal?teacherId=${teacher.teacherId}'">
+                                <div class="card-body d-flex flex-column align-items-center">
+                                    <div class="rounded-circle overflow-hidden border mb-3"
+                                         style="width: 120px; height: 120px;">
+                                        <img src="/upload/${teacher.teacherProfileImg}" alt="${teacher.teacherName}"
+                                             class="img-fluid w-100 h-100" style="object-fit: cover;">
+                                    </div>
+                                    <div class="fw-semibold">${teacher.teacherName} 선생님</div>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <div>검색 결과가 없습니다.</div>
+                </c:otherwise>
+            </c:choose>
+        </div>
+        <div class="mt-4 text-center">
+            <%@ include file="../common/paging.jsp" %>
         </div>
     </div>
 </div>

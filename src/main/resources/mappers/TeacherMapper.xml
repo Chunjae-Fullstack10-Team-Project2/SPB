@@ -32,17 +32,29 @@
         select teacherId, teacherName, teacherProfileImg, teacherSubject
         from tbl_teacher
         where teacherSubject = #{subject}
+        <if test="searchDTO.searchWord != null">
+            AND teacherName like CONCAT('%', #{searchDTO.searchWord}, '%')
+        </if>
+        order by teacherName asc
+        limit #{pageRequestDTO.pageSkipCount}, #{pageRequestDTO.pageSize}
     </select>
     <!--과목 전체 조회-->
     <select id="getAllSubject">
         select distinct teacherSubject
         from tbl_teacher
+        where 1=1
         order by teacherSubject
     </select>
     <!--과목별 선생님 조회-->
     <select id="getAllTeacher">
         select teacherId, teacherName, teacherProfileImg, teacherSubject
         from tbl_teacher
+        where 1=1
+        <if test="searchDTO.searchWord != null">
+            AND teacherName like CONCAT('%', #{searchDTO.searchWord}, '%')
+        </if>
+        order by teacherName asc
+        limit #{pageRequestDTO.pageSkipCount}, #{pageRequestDTO.pageSize}
     </select>
     <!--북마크 저장-->
     <insert id="addBookmark">
@@ -62,5 +74,17 @@
         join tbl_lecture b on a.bookmarkLectureIdx = b.lectureIdx
         where b.lectureTeacherId = #{teacherId}
         and a.bookmarkMemberId = #{memberId}
+    </select>
+    <!--선생님 정보 총 개수 조회-->
+    <select id="getTotalCount">
+        select count(*)
+        from tbl_teacher
+        where 1=1
+        <if test="subject != null">
+            AND teacherSubject =#{subject}
+        </if>
+        <if test="searchDTO.searchType != null">
+            AND teacherName LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+        </if>
     </select>
 </mapper>    
