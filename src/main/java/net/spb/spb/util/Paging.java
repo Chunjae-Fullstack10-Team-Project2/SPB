@@ -1,33 +1,29 @@
 package net.spb.spb.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Paging {
+    public static Map<String, Object> getPagingData(int total_count, int page_no, int page_size, int page_block_size) {
+        // String tempLinkUrl;
 
-    // 전체 페이지 수
-    public static int getTotalPage(int totalCount, int pageSize) {
-        return (int) Math.ceil((double) totalCount / pageSize);
-    }
+        Map<String, Object> pagingData = new HashMap<>();
 
-    public static int getOffset(int pageNo, int pageSize) {
-        return (pageNo - 1) * pageSize;
-    }
+        int total_page = (int) Math.ceil(total_count / (double) page_size);
+        total_page = Math.max(total_page, 1);
 
-    // 시작 페이지
-    public static int getStartPage(int currentPage, int totalPage) {
-        return Math.max(1, currentPage - 2);
-    }
+        // << < 1 2 > >> 일지 << < 3 4 > >> 일지
+        int page_block_start = (int) Math.floor((page_no - 1) / (double) page_block_size) * page_block_size + 1;
+        int page_block_end = page_block_start + page_block_size - 1;
+        page_block_end = Math.min(page_block_end, total_page);
 
-    // 끝 페이지
-    public static int getEndPage(int currentPage, int totalPage) {
-        return Math.min(totalPage, currentPage + 2);
-    }
+        pagingData.put("total_page", total_page);
+        pagingData.put("page_no", page_no);
+        pagingData.put("page_block_start", page_block_start);
+        pagingData.put("page_block_end", page_block_end);
+        pagingData.put("prev_page", page_block_start > 1 ? page_block_start - 1 : null);
+        pagingData.put("next_page", page_block_end < total_page ? page_block_end + 1 : null);
+        return pagingData;
 
-    // 이전 페이지
-    public static int getPrevPage(int currentPage) {
-        return currentPage > 1 ? currentPage - 1 : 1;
-    }
-
-    // 다음 페이지
-    public static int getNextPage(int currentPage, int totalPage) {
-        return currentPage < totalPage ? currentPage + 1 : totalPage;
     }
 }

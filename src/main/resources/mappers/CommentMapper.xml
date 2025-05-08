@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.CommentMapper">
+    <insert id="insertComment" parameterType="net.spb.spb.domain.PostCommentVO">
+        insert into tbl_post_comment (postCommentRefPostIdx, postCommentParentIdx, postCommentMemberId, postCommentContent)
+        values (#{postCommentRefPostIdx}, #{postCommentParentIdx}, #{postCommentMemberId}, #{postCommentContent})
+    </insert>
+    <update id="updateComment" parameterType="net.spb.spb.domain.PostCommentVO">
+        update tbl_post_comment
+        set postCommentContent = #{postCommentContent}
+        where postCommentIdx = #{postCommentIdx}
+    </update>
+    <delete id="deleteComment" parameterType="java.lang.Integer">
+        delete from tbl_post_comment
+        where postCommentIdx = #{postCommentIdx}
+    </delete>
+    <select id="selectComments" parameterType="java.lang.Integer" resultType="net.spb.spb.domain.PostCommentVO">
+        select postCommentIdx, postCommentRefPostIdx, postCommentParentIdx, postCommentMemberId, postCommentContent, postCommentCreatedAt, postCommentUpdatedAt, postCommentState
+        from tbl_post_comment
+        where postCommentRefPostIdx = #{postCommentRefPostIdx}
+    </select>
+</mapper>

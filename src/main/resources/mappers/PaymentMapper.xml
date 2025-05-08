@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.PaymentMapper">
+    <!--장바구니 조회-->
+    <select id="selectCart">
+        select a.cartIdx, a.cartLectureIdx, b.lectureTitle, b.lectureTeacherId, b.lectureAmount
+        from tbl_cart a
+        inner join tbl_lecture b on a.cartLectureIdx = b.lectureIdx
+        where cartMemberId = #{memberId}
+        order by cartIdx asc
+    </select>
+    <!--강의 존재 여부 조회-->
+    <select id="cartCount">
+        select count(*)
+        from tbl_cart
+        where cartMemberId = #{cartMemberId}
+        and cartLectureIdx = #{cartLectureIdx}
+    </select>
+    <!--장바구니 등록-->
+    <insert id="addCart" parameterType="net.spb.spb.dto.CartDTO" useGeneratedKeys="true" keyProperty="cartIdx">
+        insert into tbl_cart(cartMemberId, cartLectureIdx)
+        values (#{cartMemberId}, #{cartLectureIdx})
+    </insert>
+    <!--장바구니 삭제-->
+    <delete id="deleteCartItems" parameterType="map">
+        delete from tbl_cart where cartMemberId = #{param1} and cartLectureIdx = #{param2}
+    </delete>
+    <!--결제 강의 목록 조회-->
+    <select id="findLecturesByIds">
+        select lectureIdx, lectureTitle, lectureTeacherId, lectureThumbnailImg, lectureAmount,
+                (select teacherName from tbl_teacher where teacherId = a.lectureTeacherId)as lectureTeacherName
+        from tbl_lecture a
+        where lectureIdx IN
+        <foreach item="lectureIdx" collection="lectureIdxs" open="(" separator="," close=")">
+            #{lectureIdx}
+        </foreach>
+    </select>
+    <!--주문 테이블 등록-->
+    <insert id="insertOrder" parameterType="net.spb.spb.domain.OrderVO" useGeneratedKeys="true" keyProperty="orderIdx">
+        insert into tbl_order_info (orderMemberId, orderAmount, orderCreatedAt, orderUpdatedAt)
+        VALUES (#{orderMemberId}, #{orderAmount}, NOW(), NOW())
+    </insert>
+
+    <update id="updatePaymentStatus">
+        UPDATE tbl_payment
+        SET paymentStatus = #{status}
+        WHERE paymentOrderIdx = #{merchantUid}
+    </update>
+
+    <!--주문상품 테이블에 등록-->
+    <insert id="insertOrderLecture" parameterType="java.lang.Integer">
+        insert into tbl_order_lecture (orderIdx,orderLectureIdx)
+        VALUES (
+                (select MAX(orderIdx) from tbl_order_info where 1=1),
+                #{orderLectureIdx}
+               )
+    </insert>
+
+    <select id="getMaxOrderIdx">
+        select MAX(orderIdx) from tbl_order_info
+    </select>
+
+    <!--결제 테이블에 등록-->
+    <insert id="savePaymentInfo" parameterType="net.spb.spb.domain.PaymentVO" useGeneratedKeys="true" keyProperty="paymentIdx">
+        INSERT INTO tbl_payment
+        (paymentOrderIdx
+        , paymentMethod
+        , paymentStatus
+        , paymentTransactionId
+        , paymentApprovedAt
+        , paymentCanceledAt
+        , paymentCreatedAt
+        , paymentUpdatedAt
+        , paymentPgTid)
+        VALUES
+        (
+         #{paymentOrderIdx}
+        ,#{paymentMethod}
+        ,#{paymentStatus}
+        ,#{paymentTransactionId}
+        ,#{paymentApprovedAt2}
+        ,#{paymentCanceledAt2}
+        ,now()
+        ,now()
+        ,#{paymentPgTid}
+        );
+    </insert>
+
+    <!--결제 후 장바구니 내역 삭제-->
+    <delete id="processAfterPayment">
+        delete from tbl_cart where 1=1
+        and cartMemberId = #{paymentMemberId}
+        and cartLectureIdx in (select orderLectureIdx from tbl_order_lecture where orderIdx = #{paymentOrderIdx})
+    </delete>
+
+    <!--주문번호 내역 조회-->
+    <select id="selectOrder">
+        select orderIdx , orderMemberId , orderAmount , orderStatus, orderCreatedAt , orderUpdatedAt
+        from tbl_order_info
+        where 1=1
+        and orderIdx = #{merchantUid}
+    </select>
+
+    <!--주문자 정보 조회-->
+    <select id="getMemberInfo">
+        select memberId, memberName, memberEmail, memberPhone
+        from tbl_member
+        where memberId = #{memberId}
+    </select>
+
+    <!--주문번호에 딸린 강좌번호 조회-->
+    <select id="getOrderLectureIdxs">
+        select orderLectureIdx
+        from tbl_order_lecture
+        where orderIdx = #{orderIdx}
+    </select>
+
+    <!--결제 정보 조회-->
+    <select id="getPaymentInfo">
+        select paymentMethod, paymentStatus, paymentApprovedAt, paymentCanceledAt, paymentPgTid
+        from tbl_payment
+        where paymentOrderIdx = #{orderIdx}
+    </select>
+
+    <!-- 주문내역 업데이트 -->
+    <update id="updateOrderInfo">
+        update tbl_order_info set
+        orderStatus = (case
+                           when #{paymentStatus} = 's' then 's'
+                           when #{paymentStatus} = 'f' then 'p'
+                        end
+                    ),
+        orderUpdatedAt = now()
+            where 1=1
+        and orderIdx = #{paymentOrderIdx}
+    </update>
+
+    <!--장바구니 카운트 조회-->
+    <select id="getCartCount">
+        select count(*)
+        from tbl_cart
+        where cartMemberId = #{memberId}
+    </select>
+</mapper>    
