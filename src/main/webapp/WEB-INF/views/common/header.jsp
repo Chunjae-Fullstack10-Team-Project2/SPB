@@ -43,10 +43,10 @@
     </style>
 </head>
 <body>
-<header class="p-3 mb-3 border-bottom">
+<header class="p-3 border-bottom">
     <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a href="${cp}/main" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+        <div class="d-flex flex-wrap align-items-center justify-content-between">
+            <a href="${cp}/main" class="d-flex align-items-center mb-2 mb-lg-0 text-decoration-none">
                 <img width="40" src="${cp}/resources/img/spb_single_logo.png" alt="로고">
             </a>
 
@@ -57,7 +57,7 @@
                        data-bs-toggle="dropdown" aria-expanded="false">
                         게시판
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="listDropdown">
+                    <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="${cp}/board/freeboard/list">자유게시판</a></li>
                         <li><a class="dropdown-item" href="${cp}/board/eduinfo/list">교육정보</a></li>
                         <li><a class="dropdown-item" href="${cp}/board/uniinfo/list">대학정보</a></li>
@@ -71,20 +71,22 @@
             </ul>
 
             <div class="d-flex align-items-center">
-                <a href="payment/cart?memberId=${sessionScope.memberId}" class="me-4 link-body-emphasis text-decoration-none position-relative">
+                <a href="/payment/cart?memberId=${sessionScope.memberId}"
+                   class="me-4 text-decoration-none position-relative">
                     <i class="bi bi-cart" style="font-size: 1.4rem;"></i>
                     <c:if test="${not empty sessionScope.memberId}">
-                        <span id="cart-count-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                        <span id="cart-count-badge"
+                              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
                     </c:if>
                     <c:if test="${empty sessionScope.memberId}">
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
                     </c:if>
                 </a>
 
-                <div class="dropdown text-end ms-2">
-                    <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+                <div class="dropdown text-end">
+                    <a href="#" class="d-block text-decoration-none dropdown-toggle"
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                        <img src="https://github.com/mdo.png" alt="프로필" width="32" height="32" class="rounded-circle">
                     </a>
                     <ul class="dropdown-menu text-small">
                         <c:if test="${empty sessionScope.memberId}">
@@ -92,10 +94,19 @@
                         </c:if>
                         <c:if test="${not empty sessionScope.memberId}">
                             <li><a class="dropdown-item" href="${cp}/mypage">마이페이지</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li><a class="dropdown-item" href="${cp}/login?action=logout">로그아웃</a></li>
                         </c:if>
                     </ul>
+                </div>
+                <div>
+                    <c:if test="${sessionScope.memberGrade == '0'}">
+                        <a href="${cp}/admin/member/list" class="ms-2" title="관리자 페이지">
+                            <i class="bi bi-gear-fill" style="font-size: 1.4rem;"></i>
+                        </a>
+                    </c:if>
                 </div>
             </div>
         </div>

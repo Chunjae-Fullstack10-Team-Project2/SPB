@@ -130,7 +130,6 @@
             </ul>
 
             <div class="d-flex align-items-center">
-
                 <a href="/payment/cart?memberId=${sessionScope.memberId}"
                    class="me-4 text-decoration-none position-relative">
                     <i class="bi bi-cart" style="font-size: 1.4rem;"></i>
@@ -161,6 +160,13 @@
                         </c:if>
                     </ul>
                 </div>
+                <div>
+                    <c:if test="${sessionScope.memberGrade eq 0}">
+                        <a href="${cp}/admin/member/list" class="ms-2" title="관리자 페이지">
+                            <i class="bi bi-gear-fill" style="font-size: 1.4rem;"></i>
+                        </a>
+                    </c:if>
+                </div>
             </div>
         </div>
     </div>
@@ -177,7 +183,7 @@
                     data-bs-target="#home-collapse">
                 Home
             </button>
-            <div class="collapse show" id="home-collapse">
+            <div class="collapse" id="home-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     <li><a href="#" class="d-inline-flex text-decoration-none rounded text-dark">어쩌구</a></li>
                     <li><a href="#" class="d-inline-flex text-decoration-none rounded text-dark">Reports</a></li>
@@ -198,10 +204,30 @@
         </li>
         <li class="mb-1">
             <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
-                    data-bs-target="#orders-collapse">
-                마이페이지
+                    data-bs-target="#admin-collapse">
+                관리 페이지
             </button>
-            <div class="collapse" id="orders-collapse">
+            <div class="collapse" id="admin-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="${cp}/admin/member/list" class="d-inline-flex text-decoration-none rounded text-dark">회원
+                        목록</a></li>
+                    <li><a href="${cp}/admin/report/list/board"
+                           class="d-inline-flex text-decoration-none rounded text-dark">신고
+                        내역 목록</a>
+                    </li>
+                    <li><a href="${cp}/admin/teacher/regist"
+                           class="d-inline-flex text-decoration-none rounded text-dark">강의 등록</a></li>
+                    <li><a href="${cp}/admin/notice/regist"
+                           class="d-inline-flex text-decoration-none rounded text-dark">공지사항 작성</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="mb-1">
+            <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
+                    data-bs-target="#mypage-collapse">
+                마이 페이지
+            </button>
+            <div class="collapse" id="mypage-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded text-dark">좋아요
                         목록</a></li>

@@ -1,3 +1,30 @@
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>게시글 신고 목록</title>
+</head>
+<body>
+
+<%
+    List<Map<String, String>> dateOptions = new ArrayList<>();
+    dateOptions.add(Map.of("value", "reportCreatedAt", "label", "신고 일자"));
+    dateOptions.add(Map.of("value", "postCreatedAt", "label", "게시글 작성일자"));
+    request.setAttribute("dateOptions", dateOptions);
+
+    List<Map<String, String>> searchTypeOptions = new ArrayList<>();
+    searchTypeOptions.add(Map.of("value", "postTitle", "label", "게시글 제목"));
+    searchTypeOptions.add(Map.of("value", "postContent", "label", "게시글 내용"));
+    searchTypeOptions.add(Map.of("value", "postMemberId", "label", "게시글 작성자"));
+    request.setAttribute("searchTypeOptions", searchTypeOptions);
+    request.setAttribute("searchAction", "/admin/report/list/board");
+%>
+<c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/searchBox.jsp"/>
+
 <table class="table table-hover text-center align-middle">
     <thead class="table-light">
     <tr>
@@ -44,3 +71,20 @@
     </c:forEach>
     </tbody>
 </table>
+
+<%--<c:if test="${empty likesList}">--%>
+<%--    <div class="alert alert-warning mt-4" role="alert">--%>
+<%--        게시글이 없습니다.--%>
+<%--    </div>--%>
+<%--</c:if>--%>
+
+<div class="mt-4 text-center">
+    <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/paging.jsp"/>
+</div>
+<script>
+    <c:if test="${not empty message}">
+    alert("${message}");
+    </c:if>
+</script>
+</body>
+</html>

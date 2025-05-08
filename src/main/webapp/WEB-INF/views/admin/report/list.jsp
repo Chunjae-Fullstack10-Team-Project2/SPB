@@ -52,43 +52,22 @@
                 </li>
             </ul>
         </div>
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0">신고 목록</h3>
-        </div>
-        <%
-            List<Map<String, String>> dateOptions = new ArrayList<>();
-            dateOptions.add(Map.of("value", "reportCreatedAt", "label", "신고 일자"));
-            dateOptions.add(Map.of("value", "postCreatedAt", "label", "게시글 작성일자"));
-            dateOptions.add(Map.of("value", "lectureReviewCreatedAt", "label", "강의평 작성일자"));
-            request.setAttribute("dateOptions", dateOptions);
-
-            List<Map<String, String>> searchTypeOptions = new ArrayList<>();
-            searchTypeOptions.add(Map.of("value", "lectureReviewMemberId", "label", "강의평 작성자"));
-            searchTypeOptions.add(Map.of("value", "lectureReviewContent", "label", "강의평 내용"));
-            searchTypeOptions.add(Map.of("value", "postTitle", "label", "게시글 제목"));
-            searchTypeOptions.add(Map.of("value", "postContent", "label", "게시글 내용"));
-            searchTypeOptions.add(Map.of("value", "postMemberId", "label", "게시글 작성자"));
-            request.setAttribute("searchTypeOptions", searchTypeOptions);
-            request.setAttribute("searchAction", "/admin/report/list");
-        %>
-        <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/searchBox.jsp"/>
-
-        <c:choose>
-            <c:when test="${not empty boardReportList}">
-                <%@ include file="boardReportTable.jsp" %>
-            </c:when>
-            <c:when test="${not empty reviewReportList}">
-                <%@ include file="reviewReportTable.jsp" %>
-            </c:when>
-            <c:otherwise>
-                <div class="alert alert-warning mt-4" role="alert">
-                    신고된 항목이 없습니다.
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0">신고 목록</h3>
                 </div>
-            </c:otherwise>
-        </c:choose>
 
-        <div class="mt-4 text-center">
-            <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/paging.jsp"/>
+        <div class="mb-5">
+            <c:choose>
+                <c:when test="${not empty boardReportList}">
+                    <%@ include file="boardReportTable.jsp" %>
+                </c:when>
+                <c:when test="${not empty reviewReportList}">
+                    <%@ include file="reviewReportTable.jsp" %>
+                </c:when>
+                <c:otherwise>
+                    <%@include file="allReportTable.jsp" %>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
 </div>
