@@ -27,5 +27,40 @@
         where chapterLectureIdx = #{lectureIdx}
         order by chapterIdx asc
     </select>
-
+    <!--선생님 메인 조회-->
+    <select id="getTeacherMain">
+        select teacherId, teacherName, teacherProfileImg, teacherSubject
+        from tbl_teacher
+        where teacherSubject = #{subject}
+    </select>
+    <!--과목 전체 조회-->
+    <select id="getAllSubject">
+        select distinct teacherSubject
+        from tbl_teacher
+        order by teacherSubject
+    </select>
+    <!--과목별 선생님 조회-->
+    <select id="getAllTeacher">
+        select teacherId, teacherName, teacherProfileImg, teacherSubject
+        from tbl_teacher
+    </select>
+    <!--북마크 저장-->
+    <insert id="addBookmark">
+        insert into tbl_bookmark (bookmarkLectureIdx, bookmarkMemberId)
+        VALUES (#{lectureIdx}, #{memberId})
+    </insert>
+    <!--북마크 삭제-->
+    <delete id="deleteBookmark">
+        delete from tbl_bookmark
+        where bookmarkLectureIdx = #{lectureIdx}
+        and bookmarkMemberId = #{memberId}
+    </delete>
+    <!--북마크 정보 조회-->
+    <select id="selectBookmark">
+        select a.bookmarkLectureIdx
+        from tbl_bookmark a
+        join tbl_lecture b on a.bookmarkLectureIdx = b.lectureIdx
+        where b.lectureTeacherId = #{teacherId}
+        and a.bookmarkMemberId = #{memberId}
+    </select>
 </mapper>    
