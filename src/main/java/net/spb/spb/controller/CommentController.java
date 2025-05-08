@@ -9,6 +9,9 @@ import net.spb.spb.util.BoardCategory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/board/{category}/comment")
 @RequiredArgsConstructor
@@ -18,31 +21,66 @@ public class CommentController {
     private final CommentServiceIf service;
 
     @PostMapping("/write")
-    public String write(@PathVariable("category") BoardCategory category, @ModelAttribute PostCommentDTO dto, HttpSession session) {
-        dto.setPostCommentMemberId((String) session.getAttribute("memberId"));
-        service.insertComment(dto);
-        return "redirect:/board/"+category+"/view?idx="+dto.getPostCommentRefPostIdx()
-                +"#comment-item"+dto.getPostCommentIdx();
+    @ResponseBody
+    public Map<String, Object> write(@PathVariable("category") BoardCategory category, @ModelAttribute PostCommentDTO postCommentDTO, HttpSession session) {
+
+        Map<String, Object> result = new HashMap<>();
+        String sessionMemberId = (String) session.getAttribute("memberId");
+        postCommentDTO.setPostCommentMemberId(sessionMemberId);
+        int rtnResult = service.insertComment(postCommentDTO);
+        if (rtnResult > 0) {
+            result.put("success", true);
+            result.put("message", "댓글을 등록하였습니다.");
+        } else {
+            result.put("success", false);
+            result.put("message", "댓글 등록에 실패하였습니다.");
+        }
+        return result;
     }
 
     @PostMapping("/modify")
-    public String modify(@PathVariable("category") BoardCategory category, @ModelAttribute PostCommentDTO dto, HttpSession session) {
-        String memberId = (String) session.getAttribute("memberId");
-        if (!memberId.equals(dto.getPostCommentMemberId())) {
-            return "";
+    @ResponseBody
+    public Map<String, Object> modify(@PathVariable("category") BoardCategory category, @ModelAttribute PostCommentDTO postCommentDTO, HttpSession session) {
+
+        Map<String, Object> result = new HashMap<>();
+        String sessionMemberId = (String) session.getAttribute("memberId");
+        if (!sessionMemberId.equals(postCommentDTO.getPostCommentMemberId())) {
+            result.put("success", false);
+            result.put("message", "권한이 없습니다.");
+            return result;
         }
-        service.updateComment(dto);
-        return "redirect:/board/" + category + "/view?idx=" + dto.getPostCommentRefPostIdx()
-                + "#comment-item"+dto.getPostCommentIdx();
+        int rtnResult = service.modifyComment(postCommentDTO);
+
+        if (rtnResult > 0) {
+            result.put("success", true);
+            result.put("message", "댓글을 수정하였습니다.");
+        } else {
+            result.put("success", false);
+            result.put("message", "댓글 수정에 실패하였습니다.");
+        }
+        return result;
     }
 
     @PostMapping("/delete")
-    public String delete(@PathVariable("category") BoardCategory category, @ModelAttribute PostCommentDTO dto, HttpSession session) {
-        String memberId = (String) session.getAttribute("memberId");
-        if (!memberId.equals(dto.getPostCommentMemberId())) {
-            return "";
+    @ResponseBody
+    public Map<String, Object> delete(@PathVariable("category") BoardCategory category, @ModelAttribute PostCommentDTO postCommentDTO, HttpSession session) {
+
+        Map<String, Object> result = new HashMap<>();
+        String sessionMemberId = (String) session.getAttribute("memberId");
+        if (!sessionMemberId.equals(postCommentDTO.getPostCommentMemberId())) {
+            result.put("success", false);
+            result.put("message", "권한이 없습니다.");
+            return result;
         }
-        service.deleteComment(dto.getPostCommentIdx());
-        return "redirect:/board/" + category + "/view?idx=" + dto.getPostCommentRefPostIdx();
+
+        int rtnResult = service.deleteComment(postCommentDTO.getPostCommentIdx());
+        if (rtnResult > 0) {
+            result.put("success", true);
+            result.put("message", "댓글이 삭제되었습니다.");
+        } else {
+            result.put("success", false);
+            result.put("message", "댓글 삭제에 실패했습니다.");
+        }
+        return result;
     }
 }
