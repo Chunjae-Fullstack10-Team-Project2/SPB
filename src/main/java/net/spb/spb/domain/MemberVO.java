@@ -28,4 +28,6 @@ public class MemberVO {
     private LocalDate memberCreatedAt;
     private String memberJoinPath;
     private LocalDate memberLastLogin;
+    private String memberAgree;
+    private String memberProfileImg;
 }

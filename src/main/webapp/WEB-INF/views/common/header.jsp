@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:set var="cp" value="${pageContext.request.contextPath}" />
+<c:set var="cp" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
     <%-- Bootstrap, Icons --%>
@@ -86,8 +86,18 @@
                 <div class="dropdown text-end">
                     <a href="#" class="d-block text-decoration-none dropdown-toggle"
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://github.com/mdo.png" alt="프로필" width="32" height="32" class="rounded-circle">
-                    </a>
+                        <c:choose>
+                            <c:when test="${not empty memberDTO.memberProfileImg}">
+                                <img id="profilePreview" width="32" height="32" class="rounded-circle"
+                                     src="${pageContext.request.contextPath}/upload/${memberDTO.memberProfileImg}"
+                                     alt="프로필 이미지" class="profile-img">
+                            </c:when>
+                            <c:otherwise>
+                                <img id="profilePreview" width="32" height="32" class="rounded-circle"
+                                     src="${pageContext.request.contextPath}/resources/img/default_profileImg.png"
+                                     alt="기본 이미지" class="profile-img">
+                            </c:otherwise>
+                        </c:choose> </a>
                     <ul class="dropdown-menu text-small">
                         <c:if test="${empty sessionScope.memberId}">
                             <li><a class="dropdown-item" href="${cp}/login">로그인</a></li>
@@ -114,7 +124,7 @@
 </header>
 <script>
     $(document).ready(function () {
-        if("${sessionScope.memberId}" != null) {
+        if ("${sessionScope.memberId}" != null) {
             $.ajax({
                 url: '/payment/cartCount',
                 type: 'GET',
@@ -131,7 +141,7 @@
     $(document).ready(function () {
         function adjustContentMargin() {
             const headerHeight = $('header').outerHeight();
-            $('.content-nonside').css('margin-top', (headerHeight+50) + 'px');
+            $('.content-nonside').css('margin-top', (headerHeight + 50) + 'px');
         }
 
         adjustContentMargin();

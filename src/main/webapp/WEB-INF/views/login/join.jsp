@@ -85,8 +85,7 @@
 <div class="content-nonside">
     <div class="join-container mt-5 mb-5">
         <h2 class="mb-4">회원가입</h2>
-        <form name="frmJoin" id="frmJoin" action="/join" method="post">
-
+        <form name="frmJoin" id="frmJoin" action="/join" method="post" enctype="multipart/form-data">
             <div class="mb-3 row">
                 <div class="col-sm-10 input-group">
                     <c:choose>
@@ -165,6 +164,17 @@
                     </button>
                 </div>
                 <div id="pwdMatchWarning" class="warning-text d-none">비밀번호가 일치하지 않습니다.</div>
+            </div>
+
+            <div class="mb-3 row">
+                <div class="col-sm-4 file">
+                    <input type="file" name="profileImgFile" id="memberProfileImg"
+                           accept="image/jpeg, image/gif, image/png"/>
+                </div>
+                <div class="col-sm-6">
+                    <img id="profilePreview" src="#" alt="미리보기"
+                         style="display:none; max-width: 150px; border-radius: 8px;"/>
+                </div>
             </div>
 
             <div class="mb-3 row">
@@ -440,76 +450,36 @@
         });
     }
 
-    // function sendEmailCode() {
-    //     let memberEmail1 = document.getElementById("memberEmail1").value.trim();
-    //     let memberEmail2 = document.getElementById("memberEmail2").value;
-    //
-    //     if (memberEmail2 === "custom") {
-    //         memberEmail2 = document.getElementById("memberEmailCustom").value.trim();
-    //     }
-    //
-    //     let memberEmail = memberEmail1 + '@' + memberEmail2;
-    //     document.querySelector('input[name="memberEmail"]').value = memberEmail;
-    //
-    //     if (!memberEmail || memberEmail.indexOf('@') === -1) {
-    //         alert('이메일을 올바르게 입력하세요.');
-    //         document.getElementById('memberEmail1').focus();
-    //         return;
-    //     }
-    //
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '/email/verify',
-    //         data: {memberEmail: memberEmail},
-    //         success: function (response) {
-    //             if (response.success) {
-    //                 alert('인증 코드가 전송되었습니다.');
-    //
-    //                 document.getElementById('memberEmail1').readOnly = true;
-    //                 document.getElementById('btnMemberEmailCodeSend').disabled = true;
-    //
-    //                 const count = response.emailTryCount;
-    //                 const emailCountWarning = document.getElementById('emailCountWarning');
-    //                 emailCountWarning.innerHTML = "<strong>인증 횟수 " + count + "/3회</strong>";
-    //
-    //                 startEmailAuthTimer();
-    //             } else {
-    //                 alert('이메일 인증 코드 전송 실패: ' + response.message);
-    //             }
-    //         },
-    //         error: function (xhr) {
-    //             alert("인증 코드 전송 실패: " + xhr.status);
-    //         }
-    //     });
-    // }
-    //
-    // function checkEmailCode() {
-    //     const memberEmailCode = document.getElementById('memberEmailCode').value.trim();
-    //
-    //     if (!memberEmailCode) {
-    //         alert('인증 코드를 입력하세요.');
-    //         document.getElementById('memberEmailCode').focus();
-    //         return;
-    //     }
-    //
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '/email/codeCheck',
-    //         data: {memberEmailCode: memberEmailCode},
-    //         success: function (response) {
-    //             if (response.success) {
-    //                 alert('인증 코드 확인에 성공하였습니다.');
-    //                 document.getElementById('memberEmailCode').readOnly = true;
-    //                 document.getElementById('btnMemberEmailCodeAuth').disabled = true;
-    //             } else {
-    //                 alert('인증 코드 확인 실패: ' + response.message);
-    //             }
-    //         },
-    //         error: function (xhr) {
-    //             alert("인증 코드 확인 실패: " + xhr.status);
-    //         }
-    //     });
-    // }
+    document.getElementById('memberProfileImg').addEventListener('change', function () {
+        const files = this.files;
+        const preview = document.getElementById('profilePreview');
+
+        if (files.length > 1) {
+            alert('이미지는 1장만 업로드할 수 있습니다.');
+            this.value = '';
+            preview.style.display = 'none';
+            return;
+        }
+
+        if (files.length === 1) {
+            const file = files[0];
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+            if (!validTypes.includes(file.type)) {
+                alert('이미지 파일(jpg, png, gif)만 업로드 가능합니다.');
+                this.value = '';
+                preview.style.display = 'none';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 
     <c:if test="${not empty errorMessage}">
     alert("${errorMessage}");

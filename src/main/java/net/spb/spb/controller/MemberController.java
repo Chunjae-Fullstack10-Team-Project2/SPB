@@ -11,10 +11,12 @@ import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.service.member.MailService;
 import net.spb.spb.service.member.MemberServiceImpl;
 import net.spb.spb.service.member.NaverLoginService;
+import net.spb.spb.util.FileUtil;
 import net.spb.spb.util.PasswordUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,19 +24,31 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @Controller
 @Log4j2
 public class MemberController {
+
+    @Autowired(required = false)
+    private FileUtil fileUtil;
+
+    @Value("${app.upload.path}")
+    private String uploadBasePath;
+
     @Autowired(required = false)
     private MemberServiceImpl memberService;
 
@@ -365,7 +379,9 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public String join(@Valid @ModelAttribute MemberDTO memberDTO, BindingResult bindingResult, HttpServletRequest request, HttpSession session, Model model) {
+    public String join(@Valid @ModelAttribute MemberDTO memberDTO, BindingResult bindingResult,
+                       @RequestParam(value = "profileImgFile", required = false) MultipartFile profileImg,
+                       HttpServletRequest request, HttpSession session, Model model) {
         if (!"2".equals(memberDTO.getMemberJoinPath()) && bindingResult.hasErrors()) {
             for (FieldError error : bindingResult.getFieldErrors()) {
                 System.out.println("필드: " + error.getField() + " / 메시지: " + error.getDefaultMessage());
@@ -435,6 +451,18 @@ public class MemberController {
             model.addAttribute("errorMessage", "비밀번호 암호화 오류가 발생했습니다.");
             model.addAttribute("memberDTO", memberDTO);
             return "login/join";
+        }
+
+        // 프로필 이미지 파일 저장
+        if (profileImg != null && !profileImg.isEmpty()) {
+            try {
+                File savedFile = fileUtil.saveFile(profileImg);
+                String savedFileName = savedFile.getName();
+                memberDTO.setMemberProfileImg(savedFileName);
+            } catch (IOException e) {
+                model.addAttribute("errorMessage", "프로필 이미지 업로드 실패");
+                return "login/join";
+            }
         }
 
         boolean result = memberService.join(memberDTO);
