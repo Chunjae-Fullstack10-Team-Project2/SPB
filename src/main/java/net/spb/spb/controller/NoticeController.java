@@ -1,7 +1,9 @@
 package net.spb.spb.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import net.spb.spb.dto.NoticeDTO;
+import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.service.NoticeService;
 import net.spb.spb.util.NoticePaging;
 import net.spb.spb.util.Paging;
@@ -91,13 +93,31 @@ public class NoticeController {
     }
 
     @GetMapping("/regist")
-    public String registForm() {
+    public String registForm(HttpSession session) {
+        // 세션에서 회원 정보 가져오기
+        Object memberObj = session.getAttribute("member");
+        if (memberObj == null || !(memberObj instanceof MemberDTO) ||
+                !((MemberDTO)memberObj).getMemberGrade().equals("0")) {
+            // 관리자가 아닌 경우 리스트로 리다이렉트
+            return "redirect:/notice/list";
+        }
         return "notice/regist";
     }
 
     @PostMapping("/regist")
-    public String regist(@ModelAttribute NoticeDTO dto) throws Exception {
-        dto.setNoticeMemberId("system");
+    public String regist(@ModelAttribute NoticeDTO dto, HttpSession session) throws Exception {
+        // 세션에서 회원 정보 가져오기
+        Object memberObj = session.getAttribute("member");
+        if (memberObj == null || !(memberObj instanceof MemberDTO) ||
+                !((MemberDTO)memberObj).getMemberGrade().equals("0")) {
+            // 관리자가 아닌 경우 리스트로 리다이렉트
+            return "redirect:/notice/list";
+        }
+
+        // 현재 로그인한 사용자 아이디 설정
+        MemberDTO member = (MemberDTO) memberObj;
+        dto.setNoticeMemberId(member.getMemberId());
+
         noticeService.register(dto);
         return "redirect:/notice/list";
     }
