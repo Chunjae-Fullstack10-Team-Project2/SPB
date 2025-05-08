@@ -1,39 +1,25 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
+<%
+    String uri = request.getRequestURI();
+    request.setAttribute("currentURI", uri);
+%>
 <!DOCTYPE html>
 <html>
 <head>
     <title>공지사항 목록</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
     <style>
-        body {
-            padding: 40px;
-            margin: 0;
-        }
-        h2 {
-            margin-bottom: 20px;
-        }
-        .notice-input-section {
-            margin-bottom: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-            white-space: nowrap;
-            text-align: left;
-        }
-        th {
-            font-weight: bold;
-        }
-
-        .list-title a {
+        .list-title {
             display: inline-block;
-            max-width: 150px;
+            max-width: 300px;
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
@@ -46,25 +32,26 @@
             display: none;
             position: absolute;
             right: 0;
-            top: 30px;
+            top: 35px;
             background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 6px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 8px;
             z-index: 999;
-            min-width: 120px;
+            min-width: 140px;
         }
         .dropdown-menu form {
             margin: 0;
         }
         .dropdown-button {
             width: 100%;
-            padding: 6px 10px;
+            padding: 8px 12px;
             margin: 4px 0;
-            border: 1px solid #aaa;
+            border: none;
             background: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 14px;
         }
         .dropdown-button:hover {
             background-color: #f2f2f2;
@@ -77,150 +64,150 @@
         .fix-icon {
             width: 20px;
             height: 20px;
-        }
-        .btn-container {
-            margin-top: 20px;
-            text-align: right;
-        }
-        .btn {
-            padding: 10px 20px;
-            border: 1px solid #aaa;
-            background: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background: #f5f5f5;
-        }
-        .paging {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .paging a {
-            text-decoration: none;
-            margin: 0 5px;
-            color: #4A4A4A;
-        }
-        .paging strong {
-            margin: 0 5px;
-            font-weight: bold;
-            color: #000;
-        }
-
-        .empty-list{
-            margin-top: 10px;
-            text-align: center;
+            background-color: #DDEB9D;
         }
     </style>
 </head>
 <body>
+<%@ include file="../common/header.jsp" %>
 
-<h2>공지사항 목록</h2>
-
-<form method="get" action="${pageContext.request.contextPath}/notice/list" class="notice-input-section">
-    <select name="searchType">
-        <option value="title" ${searchType == 'title' ? 'selected' : ''}>제목</option>
-        <option value="content" ${searchType == 'content' ? 'selected' : ''}>내용</option>
-    </select>
-    <input type="text" name="keyword" value="${keyword}" placeholder="검색어 입력" />
-    <input type="hidden" name="size" value="${size}" />
-    <button type="submit">찾기</button>
-    <button type="button" onclick="location.href='${pageContext.request.contextPath}/notice/list?size=${size}'">초기화</button>
-</form>
-
-<form method="get" action="${pageContext.request.contextPath}/notice/list">
-    <select name="size" onchange="this.form.submit()">
-        <option value="5" ${size == 5 ? 'selected' : ''}>5개</option>
-        <option value="10" ${size == 10 ? 'selected' : ''}>10개</option>
-        <option value="15" ${size == 15 ? 'selected' : ''}>15개</option>
-    </select>
-</form>
-
-<table>
-    <thead>
-    <tr>
-        <th>번호</th>
-        <th>제목</th>
-        <th>작성일</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-
-    <!-- 고정된 공지사항 -->
-    <c:forEach var="notice" items="${fixedList}">
-        <tr>
-            <td><img src="${pageContext.request.contextPath}/resources/images/fix.svg" class="fix-icon" alt="고정"></td>
-            <td class="list-title">
-                <a href="${pageContext.request.contextPath}/notice/view?noticeIdx=${notice.noticeIdx}"
-                   title="${notice.noticeTitle}">
-                        ${notice.noticeTitle}
-                </a>
-            </td>
-            <td>${notice.noticeCreatedAt.toLocalDate()}</td>
-            <td>
-                <div class="dropdown-section">
-                    <img class="bar-img" src="${pageContext.request.contextPath}/resources/images/bar.svg" onclick="toggleDropdown(this)" />
-                    <div class="dropdown-menu">
-                        <form method="post" action="${pageContext.request.contextPath}/notice/unfix">
-                            <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
-                            <button type="submit" class="dropdown-button">고정 해제</button>
-                        </form>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </c:forEach>
-
-    <!-- 일반 공지사항 -->
-    <c:set var="currentNumber" value="${listNumber}" />
-    <c:set var="counter" value="0" />
-    <c:forEach var="notice" items="${list}">
-        <tr>
-            <td>${currentNumber - counter}</td>
-            <td>
-                <a href="${pageContext.request.contextPath}/notice/view?noticeIdx=${notice.noticeIdx}">
-                        ${notice.noticeTitle}
-                </a>
-            </td>
-            <td>${notice.noticeCreatedAt.toLocalDate()}</td>
-            <td>
-                <div class="dropdown-section">
-                    <img class="bar-img" src="${pageContext.request.contextPath}/resources/images/bar.svg" onclick="toggleDropdown(this)" />
-                    <div class="dropdown-menu">
-                        <form method="post" action="${pageContext.request.contextPath}/notice/delete">
-                            <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
-                            <button type="submit" class="dropdown-button">삭제</button>
-                        </form>
-                        <form method="post" action="${pageContext.request.contextPath}/notice/fix">
-                            <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
-                            <button type="submit" class="dropdown-button">상단 고정</button>
-                        </form>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        <c:set var="counter" value="${counter + 1}" />
-    </c:forEach>
-
-    </tbody>
-</table>
-
-<c:if test="${list == null || list.isEmpty()}">
-    <div class="empty-list">
-        등록된 공지사항이 없습니다!
+<div class="content-nonside">
+    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+        <symbol id="house-door-fill" viewBox="0 0 16 16">
+            <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
+        </symbol>
+    </svg>
+    <div class="container my-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
+                <li class="breadcrumb-item">
+                    <a class="link-body-emphasis" href="/">
+                        <svg class="bi" width="16" height="16" aria-hidden="true">
+                            <use xlink:href="#house-door-fill"></use>
+                        </svg>
+                        <span class="visually-hidden">Home</span>
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    공지사항
+                </li>
+            </ol>
+        </nav>
     </div>
-</c:if>
 
-<!-- 페이징 처리 -->
-<div class="paging">
-    ${pagination}
+    <div class="container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">공지사항 목록</h3>
+                <a href="${pageContext.request.contextPath}/notice/regist" class="btn btn-primary">
+                    <i class="bi bi-pencil-square"></i> 글 작성
+                </a>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" action="${pageContext.request.contextPath}/notice/list" class="row g-3">
+                    <div class="col-md-3">
+                        <select name="searchType" class="form-select">
+                            <option value="title" ${searchType == 'title' ? 'selected' : ''}>제목</option>
+                            <option value="content" ${searchType == 'content' ? 'selected' : ''}>내용</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" name="keyword" value="${keyword}" placeholder="검색어 입력" class="form-control" />
+                        <input type="hidden" name="size" value="${size}" />
+                    </div>
+                    <div class="col-md-3 d-flex">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="bi bi-search"></i> 검색
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="location.href='${pageContext.request.contextPath}/notice/list?size=${size}'">
+                            <i class="bi bi-arrow-counterclockwise"></i> 초기화
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end mb-3">
+            <form method="get" action="${pageContext.request.contextPath}/notice/list" class="d-flex align-items-center">
+                <select name="size" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                    <option value="5" ${size == 5 ? 'selected' : ''}>5개</option>
+                    <option value="10" ${size == 10 ? 'selected' : ''}>10개</option>
+                    <option value="15" ${size == 15 ? 'selected' : ''}>15개</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="list-group">
+            <!-- 고정된 공지사항 -->
+            <c:forEach var="notice" items="${fixedList}">
+                <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <div class="d-flex align-items-center">
+                            <img src="${pageContext.request.contextPath}/resources/images/fix.svg" class="fix-icon me-2" alt="고정">
+                            <a href="${pageContext.request.contextPath}/notice/view?noticeIdx=${notice.noticeIdx}"
+                               class="fw-bold text-decoration-none list-title">${notice.noticeTitle}</a>
+                        </div>
+                        <small class="text-muted">${notice.noticeCreatedAt.toLocalDate()}</small>
+                    </div>
+                    <div class="dropdown-section">
+                        <img class="bar-img" src="${pageContext.request.contextPath}/resources/images/bar.svg" onclick="toggleDropdown(this)" />
+                        <div class="dropdown-menu">
+                            <form method="post" action="${pageContext.request.contextPath}/notice/unfix">
+                                <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
+                                <button type="submit" class="dropdown-button">고정 해제</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
+
+            <!-- 일반 공지사항 -->
+            <c:set var="currentNumber" value="${listNumber}" />
+            <c:set var="counter" value="0" />
+            <c:forEach var="notice" items="${list}">
+                <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <div class="d-flex align-items-center">
+                            <span class="me-2 text-muted">${currentNumber - counter}</span>
+                            <a href="${pageContext.request.contextPath}/notice/view?noticeIdx=${notice.noticeIdx}"
+                               class="fw-bold text-decoration-none list-title">${notice.noticeTitle}</a>
+                        </div>
+                        <small class="text-muted">${notice.noticeCreatedAt.toLocalDate()}</small>
+                    </div>
+                    <div class="dropdown-section">
+                        <img class="bar-img" src="${pageContext.request.contextPath}/resources/images/bar.svg" onclick="toggleDropdown(this)" />
+                        <div class="dropdown-menu">
+                            <form method="post" action="${pageContext.request.contextPath}/notice/delete">
+                                <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
+                                <button type="submit" class="dropdown-button">삭제</button>
+                            </form>
+                            <form method="post" action="${pageContext.request.contextPath}/notice/fix">
+                                <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
+                                <button type="submit" class="dropdown-button">고정 공지</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <c:set var="counter" value="${counter + 1}" />
+            </c:forEach>
+        </div>
+
+        <c:if test="${list == null || list.isEmpty()}">
+            <div class="alert alert-warning mt-4" role="alert">
+                등록된 공지사항이 없습니다!
+            </div>
+        </c:if>
+
+        <!-- 페이징 처리 -->
+        <div class="mt-4 text-center">
+            ${pagination}
+        </div>
+    </div>
 </div>
 
-<div class="btn-container">
-    <button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/regist'">글 작성</button>
-</div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // toggle
     function toggleDropdown(imgElement) {
@@ -233,7 +220,18 @@
         dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
     }
 
-</script>
+    document.addEventListener('click', function(event) {
+        const isDropdownButton = event.target.closest('.bar-img');
+        const isDropdownMenu = event.target.closest('.dropdown-menu');
+        const isWriteButton = event.target.closest('.btn-primary');
 
+        if (!isDropdownButton && !isDropdownMenu && !isWriteButton) {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.style.display = 'none';
+            });
+        }
+    });
+
+</script>
 </body>
 </html>
