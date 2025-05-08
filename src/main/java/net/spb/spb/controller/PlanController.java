@@ -14,7 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -37,14 +39,43 @@ public class PlanController {
     }
 
     @PostMapping("/plan/regist")
-    public String regist(PlanDTO planDTO, HttpServletRequest req) {
+    public String regist(@RequestParam("date") String date, PlanDTO planDTO, HttpServletRequest req) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
         planDTO.setPlanMemberId(memberId);
         planService.insert(planDTO);
 
+        return "redirect:/mystudy/plan?date=" + date;
+    }
+
+    @PostMapping("/plan/delete")
+    public String delete(PlanDTO planDTO, HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        if(memberId.equals(planDTO.getPlanMemberId())) {
+            planService.delete(planDTO.getPlanIdx());
+        }
+
         return "redirect:/mystudy/plan";
+    }
+
+    @PostMapping("/plan/modify")
+    @ResponseBody
+    public Map<String, Object> modify(@RequestBody PlanDTO planDTO, HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        Map<String, Object> response = new HashMap<>();
+
+        if (!memberId.equals(planDTO.getPlanMemberId())) {
+            response.put("errorMessage", "수정 권한이 없습니다.");
+            return response;
+        }
+
+        planService.update(planDTO);
+        return response;
     }
 
     @GetMapping(value="/plan/search", params="date")
@@ -63,5 +94,11 @@ public class PlanController {
         String memberId = (String) session.getAttribute("memberId");
 
         return planService.getPlanListByMonth(memberId, LocalDate.parse(date1), LocalDate.parse(date2));
+    }
+
+    @GetMapping("/plan/{idx}")
+    @ResponseBody
+    public PlanResponseDTO getPlanByIdx(@PathVariable("idx") int idx) {
+        return planService.getPlanByIdx(idx);
     }
 }
