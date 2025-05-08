@@ -3,18 +3,12 @@ package net.spb.spb.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.pagingsearch.*;
-import net.spb.spb.dto.post.PostReportDTO;
-import net.spb.spb.dto.member.MemberDTO;
-
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.TeacherDTO;
-import net.spb.spb.dto.pagingsearch.MemberPageDTO;
-import net.spb.spb.dto.post.PostReportDTO;
-import net.spb.spb.dto.pagingsearch.ReportPageDTO;
-import net.spb.spb.dto.pagingsearch.LecturePageDTO;
 import net.spb.spb.dto.member.MemberDTO;
+import net.spb.spb.dto.pagingsearch.*;
+import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.service.AdminService;
 import net.spb.spb.service.ReportService;
 import net.spb.spb.service.member.MemberServiceIf;
@@ -47,8 +41,11 @@ public class AdminController {
 
     @GetMapping("/member/list")
     public void memberList(@ModelAttribute MemberPageDTO memberPageDTO, Model model, HttpServletRequest req) {
+        String baseUrl = req.getRequestURI();
         memberPageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, memberPageDTO));
-        if (memberPageDTO.getSearch_member_grade()!=null && memberPageDTO.getSearch_member_grade().trim().equals("")) memberPageDTO.setSearch_member_grade(null);
+        if (memberPageDTO.getSearch_member_grade() != null && memberPageDTO.getSearch_member_grade().trim().equals("")) {
+            memberPageDTO.setSearch_member_grade(null);
+        }
         int total_count = memberService.getMemberCount(memberPageDTO);
         memberPageDTO.setTotal_count(total_count);
         String paging = PagingUtil.pagingArea(memberPageDTO);
@@ -85,8 +82,8 @@ public class AdminController {
 
     @GetMapping("/report/list/board")
     public String boardReportList(@ModelAttribute SearchDTO searchDTO,
-                             @ModelAttribute PageRequestDTO pageRequestDTO,
-                             Model model) {
+                                  @ModelAttribute PageRequestDTO pageRequestDTO,
+                                  Model model) {
         List<PostReportDTO> boardReportList = reportService.listBoardReport(searchDTO, pageRequestDTO);
         PageResponseDTO<PostReportDTO> pageResponseDTO = PageResponseDTO.<PostReportDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -102,8 +99,8 @@ public class AdminController {
 
     @GetMapping("/report/list/review")
     public String reviewReportList(@ModelAttribute SearchDTO searchDTO,
-                             @ModelAttribute PageRequestDTO pageRequestDTO,
-                             Model model) {
+                                   @ModelAttribute PageRequestDTO pageRequestDTO,
+                                   Model model) {
         List<PostReportDTO> reviewReportList = reportService.listReviewReport(searchDTO, pageRequestDTO);
         PageResponseDTO<PostReportDTO> pageResponseDTO = PageResponseDTO.<PostReportDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -116,10 +113,9 @@ public class AdminController {
         model.addAttribute("searchDTO", searchDTO);
         return "admin/report/list";
     }
-}
-    // 선생님 등록
+
     @GetMapping("/teacher/regist")
-    public void teacherRegist(@RequestParam(name="memberId", defaultValue="") String memberId, Model model) {
+    public void teacherRegist(@RequestParam(name = "memberId", defaultValue = "") String memberId, Model model) {
         MemberDTO memberDTO = null;
         if (!memberId.equals("")) {
             memberDTO = memberService.getMemberById(memberId);
@@ -128,9 +124,9 @@ public class AdminController {
     }
 
     @PostMapping("/teacher/regist")
-    public void teacherRegisPost(@RequestParam(name="file1") MultipartFile file, @ModelAttribute TeacherDTO teacherDTO) {
+    public void teacherRegistPost(@RequestParam(name = "file1") MultipartFile file, @ModelAttribute TeacherDTO teacherDTO) {
         try {
-            if(file != null && !file.isEmpty()) {
+            if (file != null && !file.isEmpty()) {
                 File savedFile = fileUtil.saveFile(file);
                 teacherDTO.setTeacherProfileImg(savedFile.getName());
             }
@@ -141,7 +137,7 @@ public class AdminController {
     }
 
     @GetMapping("/teacher/searchPopup")
-    public void lectureSearchPopup(@ModelAttribute MemberPageDTO memberPageDTO, Model model, HttpServletRequest req) {
+    public void teacherSearchPopup(@ModelAttribute MemberPageDTO memberPageDTO, Model model, HttpServletRequest req) {
         memberPageDTO.setSearch_member_grade("13");
         String baseUrl = req.getRequestURI();
         memberPageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, memberPageDTO));
@@ -154,17 +150,14 @@ public class AdminController {
         model.addAttribute("paging", paging);
     }
 
-
-    //강좌 등록
     @GetMapping("/lecture/regist")
     public void lectureRegist() {
-
     }
 
     @PostMapping("/lecture/regist")
-    public void lectureRegistPOST(@RequestParam(name="file1") MultipartFile file, @ModelAttribute LectureDTO lectureDTO) {
+    public void lectureRegistPOST(@RequestParam(name = "file1") MultipartFile file, @ModelAttribute LectureDTO lectureDTO) {
         try {
-            if(file != null && !file.isEmpty()) {
+            if (file != null && !file.isEmpty()) {
                 File savedFile = fileUtil.saveFile(file);
                 lectureDTO.setLectureThumbnailImg(savedFile.getName());
             }
@@ -193,18 +186,17 @@ public class AdminController {
         model.addAttribute("paging", paging);
     }
 
-    // 강의 등록
     @GetMapping("/lecture/chapter/regist")
-    public void lectureChapterRegist(@RequestParam(name="lectureIdx", defaultValue="0") int lectureIdx, Model model) {
-
-
+    public void lectureChapterRegist(@RequestParam(name = "lectureIdx", defaultValue = "0") int lectureIdx, Model model) {
+        model.addAttribute("lectureIdx", lectureIdx);
     }
 
     @PostMapping("/lecture/chapter/regist")
     @ResponseBody
-    public ResponseEntity<?> lectureChapterRegistPOST(@RequestParam(name="file1", required=true) MultipartFile file, @ModelAttribute ChapterDTO chapterDTO) {
+    public ResponseEntity<?> lectureChapterRegistPOST(@RequestParam(name = "file1", required = true) MultipartFile file,
+                                                      @ModelAttribute ChapterDTO chapterDTO) {
         try {
-            if(file != null && !file.isEmpty()) {
+            if (file != null && !file.isEmpty()) {
                 if (file.getSize() > MAX_FILE_SIZE) {
                     return ResponseEntity
                             .status(HttpStatus.PAYLOAD_TOO_LARGE)
@@ -223,5 +215,4 @@ public class AdminController {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of("message", "강의 등록 중 오류가 발생했습니다."));
     }
-
 }
