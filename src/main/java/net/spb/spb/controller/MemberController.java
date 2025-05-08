@@ -67,6 +67,7 @@ public class MemberController {
         String memberId = (String) session.getAttribute("memberId");
         if (memberId != null) {
             MemberDTO memberDTO = memberService.getMemberById(memberId);
+            session.setAttribute("memberGrade", memberDTO.getMemberGrade());
 
             // 마지막 로그인 일자가 1년 경과
             LocalDate lastLoginDate = memberDTO.getMemberLastLogin();

@@ -1,158 +1,105 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>강좌 메인</title>
+    <title>과목별 선생님</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Malgun Gothic', sans-serif;
-        }
-
-        .teacher-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            border: 1px solid #ccc;
-        }
-
-        .content {
-            padding: 20px;
-        }
-
-        .title {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .search-area {
+        .subject-tab {
             display: flex;
-            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 2px solid #ddd;
             margin-bottom: 30px;
-            gap: 5px;
         }
-
-        .search-label {
-            margin-right: 5px;
+        .subject-tab a {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            background: #f9f9f9;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
         }
-
-        .search-select {
-            padding: 3px;
-            width: 100px;
-            border: 1px solid #ccc;
+        .subject-tab a.active {
+            color: #6f42c1;
+            background-color: white;
+            border-color: #6f42c1;
+            font-weight: bold;
         }
-
-        .search-input {
-            flex: 1;
-            padding: 3px;
-            border: 1px solid #ccc;
-        }
-
-        .btn {
-            padding: 3px 10px;
-            background-color: #f5f5f5;
-            border: 1px solid #ccc;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            background-color: #e5e5e5;
+        .subject-tab a:hover {
+            background-color: #eee;
         }
 
         .teacher-list {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
+            gap: 20px;
         }
-
-        .teacher-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .teacher-card {
             width: 23%;
-            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+            background-color: #fff;
+            cursor: pointer;
+            transition: box-shadow 0.2s ease;
         }
-
-        .teacher-circle {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 1px solid #ccc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .teacher-card:hover {
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .teacher-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
             margin-bottom: 10px;
         }
-
-        .teacher-circle-inner {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background-color: #f5f5f5;
+        .teacher-card .name {
+            font-weight: bold;
         }
-
-        .teacher-name {
-            text-align: center;
-        }
-
         @media (max-width: 768px) {
-            .teacher-item {
-                width: 48%;
-            }
+            .teacher-card { width: 48%; }
+        }
+        @media (max-width: 480px) {
+            .teacher-card { width: 100%; }
         }
     </style>
 </head>
 <body>
-<%@ include file="../common/header.jsp" %>
-<div class="teacher-container">
-    <div class="content">
-        <div class="title">선생님 페이지</div>
-        <div class="search-area">
-            <span class="search-label">구분</span>
-            <select class="search-select">
-                <option>전체</option>
-                <option>이름</option>
-                <option>과목</option>
-            </select>
-            <input type="text" class="search-input" placeholder="검색어를 입력하세요">
-            <button class="btn">검색</button>
-            <button class="btn">초기화</button>
+<%@ include file="../common/sidebarHeader.jsp" %>
+<div class="content">
+    <div class="container my-5">
+        <h3 class="mb-4">과목별 선생님</h3>
+
+        <!-- 과목 탭 -->
+        <div class="subject-tab">
+            <c:forEach var="subject" items="${subjectList}">
+                <a href="?subject=${subject}" class="${param.subject eq subject ? 'active' : ''}">
+                        ${subject}
+                </a>
+            </c:forEach>
         </div>
 
+        <!-- 선생님 리스트 -->
         <div class="teacher-list">
-            <div class="teacher-item">
-                <div class="teacher-circle">
-                    <div class="teacher-circle-inner"></div>
+            <c:forEach var="teacher" items="${teacherDTO}">
+                <div class="teacher-card" data-id="${teacher.teacherId}">
+                    <img src="${teacher.teacherProfileImg}" alt="${teacher.teacherName}">
+                    <div class="name">${teacher.teacherName} 선생님</div>
                 </div>
-                <div class="teacher-name">가가가 선생님</div>
-            </div>
-
-            <div class="teacher-item">
-                <div class="teacher-circle">
-                    <div class="teacher-circle-inner"></div>
-                </div>
-                <div class="teacher-name">나나나 선생님</div>
-            </div>
-
-            <div class="teacher-item">
-                <div class="teacher-circle">
-                    <div class="teacher-circle-inner"></div>
-                </div>
-                <div class="teacher-name">다다다 선생님</div>
-            </div>
-
-            <div class="teacher-item">
-                <div class="teacher-circle">
-                    <div class="teacher-circle-inner"></div>
-                </div>
-                <div class="teacher-name">라라라 선생님</div>
-            </div>
+            </c:forEach>
         </div>
     </div>
 </div>
+<script>
+    document.querySelectorAll(".teacher-card").forEach(card => {
+        card.addEventListener("click", () => {
+            const teacherId = card.getAttribute("data-id");
+            window.location.href = "/teacher/personal?teacherId=" + teacherId;
+        });
+    });
+</script>
 </body>
 </html>
