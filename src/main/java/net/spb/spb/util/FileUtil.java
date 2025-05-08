@@ -1,9 +1,10 @@
 package net.spb.spb.util;
 
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import net.spb.spb.dto.FileDTO;
 import net.spb.spb.service.FileService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,10 +15,12 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
+@PropertySource("classpath:application.properties")
 public class FileUtil {
 
     private final FileService fileService;
-    @Resource(name="uploadPath")
+
+    @Value("${app.upload.path}")
     private String uploadDir;
 
     public String saveFile(String orgName, byte[] fileData) throws Exception {
