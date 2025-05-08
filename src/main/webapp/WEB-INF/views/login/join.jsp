@@ -4,15 +4,9 @@
 <html>
 <head>
     <title>회원가입</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <%-- 기타 --%>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
     <style>
         body {
@@ -88,250 +82,255 @@
 </head>
 <body>
 <%@ include file="../common/header.jsp" %>
+<div class="content-nonside">
+    <div class="join-container mt-5 mb-5">
+        <h2 class="mb-4">회원가입</h2>
+        <form name="frmJoin" id="frmJoin" action="/join" method="post">
 
-<div class="join-container mt-5 mb-5">
-    <h2 class="mb-4">회원가입</h2>
-    <form name="frmJoin" id="frmJoin" action="/join" method="post">
-
-        <div class="mb-3 row">
-            <div class="col-sm-10 input-group">
-                <c:choose>
-                    <c:when test="${memberDTO.memberJoinPath eq '2'}">
-                        <input type="hidden" name="memberJoinPath" value="2"/>
-                        <input type="hidden" class="form-control" id="memberId" name="memberId"
-                               value="${memberDTO.memberId != null ? memberDTO.memberId : ''}">
-                        <input type="hidden" class="form-control" name="memberPhone" id="memberPhone"
-                               value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}">
-                    </c:when>
-                    <c:otherwise>
-                        <input type="hidden" name="memberJoinPath" value="1"/>
-                    </c:otherwise>
-                </c:choose>
+            <div class="mb-3 row">
+                <div class="col-sm-10 input-group">
+                    <c:choose>
+                        <c:when test="${memberDTO.memberJoinPath eq '2'}">
+                            <input type="hidden" name="memberJoinPath" value="2"/>
+                            <input type="hidden" class="form-control" id="memberId" name="memberId"
+                                   value="${memberDTO.memberId != null ? memberDTO.memberId : ''}">
+                            <input type="hidden" class="form-control" name="memberPhone" id="memberPhone"
+                                   value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}">
+                        </c:when>
+                        <c:otherwise>
+                            <input type="hidden" name="memberJoinPath" value="1"/>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
             </div>
-        </div>
-        <div class="mb-3 row">
-            <div class="col-sm-10 input-group">
-                <c:choose>
-                    <c:when test="${memberDTO.memberJoinPath eq '2'}">
-                        <!-- Naver 로그인 사용자: disabled 처리 -->
-                        <input type="text" class="form-control"
-                               value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
-                               placeholder="아이디" maxlength="20" disabled/>
-                        <button class="btn btn-outline-secondary" type="button" id="btnCheckId" disabled>
-                            중복 확인
-                        </button>
-                    </c:when>
-                    <c:otherwise>
-                        <!-- 일반 사용자: 입력 및 중복 확인 가능 -->
-                        <input type="text" class="form-control" name="memberId" id="memberId"
-                               value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
-                               placeholder="아이디" maxlength="20" required
-                               oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
-                        <button class="btn btn-outline-secondary" type="button" id="btnCheckId">
-                            중복 확인
-                        </button>
-                    </c:otherwise>
-                </c:choose>
+            <div class="mb-3 row">
+                <div class="col-sm-10 input-group">
+                    <c:choose>
+                        <c:when test="${memberDTO.memberJoinPath eq '2'}">
+                            <!-- Naver 로그인 사용자: disabled 처리 -->
+                            <input type="text" class="form-control"
+                                   value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
+                                   placeholder="아이디" maxlength="20" disabled/>
+                            <button class="btn btn-outline-secondary" type="button" id="btnCheckId" disabled>
+                                중복 확인
+                            </button>
+                        </c:when>
+                        <c:otherwise>
+                            <!-- 일반 사용자: 입력 및 중복 확인 가능 -->
+                            <input type="text" class="form-control" name="memberId" id="memberId"
+                                   value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
+                                   placeholder="아이디" maxlength="20" required
+                                   oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
+                            <button class="btn btn-outline-secondary" type="button" id="btnCheckId">
+                                중복 확인
+                            </button>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+
+                <div id="idWarning" class="warning-text d-none">
+                    아이디는 4~20자, 알파벳과 숫자만 가능합니다.
+                </div>
+
+                <div id="memberIdCheck">
+                    <c:if test="${not empty idCheckMessage}">
+                        <span style="color:${idCheckSuccess ? 'green' : 'red'};">${idCheckMessage}</span>
+                    </c:if>
+                </div>
             </div>
 
-            <div id="idWarning" class="warning-text d-none">
-                아이디는 4~20자, 알파벳과 숫자만 가능합니다.
+            <div class="mb-3 row">
+                <div class="col-sm-10 input-group">
+                    <input type="password" class="form-control" name="memberPwd" id="memberPwd"
+                           value="${memberDTO.memberPwd != null ? memberDTO.memberPwd : ''}"
+                           placeholder="비밀번호" maxlength="15" required
+                           oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
+                    <button class="btn btn-outline-secondary" type="button"
+                            onclick="togglePasswordVisibility('memberPwd', this)">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+                <div id="pwdWarning" class="warning-text d-none">비밀번호는 대소문자와 숫자를 포함한 4~15자여야 합니다.</div>
             </div>
 
-            <div id="memberIdCheck">
-                <c:if test="${not empty idCheckMessage}">
-                    <span style="color:${idCheckSuccess ? 'green' : 'red'};">${idCheckMessage}</span>
-                </c:if>
+            <div class="mb-3 row">
+                <div class="col-sm-10 input-group">
+                    <input type="password" class="form-control" name="memberPwdConfirm" id="memberPwdConfirm"
+                           value="${memberPwdConfirm != null ? memberPwdConfirm : ''}"
+                           placeholder="비밀번호 확인" maxlength="15" required
+                           oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
+                    <button class="btn btn-outline-secondary" type="button"
+                            onclick="togglePasswordVisibility('memberPwdConfirm', this)">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+                <div id="pwdMatchWarning" class="warning-text d-none">비밀번호가 일치하지 않습니다.</div>
             </div>
-        </div>
 
-        <div class="mb-3 row">
-            <div class="col-sm-10 input-group">
-                <input type="password" class="form-control" name="memberPwd" id="memberPwd"
-                       value="${memberDTO.memberPwd != null ? memberDTO.memberPwd : ''}"
-                       placeholder="비밀번호" maxlength="15" required
-                       oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
-                <button class="btn btn-outline-secondary" type="button"
-                        onclick="togglePasswordVisibility('memberPwd', this)">
-                    <i class="bi bi-eye"></i>
+            <div class="mb-3 row">
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="memberName" id="memberName"
+                           value="${memberDTO.memberName != null ? memberDTO.memberName : ''}"
+                           placeholder="이름" maxlength="30" required>
+                </div>
+                <div class="col-sm-4">
+                    <select class="form-select" id="memberGrade" name="memberGrade">
+                        <optgroup label="초등학교">
+                            <option value="1" ${memberDTO.memberGrade == '1' ? 'selected' : ''}>초1</option>
+                            <option value="2" ${memberDTO.memberGrade == '2' ? 'selected' : ''}>초2</option>
+                            <option value="3" ${memberDTO.memberGrade == '3' ? 'selected' : ''}>초3</option>
+                            <option value="4" ${memberDTO.memberGrade == '4' ? 'selected' : ''}>초4</option>
+                            <option value="5" ${memberDTO.memberGrade == '5' ? 'selected' : ''}>초5</option>
+                            <option value="6" ${memberDTO.memberGrade == '6' ? 'selected' : ''}>초6</option>
+                        </optgroup>
+                        <optgroup label="중학교">
+                            <option value="7" ${memberDTO.memberGrade == '7' ? 'selected' : ''}>중1</option>
+                            <option value="8" ${memberDTO.memberGrade == '8' ? 'selected' : ''}>중2</option>
+                            <option value="9" ${memberDTO.memberGrade == '9' ? 'selected' : ''}>중3</option>
+                        </optgroup>
+                        <optgroup label="고등학교">
+                            <option value="10" ${memberDTO.memberGrade == '10' ? 'selected' : ''}>고1</option>
+                            <option value="11" ${memberDTO.memberGrade == '11' ? 'selected' : ''}>고2</option>
+                            <option value="12" ${memberDTO.memberGrade == '12' ? 'selected' : ''}>고3</option>
+                        </optgroup>
+                        <optgroup label="교사">
+                            <option value="13" ${memberDTO.memberGrade == '13' ? 'selected' : ''}>교사</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="memberBirth" id="memberBirth"
+                           value="${memberDTO.memberBirth != null ? memberDTO.memberBirth : ''}" maxlength="8"
+                           placeholder="생년월일" required>
+                </div>
+            </div>
+
+
+            <div class="mb-3 row">
+                <div class="col-sm-10 input-group">
+                    <input type="text" class="form-control" id="memberZipCode" name="memberZipCode"
+                           value="${memberDTO.memberZipCode != null ? memberDTO.memberZipCode : ''}"
+                           placeholder="우편번호" required>
+                    <button class="btn btn-outline-secondary" type="button" onclick="sample6_execDaumPostcode()">
+                        우편번호 찾기
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="memberAddr1" name="memberAddr1"
+                           value="${memberDTO.memberAddr1 != null ? memberDTO.memberAddr1 : ''}" placeholder="주소"
+                           required>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="memberAddr2" name="memberAddr2"
+                           value="${memberDTO.memberAddr2 != null ? memberDTO.memberAddr2 : ''}" placeholder="상세주소">
+                </div>
+            </div>
+
+            <input type="hidden" name="memberEmail" id="memberEmail">
+
+            <div class="mb-3 row">
+                <div class="col-sm-10 input-group">
+                    <c:set var="memberEmail1" value="${fn:split(memberDTO.memberEmail, '@')}"/>
+                    <c:choose>
+                        <c:when test="${memberDTO.memberJoinPath eq '2'}">
+                            <!-- 네이버 가입한 사용자: 이메일 입력 비활성화 -->
+                            <input type="text" class="form-control" name="memberEmail1" id="memberEmail1"
+                                   value="${memberDTO.memberEmail != null ? memberEmail1[0] : ''}"
+                                   placeholder="이메일" required
+                                   oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')" disabled>
+                            <span class="input-group-text">@</span>
+                            <select class="form-select" id="memberEmail2" name="memberEmail2"
+                                    onchange="toggleCustomEmailInput(this)" disabled>
+                                <option>naver.com</option>
+                                <option>gmail.com</option>
+                                <option>hanmail.net</option>
+                                <option value="custom">직접 입력</option>
+                            </select>
+                            <input type="text" class="form-control d-none" id="memberEmailCustom" placeholder="직접 입력"
+                                   maxlength="20" oninput="this.value=this.value.replace(/[^a-zA-Z0-9.]/g, '')"
+                                   disabled>
+                        </c:when>
+                        <c:otherwise>
+                            <!-- 일반 사용자: 입력 및 중복 확인 가능 -->
+                            <input type="text" class="form-control" name="memberEmail1" id="memberEmail1"
+                                   value="${memberDTO.memberEmail != null ? memberEmail1[0] : ''}"
+                                   placeholder="이메일" required
+                                   oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
+                            <span class="input-group-text">@</span>
+                            <select class="form-select" id="memberEmail2" name="memberEmail2"
+                                    onchange="toggleCustomEmailInput(this)">
+                                <option>naver.com</option>
+                                <option>gmail.com</option>
+                                <option>hanmail.net</option>
+                                <option value="custom">직접 입력</option>
+                            </select>
+                            <input type="text" class="form-control d-none" id="memberEmailCustom" placeholder="직접 입력"
+                                   maxlength="20" oninput="this.value=this.value.replace(/[^a-zA-Z0-9.]/g, '')">
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
+
+            <div class="input-group mb-3 d-grid gap-2">
+                <button type="button" class="btn btn-outline-secondary w-auto" id="btnMemberEmailCodeSend"
+                        onclick="sendEmailCode()"
+                        <c:if test="${memberDTO.memberJoinPath eq '2'}">disabled</c:if>
+                >인증 코드 전송
                 </button>
             </div>
-            <div id="pwdWarning" class="warning-text d-none">비밀번호는 대소문자와 숫자를 포함한 4~15자여야 합니다.</div>
-        </div>
 
-        <div class="mb-3 row">
-            <div class="col-sm-10 input-group">
-                <input type="password" class="form-control" name="memberPwdConfirm" id="memberPwdConfirm"
-                       value="${memberPwdConfirm != null ? memberPwdConfirm : ''}"
-                       placeholder="비밀번호 확인" maxlength="15" required
-                       oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
-                <button class="btn btn-outline-secondary" type="button"
-                        onclick="togglePasswordVisibility('memberPwdConfirm', this)">
-                    <i class="bi bi-eye"></i>
-                </button>
-            </div>
-            <div id="pwdMatchWarning" class="warning-text d-none">비밀번호가 일치하지 않습니다.</div>
-        </div>
+            <div class="mb-3 row">
+                <div class="col-sm-10 input-group">
+                    <input type="text" class="form-control" id="memberEmailCode" name="memberEmailCode"
+                           placeholder="인증 코드"
+                           maxlength="6" required value="${memberEmailCode != null ? memberEmailCode : ''}"
+                           <c:if test="${memberDTO.memberJoinPath eq '2'}">disabled</c:if> >
 
-        <div class="mb-3 row">
-            <div class="col-sm-4">
-                <input type="text" class="form-control" name="memberName" id="memberName"
-                       value="${memberDTO.memberName != null ? memberDTO.memberName : ''}"
-                       placeholder="이름" maxlength="30" required>
-            </div>
-            <div class="col-sm-4">
-                <select class="form-select" id="memberGrade" name="memberGrade">
-                    <optgroup label="초등학교">
-                        <option value="1" ${memberDTO.memberGrade == '1' ? 'selected' : ''}>초1</option>
-                        <option value="2" ${memberDTO.memberGrade == '2' ? 'selected' : ''}>초2</option>
-                        <option value="3" ${memberDTO.memberGrade == '3' ? 'selected' : ''}>초3</option>
-                        <option value="4" ${memberDTO.memberGrade == '4' ? 'selected' : ''}>초4</option>
-                        <option value="5" ${memberDTO.memberGrade == '5' ? 'selected' : ''}>초5</option>
-                        <option value="6" ${memberDTO.memberGrade == '6' ? 'selected' : ''}>초6</option>
-                    </optgroup>
-                    <optgroup label="중학교">
-                        <option value="7" ${memberDTO.memberGrade == '7' ? 'selected' : ''}>중1</option>
-                        <option value="8" ${memberDTO.memberGrade == '8' ? 'selected' : ''}>중2</option>
-                        <option value="9" ${memberDTO.memberGrade == '9' ? 'selected' : ''}>중3</option>
-                    </optgroup>
-                    <optgroup label="고등학교">
-                        <option value="10" ${memberDTO.memberGrade == '10' ? 'selected' : ''}>고1</option>
-                        <option value="11" ${memberDTO.memberGrade == '11' ? 'selected' : ''}>고2</option>
-                        <option value="12" ${memberDTO.memberGrade == '12' ? 'selected' : ''}>고3</option>
-                    </optgroup>
-                    <optgroup label="교사">
-                        <option value="13" ${memberDTO.memberGrade == '13' ? 'selected' : ''}>교사</option>
-                    </optgroup>
-                </select>
+                    <button type="button" class="btn btn-outline-secondary" id="btnMemberEmailCodeAuth"
+                            onclick="checkEmailCode()"
+                            <c:if test="${memberDTO.memberJoinPath eq '2'}">disabled</c:if> >
+                        인증 코드 확인
+                    </button>
+                </div>
+                <div class="mb-2">
+                    <span id="emailCountWarning" class="warning-text"></span>
+                    <span id="emailAuthTimeWarning" class="warning-text"></span>
+                </div>
+                <div class="col-sm-2">
+                    <c:if test="${not empty emailCheckMessage}">
+                        <span style="color:${emailCheckSuccess ? 'green' : 'red'};">${emailCheckMessage}</span>
+                    </c:if>
+                </div>
             </div>
 
-            <div class="col-sm-4">
-                <input type="text" class="form-control" name="memberBirth" id="memberBirth"
-                       value="${memberDTO.memberBirth != null ? memberDTO.memberBirth : ''}" maxlength="8"
-                       placeholder="생년월일" required>
+            <div class="mb-3 row">
+                <div class="col-sm-10 input-group">
+                    <c:choose>
+                        <c:when test="${memberDTO.memberJoinPath eq '2'}">
+                            <input type="text" class="form-control"
+                                   value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}"
+                                   maxlength="11" disabled
+                                   placeholder="휴대전화번호" oninput="this.value=this.value.replace(/[^0-9]/g, '')">
+                        </c:when>
+                        <c:otherwise>
+                            <input type="text" class="form-control" name="memberPhone" id="memberPhone"
+                                   value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}"
+                                   maxlength="11"
+                                   placeholder="휴대전화번호" required oninput="this.value=this.value.replace(/[^0-9]/g, '')">
+                        </c:otherwise>
+                    </c:choose>
+                </div>
             </div>
-        </div>
 
-
-        <div class="mb-3 row">
-            <div class="col-sm-10 input-group">
-                <input type="text" class="form-control" id="memberZipCode" name="memberZipCode"
-                       value="${memberDTO.memberZipCode != null ? memberDTO.memberZipCode : ''}"
-                       placeholder="우편번호" required>
-                <button class="btn btn-outline-secondary" type="button" onclick="sample6_execDaumPostcode()">
-                    우편번호 찾기
-                </button>
+            <div class="text-end d-grid gap-2">
+                <button type="submit" class="btn btn-primary" id="btnSubmitJoin">회원가입</button>
             </div>
-        </div>
-
-        <div class="mb-3 row">
-            <div class="col-sm-6">
-                <input type="text" class="form-control" id="memberAddr1" name="memberAddr1"
-                       value="${memberDTO.memberAddr1 != null ? memberDTO.memberAddr1 : ''}" placeholder="주소" required>
-            </div>
-            <div class="col-sm-6">
-                <input type="text" class="form-control" id="memberAddr2" name="memberAddr2"
-                       value="${memberDTO.memberAddr2 != null ? memberDTO.memberAddr2 : ''}" placeholder="상세주소">
-            </div>
-        </div>
-
-        <input type="hidden" name="memberEmail" id="memberEmail">
-
-        <div class="mb-3 row">
-            <div class="col-sm-10 input-group">
-                <c:set var="memberEmail1" value="${fn:split(memberDTO.memberEmail, '@')}"/>
-                <c:choose>
-                    <c:when test="${memberDTO.memberJoinPath eq '2'}">
-                        <!-- 네이버 가입한 사용자: 이메일 입력 비활성화 -->
-                        <input type="text" class="form-control" name="memberEmail1" id="memberEmail1"
-                               value="${memberDTO.memberEmail != null ? memberEmail1[0] : ''}"
-                               placeholder="이메일" required
-                               oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')" disabled>
-                        <span class="input-group-text">@</span>
-                        <select class="form-select" id="memberEmail2" name="memberEmail2"
-                                onchange="toggleCustomEmailInput(this)" disabled>
-                            <option>naver.com</option>
-                            <option>gmail.com</option>
-                            <option>hanmail.net</option>
-                            <option value="custom">직접 입력</option>
-                        </select>
-                        <input type="text" class="form-control d-none" id="memberEmailCustom" placeholder="직접 입력"
-                               maxlength="20" oninput="this.value=this.value.replace(/[^a-zA-Z0-9.]/g, '')" disabled>
-                    </c:when>
-                    <c:otherwise>
-                        <!-- 일반 사용자: 입력 및 중복 확인 가능 -->
-                        <input type="text" class="form-control" name="memberEmail1" id="memberEmail1"
-                               value="${memberDTO.memberEmail != null ? memberEmail1[0] : ''}"
-                               placeholder="이메일" required oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
-                        <span class="input-group-text">@</span>
-                        <select class="form-select" id="memberEmail2" name="memberEmail2"
-                                onchange="toggleCustomEmailInput(this)">
-                            <option>naver.com</option>
-                            <option>gmail.com</option>
-                            <option>hanmail.net</option>
-                            <option value="custom">직접 입력</option>
-                        </select>
-                        <input type="text" class="form-control d-none" id="memberEmailCustom" placeholder="직접 입력"
-                               maxlength="20" oninput="this.value=this.value.replace(/[^a-zA-Z0-9.]/g, '')">
-                    </c:otherwise>
-                </c:choose>
-            </div>
-        </div>
-
-        <div class="input-group mb-3 d-grid gap-2">
-            <button type="button" class="btn btn-outline-secondary w-auto" id="btnMemberEmailCodeSend"
-                    onclick="sendEmailCode()"
-                    <c:if test="${memberDTO.memberJoinPath eq '2'}">disabled</c:if>
-            >인증 코드 전송
-            </button>
-        </div>
-
-        <div class="mb-3 row">
-            <div class="col-sm-10 input-group">
-                <input type="text" class="form-control" id="memberEmailCode" name="memberEmailCode" placeholder="인증 코드"
-                       maxlength="6" required value="${memberEmailCode != null ? memberEmailCode : ''}"
-                       <c:if test="${memberDTO.memberJoinPath eq '2'}">disabled</c:if> >
-
-                <button type="button" class="btn btn-outline-secondary" id="btnMemberEmailCodeAuth"
-                        onclick="checkEmailCode()"
-                        <c:if test="${memberDTO.memberJoinPath eq '2'}">disabled</c:if> >
-                    인증 코드 확인
-                </button>
-            </div>
-            <div class="mb-2">
-                <span id="emailCountWarning" class="warning-text"></span>
-                <span id="emailAuthTimeWarning" class="warning-text"></span>
-            </div>
-            <div class="col-sm-2">
-                <c:if test="${not empty emailCheckMessage}">
-                    <span style="color:${emailCheckSuccess ? 'green' : 'red'};">${emailCheckMessage}</span>
-                </c:if>
-            </div>
-        </div>
-
-        <div class="mb-3 row">
-            <div class="col-sm-10 input-group">
-                <c:choose>
-                    <c:when test="${memberDTO.memberJoinPath eq '2'}">
-                        <input type="text" class="form-control"
-                               value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}"
-                               maxlength="11" disabled
-                               placeholder="휴대전화번호" oninput="this.value=this.value.replace(/[^0-9]/g, '')">
-                    </c:when>
-                    <c:otherwise>
-                        <input type="text" class="form-control" name="memberPhone" id="memberPhone"
-                               value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}"
-                               maxlength="11"
-                               placeholder="휴대전화번호" required oninput="this.value=this.value.replace(/[^0-9]/g, '')">
-                    </c:otherwise>
-                </c:choose>
-            </div>
-        </div>
-
-        <div class="text-end d-grid gap-2">
-            <button type="submit" class="btn btn-primary" id="btnSubmitJoin">회원가입</button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
 <script>
@@ -386,7 +385,7 @@
             type: 'POST',
             url: '/email/verify',
             contentType: 'application/json',
-            data: JSON.stringify({ memberEmail: memberEmail }),
+            data: JSON.stringify({memberEmail: memberEmail}),
             success: function (response) {
                 if (response.success) {
                     alert('인증 코드가 전송되었습니다.');
