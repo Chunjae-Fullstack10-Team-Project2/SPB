@@ -107,5 +107,14 @@ dependencies {
 }
 
 test {
-    useJUnitPlatform()
+  useJUnitPlatform()}
+
+war {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+  from('src/main/webapp') {
+    include '**/*.jsp'
+    into ''
+  }
 }
+

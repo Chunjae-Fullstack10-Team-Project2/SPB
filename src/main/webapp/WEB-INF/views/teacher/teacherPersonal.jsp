@@ -252,7 +252,7 @@
     <main class="main-content">
         <div class="teacher-profile">
             <div class="profile-image">
-                <img src="${teacherDTO.teacherProfileImg}" alt="선생님 프로필">
+                <img src="/upload/${teacherDTO.teacherProfileImg}" alt="선생님 프로필">
             </div>
             <div class="profile-info">
                 <h1>${teacherDTO.teacherName} 선생님</h1>
