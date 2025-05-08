@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.mystudy.LectureReviewMapper">
+    <sql id="condition">
+        <where>
+            tlr.lectureReviewMemberId = #{memberId}
+            <if test="pageDTO.search_category == 'lectureTitle'">
+                and tl.lectureTitle like concat('%', #{pageDTO.search_word} ,'%')
+            </if>
+            <if test="pageDTO.search_category == 'teacherName'">
+                and tt.teacherName like concat('%', #{pageDTO.search_word} ,'%')
+            </if>
+            <if test="pageDTO.search_category == 'lectureReviewContent'">
+                and tlr.lectureReviewContent like concat('%', #{pageDTO.search_word} ,'%')
+            </if>
+            <if test="pageDTO.search_start_date != null and pageDTO.search_end_date != null
+                      and pageDTO.search_start_date != '' and pageDTO.search_end_date != ''">
+                and tlr.lectureReviewCreatedAt between #{pageDTO.search_start_date} and #{pageDTO.search_end_date}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insertLectureReview" useGeneratedKeys="true" keyColumn="lectureReviewIdx" keyProperty="lectureReviewIdx">
+        insert into tbl_lecture_review (lectureReviewRefIdx, lectureReviewContent, lectureReviewMemberId, lectureReviewGrade)
+        values (#{lectureReviewRefIdx}, #{lectureReviewContent}, #{lectureReviewMemberId}, #{lectureReviewGrade})
+    </insert>
+
+    <select id="selectLectureReviewListTotalCount" resultType="int">
+        select count(*)
+        from tbl_lecture_review as tlr
+        inner join tbl_lecture as tl on tlr.lectureReviewRefIdx = tl.lectureIdx
+        inner join tbl_teacher as tt on tl.lectureTeacherId = tt.teacherId
+        <include refid="condition" />
+    </select>
+
+    <select id="selectLectureReviewList" resultType="net.spb.spb.dto.mystudy.LectureReviewResponseDTO">
+        select tlr.lectureReviewIdx as lectureReviewIdx
+             , tlr.lectureReviewRefIdx as lectureReviewRefIdx, tl.lectureTitle as lectureTitle
+             , tt.teacherId as teacherId, tt.teacherName as teacherName
+             , tlr.lectureReviewContent as lectureReviewContent, tlr.lectureReviewGrade as lectureReviewGrade
+        from tbl_lecture_review as tlr
+        inner join tbl_lecture as tl on tlr.lectureReviewRefIdx = tl.lectureIdx
+        inner join tbl_teacher as tt on tl.lectureTeacherId = tt.teacherId
+        <include refid="condition" />
+        order by ${pageDTO.sort_by} ${pageDTO.sort_direction}
+        limit #{pageDTO.page_skip_count}, #{pageDTO.page_size}
+    </select>
+
+    <select id="selectLectureReviewByIdx" resultType="net.spb.spb.dto.mystudy.LectureReviewResponseDTO">
+        select tlr.lectureReviewIdx as lectureReviewIdx
+             , tlr.lectureReviewRefIdx as lectureReviewRefIdx, tl.lectureTitle as lectureTitle
+             , tt.teacherId as teacherId, tt.teacherName as teacherName
+             , tlr.lectureReviewContent as lectureReviewContent, tlr.lectureReviewGrade as lectureReviewGrade, tlr.lectureReviewMemberId as lectureReviewMemberId
+             , tlr.lectureReviewCreatedAt as lectureReviewCreatedAt, tlr.lectureReviewUpdatedAt as lectureReviewUpdatedAt
+        from tbl_lecture_review as tlr
+        inner join tbl_lecture as tl on tlr.lectureReviewRefIdx = tl.lectureIdx
+        inner join tbl_teacher as tt on tl.lectureTeacherId = tt.teacherId
+        where tlr.lectureReviewIdx = #{idx}
+    </select>
+
+    <update id="updateLectureReview">
+        update tbl_lecture_review
+        set lectureReviewRefIdx = #{lectureReviewRefIdx}, lectureReviewContent = #{lectureReviewContent}, lectureReviewGrade = #{lectureReviewGrade}
+        where lectureReviewIdx = #{lectureReviewIdx}
+    </update>
+
+    <delete id="deleteLectureReviewByIdx">
+        delete from tbl_lecture_review
+        where lectureReviewIdx = #{idx}
+    </delete>
+</mapper>
