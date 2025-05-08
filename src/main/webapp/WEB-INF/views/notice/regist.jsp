@@ -59,7 +59,9 @@
                 </div>
 
                 <div class="mb-3 form-check">
+                    <input type="hidden" name="noticeIsFixed" value="0">
                     <input type="checkbox" class="form-check-input" id="noticeIsFixed" name="noticeIsFixed" value="1">
+
                     <label class="form-check-label" for="noticeIsFixed">고정 공지</label>
                 </div>
 

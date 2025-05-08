@@ -16,6 +16,14 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
     <style>
+        .list-title {
+            display: inline-block;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .dropdown-section {
             position: relative;
             display: inline-block;
@@ -24,25 +32,26 @@
             display: none;
             position: absolute;
             right: 0;
-            top: 30px;
+            top: 35px;
             background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 6px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 8px;
             z-index: 999;
-            min-width: 120px;
+            min-width: 140px;
         }
         .dropdown-menu form {
             margin: 0;
         }
         .dropdown-button {
             width: 100%;
-            padding: 6px 10px;
+            padding: 8px 12px;
             margin: 4px 0;
-            border: 1px solid #aaa;
+            border: none;
             background: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 14px;
         }
         .dropdown-button:hover {
             background-color: #f2f2f2;
@@ -55,6 +64,7 @@
         .fix-icon {
             width: 20px;
             height: 20px;
+            background-color: #DDEB9D;
         }
     </style>
 </head>
@@ -88,9 +98,9 @@
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">공지사항 목록</h3>
-            <a href="${pageContext.request.contextPath}/notice/regist" class="btn btn-primary">
-                <i class="bi bi-pencil-square"></i> 글 작성
-            </a>
+                <a href="${pageContext.request.contextPath}/notice/regist" class="btn btn-primary">
+                    <i class="bi bi-pencil-square"></i> 글 작성
+                </a>
         </div>
 
         <div class="card mb-4">
@@ -136,7 +146,7 @@
                         <div class="d-flex align-items-center">
                             <img src="${pageContext.request.contextPath}/resources/images/fix.svg" class="fix-icon me-2" alt="고정">
                             <a href="${pageContext.request.contextPath}/notice/view?noticeIdx=${notice.noticeIdx}"
-                               class="fw-bold text-decoration-none">${notice.noticeTitle}</a>
+                               class="fw-bold text-decoration-none list-title">${notice.noticeTitle}</a>
                         </div>
                         <small class="text-muted">${notice.noticeCreatedAt.toLocalDate()}</small>
                     </div>
@@ -161,7 +171,7 @@
                         <div class="d-flex align-items-center">
                             <span class="me-2 text-muted">${currentNumber - counter}</span>
                             <a href="${pageContext.request.contextPath}/notice/view?noticeIdx=${notice.noticeIdx}"
-                               class="fw-bold text-decoration-none">${notice.noticeTitle}</a>
+                               class="fw-bold text-decoration-none list-title">${notice.noticeTitle}</a>
                         </div>
                         <small class="text-muted">${notice.noticeCreatedAt.toLocalDate()}</small>
                     </div>
@@ -196,7 +206,7 @@
     </div>
 </div>
 
-<!-- Bootstrap JavaScript -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // toggle
@@ -209,6 +219,19 @@
         });
         dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
     }
+
+    document.addEventListener('click', function(event) {
+        const isDropdownButton = event.target.closest('.bar-img');
+        const isDropdownMenu = event.target.closest('.dropdown-menu');
+        const isWriteButton = event.target.closest('.btn-primary');
+
+        if (!isDropdownButton && !isDropdownMenu && !isWriteButton) {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.style.display = 'none';
+            });
+        }
+    });
+
 </script>
 </body>
 </html>

@@ -81,9 +81,9 @@
 </div>
 
 <script>
-    // 페이지 로드 시 체크박스 상태 설정
+    // 체크박스 상태 설정
     window.onload = function() {
-        const isFixedValue = "${dto.noticeIsFixed}"; // 문자열로 가져옴
+        const isFixedValue = "${dto.noticeIsFixed}";
         if(isFixedValue === "1" || isFixedValue === "true") {
             document.getElementById("noticeIsFixed").checked = true;
         }
@@ -92,7 +92,7 @@
     function validateForm() {
         const title = document.getElementById("title").value.trim();
         if (title.length > 100) {
-            alert("제대로 된 형식으로 입력하시오 (제목은 100자 이하만 가능합니다).");
+            alert("제목은 100자 이하만 입력 가능합니다.");
             return false;
         }
         return true;
@@ -104,11 +104,7 @@
     <% } %>
 
 
-    // 페이지 로드 시 체크박스 상태 설정
-    window.onload = function() {
-        const isFixedValue = "${dto.noticeIsFixed}";
-        document.getElementById("noticeIsFixedCheckbox").checked = (isFixedValue === "1" || isFixedValue === "true");
-    }
+
 </script>
 </body>
 </html>
