@@ -24,5 +24,6 @@ public class Paging {
         pagingData.put("prev_page", page_block_start > 1 ? page_block_start - 1 : null);
         pagingData.put("next_page", page_block_end < total_page ? page_block_end + 1 : null);
         return pagingData;
+
     }
 }

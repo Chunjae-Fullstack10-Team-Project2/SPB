@@ -1,5 +1,6 @@
 package net.spb.spb.util;
 
+
 import net.spb.spb.dto.pagingsearch.*;
 
 import java.net.URLEncoder;
@@ -169,4 +170,5 @@ public class PagingUtil {
     private static String getFullLink(String baseUrl, String connector, int page_no, String s) {
         return "<a href='" + baseUrl + connector + "page_no=" + page_no + "'>" + s + "</a>" + "&nbsp;&nbsp;";
     }
+
 }
