@@ -23,11 +23,13 @@
                     </select>
                 </div>
             </c:if>
-            <div class="col-md-3">
-                <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택"
-                       autocomplete="off"
-                       value="${not empty param.datefilter ? param.datefilter : ''}"/>
-            </div>
+            <c:if test="${empty isTeacher}">
+                <div class="col-md-3">
+                    <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택"
+                           autocomplete="off"
+                           value="${not empty param.datefilter ? param.datefilter : ''}"/>
+                </div>
+            </c:if>
         </div>
 
         <div class="row g-2 align-items-center mb-3">
