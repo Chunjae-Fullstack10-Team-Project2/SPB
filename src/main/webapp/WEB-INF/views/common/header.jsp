@@ -75,8 +75,7 @@
                    class="me-4 text-decoration-none position-relative">
                     <i class="bi bi-cart" style="font-size: 1.4rem;"></i>
                     <c:if test="${not empty sessionScope.memberId}">
-                        <span id="cart-count-badge"
-                              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                        <span id="cart-count-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
                     </c:if>
                     <c:if test="${empty sessionScope.memberId}">
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
@@ -87,10 +86,15 @@
                     <a href="#" class="d-block text-decoration-none dropdown-toggle"
                        data-bs-toggle="dropdown" aria-expanded="false">
                         <c:choose>
-                            <c:when test="${not empty memberDTO.memberProfileImg}">
+                            <c:when test="${not empty sessionScope.memberId and not empty memberDTO.memberProfileImg}">
                                 <img id="profilePreview" width="32" height="32" class="rounded-circle"
                                      src="${pageContext.request.contextPath}/upload/${memberDTO.memberProfileImg}"
                                      alt="프로필 이미지" class="profile-img">
+                            </c:when>
+                            <c:when test="${not empty sessionScope.memberId and empty memberDTO.memberProfileImg}">
+                                <img id="profilePreview" width="32" height="32" class="rounded-circle"
+                                     src="${pageContext.request.contextPath}/resources/img/default_profileImg.png"
+                                     alt="기본 이미지" class="profile-img">
                             </c:when>
                             <c:otherwise>
                                 <img id="profilePreview" width="32" height="32" class="rounded-circle"

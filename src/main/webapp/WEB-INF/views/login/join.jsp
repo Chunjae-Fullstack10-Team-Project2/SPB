@@ -78,6 +78,40 @@
         .join-container .no-radius {
             border-radius: 0 !important;
         }
+
+
+        .profile-img-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-img {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #ccc;
+        }
+
+        .camera-icon {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: #fff;
+            border-radius: 50%;
+            padding: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+        }
+
+        .camera-icon i {
+            font-size: 18px;
+            color: #333;
+        }
+
+        #profileImgInput {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -102,41 +136,66 @@
                     </c:choose>
                 </div>
             </div>
-            <div class="mb-3 row">
-                <div class="col-sm-10 input-group">
-                    <c:choose>
-                        <c:when test="${memberDTO.memberJoinPath eq '2'}">
-                            <!-- Naver 로그인 사용자: disabled 처리 -->
-                            <input type="text" class="form-control"
-                                   value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
-                                   placeholder="아이디" maxlength="20" disabled/>
-                            <button class="btn btn-outline-secondary" type="button" id="btnCheckId" disabled>
-                                중복 확인
-                            </button>
-                        </c:when>
-                        <c:otherwise>
-                            <!-- 일반 사용자: 입력 및 중복 확인 가능 -->
-                            <input type="text" class="form-control" name="memberId" id="memberId"
-                                   value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
-                                   placeholder="아이디" maxlength="20" required
-                                   oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
-                            <button class="btn btn-outline-secondary" type="button" id="btnCheckId">
-                                중복 확인
-                            </button>
-                        </c:otherwise>
-                    </c:choose>
+            <div class="mb-3 row align-items-center">
+                <!-- 프로필 이미지 영역: col-md-5 (약 4:6 비율 중 4) -->
+                <div class="col-md-5 text-center">
+                    <div class="profile-img-container position-relative d-inline-block">
+                        <c:choose>
+                            <c:when test="${empty sessionScope.memberId and not empty memberDTO.memberProfileImg}">
+                                <img id="joinProfilePreview"
+                                     src="${pageContext.request.contextPath}/upload/${memberDTO.memberProfileImg}"
+                                     alt="프로필 이미지"
+                                     class="profile-img">
+                            </c:when>
+                            <c:otherwise>
+                                <img id="joinProfilePreview"
+                                     src="${pageContext.request.contextPath}/resources/img/default_profileImg.png"
+                                     alt="기본 이미지"
+                                     class="profile-img">
+                            </c:otherwise>
+                        </c:choose>
+                        <div class="camera-icon"
+                             onclick="document.getElementById('profileImgInput').click();">
+                            <i class="bi bi-camera-fill"></i>
+                        </div>
+                        <input type="file" id="profileImgInput" name="profileImgFile" accept="image/*" style="display: none;">
+                    </div>
                 </div>
 
-                <div id="idWarning" class="warning-text d-none">
-                    아이디는 4~20자, 알파벳과 숫자만 가능합니다.
-                </div>
-
-                <div id="memberIdCheck">
-                    <c:if test="${not empty idCheckMessage}">
-                        <span style="color:${idCheckSuccess ? 'green' : 'red'};">${idCheckMessage}</span>
-                    </c:if>
+                <!-- 아이디 입력 영역: col-md-7 (약 4:6 비율 중 6) -->
+                <div class="col-md-7">
+                    <div class="input-group">
+                        <c:choose>
+                            <c:when test="${memberDTO.memberJoinPath eq '2'}">
+                                <input type="text" class="form-control"
+                                       value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
+                                       placeholder="아이디" maxlength="20" disabled/>
+                                <button class="btn btn-outline-secondary" type="button" disabled>
+                                    중복 확인
+                                </button>
+                            </c:when>
+                            <c:otherwise>
+                                <input type="text" class="form-control" name="memberId" id="memberId"
+                                       value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
+                                       placeholder="아이디" maxlength="20" required
+                                       oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
+                                <button class="btn btn-outline-secondary" type="button" id="btnCheckId">
+                                    중복 확인
+                                </button>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                    <div id="idWarning" class="warning-text d-none mt-1">
+                        아이디는 4~20자, 알파벳과 숫자만 가능합니다.
+                    </div>
+                    <div id="memberIdCheck">
+                        <c:if test="${not empty idCheckMessage}">
+                            <span style="color:${idCheckSuccess ? 'green' : 'red'};">${idCheckMessage}</span>
+                        </c:if>
+                    </div>
                 </div>
             </div>
+
 
             <div class="mb-3 row">
                 <div class="col-sm-10 input-group">
@@ -164,17 +223,6 @@
                     </button>
                 </div>
                 <div id="pwdMatchWarning" class="warning-text d-none">비밀번호가 일치하지 않습니다.</div>
-            </div>
-
-            <div class="mb-3 row">
-                <div class="col-sm-4 file">
-                    <input type="file" name="profileImgFile" id="memberProfileImg"
-                           accept="image/jpeg, image/gif, image/png"/>
-                </div>
-                <div class="col-sm-6">
-                    <img id="profilePreview" src="#" alt="미리보기"
-                         style="display:none; max-width: 150px; border-radius: 8px;"/>
-                </div>
             </div>
 
             <div class="mb-3 row">
@@ -450,35 +498,28 @@
         });
     }
 
-    document.getElementById('memberProfileImg').addEventListener('change', function () {
-        const files = this.files;
-        const preview = document.getElementById('profilePreview');
+    document.getElementById('profileImgInput').addEventListener('change', function () {
+        const file = this.files[0];
+        const preview = document.getElementById('joinProfilePreview');
 
-        if (files.length > 1) {
-            alert('이미지는 1장만 업로드할 수 있습니다.');
-            this.value = '';
-            preview.style.display = 'none';
+        if (!file) {
+            preview.src = "${pageContext.request.contextPath}/resources/img/default_profileImg.png";
             return;
         }
 
-        if (files.length === 1) {
-            const file = files[0];
-            const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
-
-            if (!validTypes.includes(file.type)) {
-                alert('이미지 파일(jpg, png, gif)만 업로드 가능합니다.');
-                this.value = '';
-                preview.style.display = 'none';
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
+        const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!validTypes.includes(file.type)) {
+            alert('이미지 파일(jpg, png, gif)만 업로드 가능합니다.');
+            this.value = '';
+            preview.src = "${pageContext.request.contextPath}/resources/img/default_profileImg.png";
+            return;
         }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
     });
 
     <c:if test="${not empty errorMessage}">
