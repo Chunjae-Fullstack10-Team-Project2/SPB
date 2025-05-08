@@ -77,13 +77,13 @@
         set postReadCnt = postReadCnt + 1
         where postIdx = #{postIdx}
     </update>
-    <insert id="insertPostReport" parameterType="net.spb.spb.domain.PostReportVO">
-        insert into tbl_report(reportPostIdx, reportMemberId) select #{reportPostIdx}, #{reportMemberId}
+    <insert id="insertPostReport" parameterType="net.spb.spb.domain.ReportVO">
+        insert into tbl_report(reportRefType, reportRefIdx, reportMemberId) select 'POST', #{reportRefIdx}, #{reportMemberId}
         from dual
         where not exists (
             select 1
             from tbl_report
-            where reportPostIdx = #{reportPostIdx} and reportMemberId = #{reportMemberId}
+            where reportRefType = 'POST' and reportRefIdx = #{reportRefIdx} and reportMemberId = #{reportMemberId}
         )
     </insert>
 </mapper>

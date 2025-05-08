@@ -47,7 +47,7 @@ public class BoardController {
     @GetMapping("/{category}/list")
     public String list(@PathVariable("category") BoardCategory category, Model model, @ModelAttribute PostPageDTO postPageDTO, HttpServletRequest req) {
         String baseUrl = req.getRequestURI();
-        postPageDTO.setLinkUrl(PagingUtil.buildBoardLinkUrl(baseUrl, postPageDTO));
+        postPageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, postPageDTO));
         postPageDTO.setPostCategory(category.toString().toUpperCase());
         postPageDTO.setSearch_type();
         int postTotalCount = service.getPostCount(postPageDTO);

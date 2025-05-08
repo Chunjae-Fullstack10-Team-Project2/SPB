@@ -20,7 +20,7 @@
 <body class="p-4">
 
 <div class="join-container mt-5 mb-5">
-    <h2 class="mb-4">회원가입</h2>
+    <h2 class="mb-4">회원 상세 정보</h2>
     <form action="/admin/member/update" method="post" onsubmit="return confirm('정말 상태를 변경하시겠습니까?');" >
         <input type="hidden" name="memberId" value="${memberDTO.memberId}"/>
         <div class="mb-3 row">
