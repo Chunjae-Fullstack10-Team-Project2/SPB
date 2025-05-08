@@ -17,7 +17,6 @@
   </style>
 </head>
 <body>
-<%@ include file="../../../common/header.jsp" %>
 <%@ include file="../../../common/sidebarHeader.jsp" %>
 <div class="content" style="margin-left: 280px; margin-top: 100px;">
 
