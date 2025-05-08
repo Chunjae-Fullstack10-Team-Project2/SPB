@@ -3,6 +3,7 @@ package net.spb.spb.controller;
 import lombok.RequiredArgsConstructor;
 import net.spb.spb.dto.NoticeDTO;
 import net.spb.spb.service.NoticeService;
+import net.spb.spb.util.NoticePaging;
 import net.spb.spb.util.Paging;
 import net.spb.spb.util.PagingUtil;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,7 +30,8 @@ public class NoticeController {
                        @RequestParam(name = "searchType", required = false) String searchType,
                        Model model) throws Exception {
 
-        int offset = Paging.getOffset(page, size);
+
+        int offset = NoticePaging.getOffset(page, size);
         List<NoticeDTO> list;
         int totalCount;
 
@@ -48,32 +51,25 @@ public class NoticeController {
         // 고정된 공지사항
         List<NoticeDTO> fixedList = noticeService.getFixedNotices();
 
-        int totalPage = Paging.getTotalPage(totalCount, size);
 
-        String queryParams = "&size=" + size;
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            queryParams += "&keyword=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8);
-            if (searchType != null) {
-                queryParams += "&searchType=" + searchType;
-            }
-        }
+        int totalPage = NoticePaging.getTotalPage(totalCount, size);
 
-        int listNumber = totalCount - offset;
+        String pagination = NoticePaging.getPagination(page, totalPage, "/notice/list", keyword, searchType, size);
 
-        String paginationHtml = PagingUtil.getPagination(page, totalPage, "/notice/list", queryParams);
+        int listNumber = NoticePaging.getStartNum(totalCount, page, size);
 
         model.addAttribute("list", list);
-        model.addAttribute("pagination", paginationHtml);
+        model.addAttribute("fixedList", fixedList);
+        model.addAttribute("pagination", pagination);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("size", size);
         model.addAttribute("keyword", keyword);
         model.addAttribute("searchType", searchType);
         model.addAttribute("listNumber", listNumber);
-        model.addAttribute("fixedList", fixedList);
+
         return "notice/list";
     }
-
 
     @GetMapping("/view")
     public String view(@RequestParam("noticeIdx") int noticeIdx, Model model) throws Exception {

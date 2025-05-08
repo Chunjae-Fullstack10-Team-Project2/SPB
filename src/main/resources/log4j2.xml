@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- https://logging.apache.org/log4j/2.x/manual/configuration.html -->
 <Configuration status="INFO">
