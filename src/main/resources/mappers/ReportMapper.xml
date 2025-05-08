@@ -1,27 +1,172 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.spb.spb.mapper.ReportMapper">
-    <select id="getReports" parameterType="net.spb.spb.dto.pagingsearch.ReportPageDTO" resultType="net.spb.spb.domain.ReportVO">
-        select reportIdx, reportRefIdx, reportRefType, reportCreatedAt, reportState, reportMemberId
-        from tbl_report
-        <where>
-            1=1
-            <if test="reportRefType != null and reportRefType.name() != ''">
-                and reportRefType=#{reportRefType}
-            </if>
-            <if test="search_report_member != null and search_report_member != ''">
-                and reportRefType=#{reportRefType}
-            </if>
-            <if test="search_report_state != null and search_report_state != '' and search_report_state != 0">
-                and reportState = #{search_report_state}
-            </if>
-            <if test="search_start_date != null and search_start_date != ''">
-                and reportCreatedAt <![CDATA[>=]]> #{search_start_date}
-            </if>
-            <if test="search_end_date != null and search_end_date != ''">
-                and reportCreatedAt <![CDATA[<=]]> #{search_end_date}
-            </if>
-        </where>
-        order by ${sort_by} ${sort_direction}
+
+    <!-- 신고한 자유게시판 게시글 목록  -->
+    <select id="listBoardReport">
+        SELECT
+        reportIdx,
+        reportRefIdx,
+        reportMemberId,
+        reportCreatedAt,
+        reportState,
+        postTitle,
+        postMemberId,
+        postCreatedAt,
+        postContent
+        FROM tbl_report AS r
+        JOIN tbl_post AS p ON r.reportRefIdx = p.postIdx
+        WHERE 1=1
+
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'postTitle'">
+                    AND postTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'postContent'">
+                    AND postContent LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'postMemberId'">
+                    AND postMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            <choose>
+                <when test="searchDTO.dateType == 'reportCreatedAt'">
+                    AND reportCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+                <when test="searchDTO.dateType == 'postCreatedAt'">
+                    AND postCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+            </choose>
+        </if>
+        <if test="searchDTO.sortColumn != null and searchDTO.sortOrder != null">
+            ORDER BY
+            <choose>
+                <when test="searchDTO.sortColumn == 'postTitle'">postTitle</when>
+                <when test="searchDTO.sortColumn == 'postMemberId'">postMemberId</when>
+                <when test="searchDTO.sortColumn == 'postCreatedAt'">postCreatedAt</when>
+                <otherwise>postCreatedAt</otherwise>
+            </choose>
+            <choose>
+                <when test="searchDTO.sortOrder == 'asc'">ASC</when>
+                <otherwise>DESC</otherwise>
+            </choose>
+        </if>
+
+        LIMIT #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
+    </select>
+    <select id="boardReportTotalCount">
+        select count(reportIdx)
+        from tbl_report AS r
+        JOIN tbl_post AS p on r.reportRefIdx = p.postIdx
+        where 1=1
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'postTitle'">
+                    AND postTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'postContent'">
+                    AND postContent LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'postMemberId'">
+                    AND postMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            <choose>
+                <when test="searchDTO.dateType == 'reportCreatedAt'">
+                    AND reportCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+                <when test="searchDTO.dateType == 'postCreatedAt'">
+                    AND postCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <!-- 신고한 리뷰 목록  -->
+    <select id="listReviewReport">
+        SELECT
+        reportIdx,
+        reportRefIdx,
+        reportMemberId,
+        reportCreatedAt,
+        reportState,
+        lectureReviewIdx,
+        lectureReviewRefIdx,
+        lectureReviewContent,
+        lectureReviewMemberId,
+        lectureReviewGrade,
+        lectureReviewCreatedAt,
+        lectureReviewUpdatedAt,
+        lectureReviewState
+        FROM tbl_report AS r
+        JOIN tbl_lecture_review as l ON r.reportRefIdx = l.lectureReviewIdx
+        WHERE 1=1
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'lectureReviewMemberId'">
+                    AND lectureReviewMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'lectureReviewContent'">
+                    AND lectureReviewContent LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            <choose>
+                <when test="searchDTO.dateType == 'lectureReviewCreatedAt'">
+                    AND lectureReviewCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+                <when test="searchDTO.dateType == 'reportCreatedAt'">
+                    AND reportCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+            </choose>
+        </if>
+        <if test="searchDTO.sortColumn != null and searchDTO.sortOrder != null">
+            ORDER BY
+            <choose>
+                <when test="searchDTO.sortColumn == 'lectureReviewMemberId'">lectureReviewMemberId</when>
+                <when test="searchDTO.sortColumn == 'lectureReviewCreatedAt'">lectureReviewCreatedAt</when>
+                <otherwise>reportIdx</otherwise>
+            </choose>
+            <choose>
+                <when test="searchDTO.sortOrder == 'asc'">ASC</when>
+                <otherwise>DESC</otherwise>
+            </choose>
+        </if>
+        LIMIT #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
+    </select>
+    <select id="reviewReportTotalCount">
+        select count(reportIdx)
+        FROM tbl_report AS r
+        JOIN tbl_lecture_review as l ON r.reportRefIdx = l.lectureReviewIdx
+        where 1=1
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'lectureReviewMemberId'">
+                    AND lectureReviewMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'lectureReviewContent'">
+                    AND lectureReviewContent LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            <choose>
+                <when test="searchDTO.dateType == 'reportCreatedAt'">
+                    AND reportCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+                <when test="searchDTO.dateType == 'postCreatedAt'">
+                    AND postCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+            </choose>
+        </if>
     </select>
 </mapper>

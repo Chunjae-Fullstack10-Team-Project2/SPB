@@ -25,6 +25,7 @@ public class NoticeController {
 
     private final NoticeService noticeService;
 
+
     @GetMapping("/list")
     public String list(@RequestParam(name = "page", defaultValue = "1") int page,
                        @RequestParam(name = "size", defaultValue = "5") int size,
@@ -35,22 +36,9 @@ public class NoticeController {
 
         int offset = NoticePaging.getOffset(page, size);
         List<NoticeDTO> list;
+
         int totalCount;
 
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            if ("content".equals(searchType)) {
-                totalCount = noticeService.getSearchCountByContent(keyword);
-                list = noticeService.searchByContent(keyword, offset, size);
-            } else {
-                totalCount = noticeService.getSearchCountByTitle(keyword);
-                list = noticeService.searchByTitle(keyword, offset, size);
-            }
-        } else {
-            totalCount = noticeService.getTotalCount();
-            list = noticeService.getListPaged(offset, size);
-        }
-
-        // 고정된 공지사항
         List<NoticeDTO> fixedList = noticeService.getFixedNotices();
 
 
@@ -153,4 +141,5 @@ public class NoticeController {
         noticeService.unfixNotice(noticeIdx);
         return "redirect:/notice/list";
     }
+
 }

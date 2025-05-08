@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -232,22 +232,23 @@
     </style>
 </head>
 <body>
-<%@ include file="../common/header.jsp" %>
+<%@ include file="../common/sidebarHeader.jsp" %>
+<div class="content">
 <div class="tContainer">
-    <aside class="sidebar">
-        <div class="sidebar-title">SIDEMENU</div>
-        <ul class="sidebar-menu">
-            <li class="sidebar-menu-item">
-                <a href="#" class="sidebar-menu-link active">공지</a>
-            </li>
-            <li class="sidebar-menu-item">
-                <a href="#" class="sidebar-menu-link">Q&A</a>
-            </li>
-            <li class="sidebar-menu-item">
-                <a href="#" class="sidebar-menu-link">자료실</a>
-            </li>
-        </ul>
-    </aside>
+<%--    <aside class="sidebar">--%>
+<%--        <div class="sidebar-title">SIDEMENU</div>--%>
+<%--        <ul class="sidebar-menu">--%>
+<%--            <li class="sidebar-menu-item">--%>
+<%--                <a href="#" class="sidebar-menu-link active">공지</a>--%>
+<%--            </li>--%>
+<%--            <li class="sidebar-menu-item">--%>
+<%--                <a href="#" class="sidebar-menu-link">Q&A</a>--%>
+<%--            </li>--%>
+<%--            <li class="sidebar-menu-item">--%>
+<%--                <a href="#" class="sidebar-menu-link">자료실</a>--%>
+<%--            </li>--%>
+<%--        </ul>--%>
+<%--    </aside>--%>
 
     <main class="main-content">
         <div class="teacher-profile">
@@ -295,12 +296,31 @@
                             </td>
                             <td>
                                 <div class="actions">
-                                        <button class="btn-icon" >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                                            </svg>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm" id="btnAddCart" onclick="addCart(${lecture.lectureIdx})">장바구니</button>
+                                    <c:set var="isBookmarked" value="false" />
+                                    <c:forEach var="b" items="${bookmarked}">
+                                        <c:if test="${b eq lecture.lectureIdx}">
+                                            <c:set var="isBookmarked" value="true" />
+                                        </c:if>
+                                    </c:forEach>
+
+                                    <c:choose>
+                                        <c:when test="${isBookmarked}">
+                                            <button class="btn-icon bookmark-btn" data-lecture-idx="${lecture.lectureIdx}" data-bookmarked="true">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bookmark-icon active">
+                                                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" fill="currentColor"></path>
+                                                </svg>
+                                            </button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button class="btn-icon bookmark-btn" data-lecture-idx="${lecture.lectureIdx}" data-bookmarked="false">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bookmark-icon">
+                                                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" fill="none"></path>
+                                                </svg>
+                                            </button>
+                                        </c:otherwise>
+                                    </c:choose>
+
+                                    <button class="btn btn-primary btn-sm" id="btnAddCart" onclick="addCart(${lecture.lectureIdx})">장바구니</button>
                                 </div>
                             </td>
                         </tr>
@@ -311,22 +331,55 @@
         </div>
     </main>
 </div>
-
+</div>
+    </main>
+</div>
+</div>
 <script>
-    // 북마크 버튼 기능
-    document.querySelectorAll('.btn-icon').forEach(button => {
-        button.addEventListener('click', function() {
-            this.classList.toggle('active');
-            if (this.classList.contains('active')) {
-                this.style.color = '#e53e3e';
-            } else {
-                this.style.color = 'inherit';
+    $(document).ready(function () {
+        const memberId = '<c:out value="${sessionScope.memberId}" default="" />';
+
+        $('.bookmark-btn').on('click', function () {
+            if (!memberId || memberId.trim() === "") {
+                alert("로그인이 필요합니다.");
+                window.location.href = "/login";
+                return;
             }
+
+            const button = $(this);
+            const icon = button.find('svg.bookmark-icon');
+            const path = icon.find('path');
+            const lectureIdx = button.data('lecture-idx');
+            const isBookmarked = icon.hasClass('active');
+
+            const url = isBookmarked
+                ? '/teacher/deleteBookmark?lectureIdx=' + lectureIdx
+                : '/teacher/addBookmark?lectureIdx=' + lectureIdx;
+                console.log("idx: "+lectureIdx);
+            $.ajax({
+                url: url,
+                type: 'POST',
+                success: function () {
+                    if (isBookmarked) {
+                        icon.removeClass('active');
+                        path.attr('fill', 'none');
+                        alert('북마크가 해제되었습니다.');
+                    } else {
+                        icon.addClass('active');
+                        path.attr('fill', 'currentColor');
+                        alert('북마크에 추가되었습니다.');
+                    }
+                },
+                error: function (request,status,error) {
+                    alert('처리 중 오류가 발생했습니다.');
+                    console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                }
+            });
         });
     });
 
     function addCart(lectureIdx) {
-        const memberId = "${member.memberId}";
+        const memberId = '<c:out value="${sessionScope.memberId}" default="" />';
         if (!memberId || memberId.trim() === "") {
             alert("로그인이 필요합니다.");
             window.location.href = "/login";
@@ -351,7 +404,7 @@
                 }
                 const goCart = confirm("장바구니로 이동하시겠습니까?");
                 if(goCart){
-                    window.location.href = "/payment/cart?memberId=${member.memberId}";
+                    window.location.href = "/payment/cart?memberId=${sessionScope.memberId}";
                 }
             },
             error: function (xhr, status, error) {
