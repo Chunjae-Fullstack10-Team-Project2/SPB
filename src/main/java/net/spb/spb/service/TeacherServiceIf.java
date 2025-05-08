@@ -12,4 +12,10 @@ public interface TeacherServiceIf {
     public List<LectureDTO> selectTeacherLecture(String teacherId);
     public LectureDTO selectLectureMain(int lectureIdx);
     public List<ChapterDTO> selectLectureChapter(int lectureIdx);
+    public List<TeacherDTO> getTeacherMain(String subject);
+    public List<String> getAllSubject();
+    public List<TeacherDTO> getAllTeacher();
+    public int addBookmark(int lectureIdx, String memberId);
+    public int deleteBookmark(int lectureIdx, String memberId);
+    public List<Integer> selectBookmark(String teacherId, String memberId);
 }

@@ -3,6 +3,7 @@ package net.spb.spb.controller;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.spb.spb.dto.BookmarkDTO;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.TeacherDTO;
@@ -23,14 +24,28 @@ public class TeacherController {
     private final TeacherServiceIf teacherService;
     private final PaymentServiceIf paymentService;
 
+    @GetMapping("/main")
+    public String teacherMain(@RequestParam(value="subject", required = false)String subject, Model model) {
+        List<TeacherDTO> teacherDTO;
+        if(subject == null || subject.isBlank()) {
+            teacherDTO = teacherService.getAllTeacher();
+        } else {
+            teacherDTO = teacherService.getTeacherMain(subject);
+        }
+        model.addAttribute("teacherDTO", teacherDTO);
+        List<String> subjectList = teacherService.getAllSubject();
+        model.addAttribute("subjectList", subjectList);
+        return "teacher/teacherMain";
+    }
+
     @GetMapping("/personal")
-    public String teacherMain(
+    public String teacherPersonalMain(
             @RequestParam("teacherId") String teacherId,
             Model model, HttpSession session
     ) {
         String memberId = (String) session.getAttribute("memberId");
-        MemberDTO memberDTO = paymentService.getMemberInfo(memberId);
-        model.addAttribute("member", memberDTO);
+        List<Integer> bookmarked = teacherService.selectBookmark(teacherId, memberId);
+        model.addAttribute("bookmarked", bookmarked);
 
         TeacherDTO teacherDTO = teacherService.selectTeacher(teacherId);
         log.info("teacherDTO: {}",teacherDTO);
@@ -54,5 +69,17 @@ public class TeacherController {
         return "teacher/lectureMain";
     }
 
+    @PostMapping("/addBookmark")
+    @ResponseBody
+    public int addBookmark(@RequestParam("lectureIdx") int lectureIdx, HttpSession session){
+        String memberId = (String) session.getAttribute("memberId");
+        return teacherService.addBookmark(lectureIdx, memberId);
+    }
 
+    @PostMapping("/deleteBookmark")
+    @ResponseBody
+    public int deleteBookmark(@RequestParam("lectureIdx") int lectureIdx, HttpSession session){
+        String memberId = (String) session.getAttribute("memberId");
+        return teacherService.deleteBookmark(lectureIdx, memberId);
+    }
 }

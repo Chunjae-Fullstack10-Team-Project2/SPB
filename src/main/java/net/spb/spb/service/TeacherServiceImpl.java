@@ -9,6 +9,7 @@ import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.TeacherDTO;
 import net.spb.spb.mapper.TeacherMapper;
+import org.apache.ibatis.annotations.Param;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,5 +58,45 @@ public class TeacherServiceImpl implements TeacherServiceIf {
                         chapterVO -> modelMapper.map(chapterVO, ChapterDTO.class))
                         .collect(Collectors.toList());
         return chapterDTOList;
+    }
+
+    @Override
+    public List<TeacherDTO> getTeacherMain(String subject) {
+        List<TeacherVO> teacherVOList = teacherMapper.getTeacherMain(subject);
+        List<TeacherDTO> teacherDTOList =
+                teacherVOList.stream().map(
+                        teacherVO -> modelMapper.map(teacherVO, TeacherDTO.class))
+                        .collect(Collectors.toList());
+        return teacherDTOList;
+    }
+
+    @Override
+    public List<TeacherDTO> getAllTeacher(){
+        List<TeacherVO> teacherVOList = teacherMapper.getAllTeacher();
+        List<TeacherDTO> teacherDTOList =
+                teacherVOList.stream().map(
+                                teacherVO -> modelMapper.map(teacherVO, TeacherDTO.class))
+                        .collect(Collectors.toList());
+        return teacherDTOList;
+    }
+
+    @Override
+    public int addBookmark(int lectureIdx, String memberId) {
+        return teacherMapper.addBookmark(lectureIdx, memberId);
+    }
+
+    @Override
+    public int deleteBookmark(int lectureIdx, String memberId) {
+        return teacherMapper.deleteBookmark(lectureIdx, memberId);
+    }
+
+    @Override
+    public List<Integer> selectBookmark(String teacherId, String memberId) {
+        return teacherMapper.selectBookmark(teacherId, memberId);
+    }
+
+    @Override
+    public List<String> getAllSubject() {
+        return teacherMapper.getAllSubject();
     }
 }
