@@ -16,8 +16,9 @@ public class LectureDTO {
     private String lectureTitle;
     private String lectureDescription;
     private String lectureTeacherId;
-    private Date lectureCreateAt;
+    private Date lectureCreatedAt;
     private String lectureThumbnailImg;
     private int lectureAmount;
     private String lectureTeacherName;
+    private int lectureChapterCount;
 }

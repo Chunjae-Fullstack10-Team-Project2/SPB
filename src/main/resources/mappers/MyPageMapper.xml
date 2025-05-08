@@ -3,7 +3,8 @@
 <mapper namespace="net.spb.spb.mapper.MyPageMapper">
     <!-- 좋아요 목록  -->
     <select id="listMyLikes">
-        select postLikeIdx,
+        SELECT
+        postLikeIdx,
         postLikeRefIdx,
         postLikeRefType,
         postLikeMemberId,
@@ -12,10 +13,11 @@
         postMemberId,
         postCreatedAt,
         postContent
-        from tbl_post_like AS l
-        JOIN tbl_post AS p on l.postLikeRefIdx = p.postIdx
-        where postLikeMemberId = #{postLikeMemberId}
-        and postLikeRefType = 'POST'
+        FROM tbl_post_like AS l
+        JOIN tbl_post AS p ON l.postLikeRefIdx = p.postIdx
+        WHERE postLikeMemberId = #{postLikeMemberId}
+        AND postLikeRefType = 'POST'
+
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
                 <when test="searchDTO.searchType == 'postTitle'">
@@ -29,7 +31,8 @@
                 </when>
             </choose>
         </if>
-        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+        <if test="searchDTO.startDate != null and searchDTO.startDate != ''
+       and searchDTO.endDate != null and searchDTO.endDate != ''">
             <choose>
                 <when test="searchDTO.dateType == 'postLikeCreatedAt'">
                     AND postLikeCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
@@ -39,9 +42,27 @@
                 </when>
             </choose>
         </if>
-        limit #{pageDTO.pageSkipCount}
-        , #{pageDTO.pageSize}
+        <choose>
+            <when test="searchDTO.sortColumn != null and searchDTO.sortOrder != null">
+                ORDER BY
+                <choose>
+                    <when test="searchDTO.sortColumn == 'postTitle'">postTitle</when>
+                    <when test="searchDTO.sortColumn == 'postMemberId'">postMemberId</when>
+                    <when test="searchDTO.sortColumn == 'postCreatedAt'">postCreatedAt</when>
+                    <otherwise>postCreatedAt</otherwise>
+                </choose>
+                <choose>
+                    <when test="searchDTO.sortOrder == 'asc'">ASC</when>
+                    <otherwise>DESC</otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY postCreatedAt DESC
+            </otherwise>
+        </choose>
+        LIMIT #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
     </select>
+
     <select id="likesTotalCount" resultType="int" parameterType="String">
         select count(postLikeIdx)
         from tbl_post_like AS l
@@ -76,7 +97,8 @@
 
     <!-- 신고한 자유게시판 게시글 목록  -->
     <select id="listMyReport">
-        select reportIdx,
+        SELECT
+        reportIdx,
         reportRefIdx,
         reportMemberId,
         reportCreatedAt,
@@ -85,9 +107,10 @@
         postMemberId,
         postCreatedAt,
         postContent
-        from tbl_report AS r
-        JOIN tbl_post AS p on r.reportRefIdx = p.postIdx
-        where reportMemberId = #{reportMemberId}
+        FROM tbl_report AS r
+        JOIN tbl_post AS p ON r.reportRefIdx = p.postIdx
+        WHERE reportMemberId = #{reportMemberId}
+
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
                 <when test="searchDTO.searchType == 'postTitle'">
@@ -101,6 +124,7 @@
                 </when>
             </choose>
         </if>
+
         <if test="searchDTO.startDate != null and searchDTO.endDate != null">
             <choose>
                 <when test="searchDTO.dateType == 'reportCreatedAt'">
@@ -111,8 +135,21 @@
                 </when>
             </choose>
         </if>
-        limit #{pageDTO.pageSkipCount}
-        , #{pageDTO.pageSize}
+        <if test="searchDTO.sortColumn != null and searchDTO.sortOrder != null">
+            ORDER BY
+            <choose>
+                <when test="searchDTO.sortColumn == 'postTitle'">postTitle</when>
+                <when test="searchDTO.sortColumn == 'postMemberId'">postMemberId</when>
+                <when test="searchDTO.sortColumn == 'postCreatedAt'">postCreatedAt</when>
+                <otherwise>postCreatedAt</otherwise>
+            </choose>
+            <choose>
+                <when test="searchDTO.sortOrder == 'asc'">ASC</when>
+                <otherwise>DESC</otherwise>
+            </choose>
+        </if>
+
+        LIMIT #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
     </select>
     <select id="reportTotalCount" resultType="int" parameterType="String">
         select count(reportIdx)
@@ -147,7 +184,8 @@
 
     <!-- 주문 목록  -->
     <select id="listMyOrder">
-        select o.orderIdx,
+        SELECT
+        o.orderIdx,
         orderMemberId,
         orderAmount,
         orderStatus,
@@ -160,10 +198,12 @@
         lectureCreatedAt,
         lectureThumbnailImg,
         lectureAmount
-        from tbl_order_info as o
-        join tbl_order_lecture as ol on o.orderIdx = ol.orderIdx
-        join tbl_lecture as l on ol.orderLectureIdx = l.lectureIdx
-        where orderMemberId = #{orderMemberId} and orderStatus = 's'
+        FROM tbl_order_info AS o
+        JOIN tbl_order_lecture AS ol ON o.orderIdx = ol.orderIdx
+        JOIN tbl_lecture AS l ON ol.orderLectureIdx = l.lectureIdx
+        WHERE orderMemberId = #{orderMemberId}
+        AND orderStatus = 's'
+
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
                 <when test="searchDTO.searchType == 'lectureTitle'">
@@ -177,6 +217,7 @@
                 </when>
             </choose>
         </if>
+
         <if test="searchDTO.startDate != null and searchDTO.endDate != null">
             <choose>
                 <when test="searchDTO.dateType == 'orderCreatedAt'">
@@ -187,37 +228,124 @@
                 </when>
             </choose>
         </if>
-        limit #{pageDTO.pageSkipCount}
-        , #{pageDTO.pageSize}
+
+        <if test="searchDTO.sortColumn != null and searchDTO.sortOrder != null">
+            ORDER BY
+            <choose>
+                <when test="searchDTO.sortColumn == 'orderAmount'">orderAmount</when>
+                <when test="searchDTO.sortColumn == 'orderCreatedAt'">orderCreatedAt</when>
+                <otherwise>orderCreatedAt</otherwise>
+            </choose>
+            <choose>
+                <when test="searchDTO.sortOrder == 'asc'">ASC</when>
+                <otherwise>DESC</otherwise>
+            </choose>
+        </if>
+
+        LIMIT #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
     </select>
-    <select id="orderTotalCount" resultType="int" parameterType="String">
-        select count(o.orderIdx)
-        from tbl_order_info as o
-        join tbl_order_lecture as ol on o.orderIdx = ol.orderIdx
-        join tbl_lecture as l on ol.orderLectureIdx = l.lectureIdx
-        where orderMemberId = #{orderMemberId}
+    <select id="orderTotalCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_order_info o
+        WHERE o.orderMemberId = #{orderMemberId}
+        AND o.orderStatus = 's'
+
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            AND EXISTS (
+            SELECT 1
+            FROM tbl_order_lecture ol
+            JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
+            WHERE ol.orderIdx = o.orderIdx
             <choose>
                 <when test="searchDTO.searchType == 'lectureTitle'">
-                    AND lectureTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                    AND l.lectureTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
                 </when>
                 <when test="searchDTO.searchType == 'lectureTeacherId'">
-                    AND lectureTeacherId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                    AND l.lectureTeacherId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
                 </when>
                 <when test="searchDTO.searchType == 'lectureDescription'">
-                    AND lectureDescription LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                    AND l.lectureDescription LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
                 </when>
             </choose>
+            )
         </if>
+
         <if test="searchDTO.startDate != null and searchDTO.endDate != null">
             <choose>
                 <when test="searchDTO.dateType == 'orderCreatedAt'">
-                    AND orderCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                    AND o.orderCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
                 </when>
                 <when test="searchDTO.dateType == 'lectureCreatedAt'">
-                    AND lectureCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                    AND EXISTS (
+                    SELECT 1
+                    FROM tbl_order_lecture ol
+                    JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
+                    WHERE ol.orderIdx = o.orderIdx
+                    AND l.lectureCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                    )
                 </when>
             </choose>
         </if>
     </select>
+    <select id="listMyOrdersByPage" resultType="Integer">
+        SELECT o.orderIdx
+        FROM tbl_order_info o
+        WHERE o.orderMemberId = #{orderMemberId}
+        AND o.orderStatus = 's'
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            AND o.orderCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+        </if>
+        ORDER BY
+        <choose>
+            <when test="searchDTO.sortColumn == 'orderAmount'">o.orderAmount</when>
+            <when test="searchDTO.sortColumn == 'orderCreatedAt'">o.orderCreatedAt</when>
+            <otherwise>o.orderCreatedAt</otherwise>
+        </choose>
+        <choose>
+            <when test="searchDTO.sortOrder == 'asc'">ASC</when>
+            <otherwise>DESC</otherwise>
+        </choose>
+        LIMIT #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
+    </select>
+    <select id="listLecturesByOrderIdxList">
+        SELECT
+        o.orderIdx,
+        o.orderMemberId,
+        o.orderAmount,
+        o.orderStatus,
+        o.orderCreatedAt,
+        o.orderUpdatedAt,
+        l.lectureIdx,
+        l.lectureTitle,
+        l.lectureDescription,
+        l.lectureTeacherId,
+        l.lectureCreatedAt,
+        l.lectureThumbnailImg,
+        l.lectureAmount
+        FROM tbl_order_info o
+        JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
+        JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
+        WHERE o.orderIdx IN
+        <foreach collection="orderIdxList" item="idx" open="(" separator="," close=")">
+            #{idx}
+        </foreach>
+        ORDER BY
+        <choose>
+            <when test="searchDTO.sortColumn == 'orderAmount'">o.orderAmount</when>
+            <when test="searchDTO.sortColumn == 'orderCreatedAt'">o.orderCreatedAt</when>
+            <otherwise>o.orderCreatedAt</otherwise>
+        </choose>
+        <choose>
+            <when test="searchDTO.sortOrder == 'asc'">ASC</when>
+            <otherwise>DESC</otherwise>
+        </choose>
+    </select>
+
+    <!--  비밀번호 변경  -->
+    <update id="changePwd">
+        update tbl_member
+        set memberPwd           = #{memberPwd},
+            memberPwdChangeDate = now()
+        where memberId = #{memberId}
+    </update>
 </mapper>

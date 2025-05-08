@@ -8,7 +8,22 @@
 <c:if test="${not empty responseDTO}">
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
-            <c:set var="baseUrl" value="${baseUrl}?dateType=${searchDTO.dateType}&startDate=${searchDTO.startDate}&endDate=${searchDTO.endDate}&searchType=${searchDTO.searchType}&searchWord=${searchDTO.searchWord}&pageNo=" />
+                <%--            <c:set var="baseUrl" value="${baseUrl}?sortOrder=${searchDTO.sortOrder}&sortColumn=${searchDTO.sortColumn}pageSize=${responseDTO.pageSize}&dateType=${searchDTO.dateType}&startDate=${searchDTO.startDate}&endDate=${searchDTO.endDate}&searchType=${searchDTO.searchType}&searchWord=${searchDTO.searchWord}&pageNo=" />--%>
+            <c:url var="baseQuery" value="${baseUrl}">
+                <c:param name="pageSize" value="${responseDTO.pageSize}"/>
+                <c:param name="searchWord" value="${searchDTO.searchWord}"/>
+                <c:param name="searchType" value="${searchDTO.searchType}"/>
+                <c:param name="dateType" value="${searchDTO.dateType}"/>
+                <c:param name="sortColumn" value="${searchDTO.sortColumn}"/>
+                <c:param name="sortOrder" value="${searchDTO.sortOrder}"/>
+                <c:if test="${not empty searchDTO.startDate}">
+                    <c:param name="startDate" value="${searchDTO.startDate}"/>
+                </c:if>
+                <c:if test="${not empty searchDTO.endDate}">
+                    <c:param name="endDate" value="${searchDTO.endDate}"/>
+                </c:if>
+            </c:url>
+            <c:set var="baseUrl" value="${baseQuery}&pageNo="/>
 
             <!-- << (첫 페이지) -->
             <c:choose>
@@ -43,7 +58,7 @@
             </c:choose>
 
             <!-- 페이지 번호 -->
-            <c:forEach begin="${responseDTO.pageBlockStart}" end="${responseDTO.totalPage}" var="i">
+            <c:forEach begin="${responseDTO.pageBlockStart}" end="${responseDTO.pageBlockEnd}" var="i">
                 <c:choose>
                     <c:when test="${i == responseDTO.pageNo}">
                         <li class="page-item active">

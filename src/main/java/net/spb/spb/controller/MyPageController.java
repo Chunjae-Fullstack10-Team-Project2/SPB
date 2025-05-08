@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -102,22 +103,47 @@ public class MyPageController {
     public String listPostLikes(HttpSession session, Model model,
                                 @ModelAttribute SearchDTO searchDTO,
                                 @ModelAttribute PageRequestDTO pageRequestDTO) {
+
         String postLikeMemberId = (String) session.getAttribute("memberId");
 
         if (searchDTO.getDateType() == null || searchDTO.getDateType().isEmpty()) {
             searchDTO.setDateType("postLikeCreatedAt");
         }
 
+        if ("".equals(searchDTO.getStartDate())) {
+            searchDTO.setStartDate(null);
+        }
+        if ("".equals(searchDTO.getEndDate())) {
+            searchDTO.setEndDate(null);
+        }
+        if ("".equals(searchDTO.getSearchWord())) {
+            searchDTO.setSearchWord(null);
+        }
+        if ("".equals(searchDTO.getSearchType())) {
+            searchDTO.setSearchType(null);
+        }
+        if ("".equals(searchDTO.getSortColumn())) {
+            searchDTO.setSortColumn(null);
+        }
+        if ("".equals(searchDTO.getSortOrder())) {
+            searchDTO.setSortOrder(null);
+        }
+
+        pageRequestDTO.setPageSkipCount(pageRequestDTO.getPageSkipCount());
+
         List<PostLikeRequestDTO> likesList = myPageService.listMyLikes(searchDTO, pageRequestDTO, postLikeMemberId);
+        int totalCount = myPageService.likesTotalCount(searchDTO, postLikeMemberId);
+
         PageResponseDTO<PostLikeRequestDTO> pageResponseDTO = PageResponseDTO.<PostLikeRequestDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
-                .totalCount(myPageService.likesTotalCount(searchDTO, postLikeMemberId))
+                .totalCount(totalCount)
                 .dtoList(likesList)
                 .build();
 
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("likesList", likesList);
         model.addAttribute("searchDTO", searchDTO);
+
         return "mypage/likes";
     }
 
@@ -148,50 +174,110 @@ public class MyPageController {
     public String listLectureOrder(HttpSession session, Model model,
                                    @ModelAttribute SearchDTO searchDTO,
                                    @ModelAttribute PageRequestDTO pageRequestDTO) {
-        String orderMemberId = (String) session.getAttribute("memberId");
+        String memberId = (String) session.getAttribute("memberId");
 
         if (searchDTO.getDateType() == null || searchDTO.getDateType().isEmpty()) {
             searchDTO.setDateType("orderCreatedAt");
         }
 
-        // 원본 flat 리스트
-        List<OrderDTO> rawOrderList = myPageService.listMyOrder(searchDTO, pageRequestDTO, orderMemberId);
+        // 1. 페이징 대상인 주문번호만 가져옴
+        List<Integer> pagedOrderIdxList = myPageService.getPagedOrderIdxList(searchDTO, pageRequestDTO, memberId);
 
-        // 주문번호 기준으로 그룹핑
-        Map<Integer, OrderDTO> orderMap = new LinkedHashMap<>();
+        // 2. 주문번호 리스트 기반으로 주문+강좌 전체 조회
+        List<OrderDTO> flatList = myPageService.getOrdersWithLectures(pagedOrderIdxList, searchDTO);
 
-        for (OrderDTO item : rawOrderList) {
-            int orderIdx = item.getOrderIdx();
-
-            // 이미 저장된 주문이면 기존 DTO에 강의 추가
-            if (orderMap.containsKey(orderIdx)) {
-                orderMap.get(orderIdx).getOrderLectureList().add(item.getLectureTitle());
-            } else {
-                // 처음 보는 주문이면 새로운 DTO 생성 후 강의 추가
-                OrderDTO newOrder = new OrderDTO();
-                newOrder.setOrderIdx(orderIdx);
-                newOrder.setOrderMemberId(item.getOrderMemberId());
-                newOrder.setOrderCreatedAt(item.getOrderCreatedAt());
-                newOrder.setOrderAmount(item.getOrderAmount());
-                newOrder.setOrderStatus(item.getOrderStatus());
-                newOrder.setOrderLectureList(new ArrayList<>());
-                newOrder.getOrderLectureList().add(item.getLectureTitle());
-
-                orderMap.put(orderIdx, newOrder);
-            }
+        // 3. 주문 단위로 그룹핑
+        Map<Integer, OrderDTO> grouped = new LinkedHashMap<>();
+        for (OrderDTO dto : flatList) {
+            int orderIdx = dto.getOrderIdx();
+            grouped.computeIfAbsent(orderIdx, idx -> {
+                OrderDTO od = new OrderDTO();
+                od.setOrderIdx(idx);
+                od.setOrderMemberId(dto.getOrderMemberId());
+                od.setOrderCreatedAt(dto.getOrderCreatedAt());
+                od.setOrderAmount(dto.getOrderAmount());
+                od.setOrderStatus(dto.getOrderStatus());
+                od.setOrderLectureList(new ArrayList<>());
+                return od;
+            }).getOrderLectureList().add(dto.getLectureTitle());
         }
 
-        List<OrderDTO> finalOrderList = new ArrayList<>(orderMap.values());
+        List<OrderDTO> finalOrderList = new ArrayList<>(grouped.values());
+
+        int totalCount = myPageService.orderTotalCount(searchDTO, memberId);
 
         PageResponseDTO<OrderDTO> pageResponseDTO = PageResponseDTO.<OrderDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
-                .totalCount(myPageService.orderTotalCount(searchDTO, orderMemberId))
+                .totalCount(totalCount)
                 .dtoList(finalOrderList)
                 .build();
 
-        model.addAttribute("responseDTO", pageResponseDTO);
+         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("orderList", finalOrderList);
         model.addAttribute("searchDTO", searchDTO);
         return "mypage/order";
+    }
+
+    @GetMapping("/changePwd")
+    public String changePwd(HttpSession session, Model model) {
+        String memberId = (String) session.getAttribute("memberId");
+        if (memberId == null) {
+            return "redirect:/login";
+        }
+
+        MemberDTO memberDTO = memberService.getMemberById(memberId);
+        model.addAttribute("memberDTO", memberDTO);
+
+        return "mypage/changePwd";
+    }
+
+    @PostMapping("/changePwd")
+    public String changePwd(@RequestParam("currentPwd") String currentPwd,
+                            @RequestParam("newPwd") String newPwd,
+                            @RequestParam("confirmPwd") String confirmPwd,
+                            HttpSession session,
+                            Model model) throws NoSuchAlgorithmException {
+
+        String memberId = (String) session.getAttribute("memberId");
+
+        if (memberId == null) return "redirect:/login";
+
+        String originalEncryptedPwd = memberService.getPwdById(memberId);
+        String encryptedCurrentPwd = PasswordUtil.encryptPassword(currentPwd);
+
+        if (!encryptedCurrentPwd.equals(originalEncryptedPwd)) {
+            model.addAttribute("message", "현재 비밀번호가 일치하지 않습니다.");
+            return "mypage/changePwd";
+        }
+
+        if (!currentPwd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{4,15}$")) {
+            model.addAttribute("message", "비밀번호 형식이 올바르지 않습니다.");
+            return "mypage/changePwd";
+        }
+
+        if (!newPwd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{4,15}$")) {
+            model.addAttribute("message", "비밀번호 형식이 올바르지 않습니다.");
+            return "mypage/changePwd";
+        }
+
+        if (!confirmPwd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{4,15}$")) {
+            model.addAttribute("message", "비밀번호 형식이 올바르지 않습니다.");
+            return "mypage/changePwd";
+        }
+
+        if (!newPwd.equals(confirmPwd)) {
+            model.addAttribute("message", "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            return "mypage/changePwd";
+        }
+
+        String encryptedNewPwd = PasswordUtil.encryptPassword(newPwd);
+        boolean result = myPageService.changePwd(encryptedNewPwd, memberId);
+
+        if (result) {
+            return "redirect:/mypage/changePwd";
+        } else {
+            model.addAttribute("message", "비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
+            return "mypage/changePwd";
+        }
     }
 }

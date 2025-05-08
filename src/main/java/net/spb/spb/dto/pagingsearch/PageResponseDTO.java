@@ -36,8 +36,8 @@ public class PageResponseDTO<E> {
         this.pageSkipCount = pageRequestDTO.getPageSkipCount();
         this.totalPage = this.totalCount > 0 ? (int) Math.ceil((double) this.totalCount / this.pageSize) : 1;
         this.pageBlockSize = pageRequestDTO.getPageBlockSize();
-        this.setPageBlockStart((int) Math.floor((pageNo - 1) / (double) pageBlockSize) * pageBlockSize + 1);
-        this.setPageBlockEnd(pageBlockStart + pageBlockSize - 1);
+        this.pageBlockStart = ((this.pageNo - 1) / this.pageBlockSize) * this.pageBlockSize + 1;
+        this.pageBlockEnd = Math.min(this.pageBlockStart + this.pageBlockSize - 1, this.totalPage);
         this.prevPageFlag = this.pageBlockStart > 1;
         this.nextPageFlag = this.pageBlockEnd < totalPage;
         this.dtoList = dtoList;
@@ -51,16 +51,4 @@ public class PageResponseDTO<E> {
         return (this.pageNo - 1) * this.pageSize;
     }
 
-    public void setPageBlockStart() {
-        if (this.pageNo % this.pageBlockSize == 0) {
-            this.pageBlockStart = this.pageNo - this.pageBlockSize - 1;
-        } else {
-            this.pageBlockStart = (int) Math.floor(((double) this.pageNo / this.pageBlockSize)) * this.pageBlockSize + 1;
-        }
-    }
-
-    public void setPageBlockEnd() {
-        this.pageBlockEnd = (int) (Math.ceil((double) this.pageNo / this.pageBlockSize) * this.pageBlockSize);
-        this.pageBlockEnd = Math.min(this.pageBlockEnd, this.totalPage);
-    }
 }

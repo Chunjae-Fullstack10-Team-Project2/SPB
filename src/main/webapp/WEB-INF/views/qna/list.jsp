@@ -1,7 +1,14 @@
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    String uri = request.getRequestURI();
+    request.setAttribute("currentURI", uri);
+%>
 <html>
 <head>
     <title>1:1 문의</title>
@@ -16,128 +23,106 @@
 <body>
 <%@ include file="../common/header.jsp" %>
 
-<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-    <symbol id="house-door-fill" viewBox="0 0 16 16">
-        <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
-    </symbol>
-</svg>
-<div class="container my-5">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
-            <li class="breadcrumb-item">
-                <a class="link-body-emphasis" href="/">
-                    <svg class="bi" width="16" height="16" aria-hidden="true">
-                        <use xlink:href="#house-door-fill"></use>
-                    </svg>
-                    <span class="visually-hidden">Home</span>
-                </a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">
-                1:1 문의
-            </li>
-        </ol>
-    </nav>
-</div>
-<div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="mb-0">문의 목록</h3>
-        <a href="/qna/regist" class="btn btn-primary">
-            <i class="bi bi-pencil-square"></i> 문의 등록
-        </a>
+<div class="content-nonside">
+    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+        <symbol id="house-door-fill" viewBox="0 0 16 16">
+            <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
+        </symbol>
+    </svg>
+    <div class="container my-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
+                <li class="breadcrumb-item">
+                    <a class="link-body-emphasis" href="/">
+                        <svg class="bi" width="16" height="16" aria-hidden="true">
+                            <use xlink:href="#house-door-fill"></use>
+                        </svg>
+                        <span class="visually-hidden">Home</span>
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    1:1 문의
+                </li>
+            </ol>
+        </nav>
     </div>
-    <div class="search-box" style="max-width: 700px;">
-        <form name="frmSearch" method="get" action="/qna/list" class="mb-1 p-4">
-            <div class="row g-2 align-items-center mb-3">
-                <div class="col-md-8">
-                    <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택"
-                           autocomplete="off"
-                           value="${not empty param.datefilter ? param.datefilter : ''}"/>
-                </div>
-            </div>
 
-            <div class="row g-2 align-items-center mb-3">
-                <div class="col-md-3">
-                    <select name="searchType" class="form-select">
-                        <option value="qnaTitle" ${searchDTO.searchType eq "qnaTitle" ? "selected":""}>제목</option>
-                        <option value="qnaQContent" ${searchDTO.searchType eq "qnaQContent" ? "selected":""}>질문 내용
-                        </option>
-                        <option value="qnaQMemberId" ${searchDTO.searchType eq "qnaQMemberId" ? "selected":""}>질문 작성자
-                        </option>
-                        <option value="qnaAContent" ${searchDTO.searchType eq "qnaAContent" ? "selected":""}>답변 내용
-                        </option>
-                        <option value="qnaAMemberId" ${searchDTO.searchType eq "qnaAMemberId" ? "selected":""}>답변 작성자
-                        </option>
-                    </select>
-                </div>
-                <div class="col-md-5">
-                    <input type="text" name="searchWord" class="form-control" placeholder="검색어 입력"
-                           value="${searchDTO.searchWord}"/>
-                </div>
-                <div class="col-md-3 d-flex gap-1">
-                    <button type="submit" class="btn btn-primary flex-fill" id="btnSearch">검색</button>
-                    <button type="button" class="btn btn-link text-decoration-none" id="btnReset">초기화</button>
-                </div>
-            </div>
-        </form>
-    </div>
-    <c:if test="${not empty qnaList}">
-        <div class="list-group">
-            <c:forEach var="qnaDTO" items="${qnaList}">
-                <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
-                     style="cursor: pointer;"
-                     onclick="handleQnaClick(${qnaDTO.qnaIdx}, '${qnaDTO.qnaQPwd ne 0 ? 'Y' : 'N'}')">
-                    <div class="ms-2 me-auto">
-                        <div class="fw-bold">${qnaDTO.qnaTitle}</div>
-                        <small class="text-muted">작성자: ${qnaDTO.qnaQMemberId}</small>
-                    </div>
-                    <div class="d-flex flex-column align-items-end">
-                        <c:choose>
-                            <c:when test="${not empty qnaDTO.qnaAnsweredAt}">
-                                <span class="badge bg-success mb-1">답변</span>
-                            </c:when>
-                            <c:otherwise>
-                                <span class="badge bg-danger mb-1">미답변</span>
-                            </c:otherwise>
-                        </c:choose>
-                        <small class="text-muted">
-                            <fmt:formatDate value="${qnaDTO.qnaCreatedAt}" pattern="yyyy-MM-dd"/>
-                        </small>
-                    </div>
-                </div>
-            </c:forEach>
+    <div class="container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">문의 목록</h3>
+            <a href="" class="btn btn-primary">
+                <i class="bi bi-pencil-square"></i> 문의 등록
+            </a>
         </div>
-        <div class="modal fade" id="pwdModal" tabindex="-1" aria-labelledby="pwdModalLabel" aria-hidden="true">
-            <input type="hidden" id="selectedQnaIdx">
-            <div class="modal-dialog">
-                <div class="modal-content p-3">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="pwdModalLabel">비밀번호 확인</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <%
+            List<Map<String, String>> searchTypeOptions = new ArrayList<>();
+            searchTypeOptions.add(Map.of("value", "qnaTitle", "label", "제목"));
+            searchTypeOptions.add(Map.of("value", "qnaQContent", "label", "문의 내용"));
+            searchTypeOptions.add(Map.of("value", "qnaQMemberId", "label", "문의 작성자"));
+            searchTypeOptions.add(Map.of("value", "qnaAContent", "label", "답변 내용"));
+            searchTypeOptions.add(Map.of("value", "qnaAMemberId", "label", "답변 작성자"));
+            request.setAttribute("searchTypeOptions", searchTypeOptions);
+            request.setAttribute("searchAction", "/qna/list");
+        %>
+        <jsp:include page="../common/searchBox.jsp"/>
+        <c:if test="${not empty qnaList}">
+            <div class="list-group">
+                <c:forEach var="qnaDTO" items="${qnaList}">
+                    <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
+                         style="cursor: pointer;"
+                         onclick="handleQnaClick(${qnaDTO.qnaIdx}, '${qnaDTO.qnaQPwd ne 0 ? 'Y' : 'N'}')">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">${qnaDTO.qnaTitle}</div>
+                            <small class="text-muted">작성자: ${qnaDTO.qnaQMemberId}</small>
+                        </div>
+                        <div class="d-flex flex-column align-items-end">
+                            <c:choose>
+                                <c:when test="${not empty qnaDTO.qnaAnsweredAt}">
+                                    <span class="badge bg-success mb-1">답변</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="badge bg-danger mb-1">미답변</span>
+                                </c:otherwise>
+                            </c:choose>
+                            <small class="text-muted">
+                                <fmt:formatDate value="${qnaDTO.qnaCreatedAt}" pattern="yyyy-MM-dd"/>
+                            </small>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <input type="password" class="form-control" id="qnaQPwdConfirm" placeholder="비밀번호를 입력하세요.">
-                        <div class="text-danger mt-2" id="pwdError" style="display: none;">비밀번호가 일치하지 않습니다.</div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                        <button type="button" class="btn btn-primary" onclick="verifyPassword()">확인</button>
+                </c:forEach>
+            </div>
+            <div class="modal fade" id="pwdModal" tabindex="-1" aria-labelledby="pwdModalLabel" aria-hidden="true">
+                <input type="hidden" id="selectedQnaIdx">
+                <div class="modal-dialog">
+                    <div class="modal-content p-3">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="pwdModalLabel">비밀번호 확인</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="password" class="form-control" id="qnaQPwdConfirm" placeholder="비밀번호를 입력하세요.">
+                            <div class="text-danger mt-2" id="pwdError" style="display: none;">비밀번호가 일치하지 않습니다.</div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                            <button type="button" class="btn btn-primary" onclick="verifyPassword()">확인</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </c:if>
+        </c:if>
 
-    <c:if test="${empty qnaList}">
-        <div class="alert alert-warning mt-4" role="alert">
-            등록된 문의가 없습니다.
-        </div>
-    </c:if>
+        <c:if test="${empty qnaList}">
+            <div class="alert alert-warning mt-4" role="alert">
+                등록된 문의가 없습니다.
+            </div>
+        </c:if>
 
-    <div class="mt-4 text-center">
-        <%@ include file="../common/paging.jsp" %>
+        <div class="mt-4 text-center">
+            <%@ include file="../common/paging.jsp" %>
+        </div>
     </div>
 </div>
-
 <script>
     function handleQnaClick(qnaIdx, hasPwd) {
         if (hasPwd === 'Y') {

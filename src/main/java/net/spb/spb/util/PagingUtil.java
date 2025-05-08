@@ -1,9 +1,7 @@
 package net.spb.spb.util;
 
-import net.spb.spb.dto.pagingsearch.MemberPageDTO;
-import net.spb.spb.dto.pagingsearch.PageDTO;
-import net.spb.spb.dto.pagingsearch.PostPageDTO;
-import net.spb.spb.dto.pagingsearch.StudentLecturePageDTO;
+
+import net.spb.spb.dto.pagingsearch.*;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -11,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PagingUtil {
-    public static String buildBoardLinkUrl(String basePath, PostPageDTO dto) {
+    public static String buildLinkUrl(String basePath, PostPageDTO dto) {
         StringBuilder linkUrl = new StringBuilder(basePath);
         boolean hasQuery = false;
 
@@ -38,7 +36,7 @@ public class PagingUtil {
         return linkUrl.toString();
     }
 
-    public static String buildMemberLinkUrl(String basePath, MemberPageDTO dto) {
+    public static String buildLinkUrl(String basePath, MemberPageDTO dto) {
         StringBuilder linkUrl = new StringBuilder(basePath);
         boolean hasQuery = false;
 
@@ -68,11 +66,40 @@ public class PagingUtil {
         }
         return linkUrl.toString();
     }
+    public static String buildLinkUrl(String basePath, LecturePageDTO dto) {
+        StringBuilder linkUrl = new StringBuilder(basePath);
+        boolean hasQuery = false;
+
+        if (dto.getPage_size() > 0) {
+            linkUrl.append(hasQuery ? "&" : "?").append("page_size=").append(dto.getPage_size());
+            hasQuery = true;
+        }
+        if (dto.getSearch_word() != null && !dto.getSearch_word().isEmpty()) {
+            linkUrl.append(hasQuery ? "&" : "?").append("search_word=").append(dto.getSearch_word());
+            hasQuery = true;
+        }
+        if (dto.getSearch_type() != null) {
+            linkUrl.append(hasQuery ? "&" : "?").append("search_type=").append(dto.getSearch_type());
+            hasQuery = true;
+        }
+        if (dto.getSort_by() != null) {
+            linkUrl.append(hasQuery ? "&" : "?").append("sort_by=").append(dto.getSort_by());
+            hasQuery = true;
+        }
+        if (dto.getSort_direction() != null) {
+            linkUrl.append(hasQuery ? "&" : "?").append("sort_direction=").append(dto.getSort_direction());
+            hasQuery = true;
+        }
+        return linkUrl.toString();
+    }
 
     public static String buildStudentLectureLinkUrl(String basePath, StudentLecturePageDTO dto) {
         StringBuilder linkUrl = new StringBuilder(basePath);
         List<String> params = new ArrayList<>();
 
+        if (dto.getPage_size() > 0) {
+            params.add("page_size=" + dto.getPage_size());
+        }
         if (dto.getLecture_status() > 0) {
             params.add("lecture_status=" + dto.getLecture_status());
         }
@@ -139,7 +166,9 @@ public class PagingUtil {
 
         return sb.toString();
     }
+
     private static String getFullLink(String baseUrl, String connector, int page_no, String s) {
         return "<a href='" + baseUrl + connector + "page_no=" + page_no + "'>" + s + "</a>" + "&nbsp;&nbsp;";
     }
+
 }
