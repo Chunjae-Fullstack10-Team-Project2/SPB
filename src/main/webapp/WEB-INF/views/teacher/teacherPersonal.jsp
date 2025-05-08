@@ -235,20 +235,6 @@
 <%@ include file="../common/sidebarHeader.jsp" %>
 <div class="content">
 <div class="tContainer">
-<%--    <aside class="sidebar">--%>
-<%--        <div class="sidebar-title">SIDEMENU</div>--%>
-<%--        <ul class="sidebar-menu">--%>
-<%--            <li class="sidebar-menu-item">--%>
-<%--                <a href="#" class="sidebar-menu-link active">공지</a>--%>
-<%--            </li>--%>
-<%--            <li class="sidebar-menu-item">--%>
-<%--                <a href="#" class="sidebar-menu-link">Q&A</a>--%>
-<%--            </li>--%>
-<%--            <li class="sidebar-menu-item">--%>
-<%--                <a href="#" class="sidebar-menu-link">자료실</a>--%>
-<%--            </li>--%>
-<%--        </ul>--%>
-<%--    </aside>--%>
 
     <main class="main-content">
         <div class="teacher-profile">

@@ -8,6 +8,8 @@ import net.spb.spb.domain.TeacherVO;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.TeacherDTO;
+import net.spb.spb.dto.pagingsearch.PageRequestDTO;
+import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.mapper.TeacherMapper;
 import org.apache.ibatis.annotations.Param;
 import org.modelmapper.ModelMapper;
@@ -61,8 +63,8 @@ public class TeacherServiceImpl implements TeacherServiceIf {
     }
 
     @Override
-    public List<TeacherDTO> getTeacherMain(String subject) {
-        List<TeacherVO> teacherVOList = teacherMapper.getTeacherMain(subject);
+    public List<TeacherDTO> getTeacherMain(String subject, SearchDTO searchDTO, PageRequestDTO pageRequestDTO) {
+        List<TeacherVO> teacherVOList = teacherMapper.getTeacherMain(subject, searchDTO, pageRequestDTO);
         List<TeacherDTO> teacherDTOList =
                 teacherVOList.stream().map(
                         teacherVO -> modelMapper.map(teacherVO, TeacherDTO.class))
@@ -71,8 +73,8 @@ public class TeacherServiceImpl implements TeacherServiceIf {
     }
 
     @Override
-    public List<TeacherDTO> getAllTeacher(){
-        List<TeacherVO> teacherVOList = teacherMapper.getAllTeacher();
+    public List<TeacherDTO> getAllTeacher(SearchDTO searchDTO, PageRequestDTO pageRequestDTO){
+        List<TeacherVO> teacherVOList = teacherMapper.getAllTeacher(searchDTO, pageRequestDTO);
         List<TeacherDTO> teacherDTOList =
                 teacherVOList.stream().map(
                                 teacherVO -> modelMapper.map(teacherVO, TeacherDTO.class))
@@ -93,6 +95,11 @@ public class TeacherServiceImpl implements TeacherServiceIf {
     @Override
     public List<Integer> selectBookmark(String teacherId, String memberId) {
         return teacherMapper.selectBookmark(teacherId, memberId);
+    }
+
+    @Override
+    public int getTotalCount(SearchDTO searchDTO, String subject) {
+        return teacherMapper.getTotalCount(searchDTO, subject);
     }
 
     @Override
