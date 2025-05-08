@@ -14,119 +14,121 @@
 </head>
 <body>
 <%@ include file="../common/header.jsp" %>
-<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-    <symbol id="house-door-fill" viewBox="0 0 16 16">
-        <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
-    </symbol>
-</svg>
-<div class="container my-5">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
-            <li class="breadcrumb-item">
-                <a class="link-body-emphasis" href="/">
-                    <svg class="bi" width="16" height="16" aria-hidden="true">
-                        <use xlink:href="#house-door-fill"></use>
-                    </svg>
-                    <span class="visually-hidden">Home</span>
-                </a>
-            </li>
-            <li class="breadcrumb-item">
-                <a class="link-body-emphasis fw-semibold text-decoration-none" href="/faq/list">자주 묻는 질문</a>
-            </li>
-        </ol>
-    </nav>
-</div>
-<div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="mb-0">문의 목록</h3>
-        <a href="/faq/regist" class="btn btn-primary">
-            <i class="bi bi-pencil-square"></i> 문의 등록
-        </a>
+<div class="content-nonside">
+    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+        <symbol id="house-door-fill" viewBox="0 0 16 16">
+            <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
+        </symbol>
+    </svg>
+    <div class="container my-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
+                <li class="breadcrumb-item">
+                    <a class="link-body-emphasis" href="/">
+                        <svg class="bi" width="16" height="16" aria-hidden="true">
+                            <use xlink:href="#house-door-fill"></use>
+                        </svg>
+                        <span class="visually-hidden">Home</span>
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">
+                    자주 묻는 질문
+                </li>
+            </ol>
+        </nav>
     </div>
-    <div class="search-box" style="max-width: 700px;">
-        <form name="frmSearch" method="get" action="/faq/list" class="mb-1 p-4">
-            <%--            border rounded shadow-sm bg-light--%>
-            <div class="row g-2 align-items-center mb-3">
-                <div class="col-md-8">
-                    <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택"
-                           autocomplete="off"
-                           value="${not empty param.datefilter ? param.datefilter : ''}"/>
+    <div class="container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">문의 목록</h3>
+            <a href="/faq/regist" class="btn btn-primary">
+                <i class="bi bi-pencil-square"></i> 문의 등록
+            </a>
+        </div>
+        <div class="search-box" style="max-width: 700px;">
+            <form name="frmSearch" method="get" action="/faq/list" class="mb-1 p-4">
+                <%--            border rounded shadow-sm bg-light--%>
+                <div class="row g-2 align-items-center mb-3">
+                    <div class="col-md-8">
+                        <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택"
+                               autocomplete="off"
+                               value="${not empty param.datefilter ? param.datefilter : ''}"/>
+                    </div>
                 </div>
-            </div>
 
-            <div class="row g-2 align-items-center mb-3">
-                <div class="col-md-3">
-                    <select name="searchType" class="form-select">
-                        <option value="faqQuestion" ${searchDTO.searchType eq "faqQuestion" ? "selected":""}>질문 내용
-                        </option>
-                        <option value="faqAnswer" ${searchDTO.searchType eq "faqAnswer" ? "selected":""}>답변 내용</option>
-                    </select>
+                <div class="row g-2 align-items-center mb-3">
+                    <div class="col-md-3">
+                        <select name="searchType" class="form-select">
+                            <option value="faqQuestion" ${searchDTO.searchType eq "faqQuestion" ? "selected":""}>질문 내용
+                            </option>
+                            <option value="faqAnswer" ${searchDTO.searchType eq "faqAnswer" ? "selected":""}>답변 내용
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" name="searchWord" class="form-control" placeholder="검색어 입력"
+                               value="${searchDTO.searchWord}"/>
+                    </div>
+                    <div class="col-md-3 d-flex gap-1">
+                        <button type="submit" class="btn btn-primary flex-fill" id="btnSearch">검색</button>
+                        <button type="button" class="btn btn-link text-decoration-none" id="btnReset">초기화</button>
+                    </div>
                 </div>
-                <div class="col-md-5">
-                    <input type="text" name="searchWord" class="form-control" placeholder="검색어 입력"
-                           value="${searchDTO.searchWord}"/>
-                </div>
-                <div class="col-md-3 d-flex gap-1">
-                    <button type="submit" class="btn btn-primary flex-fill" id="btnSearch">검색</button>
-                    <button type="button" class="btn btn-link text-decoration-none" id="btnReset">초기화</button>
-                </div>
-            </div>
-        </form>
-    </div>
-    <c:if test="${not empty faqList}">
-        <div class="accordion" id="faqAccordion">
-            <c:forEach var="faqDTO" items="${faqList}" varStatus="status">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="heading${faqDTO.faqIdx}">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapse${faqDTO.faqIdx}" aria-expanded="false"
-                                aria-controls="collapse${faqDTO.faqIdx}">
-                            <span class="faq-question-view">Q. ${faqDTO.faqQuestion}</span>
-                            <input type="text" class="form-control faq-question-edit d-none"
-                                   value="${faqDTO.faqQuestion}"/>
-                        </button>
-                    </h2>
+            </form>
+        </div>
+        <c:if test="${not empty faqList}">
+            <div class="accordion" id="faqAccordion">
+                <c:forEach var="faqDTO" items="${faqList}" varStatus="status">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading${faqDTO.faqIdx}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse${faqDTO.faqIdx}" aria-expanded="false"
+                                    aria-controls="collapse${faqDTO.faqIdx}">
+                                <span class="faq-question-view">Q. ${faqDTO.faqQuestion}</span>
+                                <input type="text" class="form-control faq-question-edit d-none"
+                                       value="${faqDTO.faqQuestion}"/>
+                            </button>
+                        </h2>
 
-                    <div id="collapse${faqDTO.faqIdx}" class="accordion-collapse collapse"
-                         aria-labelledby="heading${faqDTO.faqIdx}" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            <div class="faq-view" data-id="${faqDTO.faqIdx}">
-                                <p class="mb-2"><strong>A.</strong></p>
-                                <p class="faq-answer">${faqDTO.faqAnswer}</p>
-                                <div class="text-end">
-                                    <button class="btn btn-sm btn-outline-secondary btn-edit">수정</button>
-                                    <button class="btn btn-sm btn-outline-danger btn-delete">삭제</button>
+                        <div id="collapse${faqDTO.faqIdx}" class="accordion-collapse collapse"
+                             aria-labelledby="heading${faqDTO.faqIdx}" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <div class="faq-view" data-id="${faqDTO.faqIdx}">
+                                    <p class="mb-2"><strong>A.</strong></p>
+                                    <p class="faq-answer">${faqDTO.faqAnswer}</p>
+                                    <div class="text-end">
+                                        <button class="btn btn-sm btn-outline-secondary btn-edit">수정</button>
+                                        <button class="btn btn-sm btn-outline-danger btn-delete">삭제</button>
+                                    </div>
+                                    <div class="text-end text-muted mt-2">
+                                        작성일: <fmt:formatDate value="${faqDTO.faqCreatedAt}" pattern="yyyy-MM-dd"/>
+                                    </div>
                                 </div>
-                                <div class="text-end text-muted mt-2">
-                                    작성일: <fmt:formatDate value="${faqDTO.faqCreatedAt}" pattern="yyyy-MM-dd"/>
-                                </div>
-                            </div>
-                            <div class="faq-edit d-none" data-id="${faqDTO.faqIdx}">
+                                <div class="faq-edit d-none" data-id="${faqDTO.faqIdx}">
                                 <textarea class="form-control mb-2 faq-answer-edit"
                                           rows="4">${faqDTO.faqAnswer}</textarea>
-                                <div class="d-flex justify-content-end gap-2">
-                                    <button class="btn btn-sm btn-primary btn-save">저장</button>
-                                    <button class="btn btn-sm btn-secondary btn-cancel">취소</button>
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button class="btn btn-sm btn-primary btn-save">저장</button>
+                                        <button class="btn btn-sm btn-secondary btn-cancel">취소</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </c:forEach>
-        </div>
-    </c:if>
+                </c:forEach>
+            </div>
+        </c:if>
 
-    <c:if test="${empty faqList}">
-        <div class="alert alert-warning mt-4" role="alert">
-            등록된 문의가 없습니다.
-        </div>
-    </c:if>
+        <c:if test="${empty faqList}">
+            <div class="alert alert-warning mt-4" role="alert">
+                등록된 문의가 없습니다.
+            </div>
+        </c:if>
 
-    <div class="mt-4 text-center">
-        <%@ include file="../common/paging.jsp" %>
+        <div class="mt-4 text-center">
+            <%@ include file="../common/paging.jsp" %>
+        </div>
     </div>
 </div>
-
 <script>
     $(document).on('click', '.btn-edit', function () {
         const container = $(this).closest('.accordion-body');

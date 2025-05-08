@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<c:set var="cp" value="${pageContext.request.contextPath}" />
+<c:set var="cp" value="${pageContext.request.contextPath}"/>
 
 <html>
 <head>
@@ -8,15 +8,19 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <%-- jQuery, daterangepicker (선택) --%>
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+    <!-- moment.js -->
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/min/moment.min.js"></script>
+
+    <!-- daterangepicker -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     <%-- 기타 --%>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <link href="../resources/css/global.css" rel="stylesheet">
+    <link href="/resources/css/global.css" rel="stylesheet">
 
     <style>
         header {
@@ -127,10 +131,12 @@
 
             <div class="d-flex align-items-center">
 
-                <a href="/payment/cart?memberId=${sessionScope.memberId}" class="me-4 text-decoration-none position-relative">
+                <a href="/payment/cart?memberId=${sessionScope.memberId}"
+                   class="me-4 text-decoration-none position-relative">
                     <i class="bi bi-cart" style="font-size: 1.4rem;"></i>
                     <c:if test="${not empty sessionScope.memberId}">
-                        <span id="cart-count-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                        <span id="cart-count-badge"
+                              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
                     </c:if>
                     <c:if test="${empty sessionScope.memberId}">
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
@@ -148,7 +154,9 @@
                         </c:if>
                         <c:if test="${not empty sessionScope.memberId}">
                             <li><a class="dropdown-item" href="${cp}/mypage">마이페이지</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li><a class="dropdown-item" href="${cp}/login?action=logout">로그아웃</a></li>
                         </c:if>
                     </ul>
@@ -165,7 +173,8 @@
     </a>
     <ul class="list-unstyled ps-0">
         <li class="mb-1">
-            <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse">
+            <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
+                    data-bs-target="#home-collapse">
                 Home
             </button>
             <div class="collapse show" id="home-collapse">
@@ -176,25 +185,32 @@
             </div>
         </li>
         <li class="mb-1">
-            <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse">
+            <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
+                    data-bs-target="#dashboard-collapse">
                 Dashboard
             </button>
             <div class="collapse" id="dashboard-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="${cp}/board/freeboard/list" class="d-inline-flex text-decoration-none rounded text-dark">자유게시판</a></li>
+                    <li><a href="${cp}/board/freeboard/list"
+                           class="d-inline-flex text-decoration-none rounded text-dark">자유게시판</a></li>
                 </ul>
             </div>
         </li>
         <li class="mb-1">
-            <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse" data-bs-target="#orders-collapse">
+            <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
+                    data-bs-target="#orders-collapse">
                 마이페이지
             </button>
             <div class="collapse" id="orders-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded text-dark">좋아요 목록</a></li>
-                    <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded text-dark">게시글 신고</a></li>
-                    <li><a href="${cp}/qna/myQna" class="d-inline-flex text-decoration-none rounded text-dark">나의 문의</a></li>
-                    <li><a href="${cp}/mypage/order" class="d-inline-flex text-decoration-none rounded text-dark">강좌 주문 내역</a></li>
+                    <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded text-dark">좋아요
+                        목록</a></li>
+                    <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded text-dark">게시글
+                        신고</a></li>
+                    <li><a href="${cp}/qna/myQna" class="d-inline-flex text-decoration-none rounded text-dark">나의 문의</a>
+                    </li>
+                    <li><a href="${cp}/mypage/order" class="d-inline-flex text-decoration-none rounded text-dark">강좌 주문
+                        내역</a></li>
                 </ul>
             </div>
         </li>
@@ -211,11 +227,12 @@
             sidebar.style.marginTop = headerHeight + 'px';
         }
     }
+
     window.addEventListener('load', adjustSidebarPadding);
     window.addEventListener('resize', adjustSidebarPadding);
 
     $(document).ready(function () {
-        if("${sessionScope.memberId}" != null) {
+        if ("${sessionScope.memberId}" != null) {
             $.ajax({
                 url: '/payment/cartCount',
                 type: 'GET',
@@ -227,6 +244,16 @@
                 }
             });
         }
+    });
+
+    $(document).ready(function () {
+        function adjustContentMargin() {
+            const headerHeight = $('header').outerHeight();
+            $('.content').css('margin-top', (headerHeight + 50) + 'px');
+        }
+
+        adjustContentMargin();
+        $(window).on('resize', adjustContentMargin);
     });
 </script>
 </body>
