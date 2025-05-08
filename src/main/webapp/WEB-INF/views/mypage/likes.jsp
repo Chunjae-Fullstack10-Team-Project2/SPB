@@ -88,17 +88,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${likesList}" var="orderDTO" varStatus="status">
+                <c:forEach items="${likesList}" var="boardReportDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
-                            <a href="/post/detail?postIdx=${orderDTO.postLikeRefIdx}"
+                            <a href="/post/detail?postIdx=${boardReportDTO.postLikeRefIdx}"
                                class="text-decoration-none text-dark">
-                                    ${orderDTO.postTitle}
+                                    ${boardReportDTO.postTitle}
                             </a>
                         </td>
-                        <td>${orderDTO.postMemberId}</td>
-                        <td>${orderDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>${boardReportDTO.postMemberId}</td>
+                        <td>${boardReportDTO.postCreatedAt.toLocalDate()}</td>
                     </tr>
                 </c:forEach>
                 </tbody>

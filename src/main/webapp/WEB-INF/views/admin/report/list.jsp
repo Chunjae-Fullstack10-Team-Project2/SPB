@@ -31,7 +31,7 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a class="link-body-emphasis fw-semibold text-decoration-none" href="/mypage">마이페이지</a>
+                    <a class="link-body-emphasis fw-semibold text-decoration-none" href="/admin/member/list">관리자 페이지</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
                     신고 목록
@@ -39,7 +39,7 @@
             </ol>
         </nav>
     </div>
-    <div class="container my-5">
+    <div class="container my-5" style="height: 100%; min-height: 100vh;">
         <div class="container mb-4">
             <ul class="nav nav-tabs">
                 <li class="nav-item">

@@ -6,7 +6,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>게시글 신고 목록</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 </head>
 <body>
 
@@ -56,27 +56,27 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach items="${boardReportList}" var="orderDTO" varStatus="status">
+    <c:forEach items="${boardReportList}" var="boardReportDTO" varStatus="status">
         <tr>
-            <td>${status.index + 1}</td>
+            <td>${boardReportDTO.reportIdx}</td>
             <td class="text-start">
-                <a href="/post/detail?postIdx=${orderDTO.postIdx}"
+                <a href="/post/detail?postIdx=${boardReportDTO.reportRefIdx}"
                    class="text-decoration-none text-dark">
-                        ${orderDTO.postTitle}
+                        ${boardReportDTO.postTitle}
                 </a>
             </td>
-            <td>${orderDTO.postMemberId}</td>
-            <td>${orderDTO.postCreatedAt.toLocalDate()}</td>
+            <td>${boardReportDTO.postMemberId}</td>
+            <td>${boardReportDTO.postCreatedAt.toLocalDate()}</td>
         </tr>
     </c:forEach>
     </tbody>
 </table>
 
-<%--<c:if test="${empty likesList}">--%>
-<%--    <div class="alert alert-warning mt-4" role="alert">--%>
-<%--        게시글이 없습니다.--%>
-<%--    </div>--%>
-<%--</c:if>--%>
+<c:if test="${empty boardReportList}">
+    <div class="alert alert-warning mt-4" role="alert">
+        게시글이 없습니다.
+    </div>
+</c:if>
 
 <div class="mt-4 text-center">
     <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/paging.jsp"/>

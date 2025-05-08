@@ -205,7 +205,7 @@
         <li class="mb-1">
             <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
                     data-bs-target="#dashboard-collapse">
-                Dashboard
+                게시판
             </button>
             <div class="collapse" id="dashboard-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
