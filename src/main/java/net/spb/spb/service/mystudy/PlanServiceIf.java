@@ -1,6 +1,6 @@
 package net.spb.spb.service.mystudy;
 
-import net.spb.spb.dto.PlanDTO;
+import net.spb.spb.dto.mystudy.PlanDTO;
 import net.spb.spb.dto.mystudy.PlanResponseDTO;
 
 import java.time.LocalDate;

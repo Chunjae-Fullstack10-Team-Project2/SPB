@@ -3,7 +3,7 @@ package net.spb.spb.service.mystudy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.domain.PlanVO;
-import net.spb.spb.dto.PlanDTO;
+import net.spb.spb.dto.mystudy.PlanDTO;
 import net.spb.spb.dto.mystudy.PlanResponseDTO;
 import net.spb.spb.mapper.mystudy.PlanMapper;
 import org.modelmapper.ModelMapper;

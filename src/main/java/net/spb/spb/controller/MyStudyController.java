@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.mystudy.StudentLectureDTO;
+import net.spb.spb.dto.mystudy.StudentLectureResponseDTO;
 import net.spb.spb.dto.pagingsearch.StudentLecturePageDTO;
 import net.spb.spb.service.mystudy.StudentLectureServiceIf;
 import net.spb.spb.util.PagingUtil;
@@ -32,7 +32,7 @@ public class MyStudyController {
         pageDTO.setLinkUrl(PagingUtil.buildStudentLectureLinkUrl(baseUrl, pageDTO));
         pageDTO.setTotal_count(studentLectureService.getStudentLectureTotalCount(memberId, pageDTO));
 
-        List<StudentLectureDTO> lectures = studentLectureService.getStudentLectureList(memberId, pageDTO);
+        List<StudentLectureResponseDTO> lectures = studentLectureService.getStudentLectureList(memberId, pageDTO);
 
         String paging = PagingUtil.pagingArea(pageDTO);
 

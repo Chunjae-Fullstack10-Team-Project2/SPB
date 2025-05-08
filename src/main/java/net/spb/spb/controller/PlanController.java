@@ -4,9 +4,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.PlanDTO;
+import net.spb.spb.dto.mystudy.PlanDTO;
 import net.spb.spb.dto.mystudy.PlanResponseDTO;
-import net.spb.spb.dto.mystudy.StudentLectureDTO;
+import net.spb.spb.dto.mystudy.StudentLectureResponseDTO;
 import net.spb.spb.service.mystudy.PlanServiceIf;
 import net.spb.spb.service.mystudy.StudentLectureServiceIf;
 import org.springframework.stereotype.Controller;
@@ -31,7 +31,7 @@ public class PlanController {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        List<StudentLectureDTO> lectures = studentLectureService.getStudentLectureList(memberId, null);
+        List<StudentLectureResponseDTO> lectures = studentLectureService.getStudentLectureList(memberId, null);
 
         model.addAttribute("lectureList", lectures);
 

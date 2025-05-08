@@ -35,7 +35,6 @@ public class PagingUtil {
         }
         return linkUrl.toString();
     }
-
     public static String buildLinkUrl(String basePath, MemberPageDTO dto) {
         StringBuilder linkUrl = new StringBuilder(basePath);
         boolean hasQuery = false;

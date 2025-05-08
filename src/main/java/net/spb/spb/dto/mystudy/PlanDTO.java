@@ -1,4 +1,4 @@
-package net.spb.spb.dto;
+package net.spb.spb.dto.mystudy;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

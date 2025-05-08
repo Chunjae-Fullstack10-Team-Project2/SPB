@@ -2,7 +2,7 @@ package net.spb.spb.service.mystudy;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.mystudy.StudentLectureDTO;
+import net.spb.spb.dto.mystudy.StudentLectureResponseDTO;
 import net.spb.spb.dto.pagingsearch.StudentLecturePageDTO;
 import net.spb.spb.mapper.mystudy.StudentLectureMapper;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ public class StudentLectureService implements StudentLectureServiceIf {
     private final StudentLectureMapper studentLectureMapper;
 
     @Override
-    public List<StudentLectureDTO> getStudentLectureList(String memberId, StudentLecturePageDTO pageDTO) {
+    public List<StudentLectureResponseDTO> getStudentLectureList(String memberId, StudentLecturePageDTO pageDTO) {
         return studentLectureMapper.getStudentLectureList(memberId, pageDTO);
     }
 
