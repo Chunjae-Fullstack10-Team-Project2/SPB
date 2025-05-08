@@ -1,7 +1,7 @@
 package net.spb.spb.mapper;
 
-import net.spb.spb.domain.PostReportVO;
 import net.spb.spb.domain.PostVO;
+import net.spb.spb.domain.ReportVO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.PostPageDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
@@ -27,7 +27,7 @@ public interface BoardMapper {
 
     int setReadCnt(int postIdx);
 
-    int insertPostReport(PostReportVO postReportVO);
+    int insertPostReport(ReportVO postReportVO);
 
     //    news
     List<Map<String, Object>> selectNewsList(SearchDTO searchDTO, PageRequestDTO pageRequestDTO);
