@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CommentServiceIf {
     int insertComment(PostCommentDTO dto);
-    int updateComment(PostCommentDTO dto);
+    int modifyComment(PostCommentDTO dto);
     int deleteComment(int postCommentIdx);
     List<PostCommentDTO> selectComments(int postCommentRefPostIdx);
 }

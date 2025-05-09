@@ -41,7 +41,7 @@ public class CommentServiceImpl implements CommentServiceIf {
      * @return
      */
     @Override
-    public int updateComment(PostCommentDTO dto) {
+    public int modifyComment(PostCommentDTO dto) {
         PostCommentVO vo = modelMapper.map(dto, PostCommentVO.class);
         int rtnResult = commentMapper.updateComment(vo);
         log.info("=============================");
