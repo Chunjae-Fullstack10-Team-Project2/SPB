@@ -23,6 +23,17 @@
     <link href="/resources/css/global.css" rel="stylesheet">
 
     <style>
+        @font-face {
+            font-family: 'NPSfontBold';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2310@1.0/NPSfontBold.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        header, header * {
+            font-family: 'NPSfontBold', sans-serif !important;
+        }
+
         header {
             position: fixed;
             top: 0;
