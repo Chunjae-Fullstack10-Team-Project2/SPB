@@ -54,6 +54,7 @@ public class AdminController {
         model.addAttribute("list", memberDTOs);
         model.addAttribute("memberTotalCount", total_count);
         model.addAttribute("paging", paging);
+        addBreadcrumb(model, "회원 목록");
     }
 
     @PostMapping("/member/update")
@@ -70,9 +71,10 @@ public class AdminController {
     }
 
     @GetMapping("/member/view")
-    public void memberView(@RequestParam("memberId") String memberId, Model model) {
+    public String memberView(@RequestParam("memberId") String memberId, Model model) {
         MemberDTO memberDTO = memberService.getMemberById(memberId);
         model.addAttribute("memberDTO", memberDTO);
+        return "/admin/member/memberPopup";
     }
 
     @GetMapping("/report/list")
@@ -136,8 +138,8 @@ public class AdminController {
         adminService.insertTeacher(teacherDTO);
     }
 
-    @GetMapping("/teacher/searchPopup")
-    public void teacherSearchPopup(@ModelAttribute MemberPageDTO memberPageDTO, Model model, HttpServletRequest req) {
+    @GetMapping("/teacher/search")
+    public String teacherSearchPopup(@ModelAttribute MemberPageDTO memberPageDTO, Model model, HttpServletRequest req) {
         memberPageDTO.setSearch_member_grade("13");
         String baseUrl = req.getRequestURI();
         memberPageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, memberPageDTO));
@@ -148,6 +150,7 @@ public class AdminController {
         model.addAttribute("teachers", memberDTOs);
         model.addAttribute("searchDTO", memberPageDTO);
         model.addAttribute("paging", paging);
+        return "/admin/teacher/searchPopup";
     }
 
     @GetMapping("/lecture/regist")
@@ -173,8 +176,8 @@ public class AdminController {
         model.addAttribute("lectures", lectureDTOs);
     }
 
-    @GetMapping("/lecture/searchPopup")
-    public void lectureSearchPopup(@ModelAttribute LecturePageDTO lecturePageDTO, HttpServletRequest req, Model model) {
+    @GetMapping("/lecture/search")
+    public String lectureSearchPopup(@ModelAttribute LecturePageDTO lecturePageDTO, HttpServletRequest req, Model model) {
         String baseUrl = req.getRequestURI();
         lecturePageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, lecturePageDTO));
         int total_count = adminService.selectLectureCount(lecturePageDTO);
@@ -184,6 +187,7 @@ public class AdminController {
         model.addAttribute("lectures", lectureDTOs);
         model.addAttribute("searchDTO", lecturePageDTO);
         model.addAttribute("paging", paging);
+        return "/admin/lecture/searchPopup";
     }
 
     @GetMapping("/lecture/chapter/regist")
@@ -214,5 +218,13 @@ public class AdminController {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of("message", "강의 등록 중 오류가 발생했습니다."));
+    }
+
+    private void addBreadcrumb(Model model, String currentPageName) {
+        List<Map<String, String>> breadcrumbItems = List.of(
+                Map.of("name", "관리자 페이지", "url", "/admin"),
+                Map.of("name", currentPageName, "url", "")
+        );
+        model.addAttribute("breadcrumbItems", breadcrumbItems);
     }
 }
