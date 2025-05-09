@@ -460,9 +460,18 @@ public class MemberController {
                 String savedFileName = savedFile.getName();
                 memberDTO.setMemberProfileImg(savedFileName);
             } catch (IOException e) {
-                model.addAttribute("errorMessage", "프로필 이미지 업로드 실패");
+                model.addAttribute("errorMessage", "프로필 이미지 업로드에 실패했습니다.");
                 return "login/join";
             }
+        }
+
+        String memberAgree = request.getParameter("memberAgree");
+        if (!"1".equals(memberAgree)) {
+            model.addAttribute("errorMessage", "개인정보 수집 및 이용에 동의해야 회원가입이 가능합니다.");
+            model.addAttribute("memberDTO", memberDTO);
+            model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
+            model.addAttribute("memberEmailCode", request.getParameter("memberEmailCode"));
+            return "login/join";
         }
 
         boolean result = memberService.join(memberDTO);

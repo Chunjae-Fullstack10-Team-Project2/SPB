@@ -26,40 +26,40 @@ public class NoticeController {
     private final NoticeService noticeService;
 
 
-    @GetMapping("/list")
-    public String list(@RequestParam(name = "page", defaultValue = "1") int page,
-                       @RequestParam(name = "size", defaultValue = "5") int size,
-                       @RequestParam(name = "keyword", required = false) String keyword,
-                       @RequestParam(name = "searchType", required = false) String searchType,
-                       Model model) throws Exception {
-
-
-        int offset = NoticePaging.getOffset(page, size);
-        List<NoticeDTO> list;
-
-        int totalCount;
-
-        List<NoticeDTO> fixedList = noticeService.getFixedNotices();
-
-
-        int totalPage = NoticePaging.getTotalPage(totalCount, size);
-
-        String pagination = NoticePaging.getPagination(page, totalPage, "/notice/list", keyword, searchType, size);
-
-        int listNumber = NoticePaging.getStartNum(totalCount, page, size);
-
-        model.addAttribute("list", list);
-        model.addAttribute("fixedList", fixedList);
-        model.addAttribute("pagination", pagination);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPage", totalPage);
-        model.addAttribute("size", size);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("searchType", searchType);
-        model.addAttribute("listNumber", listNumber);
-
-        return "notice/list";
-    }
+//    @GetMapping("/list")
+//    public String list(@RequestParam(name = "page", defaultValue = "1") int page,
+//                       @RequestParam(name = "size", defaultValue = "5") int size,
+//                       @RequestParam(name = "keyword", required = false) String keyword,
+//                       @RequestParam(name = "searchType", required = false) String searchType,
+//                       Model model) throws Exception {
+//
+//
+//        int offset = NoticePaging.getOffset(page, size);
+//        List<NoticeDTO> list;
+//
+//        int totalCount = 0;
+//
+//        List<NoticeDTO> fixedList = noticeService.getFixedNotices();
+//
+//
+//        int totalPage = NoticePaging.getTotalPage(totalCount, size);
+//
+//        String pagination = NoticePaging.getPagination(page, totalPage, "/notice/list", keyword, searchType, size);
+//
+//        int listNumber = NoticePaging.getStartNum(totalCount, page, size);
+//
+//        model.addAttribute("list", list);
+//        model.addAttribute("fixedList", fixedList);
+//        model.addAttribute("pagination", pagination);
+//        model.addAttribute("currentPage", page);
+//        model.addAttribute("totalPage", totalPage);
+//        model.addAttribute("size", size);
+//        model.addAttribute("keyword", keyword);
+//        model.addAttribute("searchType", searchType);
+//        model.addAttribute("listNumber", listNumber);
+//
+//        return "notice/list";
+//    }
 
     @GetMapping("/view")
     public String view(@RequestParam("noticeIdx") int noticeIdx, Model model) throws Exception {

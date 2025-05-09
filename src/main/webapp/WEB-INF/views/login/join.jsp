@@ -4,15 +4,12 @@
 <html>
 <head>
     <title>회원가입</title>
-
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <%-- 기타 --%>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
     <style>
-        body {
-            background-color: #f5f6f7;
-        }
-
         .join-container {
             background-color: #fff;
             padding: 40px;
@@ -20,20 +17,6 @@
             max-width: 700px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             margin: 0 auto;
-        }
-
-        .join-container h2 {
-            font-weight: bold;
-            color: gray;
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 10px;
-        }
-
-        .join-container .form-control,
-        .join-container .form-select {
-            border-radius: 8px;
-            height: 45px;
-            font-size: 15px;
         }
 
         .join-container .btn {
@@ -45,29 +28,9 @@
             border-radius: 8px;
         }
 
-        .join-container label {
-            font-size: 13px;
-            color: gray;
-        }
-
-        .join-container .row.mb-3 {
-            margin-bottom: 1.25rem;
-        }
-
-        .join-container .text-end {
-            text-align: center;
-            margin-top: 30px;
-        }
-
         .join-container #memberIdCheck span {
             font-size: 13px;
             font-weight: 500;
-        }
-
-        .join-container .warning-text {
-            color: red;
-            font-size: 0.8rem;
-            margin: 0.2rem 0 0 0.2rem;
         }
 
         .join-container #memberEmail2 {
@@ -111,6 +74,16 @@
 
         #profileImgInput {
             display: none;
+        }
+
+        .scroll-box {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            height: 8rem;
+            overflow-y: scroll;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -158,7 +131,8 @@
                              onclick="document.getElementById('profileImgInput').click();">
                             <i class="bi bi-camera-fill"></i>
                         </div>
-                        <input type="file" id="profileImgInput" name="profileImgFile" accept="image/*" style="display: none;">
+                        <input type="file" id="profileImgInput" name="profileImgFile" accept="image/*"
+                               style="display: none;">
                     </div>
                 </div>
 
@@ -384,6 +358,23 @@
                 </div>
             </div>
 
+            <!-- 개인정보 동의 텍스트 -->
+            <div id="agreeText" class="scroll-box" onscroll="checkScrollComplete()">
+                <p>1. 수집항목: 이름, 연락처, 이메일, 생년월일, 주소 등</p>
+                <p>2. 수집목적: 서비스 제공, 고객지원, 본인 확인 등</p>
+                <p>3. 보유기간: 회원 탈퇴 시까지 또는 관련 법령에 따른 보관</p>
+                <p>※ 귀하는 위의 개인정보 수집 및 이용에 대해 동의하지 않으실 수 있으며, 이 경우 서비스 이용이 제한될 수 있습니다.</p>
+            </div>
+
+            <!-- 동의 체크박스 (초기 비활성화) -->
+            <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" value="1" id="memberAgree" name="memberAgree" disabled>
+                <label class="form-check-label text-muted" for="memberAgree">
+                    위 내용을 모두 읽었습니다. (동의)
+                </label>
+            </div>
+
+
             <div class="text-end d-grid gap-2">
                 <button type="submit" class="btn btn-primary" id="btnSubmitJoin">회원가입</button>
             </div>
@@ -392,6 +383,16 @@
 </div>
 
 <script>
+    function checkScrollComplete() {
+        const box = document.getElementById('agreeText');
+        const checkbox = document.getElementById('memberAgree');
+        if (box.scrollTop + box.clientHeight >= box.scrollHeight - 5) {
+            checkbox.disabled = false;
+            checkbox.focus();
+            checkbox.nextElementSibling.classList.remove("text-muted");
+        }
+    }
+
     let emailAuthTimer;
     let emailAuthTimeLimit = 300;
 
@@ -682,6 +683,8 @@
         const memberPwdConfirmInput = document.getElementById("memberPwdConfirm");
         const memberPwdInput = document.getElementById("memberPwd");
 
+        const memberAgree = document.getElementById("memberAgree").checked;
+
         e.preventDefault();
         e.stopPropagation();
 
@@ -742,6 +745,12 @@
         if (!memberEmailValue) {
             alert('이메일을 입력하세요.');
             memberEmailInput.focus();
+            return;
+        }
+
+        if (!memberAgree) {
+            alert('개인정보 수집 및 이용에 동의해야 회원가입이 가능합니다.');
+            document.getElementById("memberAgree").focus();
             return;
         }
 
