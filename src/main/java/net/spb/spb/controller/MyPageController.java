@@ -14,6 +14,7 @@ import net.spb.spb.dto.pagingsearch.PageResponseDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.service.member.MyPageService;
 import net.spb.spb.service.member.MemberServiceImpl;
+import net.spb.spb.util.FileUtil;
 import net.spb.spb.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,8 +22,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -33,6 +36,8 @@ import java.util.Map;
 @Log4j2
 @RequestMapping(value = "/mypage")
 public class MyPageController {
+    @Autowired(required = false)
+    private FileUtil fileUtil;
 
     @Autowired
     private MemberServiceImpl memberService;
@@ -52,16 +57,38 @@ public class MyPageController {
     }
 
     @PostMapping("")
-    public String updateMyPage(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
+    public String updateMyPage(@ModelAttribute MemberDTO memberDTO,
+                               @RequestParam(value = "profileImgFile", required = false) MultipartFile profileImg,
+                               HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
         memberDTO.setMemberId(memberId);
+
+        try {
+            if (profileImg != null && !profileImg.isEmpty()) {
+                // 기존 이미지 삭제
+                MemberDTO sessionDTO = (MemberDTO) session.getAttribute("memberDTO");
+                String oldFile = sessionDTO.getMemberProfileImg();
+                if (oldFile != null && !oldFile.isBlank()) {
+                    fileUtil.deleteFile(oldFile);
+                }
+
+                // 새 이미지 저장
+                File savedFile = fileUtil.saveFile(profileImg);
+                String savedFileName = savedFile.getName();
+                System.out.println("업로드된 파일명: " + savedFileName);
+                memberDTO.setMemberProfileImg(savedFileName);
+            }
+        } catch (Exception e) {
+            model.addAttribute("message", "프로필 이미지 변경 중 오류 발생");
+            return "mypage/mypage";
+        }
 
         boolean result = memberService.updateMember(memberDTO);
         if (result) {
             session.setAttribute("memberDTO", memberDTO);
             return "redirect:/mypage";
         } else {
-            model.addAttribute("errorMessage", "회원 정보 수정에 실패했습니다.");
+            model.addAttribute("message", "회원 정보 수정에 실패했습니다.");
             return "mypage/mypage";
         }
     }

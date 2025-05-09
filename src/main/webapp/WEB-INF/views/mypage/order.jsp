@@ -82,11 +82,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${orderList}" var="orderDTO" varStatus="status">
+                <c:forEach items="${orderList}" var="boardReportDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
-                            <c:forEach items="${orderDTO.orderLectureList}" var="lectureTitle" varStatus="loop">
+                            <c:forEach items="${boardReportDTO.orderLectureList}" var="lectureTitle" varStatus="loop">
                                 <div class="mb-1">
                                     <i class="bi bi-play-circle text-primary me-1"><a href="#"
                                                                                       class="text-decoration-none text-dark"></a></i>
@@ -95,9 +95,9 @@
                             </c:forEach>
                         </td>
                         <td><fmt:setLocale value="ko_KR"/>
-                            <fmt:formatNumber value="${orderDTO.orderAmount}" type="currency"/>
+                            <fmt:formatNumber value="${boardReportDTO.orderAmount}" type="currency"/>
                         </td>
-                        <td>${orderDTO.orderCreatedAt.toLocalDate()}</td>
+                        <td>${boardReportDTO.orderCreatedAt.toLocalDate()}</td>
                     </tr>
                 </c:forEach>
                 </tbody>

@@ -1,16 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>마이페이지</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
 
     <style>
         body {
@@ -66,6 +59,39 @@
         .no-radius {
             border-radius: 0 !important;
         }
+
+        .profile-img-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #ccc;
+        }
+
+        .camera-icon {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: #fff;
+            border-radius: 50%;
+            padding: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+        }
+
+        .camera-icon i {
+            font-size: 18px;
+            color: #333;
+        }
+
+        #profileImgInput {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -97,7 +123,28 @@
 
     <div class="my-page-container mt-5 mb-5">
         <h2 class="mb-4">마이페이지</h2>
-        <form name="frmMyPage" id="frmMyPage" action="/mypage" method="post">
+        <form name="frmMyPage" id="frmMyPage" action="/mypage" method="post" enctype="multipart/form-data">
+
+            <div class="text-center mb-4">
+                <div class="profile-img-container">
+                    <c:choose>
+                        <c:when test="${not empty memberDTO.memberProfileImg}">
+                            <img id="profilePreview"
+                                 src="${pageContext.request.contextPath}/upload/${memberDTO.memberProfileImg}"
+                                 alt="프로필 이미지" class="profile-img">
+                        </c:when>
+                        <c:otherwise>
+                            <img id="profilePreview"
+                                 src="${pageContext.request.contextPath}/resources/img/default_profileImg.png"
+                                 alt="기본 이미지" class="profile-img">
+                        </c:otherwise>
+                    </c:choose>
+                    <div class="camera-icon" onclick="document.getElementById('profileImgInput').click();">
+                        <i class="bi bi-camera-fill"></i>
+                    </div>
+                    <input type="file" id="profileImgInput" name="profileImgFile" accept="image/*"/>
+                </div>
+            </div>
 
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="memberId" name="memberId" value="${memberDTO.memberId}"
@@ -190,7 +237,8 @@
                 <button type="button" class="btn btn-danger" id="btnQuit" data-bs-toggle="modal"
                         data-bs-target="#pwdModal">탈퇴
                 </button>
-                <button type="button" class="btn btn-secondary" id="btnChangePwd" onclick="location.href='/mypage/changePwd'">
+                <button type="button" class="btn btn-secondary" id="btnChangePwd"
+                        onclick="location.href='/mypage/changePwd'">
                     비밀번호 변경
                 </button>
             </div>
@@ -216,6 +264,19 @@
     </div>
 </div>
 <script>
+
+
+    document.getElementById('profileImgInput').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('profilePreview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
     $(function () {
         $('input[name="memberBirth"]').daterangepicker({
             singleDatePicker: true,

@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="cp" value="${pageContext.request.contextPath}"/>
 
 <html>
@@ -145,7 +146,18 @@
                 <div class="dropdown text-end">
                     <a href="#" class="d-block text-decoration-none dropdown-toggle"
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://github.com/mdo.png" alt="프로필" width="32" height="32" class="rounded-circle">
+                        <c:choose>
+                            <c:when test="${not empty memberDTO.memberProfileImg}">
+                                <img id="profilePreview" width="32" height="32" class="rounded-circle"
+                                     src="${pageContext.request.contextPath}/upload/${memberDTO.memberProfileImg}"
+                                     alt="프로필 이미지" class="profile-img">
+                            </c:when>
+                            <c:otherwise>
+                                <img id="profilePreview" width="32" height="32" class="rounded-circle"
+                                     src="${pageContext.request.contextPath}/resources/img/default_profileImg.png"
+                                     alt="기본 이미지" class="profile-img">
+                            </c:otherwise>
+                        </c:choose>
                     </a>
                     <ul class="dropdown-menu text-small">
                         <c:if test="${empty sessionScope.memberId}">
@@ -193,7 +205,7 @@
         <li class="mb-1">
             <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
                     data-bs-target="#dashboard-collapse">
-                Dashboard
+                게시판
             </button>
             <div class="collapse" id="dashboard-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">

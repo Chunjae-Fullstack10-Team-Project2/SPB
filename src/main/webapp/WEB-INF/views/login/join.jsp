@@ -4,15 +4,12 @@
 <html>
 <head>
     <title>회원가입</title>
-
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <%-- 기타 --%>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
     <style>
-        body {
-            background-color: #f5f6f7;
-        }
-
         .join-container {
             background-color: #fff;
             padding: 40px;
@@ -20,20 +17,6 @@
             max-width: 700px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             margin: 0 auto;
-        }
-
-        .join-container h2 {
-            font-weight: bold;
-            color: gray;
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 10px;
-        }
-
-        .join-container .form-control,
-        .join-container .form-select {
-            border-radius: 8px;
-            height: 45px;
-            font-size: 15px;
         }
 
         .join-container .btn {
@@ -45,29 +28,9 @@
             border-radius: 8px;
         }
 
-        .join-container label {
-            font-size: 13px;
-            color: gray;
-        }
-
-        .join-container .row.mb-3 {
-            margin-bottom: 1.25rem;
-        }
-
-        .join-container .text-end {
-            text-align: center;
-            margin-top: 30px;
-        }
-
         .join-container #memberIdCheck span {
             font-size: 13px;
             font-weight: 500;
-        }
-
-        .join-container .warning-text {
-            color: red;
-            font-size: 0.8rem;
-            margin: 0.2rem 0 0 0.2rem;
         }
 
         .join-container #memberEmail2 {
@@ -78,6 +41,50 @@
         .join-container .no-radius {
             border-radius: 0 !important;
         }
+
+
+        .profile-img-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-img {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #ccc;
+        }
+
+        .camera-icon {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: #fff;
+            border-radius: 50%;
+            padding: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+        }
+
+        .camera-icon i {
+            font-size: 18px;
+            color: #333;
+        }
+
+        #profileImgInput {
+            display: none;
+        }
+
+        .scroll-box {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            height: 8rem;
+            overflow-y: scroll;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -85,8 +92,7 @@
 <div class="content-nonside">
     <div class="join-container mt-5 mb-5">
         <h2 class="mb-4">회원가입</h2>
-        <form name="frmJoin" id="frmJoin" action="/join" method="post">
-
+        <form name="frmJoin" id="frmJoin" action="/join" method="post" enctype="multipart/form-data">
             <div class="mb-3 row">
                 <div class="col-sm-10 input-group">
                     <c:choose>
@@ -103,41 +109,67 @@
                     </c:choose>
                 </div>
             </div>
-            <div class="mb-3 row">
-                <div class="col-sm-10 input-group">
-                    <c:choose>
-                        <c:when test="${memberDTO.memberJoinPath eq '2'}">
-                            <!-- Naver 로그인 사용자: disabled 처리 -->
-                            <input type="text" class="form-control"
-                                   value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
-                                   placeholder="아이디" maxlength="20" disabled/>
-                            <button class="btn btn-outline-secondary" type="button" id="btnCheckId" disabled>
-                                중복 확인
-                            </button>
-                        </c:when>
-                        <c:otherwise>
-                            <!-- 일반 사용자: 입력 및 중복 확인 가능 -->
-                            <input type="text" class="form-control" name="memberId" id="memberId"
-                                   value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
-                                   placeholder="아이디" maxlength="20" required
-                                   oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
-                            <button class="btn btn-outline-secondary" type="button" id="btnCheckId">
-                                중복 확인
-                            </button>
-                        </c:otherwise>
-                    </c:choose>
+            <div class="mb-3 row align-items-center">
+                <!-- 프로필 이미지 영역: col-md-5 (약 4:6 비율 중 4) -->
+                <div class="col-md-5 text-center">
+                    <div class="profile-img-container position-relative d-inline-block">
+                        <c:choose>
+                            <c:when test="${empty sessionScope.memberId and not empty memberDTO.memberProfileImg}">
+                                <img id="joinProfilePreview"
+                                     src="${pageContext.request.contextPath}/upload/${memberDTO.memberProfileImg}"
+                                     alt="프로필 이미지"
+                                     class="profile-img">
+                            </c:when>
+                            <c:otherwise>
+                                <img id="joinProfilePreview"
+                                     src="${pageContext.request.contextPath}/resources/img/default_profileImg.png"
+                                     alt="기본 이미지"
+                                     class="profile-img">
+                            </c:otherwise>
+                        </c:choose>
+                        <div class="camera-icon"
+                             onclick="document.getElementById('profileImgInput').click();">
+                            <i class="bi bi-camera-fill"></i>
+                        </div>
+                        <input type="file" id="profileImgInput" name="profileImgFile" accept="image/*"
+                               style="display: none;">
+                    </div>
                 </div>
 
-                <div id="idWarning" class="warning-text d-none">
-                    아이디는 4~20자, 알파벳과 숫자만 가능합니다.
-                </div>
-
-                <div id="memberIdCheck">
-                    <c:if test="${not empty idCheckMessage}">
-                        <span style="color:${idCheckSuccess ? 'green' : 'red'};">${idCheckMessage}</span>
-                    </c:if>
+                <!-- 아이디 입력 영역: col-md-7 (약 4:6 비율 중 6) -->
+                <div class="col-md-7">
+                    <div class="input-group">
+                        <c:choose>
+                            <c:when test="${memberDTO.memberJoinPath eq '2'}">
+                                <input type="text" class="form-control"
+                                       value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
+                                       placeholder="아이디" maxlength="20" disabled/>
+                                <button class="btn btn-outline-secondary" type="button" disabled>
+                                    중복 확인
+                                </button>
+                            </c:when>
+                            <c:otherwise>
+                                <input type="text" class="form-control" name="memberId" id="memberId"
+                                       value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
+                                       placeholder="아이디" maxlength="20" required
+                                       oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
+                                <button class="btn btn-outline-secondary" type="button" id="btnCheckId">
+                                    중복 확인
+                                </button>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                    <div id="idWarning" class="warning-text d-none mt-1">
+                        아이디는 4~20자, 알파벳과 숫자만 가능합니다.
+                    </div>
+                    <div id="memberIdCheck">
+                        <c:if test="${not empty idCheckMessage}">
+                            <span style="color:${idCheckSuccess ? 'green' : 'red'};">${idCheckMessage}</span>
+                        </c:if>
+                    </div>
                 </div>
             </div>
+
 
             <div class="mb-3 row">
                 <div class="col-sm-10 input-group">
@@ -326,6 +358,23 @@
                 </div>
             </div>
 
+            <!-- 개인정보 동의 텍스트 -->
+            <div id="agreeText" class="scroll-box" onscroll="checkScrollComplete()">
+                <p>1. 수집항목: 이름, 연락처, 이메일, 생년월일, 주소 등</p>
+                <p>2. 수집목적: 서비스 제공, 고객지원, 본인 확인 등</p>
+                <p>3. 보유기간: 회원 탈퇴 시까지 또는 관련 법령에 따른 보관</p>
+                <p>※ 귀하는 위의 개인정보 수집 및 이용에 대해 동의하지 않으실 수 있으며, 이 경우 서비스 이용이 제한될 수 있습니다.</p>
+            </div>
+
+            <!-- 동의 체크박스 (초기 비활성화) -->
+            <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" value="1" id="memberAgree" name="memberAgree" disabled>
+                <label class="form-check-label text-muted" for="memberAgree">
+                    위 내용을 모두 읽었습니다. (동의)
+                </label>
+            </div>
+
+
             <div class="text-end d-grid gap-2">
                 <button type="submit" class="btn btn-primary" id="btnSubmitJoin">회원가입</button>
             </div>
@@ -334,6 +383,16 @@
 </div>
 
 <script>
+    function checkScrollComplete() {
+        const box = document.getElementById('agreeText');
+        const checkbox = document.getElementById('memberAgree');
+        if (box.scrollTop + box.clientHeight >= box.scrollHeight - 5) {
+            checkbox.disabled = false;
+            checkbox.focus();
+            checkbox.nextElementSibling.classList.remove("text-muted");
+        }
+    }
+
     let emailAuthTimer;
     let emailAuthTimeLimit = 300;
 
@@ -430,6 +489,12 @@
                     alert('인증 코드 확인에 성공하였습니다.');
                     document.getElementById('memberEmailCode').readOnly = true;
                     document.getElementById('btnMemberEmailCodeAuth').disabled = true;
+                    document.getElementById('btnMemberEmailCodeSend').disabled = true;
+
+                    // 타이머 멈추기
+                    clearInterval(emailAuthTimer);
+                    // 타이머 제거
+                    document.getElementById('emailAuthTimeWarning').textContent = "인증 완료되었습니다.";
                 } else {
                     alert('인증 코드 확인 실패: ' + response.message);
                 }
@@ -440,76 +505,29 @@
         });
     }
 
-    // function sendEmailCode() {
-    //     let memberEmail1 = document.getElementById("memberEmail1").value.trim();
-    //     let memberEmail2 = document.getElementById("memberEmail2").value;
-    //
-    //     if (memberEmail2 === "custom") {
-    //         memberEmail2 = document.getElementById("memberEmailCustom").value.trim();
-    //     }
-    //
-    //     let memberEmail = memberEmail1 + '@' + memberEmail2;
-    //     document.querySelector('input[name="memberEmail"]').value = memberEmail;
-    //
-    //     if (!memberEmail || memberEmail.indexOf('@') === -1) {
-    //         alert('이메일을 올바르게 입력하세요.');
-    //         document.getElementById('memberEmail1').focus();
-    //         return;
-    //     }
-    //
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '/email/verify',
-    //         data: {memberEmail: memberEmail},
-    //         success: function (response) {
-    //             if (response.success) {
-    //                 alert('인증 코드가 전송되었습니다.');
-    //
-    //                 document.getElementById('memberEmail1').readOnly = true;
-    //                 document.getElementById('btnMemberEmailCodeSend').disabled = true;
-    //
-    //                 const count = response.emailTryCount;
-    //                 const emailCountWarning = document.getElementById('emailCountWarning');
-    //                 emailCountWarning.innerHTML = "<strong>인증 횟수 " + count + "/3회</strong>";
-    //
-    //                 startEmailAuthTimer();
-    //             } else {
-    //                 alert('이메일 인증 코드 전송 실패: ' + response.message);
-    //             }
-    //         },
-    //         error: function (xhr) {
-    //             alert("인증 코드 전송 실패: " + xhr.status);
-    //         }
-    //     });
-    // }
-    //
-    // function checkEmailCode() {
-    //     const memberEmailCode = document.getElementById('memberEmailCode').value.trim();
-    //
-    //     if (!memberEmailCode) {
-    //         alert('인증 코드를 입력하세요.');
-    //         document.getElementById('memberEmailCode').focus();
-    //         return;
-    //     }
-    //
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '/email/codeCheck',
-    //         data: {memberEmailCode: memberEmailCode},
-    //         success: function (response) {
-    //             if (response.success) {
-    //                 alert('인증 코드 확인에 성공하였습니다.');
-    //                 document.getElementById('memberEmailCode').readOnly = true;
-    //                 document.getElementById('btnMemberEmailCodeAuth').disabled = true;
-    //             } else {
-    //                 alert('인증 코드 확인 실패: ' + response.message);
-    //             }
-    //         },
-    //         error: function (xhr) {
-    //             alert("인증 코드 확인 실패: " + xhr.status);
-    //         }
-    //     });
-    // }
+    document.getElementById('profileImgInput').addEventListener('change', function () {
+        const file = this.files[0];
+        const preview = document.getElementById('joinProfilePreview');
+
+        if (!file) {
+            preview.src = "${pageContext.request.contextPath}/resources/img/default_profileImg.png";
+            return;
+        }
+
+        const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!validTypes.includes(file.type)) {
+            alert('이미지 파일(jpg, png, gif)만 업로드 가능합니다.');
+            this.value = '';
+            preview.src = "${pageContext.request.contextPath}/resources/img/default_profileImg.png";
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
 
     <c:if test="${not empty errorMessage}">
     alert("${errorMessage}");
@@ -671,6 +689,8 @@
         const memberPwdConfirmInput = document.getElementById("memberPwdConfirm");
         const memberPwdInput = document.getElementById("memberPwd");
 
+        const memberAgree = document.getElementById("memberAgree").checked;
+
         e.preventDefault();
         e.stopPropagation();
 
@@ -731,6 +751,12 @@
         if (!memberEmailValue) {
             alert('이메일을 입력하세요.');
             memberEmailInput.focus();
+            return;
+        }
+
+        if (!memberAgree) {
+            alert('개인정보 수집 및 이용에 동의해야 회원가입이 가능합니다.');
+            document.getElementById("memberAgree").focus();
             return;
         }
 

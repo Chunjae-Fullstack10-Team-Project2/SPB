@@ -23,10 +23,11 @@ html {
   scroll-behavior: smooth; }
 
 body {
-  font-family: "Poppins", sans-serif;
+  font-family: "Pretendard Variable", sans-serif;
   font-weight: normal;
   font-style: normal;
   color: #6A7C92;
+  word-break: keep-all;
   overflow-x: hidden; }
 
 * {

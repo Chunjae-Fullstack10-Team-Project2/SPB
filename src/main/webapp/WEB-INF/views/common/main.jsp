@@ -95,7 +95,7 @@
     <div id="carouselExampleCaptions" class="carousel slide carousel-fade" data-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-section carousel-item active clip-bg pt-225 pb-200 img-bg"
-                 style="background-image: url('${pageContext.request.contextPath}/resources/assets/img/carousel/1.jpg');">
+                 style="background-image: url('${pageContext.request.contextPath}/resources/img/spb_logo.png');">
                 <div class="container">
                     <div class="row">
                         <div class="col-xl-8 col-lg-10 mx-auto">
@@ -104,7 +104,7 @@
                                     <h2 class="text-white">당신의 성장을 위한 첫 걸음</h2>
                                     <p class="text-white">봄콩에서 시작하세요. 초등부터 고등까지, 단계별 맞춤 인강으로 실력을 키워드립니다.</p>
                                 </div>
-                                <a href="javascript:void(0)" class="theme-btn border-btn">Read More</a>
+                                <a href="/join" class="theme-btn border-btn">Join Us</a>
                             </div>
                         </div>
                     </div>
@@ -120,7 +120,7 @@
                                     <h2 class="text-white">오늘의 공부가 내일을 바꿉니다</h2>
                                     <p class="text-white">검증된 강사진, 탄탄한 커리큘럼, 그리고 당신의 열정. 봄콩에서 만나보세요.</p>
                                 </div>
-                                <a href="javascript:void(0)" class="theme-btn border-btn">Read More</a>
+                                <a href="/join" class="theme-btn border-btn">Join Us</a>
                             </div>
                         </div>
                     </div>
@@ -205,7 +205,7 @@
                                  alt="">
 
                             <div class="about-experience">
-                                <h2 class="mb-40 wow fadeInRight" data-wow-delay=".4s">학생의 가능성을 키우는 공간, 봄콩</h2>
+                                <h2 class="mb-40 wow fadeInRight" data-wow-delay=".4s">학생의 가능성을 키우는 공간</h2>
                                 <p class="mb-45 wow fadeInUp" data-wow-delay=".6s">우리는 단순한 인강 플랫폼이 아닙니다. 봄콩은 학생 한 명 한 명이
                                     스스로 성장할 수 있도록 돕는 디지털 학습 환경을 제공합니다.</p>
                             </div>
@@ -229,6 +229,11 @@
                                     <span id="secondo" class="countup count color-1" cup-end="10" cup-append="k">10</span>
                                     <h4>누적 수강생</h4>
                                     <p>많은 학생들이 봄콩을 통해<br class="d-none d-md-block d-lg-none d-xl-block">학습 역량을 키웠습니다</p>
+                                </div>
+                                <div class="counter">
+                                    <span id="secondo" class="countup count color-2" cup-end="95" cup-append="%">95</span>
+                                    <h4>만족도</h4>
+                                    <p>실제 수강생 리뷰 기준 <br class="d-none d-md-block d-lg-none d-xl-block">만족도 95% 이상</p>
                                 </div>
                                 <div class="counter">
                                     <span id="secondo" class="countup count color-2" cup-end="95" cup-append="%">95</span>

@@ -1,12 +1,7 @@
 package net.spb.spb.dto.pagingsearch;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Positive;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @Getter
 @Setter
@@ -27,7 +22,13 @@ public class MemberPageDTO extends PageDTO{
 
     public String toQueryString() {
         return String.format(
-                "search_member_state=%s&search_member_grade=%s&search_type=%s&search_word=%s&page_no=%d&page_size=%d&page_block_size=%d&sort_by=%s",
+                "search_member_state=%s" +
+                        "&search_member_grade=%s" +
+                        "&search_word=%s" +
+                        "&page_no=%d" +
+                        "&page_size=%d" +
+                        "&page_block_size=%d" +
+                        "&sort_by=%s",
                 encode(search_member_state),
                 encode(search_member_grade),
                 encode(super.getSearch_word()),
@@ -36,10 +37,6 @@ public class MemberPageDTO extends PageDTO{
                 super.getPage_block_size(),
                 encode(sort_by)
         );
-    }
-
-    private String encode(String value) {
-        return value == null ? "" : URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
 
 }

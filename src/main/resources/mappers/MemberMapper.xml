@@ -17,9 +17,10 @@
 
     <insert id="join" parameterType="net.spb.spb.domain.MemberVO">
         insert into tbl_member(memberId, memberPwd, memberName, memberZipCode, memberAddr1, memberAddr2, memberBirth,
-                               memberGrade, memberEmail, memberPhone, memberJoinPath)
+                               memberGrade, memberEmail, memberPhone, memberJoinPath, memberProfileImg, memberAgree)
         values (#{memberId}, #{memberPwd}, #{memberName}, #{memberZipCode}, #{memberAddr1}, #{memberAddr2},
-                #{memberBirth}, #{memberGrade}, #{memberEmail}, #{memberPhone}, #{memberJoinPath})
+                #{memberBirth}, #{memberGrade}, #{memberEmail}, #{memberPhone}, #{memberJoinPath}, #{memberProfileImg},
+                #{memberAgree})
     </insert>
 
     <select id="getMemberById" parameterType="String" resultType="net.spb.spb.domain.MemberVO">
@@ -35,19 +36,21 @@
                memberJoinPath,
                memberState,
                memberPwdChangeDate,
-               memberLastLogin
+               memberLastLogin,
+               memberProfileImg
         from tbl_member
         where memberId = #{memberId}
     </select>
 
     <update id="updateMember" parameterType="net.spb.spb.domain.MemberVO">
         update tbl_member
-        set memberName    = #{memberName},
-            memberZipCode = #{memberZipCode},
-            memberAddr1   = #{memberAddr1},
-            memberAddr2   = #{memberAddr2},
-            memberGrade   = #{memberGrade}
-            where memberId = #{memberId}
+        set memberName       = #{memberName},
+            memberZipCode    = #{memberZipCode},
+            memberAddr1      = #{memberAddr1},
+            memberAddr2      = #{memberAddr2},
+            memberGrade      = #{memberGrade},
+            memberProfileImg = #{memberProfileImg}
+        where memberId = #{memberId}
     </update>
 
     <update id="updateMemberStateWithLogin" parameterType="String">

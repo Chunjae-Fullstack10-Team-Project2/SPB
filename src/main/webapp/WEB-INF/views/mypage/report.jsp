@@ -17,7 +17,6 @@
 </head>
 <body>
 <%@ include file="../common/sidebarHeader.jsp" %>
-<%@ include file="../common/sidebar.jsp" %>
 
 <div class="content">
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -76,7 +75,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${reportList}" var="orderDTO" varStatus="status">
+                <c:forEach items="${reportList}" var="boardReportDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
                         <th>
