@@ -53,7 +53,6 @@ public class NoticeController {
         // 고정된 공지사항
         List<NoticeDTO> fixedList = noticeService.getFixedNotices();
 
-
         int totalPage = NoticePaging.getTotalPage(totalCount, size);
 
         String pagination = NoticePaging.getPagination(page, totalPage, "/notice/list", keyword, searchType, size);
