@@ -13,6 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder
 public class LectureReviewPageDTO extends PageDTO {
+    private String where_column;
+    private String where_value;
+
     private String search_category;
     private String search_word;
     private LocalDate search_start_date;

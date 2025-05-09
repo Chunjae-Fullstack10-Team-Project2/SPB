@@ -92,7 +92,7 @@ public class PagingUtil {
         return linkUrl.toString();
     }
 
-    public static String buildStudentLectureLinkUrl(String basePath, StudentLecturePageDTO dto) {
+    public static String buildLinkUrl(String basePath, StudentLecturePageDTO dto) {
         StringBuilder linkUrl = new StringBuilder(basePath);
         List<String> params = new ArrayList<>();
 

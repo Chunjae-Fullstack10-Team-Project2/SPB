@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="net.spb.spb.mapper.mystudy.LectureReviewMapper">
+<mapper namespace="net.spb.spb.mapper.lecture.LectureReviewMapper">
     <sql id="condition">
         <where>
-            tlr.lectureReviewMemberId = #{memberId}
+            ${pageDTO.where_column} = #{where_value}
             <if test="pageDTO.search_category == 'lectureTitle'">
                 and tl.lectureTitle like concat('%', #{pageDTO.search_word} ,'%')
             </if>
@@ -68,4 +68,11 @@
         delete from tbl_lecture_review
         where lectureReviewIdx = #{idx}
     </delete>
+
+    <select id="hasLectureReview" resultType="boolean">
+        select count(1)
+        from tbl_lecture_review
+        where lectureReviewMemberId = #{memberId}
+        and lectureReviewRefIdx = #{lectureIdx}
+    </select>
 </mapper>

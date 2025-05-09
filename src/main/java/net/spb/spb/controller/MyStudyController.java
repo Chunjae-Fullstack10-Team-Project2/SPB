@@ -29,7 +29,7 @@ public class MyStudyController {
         String memberId = (String) session.getAttribute("memberId");
 
         String baseUrl = req.getRequestURI();
-        pageDTO.setLinkUrl(PagingUtil.buildStudentLectureLinkUrl(baseUrl, pageDTO));
+        pageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, pageDTO));
         pageDTO.setTotal_count(studentLectureService.getStudentLectureTotalCount(memberId, pageDTO));
 
         List<StudentLectureResponseDTO> lectures = studentLectureService.getStudentLectureList(memberId, pageDTO);

@@ -21,12 +21,12 @@ import java.util.Map;
 @Log4j2
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/mystudy")
+@RequestMapping("/mystudy/plan")
 public class PlanController {
     private final PlanServiceIf planService;
     private final StudentLectureServiceIf studentLectureService;
 
-    @GetMapping("/plan")
+    @GetMapping("/")
     public String list(Model model, HttpServletRequest req) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
@@ -38,7 +38,7 @@ public class PlanController {
         return "mystudy/plan";
     }
 
-    @PostMapping("/plan/regist")
+    @PostMapping("/regist")
     public String regist(@RequestParam("date") String date, PlanDTO planDTO, HttpServletRequest req) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
@@ -49,7 +49,7 @@ public class PlanController {
         return "redirect:/mystudy/plan?date=" + date;
     }
 
-    @PostMapping("/plan/delete")
+    @PostMapping("/delete")
     public String delete(PlanDTO planDTO, HttpServletRequest req) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
@@ -61,7 +61,7 @@ public class PlanController {
         return "redirect:/mystudy/plan";
     }
 
-    @PostMapping("/plan/modify")
+    @PostMapping("/modify")
     @ResponseBody
     public Map<String, Object> modify(@RequestBody PlanDTO planDTO, HttpServletRequest req) {
         HttpSession session = req.getSession();
@@ -78,7 +78,7 @@ public class PlanController {
         return response;
     }
 
-    @GetMapping(value="/plan/search", params="date")
+    @GetMapping(value="/search", params="date")
     @ResponseBody
     public List<PlanResponseDTO> getPlansByDay(@RequestParam(value="date") String date, HttpServletRequest req) {
         HttpSession session = req.getSession();
@@ -87,7 +87,7 @@ public class PlanController {
         return planService.getPlanListByDay(memberId, LocalDate.parse(date));
     }
 
-    @GetMapping(value="/plan/search", params={"date1", "date2"})
+    @GetMapping(value="/search", params={"date1", "date2"})
     @ResponseBody
     public List<PlanResponseDTO> getPlansByMonth(@RequestParam(value="date1") String date1, @RequestParam(value="date2") String date2, HttpServletRequest req) {
         HttpSession session = req.getSession();
@@ -96,7 +96,7 @@ public class PlanController {
         return planService.getPlanListByMonth(memberId, LocalDate.parse(date1), LocalDate.parse(date2));
     }
 
-    @GetMapping("/plan/{idx}")
+    @GetMapping("/{idx}")
     @ResponseBody
     public PlanResponseDTO getPlanByIdx(@PathVariable("idx") int idx) {
         return planService.getPlanByIdx(idx);

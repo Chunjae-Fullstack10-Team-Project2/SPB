@@ -71,4 +71,11 @@
                 ) * 100.0
             ) as lectureProgress
     </select>
+
+    <select id="isLectureRegisteredByMemberId" resultType="boolean">
+        select count(1)
+        from tbl_lecture_register
+        where lectureRegisterMemberId = #{memberId}
+        and lectureRegisterRefIdx = #{lectureIdx}
+    </select>
 </mapper>
