@@ -489,6 +489,12 @@
                     alert('인증 코드 확인에 성공하였습니다.');
                     document.getElementById('memberEmailCode').readOnly = true;
                     document.getElementById('btnMemberEmailCodeAuth').disabled = true;
+                    document.getElementById('btnMemberEmailCodeSend').disabled = true;
+
+                    // 타이머 멈추기
+                    clearInterval(emailAuthTimer);
+                    // 타이머 제거
+                    document.getElementById('emailAuthTimeWarning').textContent = "인증 완료되었습니다.";
                 } else {
                     alert('인증 코드 확인 실패: ' + response.message);
                 }
