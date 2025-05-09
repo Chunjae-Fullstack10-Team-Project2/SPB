@@ -18,7 +18,7 @@
     <%--    </style>--%>
 </head>
 <body>
-<%@include file="header.jsp" %>
+<%--<%@include file="header.jsp" %>--%>
 <%--<div class="content-nonside">--%>
 <div class="modal fade" id="pwdChangeModal" tabindex="-1" aria-labelledby="pwdChangeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
