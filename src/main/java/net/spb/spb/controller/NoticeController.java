@@ -50,6 +50,7 @@ public class NoticeController {
             list = noticeService.getListPaged(offset, size);
         }
 
+
         // 고정된 공지사항
         List<NoticeDTO> fixedList = noticeService.getFixedNotices();
 
