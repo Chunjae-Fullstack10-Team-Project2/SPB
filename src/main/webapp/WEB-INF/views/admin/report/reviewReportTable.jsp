@@ -11,9 +11,9 @@
 <body>
 
 <div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="mb-0">리뷰 신고 목록</h3>
-    </div>
+<%--    <div class="d-flex justify-content-between align-items-center mb-4">--%>
+<%--        <h3 class="mb-0">리뷰 신고 목록</h3>--%>
+<%--    </div>--%>
     <%
         List<Map<String, String>> dateOptions = new ArrayList<>();
         dateOptions.add(Map.of("value", "reportCreatedAt", "label", "신고 일자"));
@@ -59,22 +59,22 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach items="${reviewReportList}" var="orderDTO" varStatus="status">
+        <c:forEach items="${reviewReportList}" var="boardReportDTO" varStatus="status">
             <tr>
-                <td>${status.index + 1}</td>
-                <td class="text-start">${orderDTO.lectureReviewContent}</td>
-                <td>${orderDTO.lectureReviewMemberId}</td>
-                <td>${orderDTO.lectureReviewCreatedAt.toLocalDate()}</td>
+                <td>${boardReportDTO.reportIdx}</td>
+                <td class="text-start">${boardReportDTO.lectureReviewContent}</td>
+                <td>${boardReportDTO.lectureReviewMemberId}</td>
+                <td>${boardReportDTO.lectureReviewCreatedAt.toLocalDate()}</td>
             </tr>
         </c:forEach>
         </tbody>
     </table>
 
-    <%--        <c:if test="${empty likesList}">--%>
-    <%--            <div class="alert alert-warning mt-4" role="alert">--%>
-    <%--                게시글이 없습니다.--%>
-    <%--            </div>--%>
-    <%--        </c:if>--%>
+    <c:if test="${empty reviewReportList}">
+        <div class="alert alert-warning mt-4" role="alert">
+            게시글이 없습니다.
+        </div>
+    </c:if>
 
     <div class="my-4 text-center">
         <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/paging.jsp"/>

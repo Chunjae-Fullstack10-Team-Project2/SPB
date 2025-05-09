@@ -43,3 +43,4 @@ bin/
 
 ### application.properties
 /src/main/resources/application.properties
+application.properties
