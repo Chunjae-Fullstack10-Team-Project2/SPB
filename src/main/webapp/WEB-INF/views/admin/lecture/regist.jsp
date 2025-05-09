@@ -98,7 +98,7 @@
 </div>
 <script>
   function openTeacherSearch() {
-    window.open('/admin/teacher/searchPopup','teacherSearch', 'width=600,height=800,scrollbars=yes,resizable=no');
+    window.open('/admin/teacher/search','teacherSearch', 'width=600,height=500,scrollbars=yes,resizable=no');
   }
 
   function selectTeacher(id, name) {
