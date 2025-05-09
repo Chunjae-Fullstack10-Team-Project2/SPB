@@ -70,7 +70,7 @@
     }
 
     function clearSearch() {
-        window.location.href="searchPopup";
+        window.location.href="search";
     }
 </script>
 

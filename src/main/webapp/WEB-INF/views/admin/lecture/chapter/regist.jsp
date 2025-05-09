@@ -96,7 +96,7 @@
 <script>
 
   function openLectureSearch() {
-    window.open('/admin/lecture/searchPopup','lectureSearch', 'width=600,height=500,scrollbars=yes,resizable=no');
+    window.open('/admin/lecture/search','lectureSearch', 'width=600,height=500,scrollbars=yes,resizable=no');
   }
 
   function setLecture(lectureIdx, lectureTitle) {
