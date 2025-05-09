@@ -14,6 +14,14 @@
             height: 100%;
         }
 
+        .warning-text {
+            color: red;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            text-align: left;
+            padding-left: 0.25rem;
+        }
+
         .login-container {
             background-color: #fff;
             padding: 40px;
@@ -24,26 +32,18 @@
             /*  수정해야 될 수도  */
         }
 
-        .login-container a {
-            text-decoration: none;
-            color: gray;
-        }
 
-        .login-container label {
-            color: gray;
-        }
-
-        .login-container .form-signin .form-floating:focus-within {
+        .login-container .form-signup .form-floating:focus-within {
             z-index: 2;
         }
 
-        .login-container .form-signin input[type="text"] {
+        .login-container .form-signup input[type="text"] {
             margin-bottom: -1px;
             border-bottom-right-radius: 0;
             border-bottom-left-radius: 0;
         }
 
-        .login-container .form-signin input[type="password"] {
+        .login-container .form-signup #memberPwd {
             margin-bottom: 10px;
             border-top-left-radius: 0;
             border-top-right-radius: 0;
@@ -98,6 +98,27 @@
             font-size: 0.875rem;
         }
 
+        .pr-icon {
+            padding-right: 3rem;
+        }
+
+        .btn-eye {
+            position: absolute;
+            top: 50%;
+            right: 0.75rem;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 2;
+            padding: 0;
+            color: #6c757d;
+        }
+
+        .btn-eye:hover {
+            color: #000;
+        }
+
     </style>
 </head>
 <body>
@@ -105,22 +126,35 @@
 
 <div class="login-container d-flex align-items-center py-4 bg-light text-center">
     <c:if test="${empty sessionScope.memberId}">
-        <main class="form-signin w-100 m-auto">
+        <main class="form-signup w-100 m-auto">
             <form name="frmLogin" method="post">
-                    <%--            <img class="mb-4" src="https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72"--%>
-                    <%--                 height="57">--%>
+                <img class="mb-4" src="/resources/img/spb_logo_transparent.png" alt="로고 이미지" width="150">
 
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="memberId" name="memberId"
-                           autocomplete="off"
+                    <input type="text" class="form-control" id="memberId" name="memberId" autocomplete="off"
                            placeholder="아이디"
-                           value="${not empty cookie.saveId.value ? cookie.saveId.value : (not empty cookie.autoLogin.value ? cookie.autoLogin.value : '')}">
+                           value="${not empty cookie.saveId.value ? cookie.saveId.value : (not empty cookie.autoLogin.value ? cookie.autoLogin.value : '')}"
+                           oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
                     <label for="memberId">아이디</label>
+
                 </div>
 
-                <div class="form-floating">
-                    <input type="password" class="form-control" id="memberPwd" name="memberPwd" placeholder="비밀번호">
+                <div class="form-floating position-relative mb-3">
+                    <input type="password" class="form-control pr-icon" name="memberPwd" id="memberPwd"
+                           placeholder="비밀번호" maxlength="15"
+                           oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
                     <label for="memberPwd">비밀번호</label>
+
+                    <button type="button" class="btn-eye" onclick="togglePasswordVisibility('memberPwd', this)">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+
+                <div>
+                    <div id="pwdWarning" class="warning-text d-none">비밀번호는 대소문자와 숫자를 포함한 4~15자여야 합니다.</div>
+                    <div id="idWarning" class="warning-text d-none mt-1">
+                        아이디는 4~20자, 알파벳과 숫자만 가능합니다.
+                    </div>
                 </div>
 
                 <div class="form-check text-start my-3 d-flex justify-content-between">
@@ -160,7 +194,7 @@
     </c:if>
 
     <c:if test="${not empty sessionScope.memberId}">
-        <main class="form-signin w-100 m-auto">
+        <main class="form-signup w-100 m-auto">
             <h1 class="h3 mb-3 fw-normal">로그아웃</h1>
             <button class="btn btn-danger w-100 py-2" id="btnLogout">로그아웃</button>
         </main>
@@ -170,6 +204,47 @@
 <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js" type="text/javascript"></script>
 
 <script>
+    const idRegEx = /^[a-zA-Z0-9]{4,20}$/;
+    const pwdRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{4,15}$/;
+
+    $('#memberId').on('input', function () {
+        const memberIdValue = $('#memberId').val().trim();
+        if (!memberIdValue) {
+            $('#btnCheckId').prop('disabled', true);
+            $('#idWarning').addClass('d-none');
+        } else if (idRegEx.test(memberIdValue)) {
+            $('#idWarning').addClass('d-none');
+            $('#btnCheckId').prop('disabled', false);
+        } else {
+            $('#idWarning').removeClass('d-none');
+            $('#btnCheckId').prop('disabled', true);
+        }
+    });
+
+    $('#memberPwd').on('input', function () {
+        const memberPwdValue = $('#memberPwd').val();
+        if (pwdRegEx.test(memberPwdValue)) {
+            $('#pwdWarning').addClass('d-none');
+        } else {
+            $('#pwdWarning').removeClass('d-none');
+        }
+        checkPasswordMatch();
+    });
+
+    function togglePasswordVisibility(inputId, btnElement) {
+        const input = document.getElementById(inputId);
+        const icon = btnElement.querySelector('i');
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("bi-eye");
+            icon.classList.add("bi-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.remove("bi-eye-slash");
+            icon.classList.add("bi-eye");
+        }
+    }
+
     <c:if test="${not empty errorMessage}">
     alert("${errorMessage}");
     </c:if>
@@ -194,7 +269,7 @@
     });
 
     document.getElementById("btnLogout")?.addEventListener("click", () => {
-        const naverLogoutWindow = window.open("https://nid.naver.com/nidlogin.logout", "_blank", "width=0,height=0");
+        const naverLogoutWindow = window.open("https://nid.naver.com/nidlogin.logout", "_blank", "width=1,height=1");
 
         setTimeout(() => {
             naverLogoutWindow?.close();
