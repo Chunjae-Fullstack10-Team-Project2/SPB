@@ -70,7 +70,7 @@
         window.close(); // 팝업 닫기
     }
     function clearSearch() {
-        window.location.href="searchPopup";
+        window.location.href="search";
     }
 </script>
 </body>
