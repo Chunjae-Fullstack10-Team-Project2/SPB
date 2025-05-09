@@ -129,12 +129,12 @@
                 <div class="profile-img-container">
                     <c:choose>
                         <c:when test="${not empty memberDTO.memberProfileImg}">
-                            <img id="profilePreview"
+                            <img id="mypageProfilePreview"
                                  src="${pageContext.request.contextPath}/upload/${memberDTO.memberProfileImg}"
                                  alt="프로필 이미지" class="profile-img">
                         </c:when>
                         <c:otherwise>
-                            <img id="profilePreview"
+                            <img id="mypageProfilePreview"
                                  src="${pageContext.request.contextPath}/resources/img/default_profileImg.png"
                                  alt="기본 이미지" class="profile-img">
                         </c:otherwise>
@@ -272,7 +272,7 @@
 
         const reader = new FileReader();
         reader.onload = function (e) {
-            document.getElementById('profilePreview').src = e.target.result;
+            document.getElementById('mypageProfilePreview').src = e.target.result;
         };
         reader.readAsDataURL(file);
     });

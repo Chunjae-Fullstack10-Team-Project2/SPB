@@ -83,9 +83,8 @@ public class MemberController {
             MemberDTO memberDTO = memberService.getMemberById(memberId);
             session.setAttribute("memberGrade", memberDTO.getMemberGrade());
 
-            // 마지막 로그인 일자가 1년 경과
+            // 마지막 로그인 체크
             LocalDate lastLoginDate = memberDTO.getMemberLastLogin();
-            // 비밀번호 90일 이상 경과
             LocalDate pwdChangeDate = memberDTO.getMemberPwdChangeDate();
 
             if (lastLoginDate != null) {
@@ -93,7 +92,6 @@ public class MemberController {
                 if (daysSinceLastLogin >= 365) {
                     memberDTO.setMemberState("5");
                     memberService.updateMemberStateWithLogin("5", memberId);
-
                 }
             } else if (pwdChangeDate != null) {
                 long dayBetween = ChronoUnit.DAYS.between(pwdChangeDate, LocalDate.now());
@@ -103,13 +101,17 @@ public class MemberController {
                 }
             }
 
-            if (memberDTO.getMemberState().equals("1")) {
+            if ("1".equals(memberDTO.getMemberState())) {
                 memberService.updateMemberLastLoginWithLogin(LocalDate.now().toString(), memberId);
             }
 
             session.setAttribute("memberDTO", memberDTO);
+
+            // 로그인 사용자
+            return "common/loginMain";
         }
 
+        // 비로그인 사용자
         return "common/main";
     }
 
