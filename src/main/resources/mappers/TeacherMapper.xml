@@ -9,7 +9,7 @@
     </select>
     <!--선생님 강좌 조회-->
     <select id="selectTeacherLecture" resultType="net.spb.spb.domain.LectureVO">
-        select lectureIdx, lectureTitle, lectureThumbnailImg
+        select lectureIdx, lectureTitle, lectureThumbnailImg, lectureAmount
         from tbl_lecture
         where lectureTeacherId = #{teacherId}
         order by lectureIdx desc

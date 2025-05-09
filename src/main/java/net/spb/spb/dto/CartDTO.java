@@ -19,4 +19,5 @@ public class CartDTO {
     private String lectureTeacherId;
     private int lectureAmount;
     private List<Integer> selectCartItemIds;
+    private String lectureThumbnailImg;
 }

@@ -142,11 +142,6 @@
             margin: 10px 0;
         }
 
-        .table-container {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -264,22 +259,16 @@
 
             <div class="table-container">
                 <table>
-                    <thead>
-                    <tr>
-                        <th>no</th>
-                        <th>제목</th>
-                        <th style="text-align: right;"></th>
-                    </tr>
-                    </thead>
                     <tbody>
                     <c:forEach var="lecture" items="${lectureList}">
                         <tr>
-                            <td>${lecture.lectureIdx}</td>
+                            <td><img src="/upload/${lecture.lectureThumbnailImg}" alt="강의 썸네일" height="80" width="130"></td>
                             <td>
                                 <div class="course-title">
                                     <a href="/teacher/lecture?lectureIdx=${lecture.lectureIdx}">${lecture.lectureTitle}</a>
                                 </div>
                             </td>
+                            <td>₩${lecture.lectureAmount}</td>
                             <td>
                                 <div class="actions">
                                     <c:set var="isBookmarked" value="false" />
