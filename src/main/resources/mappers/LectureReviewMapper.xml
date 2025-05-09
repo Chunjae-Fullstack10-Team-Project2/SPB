@@ -38,9 +38,11 @@
              , tlr.lectureReviewRefIdx as lectureReviewRefIdx, tl.lectureTitle as lectureTitle
              , tt.teacherId as teacherId, tt.teacherName as teacherName
              , tlr.lectureReviewContent as lectureReviewContent, tlr.lectureReviewGrade as lectureReviewGrade
+             , tlr.lectureReviewMemberId as lectureReviewMemberId, tm.memberName as memberName
         from tbl_lecture_review as tlr
         inner join tbl_lecture as tl on tlr.lectureReviewRefIdx = tl.lectureIdx
         inner join tbl_teacher as tt on tl.lectureTeacherId = tt.teacherId
+        inner join tbl_member as tm on tlr.lectureReviewMemberId = tm.memberId
         <include refid="condition" />
         order by ${pageDTO.sort_by} ${pageDTO.sort_direction}
         limit #{pageDTO.page_skip_count}, #{pageDTO.page_size}
@@ -50,11 +52,13 @@
         select tlr.lectureReviewIdx as lectureReviewIdx
              , tlr.lectureReviewRefIdx as lectureReviewRefIdx, tl.lectureTitle as lectureTitle
              , tt.teacherId as teacherId, tt.teacherName as teacherName
-             , tlr.lectureReviewContent as lectureReviewContent, tlr.lectureReviewGrade as lectureReviewGrade, tlr.lectureReviewMemberId as lectureReviewMemberId
+             , tlr.lectureReviewContent as lectureReviewContent, tlr.lectureReviewGrade as lectureReviewGrade
+             , tlr.lectureReviewMemberId as lectureReviewMemberId, tm.memberName as memberName
              , tlr.lectureReviewCreatedAt as lectureReviewCreatedAt, tlr.lectureReviewUpdatedAt as lectureReviewUpdatedAt
         from tbl_lecture_review as tlr
         inner join tbl_lecture as tl on tlr.lectureReviewRefIdx = tl.lectureIdx
         inner join tbl_teacher as tt on tl.lectureTeacherId = tt.teacherId
+        inner join tbl_member as tm on tlr.lectureReviewMemberId = tm.memberId
         where tlr.lectureReviewIdx = #{idx}
     </select>
 
