@@ -5,6 +5,9 @@ import jakarta.validation.constraints.Positive;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 @Getter
 @Setter
 @Data
@@ -52,6 +55,10 @@ public class PageDTO {
     }
     public boolean isHas_next() {
         return getEnd_page() < getTotal_page();
+    }
+
+    protected String encode(String value) {
+        return value == null ? "" : URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
 }
 
