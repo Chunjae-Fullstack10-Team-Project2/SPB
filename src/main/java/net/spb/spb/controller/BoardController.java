@@ -17,12 +17,14 @@ import net.spb.spb.service.board.NaverNewsService;
 import net.spb.spb.util.BoardCategory;
 import net.spb.spb.util.FileUtil;
 import net.spb.spb.util.PagingUtil;
+import net.spb.spb.util.ReportRefType;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -58,6 +60,7 @@ public class BoardController {
         model.addAttribute("search", postPageDTO);
         model.addAttribute("paging", paging);
         model.addAttribute("postTotalCount", postTotalCount);
+        addBreadcrumb(model, category, "목록");
         return "board/list";
     }
 
@@ -70,11 +73,13 @@ public class BoardController {
         param.put("memberId", memberId);
         PostDTO post = service.getPostByIdx(param);
         model.addAttribute("post", post);
+        addBreadcrumb(model, category, "상세 보기");
         return "board/view";
     }
 
     @GetMapping("/{category}/write")
     public String write(@PathVariable("category") BoardCategory category, Model model, HttpSession session) {
+        addBreadcrumb(model, category, "글쓰기");
         return "board/regist";
     }
 
@@ -104,25 +109,33 @@ public class BoardController {
     }
 
     @GetMapping("/{category}/modify")
-    public String modify(@PathVariable("category") BoardCategory category, @RequestParam("idx") int idx, Model model, HttpSession session) {
+    public String modify(@PathVariable("category") BoardCategory category,
+                         @RequestParam("idx") int idx,
+                         Model model,
+                         HttpSession session,
+                         RedirectAttributes redirectAttributes) {
         PostDTO postDTO = service.getPostByIdx(idx);
-        if (session.getAttribute("memberId").equals(postDTO.getPostMemberId())) {
-            int rtnResult = service.deletePost(postDTO.getPostIdx());
-            if (rtnResult < 1) {
-                return "";
-            }
+        String loginMemberId = (String) session.getAttribute("memberId");
+        if (!loginMemberId.equals(postDTO.getPostMemberId())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "수정 권한이 없습니다.");
+            return "redirect:/board/"+category+"/list";
         }
         model.addAttribute("post", postDTO);
+        addBreadcrumb(model, category, "수정");
         return "board/modify";
     }
 
     @PostMapping("/{category}/modify")
-    public String modifyPOST(@RequestParam(name = "files") MultipartFile[] files, @PathVariable("category") BoardCategory category, @ModelAttribute PostDTO postDTO, @RequestParam(name = "deleteFile", defaultValue = "") String[] deleteFile, HttpSession session) throws IOException {
-        if (session.getAttribute("memberId").equals(postDTO.getPostMemberId())) {
-            int rtnResult = service.deletePost(postDTO.getPostIdx());
-            if (rtnResult < 1) {
-                return "";
-            }
+    public String modifyPOST(@RequestParam(name = "files") MultipartFile[] files,
+                             @PathVariable("category") BoardCategory category,
+                             @ModelAttribute PostDTO postDTO,
+                             @RequestParam(name = "deleteFile", defaultValue = "") String[] deleteFile,
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) throws IOException {
+        String sessionMemberId = (String) session.getAttribute("memberId");
+        if (!sessionMemberId.equals(postDTO.getPostMemberId())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "수정 권한이 없습니다.");
+            return "redirect:/board/"+category+"/list";
         }
 
         postDTO.setPostUpdatedAt(LocalDateTime.now());
@@ -156,26 +169,59 @@ public class BoardController {
     }
 
     @PostMapping("/{category}/delete")
-    public String delete(@PathVariable("category") BoardCategory category, @ModelAttribute PostDTO postDTO, HttpSession session) {
-        if (session.getAttribute("memberId").equals(postDTO.getPostMemberId())) {
-            int rtnResult = service.deletePost(postDTO.getPostIdx());
-            if (rtnResult < 1) {
-                return "";
-            }
+    @ResponseBody
+    public Map<String, Object> deletePostAjax(@PathVariable("category") BoardCategory category,
+                                              @ModelAttribute PostDTO postDTO,
+                                              HttpSession session) {
+        Map<String, Object> result = new HashMap<>();
+
+        String sessionMemberId = (String) session.getAttribute("memberId");
+        if (!sessionMemberId.equals(postDTO.getPostMemberId())) {
+            result.put("success", false);
+            result.put("message", "권한이 없습니다.");
+            return result;
         }
-        return "redirect:/board/" + category + "/list";
+
+        int rtnResult = service.deletePost(postDTO.getPostIdx());
+        if (rtnResult > 0) {
+            result.put("success", true);
+            result.put("message", "게시글이 삭제되었습니다.");
+            result.put("redirect", "/board/" + category.name().toLowerCase() + "/list");
+        } else {
+            result.put("success", false);
+            result.put("message", "삭제에 실패했습니다.");
+        }
+        return result;
     }
 
     @PostMapping("/{category}/report/regist")
-    public String reportRegist(@PathVariable("category") BoardCategory category, @ModelAttribute PostReportDTO postReportDTO, HttpSession session) {
-        if (!session.getAttribute("memberId").equals(postReportDTO.getPostMemberId())) {
-            int rtnResult = service.insertPostReport(postReportDTO);
-            if (rtnResult < 1) {
-                log.info("report regist failed");
-            }
+    @ResponseBody
+    public Map<String, Object> reportRegist(@PathVariable("category") BoardCategory category,
+                                            @RequestParam("postMemberId") String postMemberId,
+                                            @ModelAttribute PostReportDTO postReportDTO,
+                                            HttpSession session) {
+        Map<String, Object> result = new HashMap<>();
+        String sessionMemberId = (String) session.getAttribute("memberId");
+
+        if (sessionMemberId.equals(postMemberId)) {
+            result.put("success", false);
+            result.put("message", "자신의 게시글은 신고할 수 없습니다.");
+            return result;
         }
-        return "redirect:/board/" + category + "/view?idx=" + postReportDTO.getReportRefIdx();
+        postReportDTO.setReportMemberId(sessionMemberId);
+        postReportDTO.setReportRefType(ReportRefType.POST);
+        int rtnResult = service.insertPostReport(postReportDTO);
+        if (rtnResult > 0) {
+            result.put("success", true);
+            result.put("message", "신고가 접수되었습니다.");
+        } else {
+            result.put("success", false);
+            result.put("message", "신고 접수에 실패했습니다.");
+        }
+
+        return result;
     }
+
 
     @GetMapping("/news")
     public String listNews(Model model,
@@ -235,6 +281,15 @@ public class BoardController {
         model.addAttribute("searchDTO", searchDTO);
 
         return "board/news/news";
+    }
+
+    private void addBreadcrumb(Model model, BoardCategory category, String currentPageName) {
+        List<Map<String, String>> breadcrumbItems = List.of(
+                Map.of("name", "게시판", "url", "/board"),
+                Map.of("name", category.getDisplayName(), "url", "/board/" + category.name().toLowerCase() + "/list"),
+                Map.of("name", currentPageName, "url", "")
+        );
+        model.addAttribute("breadcrumbItems", breadcrumbItems);
     }
 
 }
