@@ -10,20 +10,23 @@
         values (#{chapterLectureIdx}, #{chapterName}, #{chapterVideo}, #{chapterRuntime})
     </insert>
     <insert id="insertTeacher" parameterType="net.spb.spb.domain.TeacherVO">
-        insert into tbl_teacher (teacherName, teacherId, teacherIntro, teacherApproval, teacherProfileImg, teacherSubject)
-        values (#{teacherName}, #{teacherId}, #{teacherIntro}, #{teacherApproval}, #{teacherProfileImg}, #{teacherSubject})
+        insert into tbl_teacher (teacherName, teacherId, teacherIntro, teacherApproval, teacherProfileImg,
+                                 teacherSubject)
+        values (#{teacherName}, #{teacherId}, #{teacherIntro}, #{teacherApproval}, #{teacherProfileImg},
+                #{teacherSubject})
     </insert>
-    <select id="selectLecture" parameterType="net.spb.spb.dto.pagingsearch.LecturePageDTO" resultType="net.spb.spb.dto.LectureDTO">
+    <select id="selectLecture" parameterType="net.spb.spb.dto.pagingsearch.LecturePageDTO"
+            resultType="net.spb.spb.dto.LectureDTO">
         select
-            tl.lectureIdx,
-            tl.lectureTitle,
-            tl.lectureThumbnailImg,
-            tl.lectureAmount,
-            tl.lectureTeacherId,
-            tl.lectureDescription,
-            tl.lectureCreatedAt,
-            tt.teacherName as lectureTeacherName,
-            count(tlc.chapterIdx) as lectureChapterCount
+        tl.lectureIdx,
+        tl.lectureTitle,
+        tl.lectureThumbnailImg,
+        tl.lectureAmount,
+        tl.lectureTeacherId,
+        tl.lectureDescription,
+        tl.lectureCreatedAt,
+        tt.teacherName as lectureTeacherName,
+        count(tlc.chapterIdx) as lectureChapterCount
         from tbl_lecture tl
         inner join tbl_teacher tt on tl.lectureTeacherId = tt.teacherId
         left outer join tbl_lecture_chapter tlc on tl.lectureIdx = tlc.chapterLectureIdx
@@ -57,4 +60,62 @@
             </if>
         </where>
     </select>
+
+    <!--  매출   -->
+    <!--  월별 고정  -->
+    <select id="selectMonthlySalesDefault" resultType="map">
+        SELECT DATE_FORMAT(orderCreatedAt, '%Y-%m') AS period,
+               SUM(orderAmount)                     AS totalAmount
+        FROM tbl_order_info
+        WHERE orderStatus = 's'
+        GROUP BY period
+        ORDER BY period
+    </select>
+
+    <select id="selectMonthlySales" resultType="map" parameterType="map">
+        SELECT
+        <choose>
+            <when test="timeType == 'year'">
+                DATE_FORMAT(orderCreatedAt, '%Y') AS period
+            </when>
+            <otherwise>
+                DATE_FORMAT(orderCreatedAt, '%Y-%m') AS period
+            </otherwise>
+        </choose>
+        ,
+        SUM(orderAmount) AS totalAmount
+        FROM tbl_order_info
+        WHERE orderStatus = 's'
+        GROUP BY period
+        ORDER BY period
+    </select>
+
+    <!--  강좌별 고정 -->
+    <select id="selectLectureSalesDefault" resultType="map">
+        SELECT l.lectureTitle       AS lecture,
+               SUM(l.lectureAmount) AS totalAmount,
+               COUNT(ol.orderIdx)   AS soldCount
+        FROM tbl_order_info o
+                 JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
+                 JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
+        WHERE o.orderStatus = 's'
+        GROUP BY l.lectureTitle
+        ORDER BY totalAmount DESC
+    </select>
+
+    <select id="selectLectureSales" resultType="map" parameterType="map">
+        SELECT l.lectureTitle AS lecture,
+        SUM(l.lectureAmount) AS totalAmount,
+        COUNT(ol.orderIdx) AS soldCount
+        FROM tbl_order_info o
+        JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
+        JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
+        WHERE o.orderStatus = 's'
+        <if test="startDate != null and endDate != null">
+            AND o.orderCreatedAt BETWEEN #{startDate} AND #{endDate}
+        </if>
+        GROUP BY l.lectureTitle
+        ORDER BY totalAmount DESC
+    </select>
+
 </mapper>

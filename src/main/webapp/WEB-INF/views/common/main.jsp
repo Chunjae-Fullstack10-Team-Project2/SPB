@@ -4,10 +4,10 @@
 <head>
     <title>메인 페이지</title>
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/css/bootstrap-5.0.0-alpha.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/css/LineIcons.2.0.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/css/animate.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/css/main.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/mainAssets/css/bootstrap-5.0.0-alpha.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/mainAssets/css/LineIcons.2.0.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/mainAssets/css/animate.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/mainAssets/css/main.css">
 
     <%--    <style>--%>
     <%--        .warning-text {--%>
@@ -111,7 +111,7 @@
                 </div>
             </div>
             <div class="carousel-section carousel-item clip-bg pt-225 pb-200 img-bg"
-                 style="background-image: url('${pageContext.request.contextPath}/resources/assets/img/carousel/2.jpg');">
+                 style="background-image: url('${pageContext.request.contextPath}/resources/mainAssets/img/carousel/2.jpg');">
                 <div class="container">
                     <div class="row">
                         <div class="col-xl-8 col-lg-10 mx-auto">
@@ -120,7 +120,7 @@
                                     <h2 class="text-white">오늘의 공부가 내일을 바꿉니다</h2>
                                     <p class="text-white">검증된 강사진, 탄탄한 커리큘럼, 그리고 당신의 열정. 봄콩에서 만나보세요.</p>
                                 </div>
-                                <a href="/join" class="theme-btn border-btn">Join Us</a>
+                                <a href="/login" class="theme-btn border-btn">Sign Up</a>
                             </div>
                         </div>
                     </div>
@@ -201,7 +201,7 @@
                 <div class="col-xl-6 col-lg-6">
                     <div class="about-img-wrapper">
                         <div class="about-img position-relative d-inline-block wow fadeInLeft" data-wow-delay=".3s">
-                            <img src="${pageContext.request.contextPath}/resources/assets/img/about/about-img.png"
+                            <img src="${pageContext.request.contextPath}/resources/mainAssets/img/about/about-img.png"
                                  alt="">
 
                             <div class="about-experience">
@@ -364,7 +364,7 @@
                         <div class="col-lg-2"></div>
                         <div class="col-lg-5">
                             <div class="timeline-img">
-                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-1.png" alt="강사 탐색">
+                                <img src="${pageContext.request.contextPath}/resources/mainAssets/img/timeline/timeline-1.png" alt="강사 탐색">
                             </div>
                         </div>
                     </div>
@@ -376,7 +376,7 @@
                     <div class="row align-items-center">
                         <div class="col-lg-5">
                             <div class="timeline-img">
-                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-2.png" alt="회원가입">
+                                <img src="${pageContext.request.contextPath}/resources/mainAssets/img/timeline/timeline-2.png" alt="회원가입">
                             </div>
                         </div>
                         <div class="col-lg-2"></div>
@@ -408,7 +408,7 @@
                         <div class="col-lg-2"></div>
                         <div class="col-lg-5">
                             <div class="timeline-img">
-                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-3.png" alt="강좌 담기">
+                                <img src="${pageContext.request.contextPath}/resources/mainAssets/img/timeline/timeline-3.png" alt="강좌 담기">
                             </div>
                         </div>
                     </div>
@@ -420,7 +420,7 @@
                     <div class="row align-items-center">
                         <div class="col-lg-5">
                             <div class="timeline-img">
-                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-4.png" alt="결제 및 수강">
+                                <img src="${pageContext.request.contextPath}/resources/mainAssets/img/timeline/timeline-4.png" alt="결제 및 수강">
                             </div>
                         </div>
                         <div class="col-lg-2"></div>
@@ -444,7 +444,7 @@
 
 <!-- ========================= subscribe-section start ========================= -->
 <section class="subscribe-section pt-100 pb-100 img-bg"
-         style="background-image: url('${pageContext.request.contextPath}/resources/assets/img/bg/common-bg.svg')">
+         style="background-image: url('${pageContext.request.contextPath}/resources/mainAssets/img/bg/common-bg.svg')">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-xl-6 col-lg-6">
@@ -472,7 +472,7 @@
             <div class="col-xl-3 col-lg-4 col-md-6">
                 <div class="footer-widget mb-60 wow fadeInLeft" data-wow-delay=".2s">
                     <a href="index.html" class="logo mb-30"><img
-                            src="${pageContext.request.contextPath}/resources/assets/img/logo/logo.svg" alt="logo"></a>
+                            src="${pageContext.request.contextPath}/resources/mainAssets/img/logo/logo.svg" alt="logo"></a>
                     <p class="mb-30 footer-desc">We Crafted an awesome desig library that is robust and intuitive to
                         use. No matter you're building a business presentation websit.</p>
                 </div>
@@ -563,11 +563,11 @@
 </a>
 
 <!-- ========================= JS here ========================= -->
-<script src="${pageContext.request.contextPath}/resources/assets/js/bootstrap.bundle-5.0.0.alpha-min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/assets/js/count-up.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/assets/js/wow.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/assets/js/imagesloaded.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/assets/js/main.js"></script>
+<script src="${pageContext.request.contextPath}/resources/mainAssets/js/bootstrap.bundle-5.0.0.alpha-min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/mainAssets/js/count-up.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/mainAssets/js/wow.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/mainAssets/js/imagesloaded.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/mainAssets/js/main.js"></script>
 
 
 <script>

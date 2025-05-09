@@ -227,4 +227,30 @@ public class AdminController {
         );
         model.addAttribute("breadcrumbItems", breadcrumbItems);
     }
+
+    @GetMapping("/sales/info")
+    public String salesInfo(Model model) {
+        List<Map<String, Object>> monthlySales = adminService.getMonthlySales();
+        List<Map<String, Object>> lectureSales = adminService.getLectureSales();
+
+        model.addAttribute("monthlySales", monthlySales);
+        model.addAttribute("lectureSales", lectureSales);
+
+        return "/admin/sales/dashboard";
+    }
+
+    @GetMapping("/sales/monthly")
+    @ResponseBody
+    public List<Map<String, Object>> getMonthlySales(@RequestParam("timeType") String timeType) {
+        return adminService.getMonthlySales(timeType);
+    }
+
+    @GetMapping("/sales/lecture")
+    @ResponseBody
+    public List<Map<String, Object>> getLectureSales(
+            @RequestParam("timeType") String timeType,
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate) {
+        return adminService.getLectureSales(timeType, startDate, endDate);
+    }
 }
