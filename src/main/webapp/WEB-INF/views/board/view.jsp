@@ -1,3 +1,4 @@
+<%@ page import="net.spb.spb.util.FileUtil" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%-- Created by IntelliJ IDEA. User: sinjihye Date: 2025. 4. 29. Time: 10:27 To
@@ -16,6 +17,36 @@ change this template use File | Settings | File Templates. --%>
       color: white;
       border-color: #198754;
     }
+    .img-gallery {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .img-preview {
+      max-width: 180px;
+      max-height: 180px;
+      object-fit: cover;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .img-preview:hover {
+      transform: scale(1.05);
+    }
+
+    .file-list {
+      font-size: 13px;
+    }
+
+    .bi-paperclip {
+      font-size: 1.1rem;
+      color: #555;
+    }
   </style>
 </head>
 <body>
@@ -25,96 +56,131 @@ change this template use File | Settings | File Templates. --%>
     <%@ include file="../common/breadcrumb.jsp" %>
   </div>
   <div class="container my-5">
-    <h2 class="h4 fw-bold">${post.postTitle}</h2>
-    <div class="d-flex gap-2 align-items-center mb-2">
-      <img src="${cp}/upload/${post.memberProfileImg}" width="32" height="32" class="rounded-circle">
-      <div>
-        <div class="small">${post.postMemberId}</div>
-        <div class="text-muted small">조회 ${post.postReadCnt} | 댓글 ${fn:length(post.postComments)}</div>
-      </div>
-    </div>
-    <hr/>
-
-    <p>${post.postContent}</p>
-    <c:forEach items="${post.postFiles}" var="file">
-      <div class="my-3">
-        <a href="/upload/${file.fileName}" target="_blank">
-          <img src="/upload/${file.fileName}" class="img-fluid rounded border"/>
-        </a>
-      </div>
-    </c:forEach>
-
-    <div class="d-flex gap-2 mt-3">
-      <button class="btn btn-outline-primary btn-sm"><i class="bi bi-share"></i> 공유</button>
-      <button type="submit" id="btnReport" class="btn btn-outline-danger btn-sm" data-report-ref-idx="${post.postIdx}" data-post-member-id="${post.postMemberId}" data-report-ref-type="POST"><i class="bi bi-flag"></i> 신고</button>
-    </div>
-
-    <div class="d-flex gap-2 my-4">
-      <button class="btn btn-secondary btn-sm" onclick="location.href='list'"><i class="bi bi-list"></i> 목록</button>
-      <c:if test="${sessionScope.memberId eq post.postMemberId}">
-        <button class="btn btn-warning btn-sm" onclick="location.href='modify?idx=${post.postIdx}'"><i class="bi bi-pencil"></i> 수정</button>
-        <button class="btn btn-danger btn-sm" id="btnPostDelete" data-post-idx="${post.postIdx}" data-member-id="${post.postMemberId}">
-          <i class="bi bi-trash"></i> 삭제
-        </button>
-      </c:if>
-    </div>
-
-    <button type="button"
-            class="btn btn-outline-success btn-sm ${post.like ? 'liked' : ''}"
-            id="btnLike"
-            data-post-idx="${post.postIdx}"
-            data-like-ref-type="POST">
-      👍 <span id="likeCount">${post.postLikeCnt}</span>
-    </button>
-
-    <hr/>
-
-    <!-- 댓글 목록 -->
-    <div class="post-comments mb-4">
-      <c:forEach items="${post.postComments}" var="postComment">
-        <div class="comment-item border-bottom pb-2 mb-2" data-comment-idx="${postComment.postCommentIdx}">
-          <div class="d-flex justify-content-between">
-            <div>
-              <img src="https://github.com/mdo.png" width="24" height="24" class="rounded-circle me-2">
-              <strong>${postComment.postCommentMemberId}</strong>
-            </div>
-            <div class="text-muted small">
-                ${fn:replace(postComment.postCommentCreatedAt, 'T', ' ')}
-              <c:if test="${not empty postComment.postCommentUpdatedAt}">
-                (수정: ${fn:replace(postComment.postCommentUpdatedAt, 'T', ' ')})
-              </c:if>
-            </div>
-          </div>
-          <div class="comment-body mt-2">
-            <div class="comment-text">${postComment.postCommentContent}</div>
-            <div class="comment-edit">
-              <textarea class="form-control edit-textarea">${postComment.postCommentContent}</textarea>
-              <div class="mt-2 text-end">
-                <button class="btn btn-sm btn-outline-primary" onclick="saveEdit(this, ${postComment.postCommentIdx}, '${sessionScope.memberId}')">저장</button>
-                <button class="btn btn-sm btn-outline-secondary" onclick="cancelEdit(this)">취소</button>
-              </div>
-            </div>
-            <c:if test="${sessionScope.memberId eq postComment.postCommentMemberId}">
-              <div class="text-end mt-2">
-                <button class="btn btn-sm btn-link text-decoration-none" onclick="enableEdit(this)">편집</button>
-                <button class="btn btn-sm btn-link text-danger text-decoration-none commentDeleteButton"
-                        data-comment-idx="${postComment.postCommentIdx}" data-member-id="${postComment.postCommentMemberId}">삭제</button>
-              </div>
-            </c:if>
+    <div class="card shadow-sm border rounded-3 bg-light">
+      <div class="card-body">
+        <h2 class="h4 fw-bold">${post.postTitle}</h2>
+        <div class="d-flex gap-3 align-items-center border-bottom pb-3 mb-4">
+          <img src="${cp}/upload/${post.memberProfileImg}" width="40" height="40" class="rounded-circle">
+          <div>
+            <div class="fw-semibold">${post.postMemberId}</div>
+            <div class="text-muted small">조회 ${post.postReadCnt} | 댓글 ${fn:length(post.postComments)}</div>
           </div>
         </div>
-      </c:forEach>
-    </div>
 
-    <!-- 댓글 입력 -->
-    <div class="mb-2">
-      <div class="col-8">
-        <textarea id="postCommentContent" class="form-control" rows="3" placeholder="댓글을 입력하세요" style="resize: none;"></textarea>
-      </div>
-      <div class="col-2">
-        <button type="button" class="btn btn-primary btn-sm" id="commentInsertButton"
-                data-member-id="${sessionScope.memberId}"
-                data-post-idx="${post.postIdx}"><i class="bi bi-chat-dots"></i> 댓글 작성</button>
+        <div class="mb-4" style="white-space: pre-line;">${post.postContent}</div>
+
+        <div class="img-gallery">
+          <c:forEach items="${post.postFiles}" var="file">
+              <c:if test="${file.image}">
+                <!-- 이미지 미리보기 -->
+                <a href="/upload/${file.fileName}" target="_blank" title="이미지 원본 보기">
+                  <img src="/upload/${file.fileName}" class="img-preview" />
+                </a>
+              </c:if>
+          </c:forEach>
+        </div>
+        <div class="file-list">
+          <c:forEach items="${post.postFiles}" var="file">
+            <c:if test="${not file.image}">
+              <div class="d-flex justify-content-between align-items-center border p-2 rounded mb-2">
+                <div>
+                  <i class="bi ${FileUtil.getIconClass(file.fileExt)} me-2"></i>
+                  ${file.fileOrgName}
+                  <span class="text-muted small ms-2">
+                      (${FileUtil.formatFileSize(file.fileSize)})
+                  </span>
+                </div>
+                <a class="btn btn-sm btn-outline-secondary"
+                   href="/upload/${file.fileName}" download>
+                  <i class="bi bi-download"></i> 다운로드
+                </a>
+              </div>
+            </c:if>
+          </c:forEach>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+          <button class="btn btn-outline-primary btn-sm" id="btnCopyUrl"><i class="bi bi-share"></i> 공유</button>
+
+          <c:if test="${not empty sessionScope.memberId}">
+          <button type="submit" id="btnReport" class="btn btn-outline-danger btn-sm"
+                  data-report-ref-idx="${post.postIdx}" data-post-member-id="${post.postMemberId}" data-report-ref-type="POST">
+            <i class="bi bi-flag"></i> 신고
+          </button>
+          </c:if>
+        </div>
+
+        <div class="d-flex gap-2 my-4">
+          <button class="btn btn-secondary btn-sm" onclick="location.href='list'"><i class="bi bi-list"></i> 목록</button>
+          <c:if test="${sessionScope.memberId eq post.postMemberId}">
+            <button class="btn btn-warning btn-sm" onclick="location.href='modify?idx=${post.postIdx}'"><i class="bi bi-pencil"></i> 수정</button>
+            <button class="btn btn-danger btn-sm" id="btnPostDelete" data-post-idx="${post.postIdx}" data-member-id="${post.postMemberId}">
+              <i class="bi bi-trash"></i> 삭제
+            </button>
+          </c:if>
+        </div>
+
+        <c:if test="${not empty sessionScope.memberId}">
+        <button type="button"
+                class="btn btn-outline-success btn-sm ${post.like ? 'liked' : ''}"
+                id="btnLike"
+                data-post-idx="${post.postIdx}"
+                data-like-ref-type="POST">
+          👍 <span id="likeCount">${post.postLikeCnt}</span>
+        </button>
+        </c:if>
+        <hr/>
+
+        <!-- 댓글 목록 -->
+        <div class="post-comments mb-4">
+          <c:forEach items="${post.postComments}" var="postComment">
+            <div class="comment-item border-bottom pb-2 mb-2" data-comment-idx="${postComment.postCommentIdx}">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <img src="https://github.com/mdo.png" width="24" height="24" class="rounded-circle me-2">
+                  <strong>${postComment.postCommentMemberId}</strong>
+                </div>
+                <div class="text-muted small">
+                    ${fn:replace(postComment.postCommentCreatedAt, 'T', ' ')}
+                  <c:if test="${not empty postComment.postCommentUpdatedAt}">
+                    (수정: ${fn:replace(postComment.postCommentUpdatedAt, 'T', ' ')})
+                  </c:if>
+                </div>
+              </div>
+              <div class="comment-body mt-2">
+                <div class="comment-text">${postComment.postCommentContent}</div>
+                <div class="comment-edit">
+                  <textarea class="form-control edit-textarea">${postComment.postCommentContent}</textarea>
+                  <div class="mt-2 text-end">
+                    <button class="btn btn-sm btn-outline-primary" onclick="saveEdit(this, ${postComment.postCommentIdx}, '${sessionScope.memberId}')">저장</button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="cancelEdit(this)">취소</button>
+                  </div>
+                </div>
+                <c:if test="${sessionScope.memberId eq postComment.postCommentMemberId}">
+                  <div class="text-end mt-2">
+                    <button class="btn btn-sm btn-link text-decoration-none" onclick="enableEdit(this)">편집</button>
+                    <button class="btn btn-sm btn-link text-danger text-decoration-none commentDeleteButton"
+                            data-comment-idx="${postComment.postCommentIdx}" data-member-id="${postComment.postCommentMemberId}">삭제</button>
+                  </div>
+                </c:if>
+              </div>
+            </div>
+          </c:forEach>
+        </div>
+
+        <!-- 댓글 입력 -->
+        <c:if test="${not empty sessionScope.memberId}">
+        <div class="mb-2">
+          <div class="col-8">
+            <textarea id="postCommentContent" class="form-control" rows="3" placeholder="댓글을 입력하세요" style="resize: none;"></textarea>
+          </div>
+          <div class="col-2">
+            <button type="button" class="btn btn-primary btn-sm" id="commentInsertButton"
+                    data-member-id="${sessionScope.memberId}"
+                    data-post-idx="${post.postIdx}"><i class="bi bi-chat-dots"></i> 댓글 작성</button>
+          </div>
+        </div>
+        </c:if>
       </div>
     </div>
   </div>
@@ -152,7 +218,7 @@ change this template use File | Settings | File Templates. --%>
   });
 
   // 댓글 등록
-  document.getElementById('commentInsertButton').addEventListener('click', function () {
+  document.getElementById('commentInsertButton')?.addEventListener('click', function () {
     const content = document.getElementById('postCommentContent').value;
     console.log(content);
     console.log(this.dataset.postIdx);
@@ -225,7 +291,7 @@ change this template use File | Settings | File Templates. --%>
   }
 
   // 좋아요 처리
-  document.getElementById('btnLike').addEventListener('click', function() {
+  document.getElementById('btnLike')?.addEventListener('click', function() {
     const btn = this;
     const isLiked = btn.classList.contains('liked');
     const action = isLiked ? "delete" : "regist";
@@ -277,7 +343,6 @@ change this template use File | Settings | File Templates. --%>
     .catch(() => showToast("신고 처리 중 오류가 발생했습니다.", true));
   });
 
-
   function showToast(message, isError = false) {
     const toastEl = document.getElementById("toastMessage");
     const toastText = document.getElementById("toastText");
@@ -286,6 +351,15 @@ change this template use File | Settings | File Templates. --%>
     toastEl.classList.add(isError ? "text-bg-danger" : "text-bg-success");
     new bootstrap.Toast(toastEl).show();
   }
+
+  document.getElementById("btnCopyUrl").addEventListener("click", function () {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      showToast("URL이 클립보드에 복사되었습니다.");
+    }).catch(err => {
+      showToast("복사에 실패했습니다: " + err, true);
+    });
+  });
 </script>
 </body>
 </html>

@@ -69,7 +69,13 @@ public class BoardServiceImpl implements BoardServiceIf {
         List<FileVO> postFileVOs = boardFileMapper.selectFile((int)param.get("postIdx"));
         dto.setPostComments(
                 postCommentVOs.stream().map(vo -> modelMapper.map(vo, PostCommentDTO.class)).collect(Collectors.toList()));
-        dto.setPostFiles(postFileVOs.stream().map(vo->modelMapper.map(vo, FileDTO.class)).collect(Collectors.toList()));
+        List<String> imageExts = List.of("jpg", "jpeg", "png", "gif", "webp");
+        dto.setPostFiles(postFileVOs.stream().map(vo -> {
+            FileDTO file = modelMapper.map(vo, FileDTO.class);
+            String ext = file.getFileExt().toLowerCase().replace(".", "");
+            file.setImage(imageExts.contains(ext));
+            return file;
+        }).collect(Collectors.toList()));
         return dto;
     }
 
