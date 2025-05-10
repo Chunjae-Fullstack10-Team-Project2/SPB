@@ -44,40 +44,45 @@
   </div>
 
   <div class="container my-5">
-    <h4 class="mb-4">강좌 목록</h4>
+    <h2 class="h4 fw-bold mb-4">강좌 관리</h2>
 
-    <div class="table-responsive">
-      <table class="table table-hover align-middle text-center">
-        <thead class="table-dark">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+      <tr>
+        <th scope="col">No</th>
+        <th scope="col">썸네일</th>
+        <th scope="col">제목</th>
+        <th scope="col">소개</th>
+        <th scope="col">선생님</th>
+        <th scope="col">금액</th>
+        <th scope="col">시작일</th>
+        <th scope="col">관리</th>
+      </tr>
+      </thead>
+      <tbody>
+      <c:forEach var="lecture" items="${lectures}" varStatus="status">
         <tr>
-          <th>번호</th>
-          <th>강좌명</th>
-          <th>선생님</th>
-          <th>강의 수</th>
-          <th>등록일</th>
-          <th>관리</th>
+          <td>${status.index + 1}</td>
+          <td>
+            <img src="/upload/${lecture.lectureThumbnailImg}" alt="썸네일" style="width: 80px; height: auto; border-radius: 6px;">
+          </td>
+          <td>${lecture.lectureTitle}</td>
+          <td class="text-truncate" style="max-width: 200px;">${lecture.lectureDescription}</td>
+          <td>${lecture.lectureTeacherId}</td>
+          <td><fmt:formatNumber value="${lecture.lectureAmount}" type="number" />원</td>
+          <td><fmt:formatDate value="${lecture.lectureCreatedAt}" pattern="yyyy-MM-dd" /></td>
+          <td>
+            <a href="modify?lectureIdx=${lecture.lectureIdx}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i> 수정</a>
+            <form method="post" action="delete" style="display:inline;" onsubmit="return confirm('삭제하시겠습니까?');">
+              <input type="hidden" name="lectureIdx" value="${lecture.lectureIdx}" />
+              <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> 삭제</button>
+            </form>
+          </td>
         </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="lecture" items="${lectures}" varStatus="i">
-          <tr>
-            <td>${lecture.lectureIdx}</td>
-            <td class="text-start">${lecture.lectureTitle}</td>
-            <td>${lecture.lectureTeacherName}</td>
-            <td>${lecture.lectureChapterCount}</td>
-            <td><fmt:formatDate value="${lecture.lectureCreatedAt}" pattern="yyyy-MM-dd"/></td>
-            <td>
-              <a href="/teacher/lecture?lectureIdx=${lecture.lectureIdx}" class="btn btn-sm btn-outline-primary">보기</a>
-              <a href="#" class="btn btn-sm btn-outline-secondary">수정</a>
-            </td>
-          </tr>
-        </c:forEach>
-        </tbody>
-      </table>
-    </div>
+      </c:forEach>
+      </tbody>
+    </table>
   </div>
-
-
 </div>
 </body>
 </html>

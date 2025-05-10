@@ -39,8 +39,12 @@ public class AdminService {
         return adminMapper.insertTeacher(modelMapper.map(teacherDTO, TeacherVO.class));
     }
 
-    public List<LectureDTO> selectLecture(LecturePageDTO lecturePageDTO) {
-        return adminMapper.selectLecture(lecturePageDTO);
+    public List<LectureDTO> selectLectureList(LecturePageDTO lecturePageDTO) {
+        return adminMapper.selectLectureList(lecturePageDTO);
+    }
+
+    public LectureDTO selectLecture(int lectureIdx) {
+        return adminMapper.selectLecture(lectureIdx);
     }
 
     public int selectLectureCount(LecturePageDTO lecturePageDTO) {
@@ -95,5 +99,9 @@ public class AdminService {
 
     public int modifyTeacherProfile(TeacherDTO teacherDTO) {
         return adminMapper.modifyTeacherProfile(modelMapper.map(teacherDTO, TeacherVO.class));
+    }
+
+    public int updateLecture(LectureDTO lectureDTO) {
+        return adminMapper.updateLecture(modelMapper.map(lectureDTO, LectureVO.class));
     }
 }

@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.spb.spb.mapper.AdminMapper">
+
     <insert id="insertLecture" parameterType="net.spb.spb.domain.LectureVO">
         insert into tbl_lecture (lectureTitle, lectureDescription, lectureTeacherId, lectureThumbnailImg, lectureAmount)
         values (#{lectureTitle}, #{lectureDescription}, #{lectureTeacherId}, #{lectureThumbnailImg}, #{lectureAmount})
     </insert>
+
     <insert id="insertChapter" parameterType="net.spb.spb.domain.ChapterVO">
         insert into tbl_lecture_chapter (chapterLectureIdx, chapterName, chapterVideo, chapterRuntime)
         values (#{chapterLectureIdx}, #{chapterName}, #{chapterVideo}, #{chapterRuntime})
     </insert>
+
     <insert id="insertTeacher" parameterType="net.spb.spb.domain.TeacherVO">
         insert into tbl_teacher (teacherName, teacherId, teacherIntro, teacherApproval, teacherProfileImg,
                                  teacherSubject)
         values (#{teacherName}, #{teacherId}, #{teacherIntro}, #{teacherApproval}, #{teacherProfileImg},
                 #{teacherSubject})
     </insert>
-    <select id="selectLecture" parameterType="net.spb.spb.dto.pagingsearch.LecturePageDTO"
+
+    <select id="selectLectureList" parameterType="net.spb.spb.dto.pagingsearch.LecturePageDTO"
             resultType="net.spb.spb.dto.LectureDTO">
         select
         tl.lectureIdx,
@@ -42,6 +46,25 @@
         </where>
         group by tl.lectureIdx, tl.lectureTitle, tt.teacherName
         order by tl.${sort_by} ${sort_direction}
+    </select>
+
+    <select id="selectLecture" parameterType="java.lang.Integer"
+            resultType="net.spb.spb.dto.LectureDTO">
+        select
+        tl.lectureIdx,
+        tl.lectureTitle,
+        tl.lectureThumbnailImg,
+        tl.lectureAmount,
+        tl.lectureTeacherId,
+        tl.lectureDescription,
+        tl.lectureCreatedAt,
+        tt.teacherName as lectureTeacherName,
+        count(tlc.chapterIdx) as lectureChapterCount
+        from tbl_lecture tl
+        inner join tbl_teacher tt on tl.lectureTeacherId = tt.teacherId
+        left outer join tbl_lecture_chapter tlc on tl.lectureIdx = tlc.chapterLectureIdx
+        where tl.lectureIdx = #{lectureIdx}
+        group by tl.lectureIdx, tl.lectureTitle, tt.teacherName
     </select>
 
     <select id="selectLectureCount" parameterType="net.spb.spb.dto.pagingsearch.LecturePageDTO">
@@ -260,5 +283,23 @@
             teacherIntro = #{teacherIntro},
             teacherProfileImg = #{teacherProfileImg}
         where teacherIdx = #{teacherIdx}
+    </update>
+
+    <update id="updateLecture" parameterType="net.spb.spb.domain.LectureVO">
+        update tbl_lecture
+        set lectureTitle = #{lectureTitle},
+            lectureDescription = #{lectureDescription},
+            lectureTeacherId = #{lectureTeacherId},
+            lectureThumbnailImg = #{lectureThumbnailImg},
+            lectureAmount = #{lectureAmount}
+        where lectureIdx = #{lectureIdx}
+    </update>
+
+    <update id="updateChapter" parameterType="net.spb.spb.domain.ChapterVO">
+        update tbl_lecture_chapter
+        set chapterName = #{chapterName},
+            chapterVideo = #{chapterVideo},
+            chapterRuntime = #{chapterRuntime}
+        where chapterLectureIdx = #{chapterLectureIdx}
     </update>
 </mapper>
