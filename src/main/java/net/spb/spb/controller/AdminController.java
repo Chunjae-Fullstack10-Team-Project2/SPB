@@ -209,8 +209,9 @@ public class AdminController {
 
     @GetMapping("/lecture/list")
     public void lectureList(@ModelAttribute LecturePageDTO lecturePageDTO, Model model) {
-        List<LectureDTO> lectureDTOs = adminService.selectLecture(lecturePageDTO);
+        List<LectureDTO> lectureDTOs = adminService.selectLectureList(lecturePageDTO);
         model.addAttribute("lectures", lectureDTOs);
+        setBreadcrumb(model, Map.of("강좌 목록", ""));
     }
 
     @GetMapping("/lecture/regist")
@@ -234,6 +235,30 @@ public class AdminController {
         adminService.insertLecture(lectureDTO);
     }
 
+
+    @GetMapping("/lecture/modify")
+    public void lectureModify(@RequestParam("lectureIdx") int lectureIdx, Model model) {
+        LectureDTO lectureDTO = adminService.selectLecture(lectureIdx);
+        model.addAttribute("lectureDTO", lectureDTO);
+        setBreadcrumb(model,
+                Map.of("강좌 목록", "/admin/lecture/list"),
+                Map.of("강좌 수정", "")
+        );
+    }
+
+    @PostMapping("/lecture/modify")
+    public void lectureModifyPOST(@RequestParam(name = "file1") MultipartFile file, @ModelAttribute LectureDTO lectureDTO) {
+        try {
+            if (file != null && !file.isEmpty()) {
+                File savedFile = fileUtil.saveFile(file);
+                lectureDTO.setLectureThumbnailImg(savedFile.getName());
+            }
+        } catch (Exception e) {
+            log.info(e.getMessage());
+        }
+        adminService.updateLecture(lectureDTO);
+    }
+
     @GetMapping("/lecture/search")
     public String lectureSearchPopup(@ModelAttribute LecturePageDTO lecturePageDTO, HttpServletRequest req, Model model) {
         String baseUrl = req.getRequestURI();
@@ -241,7 +266,7 @@ public class AdminController {
         int total_count = adminService.selectLectureCount(lecturePageDTO);
         lecturePageDTO.setTotal_count(total_count);
         String paging = PagingUtil.pagingArea(lecturePageDTO);
-        List<LectureDTO> lectureDTOs = adminService.selectLecture(lecturePageDTO);
+        List<LectureDTO> lectureDTOs = adminService.selectLectureList(lecturePageDTO);
         model.addAttribute("lectures", lectureDTOs);
         model.addAttribute("searchDTO", lecturePageDTO);
         model.addAttribute("paging", paging);

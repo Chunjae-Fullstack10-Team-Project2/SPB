@@ -21,7 +21,9 @@ public interface AdminMapper {
 
     int insertTeacher(TeacherVO teacherVO);
 
-    List<LectureDTO> selectLecture(LecturePageDTO lecturePageDTO);
+    List<LectureDTO> selectLectureList(LecturePageDTO lecturePageDTO);
+
+    LectureDTO selectLecture(int lectureIdx);
 
     int selectLectureCount(LecturePageDTO lecturePageDTO);
 
@@ -43,4 +45,8 @@ public interface AdminMapper {
     List<MemberDTO> selectTeacherWithTeacherProfile();
 
     int modifyTeacherProfile (TeacherVO teacherVO);
+
+    int updateLecture(LectureVO lectureVO);
+
+    int updateChapter(ChapterVO chapterVO);
 }
