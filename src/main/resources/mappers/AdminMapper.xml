@@ -170,7 +170,6 @@
         LIMIT #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
     </select>
 
-
     <select id="selectSalesDetailCount" resultType="int">
         SELECT COUNT(*)
         FROM tbl_order_info o
@@ -190,6 +189,25 @@
         <if test="searchDTO.startDate != null and searchDTO.endDate != null">
             AND o.orderCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
         </if>
+    </select>
+
+    <select id="selectSalesListForExport">
+        SELECT o.orderIdx, orderMemberId, lectureTitle, orderAmount, orderCreatedAt
+        FROM tbl_order_info AS o
+        JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
+        JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
+        WHERE orderStatus = 's'
+
+        <if test="searchType != null and searchWord != null">
+            AND ${searchType} LIKE CONCAT('%', #{searchWord}, '%')
+        </if>
+        <if test="startDate != null and startDate != ''">
+            AND orderCreatedAt &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND orderCreatedAt &lt;= #{endDate}
+        </if>
+        ORDER BY orderCreatedAt DESC
     </select>
 
     <select id="selectTeacherWithoutTeacherProfile" resultType="net.spb.spb.dto.member.MemberDTO">

@@ -81,6 +81,10 @@ public class AdminService {
         return adminMapper.selectSalesDetailCount(searchDTO);
     }
 
+    public List<OrderDTO> getSalesListForExport(Map<String, Object> param) {
+        return adminMapper.selectSalesListForExport(param);
+    }
+
     public List<MemberDTO> selectTeacherWithoutTeacherProfile() {
         return adminMapper.selectTeacherWithoutTeacherProfile();
     }

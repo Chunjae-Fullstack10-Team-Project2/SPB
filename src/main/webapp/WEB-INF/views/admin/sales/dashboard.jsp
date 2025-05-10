@@ -65,6 +65,8 @@
             <button type="submit" class="btn btn-primary">검색</button>
         </div>
     </form>
+    <button type="button" id="btnDownloadExcel" class="btn btn-success ms-2">엑셀 다운로드</button>
+
     <div>
         <table class="table table-bordered table-hover table-striped text-center align-middle">
             <thead class="table-light">
@@ -125,7 +127,26 @@
 </section>
 
 <script>
-    const cp = '${pageContext.request.contextPath}';
+    const cp = '<c:out value="${pageContext.request.contextPath}"/>';
+
+    $('#btnDownloadExcel').click(function () {
+        const params = {
+            searchType: $('select[name=searchType]').val(),
+            searchWord: $('input[name=searchWord]').val(),
+            startDate: $('input[name=startDate]').val(),
+            endDate: $('input[name=endDate]').val()
+        };
+
+        // 쿼리스트링 생성
+        const query = Object.entries(params)
+            .filter(([_, v]) => v !== '' && v !== null && v !== undefined)
+            .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v))
+            .join('&');
+
+        const downloadUrl = cp + '/admin/sales/export' + (query ? ('?' + query) : '');
+        location.href = downloadUrl;
+    });
+
 
     function loadSalesDetail(pageNo = 1) {
         const params = {
