@@ -77,11 +77,13 @@
     </div>
 
     <!-- 글 작성 버튼 -->
+    <c:if test="${not empty sessionScope.memberId}">
     <div class="d-flex justify-content-end mb-4">
         <button type="button" class="btn btn-outline-dark btn-sm" id="btnRegist">
             <i class="bi bi-pencil-square"></i> 글 작성
         </button>
     </div>
+    </c:if>
 
     <!-- 검색창 -->
     <form name="frmSearch" action="" method="get" class="row gy-2 gx-3 align-items-end justify-content-center">
@@ -116,7 +118,7 @@
 <!-- 스크립트 -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('btnRegist').addEventListener('click', function () {
+        document.getElementById('btnRegist')?.addEventListener('click', function () {
             window.location.href = "write";
         });
 
