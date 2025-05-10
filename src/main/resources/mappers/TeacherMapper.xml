@@ -9,23 +9,10 @@
     </select>
     <!--선생님 강좌 조회-->
     <select id="selectTeacherLecture" resultType="net.spb.spb.domain.LectureVO">
-        select lectureIdx, lectureTitle, lectureThumbnailImg
+        select lectureIdx, lectureTitle, lectureThumbnailImg, lectureAmount
         from tbl_lecture
         where lectureTeacherId = #{teacherId}
         order by lectureIdx desc
-    </select>
-    <!--강좌 메인 조회-->
-    <select id="selectLectureMain" resultType="net.spb.spb.domain.LectureVO">
-        select lectureTitle, lectureDescription
-        from tbl_lecture
-        where lectureIdx = #{lectureIdx}
-    </select>
-    <!--강좌별 강의 조회-->
-    <select id="selectLectureChapter" resultType="net.spb.spb.domain.ChapterVO">
-        select chapterIdx, chapterName, chapterRuntime
-        from tbl_lecture_chapter
-        where chapterLectureIdx = #{lectureIdx}
-        order by chapterIdx asc
     </select>
     <!--선생님 메인 조회-->
     <select id="getTeacherMain">
@@ -56,17 +43,6 @@
         order by teacherName asc
         limit #{pageRequestDTO.pageSkipCount}, #{pageRequestDTO.pageSize}
     </select>
-    <!--북마크 저장-->
-    <insert id="addBookmark">
-        insert into tbl_bookmark (bookmarkLectureIdx, bookmarkMemberId)
-        VALUES (#{lectureIdx}, #{memberId})
-    </insert>
-    <!--북마크 삭제-->
-    <delete id="deleteBookmark">
-        delete from tbl_bookmark
-        where bookmarkLectureIdx = #{lectureIdx}
-        and bookmarkMemberId = #{memberId}
-    </delete>
     <!--북마크 정보 조회-->
     <select id="selectBookmark">
         select a.bookmarkLectureIdx

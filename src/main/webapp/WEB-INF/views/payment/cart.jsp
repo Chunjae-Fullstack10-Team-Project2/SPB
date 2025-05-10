@@ -25,7 +25,6 @@
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            border: 1px solid #ddd;
         }
 
 
@@ -45,18 +44,11 @@
             margin-bottom: 30px;
         }
 
-        .cart-table th {
-            background-color: #f5f5f5;
-            padding: 10px;
-            text-align: center;
-            border-top: 1px solid #ddd;
-            border-bottom: 1px solid #ddd;
-        }
-
         .cart-table td {
             padding: 15px 10px;
             text-align: center;
             border-bottom: 1px solid #ddd;
+            border-top: 1px solid #ddd;
         }
 
         .cart-table .title-cell {
@@ -142,32 +134,26 @@
     </style>
 </head>
 <body>
-<%@ include file="../common/header.jsp" %>
+<%@ include file="../common/sidebarHeader.jsp" %>
+<div class="content">
 <div class="page-container">
-    <div class="content">
         <div class="cart-title">장바구니</div>
 
         <table class="cart-table">
-            <thead>
-            <tr>
-                <th width="10%">
-                    전체선택<br><input type="checkbox" id="checkAll">
-                </th>
-                <th width="50%">제목</th>
-                <th width="20%">금액</th>
-                <th width="20%">수강하기</th>
-            </tr>
-            </thead>
+            전체선택&nbsp;<input type="checkbox" id="checkAll">
             <tbody>
             <c:forEach var="lecture" items="${cartList}">
                 <tr>
                     <td>
                         <input type="checkbox" class="checkbox" data-lecture-idx="${lecture.cartLectureIdx}" checked>
                     </td>
-                    <td class="title-cell">${lecture.lectureTitle}</td>
-                    <td class="price-cell">${lecture.lectureAmount}원</td>
                     <td>
-                        <button type="button" class="btn">수강하기</button>
+                        <img src="/upload/${lecture.lectureThumbnailImg}" alt="강의 썸네일" width="130" height="80">
+                    </td>
+                    <td class="title-cell">${lecture.lectureTitle}</td>
+                    <td class="price-cell">₩${lecture.lectureAmount}</td>
+                    <td>
+                        <button type="button" class="btn" onclick="cartPaymentOne('${lecture.cartLectureIdx}')">수강하기</button>
                     </td>
                 </tr>
             </c:forEach>
@@ -295,6 +281,15 @@
                 alert("삭제 중 오류가 발생했습니다.");
             }
         });
+    }
+
+    function cartPaymentOne(lectureIdx) {
+        const selectCartItemIds = [];
+        selectCartItemIds.push(lectureIdx);
+
+        const query = 'lectureIdxList='  + selectCartItemIds.join('&lectureIdxList=');
+        console.log("query == " + query);
+        window.location.href = `/payment/payment?`+query;
     }
 
     function cartPayment(){
