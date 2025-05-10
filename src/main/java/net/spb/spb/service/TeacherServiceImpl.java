@@ -45,22 +45,6 @@ public class TeacherServiceImpl implements TeacherServiceIf {
         return lectureDTOList;
     }
 
-    @Override
-    public LectureDTO selectLectureMain(int lectureIdx) {
-        LectureVO lectureVO = teacherMapper.selectLectureMain(lectureIdx);
-        LectureDTO lectureDTO = modelMapper.map(lectureVO, LectureDTO.class);
-        return lectureDTO;
-    }
-
-    @Override
-    public List<ChapterDTO> selectLectureChapter(int lectureIdx) {
-        List<ChapterVO> chapterVOList = teacherMapper.selectLectureChapter(lectureIdx);
-        List<ChapterDTO> chapterDTOList =
-                chapterVOList.stream().map(
-                        chapterVO -> modelMapper.map(chapterVO, ChapterDTO.class))
-                        .collect(Collectors.toList());
-        return chapterDTOList;
-    }
 
     @Override
     public List<TeacherDTO> getTeacherMain(String subject, SearchDTO searchDTO, PageRequestDTO pageRequestDTO) {
@@ -81,20 +65,9 @@ public class TeacherServiceImpl implements TeacherServiceIf {
                         .collect(Collectors.toList());
         return teacherDTOList;
     }
-
     @Override
-    public int addBookmark(int lectureIdx, String memberId) {
-        return teacherMapper.addBookmark(lectureIdx, memberId);
-    }
-
-    @Override
-    public int deleteBookmark(int lectureIdx, String memberId) {
-        return teacherMapper.deleteBookmark(lectureIdx, memberId);
-    }
-
-    @Override
-    public List<Integer> selectBookmark(String teacherId, String memberId) {
-        return teacherMapper.selectBookmark(teacherId, memberId);
+    public List<String> getAllSubject() {
+        return teacherMapper.getAllSubject();
     }
 
     @Override
@@ -103,7 +76,7 @@ public class TeacherServiceImpl implements TeacherServiceIf {
     }
 
     @Override
-    public List<String> getAllSubject() {
-        return teacherMapper.getAllSubject();
+    public List<Integer> selectBookmark(String teacherId, String memberId) {
+        return teacherMapper.selectBookmark(teacherId, memberId);
     }
 }

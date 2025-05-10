@@ -12,13 +12,9 @@ import java.util.List;
 public interface TeacherServiceIf {
     public TeacherDTO selectTeacher(String teacherId);
     public List<LectureDTO> selectTeacherLecture(String teacherId);
-    public LectureDTO selectLectureMain(int lectureIdx);
-    public List<ChapterDTO> selectLectureChapter(int lectureIdx);
     public List<TeacherDTO> getTeacherMain(String subject, SearchDTO searchDTO, PageRequestDTO pageRequestDTO);
     public List<String> getAllSubject();
     public List<TeacherDTO> getAllTeacher(SearchDTO searchDTO, PageRequestDTO pageRequestDTO);
-    public int addBookmark(int lectureIdx, String memberId);
-    public int deleteBookmark(int lectureIdx, String memberId);
-    public List<Integer> selectBookmark(String teacherId, String memberId);
     public int getTotalCount(SearchDTO searchDTO, String subject);
+    public List<Integer> selectBookmark(String teacherId, String memberId);
 }

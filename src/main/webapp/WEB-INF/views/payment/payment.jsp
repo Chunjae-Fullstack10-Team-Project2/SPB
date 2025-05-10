@@ -26,7 +26,6 @@
             width: 100%;
             max-width: 800px;
             margin: 0 auto;
-            border: 1px solid #ddd;
         }
 
         header {
@@ -46,21 +45,6 @@
 
         .section {
             margin-bottom: 30px;
-        }
-
-        .section-title {
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .payment-methods {
-            margin-bottom: 20px;
-        }
-
-        .payment-method {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
         }
 
         .payment-method input[type="radio"] {
@@ -148,9 +132,9 @@
     </style>
 </head>
 <body>
-<%@ include file="../common/header.jsp" %>
+<%@ include file="../common/sidebarHeader.jsp" %>
+<div class="content">
 <div class="page-container">
-    <div class="content">
         <div class="payment-title">결제</div>
         <table class="order-items">
             <th colspan="2">구매자 정보</th>
@@ -175,6 +159,7 @@
                     <tr>
                         <input type="hidden" name ="lectureIdx" value="${lecture.lectureIdx}" />
                         <input type="hidden" name="lectureTitle" value="${lecture.lectureTitle}" />
+                        <td><img src="/upload/${lecture.lectureThumbnailImg}" alt="강의 썸네일" height="80" width="130"></td>
                         <td>${lecture.lectureTitle}</td>
                         <td class="price">${lecture.lectureAmount}원</td>
                     </tr>

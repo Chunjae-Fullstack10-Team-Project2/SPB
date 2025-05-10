@@ -3,7 +3,7 @@
 <mapper namespace="net.spb.spb.mapper.PaymentMapper">
     <!--장바구니 조회-->
     <select id="selectCart">
-        select a.cartIdx, a.cartLectureIdx, b.lectureTitle, b.lectureTeacherId, b.lectureAmount
+        select a.cartIdx, a.cartLectureIdx, b.lectureTitle, b.lectureTeacherId, b.lectureAmount, b.lectureThumbnailImg
         from tbl_cart a
         inner join tbl_lecture b on a.cartLectureIdx = b.lectureIdx
         where cartMemberId = #{memberId}
