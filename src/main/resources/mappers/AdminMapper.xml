@@ -64,48 +64,47 @@
     <!--  매출   -->
     <!--  월별 고정  -->
     <select id="selectMonthlySalesDefault" resultType="map">
-        SELECT DATE_FORMAT(orderCreatedAt, '%Y-%m') AS period,
-               SUM(orderAmount)                     AS totalAmount
+        SELECT DATE_FORMAT(orderCreatedAt, '%Y-%m') AS label,
+               SUM(orderAmount)                     AS total
         FROM tbl_order_info
         WHERE orderStatus = 's'
-        GROUP BY period
-        ORDER BY period
+        GROUP BY label
+        ORDER BY label
     </select>
 
     <select id="selectMonthlySales" resultType="map" parameterType="map">
         SELECT
         <choose>
-            <when test="timeType == 'year'">
-                DATE_FORMAT(orderCreatedAt, '%Y') AS period
+            <when test="timeType == 'YEAR'">
+                DATE_FORMAT(orderCreatedAt, '%Y') AS label
             </when>
             <otherwise>
-                DATE_FORMAT(orderCreatedAt, '%Y-%m') AS period
+                DATE_FORMAT(orderCreatedAt, '%Y-%m') AS label
             </otherwise>
-        </choose>
-        ,
-        SUM(orderAmount) AS totalAmount
+        </choose>,
+        SUM(orderAmount) AS total
         FROM tbl_order_info
         WHERE orderStatus = 's'
-        GROUP BY period
-        ORDER BY period
+        GROUP BY label
+        ORDER BY label
     </select>
 
     <!--  강좌별 고정 -->
     <select id="selectLectureSalesDefault" resultType="map">
-        SELECT l.lectureTitle       AS lecture,
-               SUM(l.lectureAmount) AS totalAmount,
+        SELECT l.lectureTitle       AS lectureTitle,
+               SUM(l.lectureAmount) AS total,
                COUNT(ol.orderIdx)   AS soldCount
         FROM tbl_order_info o
                  JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
                  JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
         WHERE o.orderStatus = 's'
         GROUP BY l.lectureTitle
-        ORDER BY totalAmount DESC
+        ORDER BY total DESC
     </select>
 
     <select id="selectLectureSales" resultType="map" parameterType="map">
-        SELECT l.lectureTitle AS lecture,
-        SUM(l.lectureAmount) AS totalAmount,
+        SELECT l.lectureTitle AS lectureTitle,
+        SUM(l.lectureAmount) AS total,
         COUNT(ol.orderIdx) AS soldCount
         FROM tbl_order_info o
         JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
@@ -115,7 +114,52 @@
             AND o.orderCreatedAt BETWEEN #{startDate} AND #{endDate}
         </if>
         GROUP BY l.lectureTitle
-        ORDER BY totalAmount DESC
+        ORDER BY total DESC
+    </select>
+
+    <select id="selectSalesDetailList" resultType="net.spb.spb.dto.OrderDTO">
+        SELECT o.orderIdx, o.orderMemberId, o.orderAmount, o.orderCreatedAt,
+        l.lectureIdx, l.lectureTitle, l.lectureAmount
+        FROM tbl_order_info o
+        JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
+        JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
+        WHERE o.orderStatus = 's'
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'memberId'">
+                    AND o.orderMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'lectureTitle'">
+                    AND l.lectureTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            AND o.orderCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+        </if>
+        ORDER BY o.orderCreatedAt DESC
+        LIMIT #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
+    </select>
+
+    <select id="selectSalesDetailCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_order_info o
+        JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
+        JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
+        WHERE o.orderStatus = 's'
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'memberId'">
+                    AND o.orderMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'lectureTitle'">
+                    AND l.lectureTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            AND o.orderCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+        </if>
     </select>
 
 </mapper>

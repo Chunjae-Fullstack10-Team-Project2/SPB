@@ -49,9 +49,9 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 200px;
+            width: 280px;
             height: 100vh;
-            background-color: #fff;
+            background-color: rgba(0, 0, 0, 0.1);
             z-index: 10;
         }
 
@@ -197,9 +197,9 @@
 
 <%-- Sidebar --%>
 <div class="flex-shrink-0 p-3 sidebar" id="sidebar">
-    <a href="${cp}/" class="d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom text-dark">
-        <span class="fs-5 fw-semibold">봄콩이</span>
-    </a>
+<%--    <a href="${cp}/" class="d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom text-dark">--%>
+<%--        <span class="fs-5 fw-semibold">메뉴</span>--%>
+<%--    </a>--%>
     <ul class="list-unstyled ps-0">
         <li class="mb-1">
             <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"

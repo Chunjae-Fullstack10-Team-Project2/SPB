@@ -1,250 +1,226 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="cp" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-    <title>매출 정보</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>매출 대시보드</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <style>
-        body {
-            background-color: #f4f6f9;
-        }
-
-        .dashboard-container {
-            max-width: 1100px;
-
-        }
-
-        .chart-card {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            padding: 30px;
-            margin-bottom: 40px;
-        }
-
-        .chart-title {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .chart-controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .chart-wrapper {
-            height: 400px;
-        }
-
-        @media (max-width: 768px) {
-            .chart-wrapper {
-                height: 300px;
-            }
-        }
-    </style>
 </head>
-<body>
-<%@ include file="../../common/sidebarHeader.jsp" %>
+<body class="container my-5">
+<h2 class="mb-4">매출 대시보드</h2>
 
-<div class="content">
-    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-        <symbol id="house-door-fill" viewBox="0 0 16 16">
-            <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
-        </symbol>
-    </svg>
-    <div class="container my-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
-                <li class="breadcrumb-item">
-                    <a class="link-body-emphasis" href="/">
-                        <svg class="bi" width="16" height="16" aria-hidden="true">
-                            <use xlink:href="#house-door-fill"></use>
-                        </svg>
-                        <span class="visually-hidden">Home</span>
-                    </a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="link-body-emphasis fw-semibold text-decoration-none" href="/admin/member/list">관리자 페이지</a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    매출 정보
-                </li>
-            </ol>
-        </nav>
+<!-- 날짜별 매출 -->
+<section class="mb-5">
+    <h4>날짜별 매출</h4>
+    <div class="mb-2">
+        <select id="timeType" class="form-select w-auto d-inline-block">
+            <option value="YEAR">연도별</option>
+            <option value="MONTH" selected>월별</option>
+        </select>
     </div>
-    <div>
-        <div class="d-flex mb-4 dashboard-container">
-            <h3 class="mb-0">매출 정보</h3>
-            <div class="chart-card">
-                <div class="chart-title">📊 매출 현황</div>
-                <div class="chart-controls">
-                    <select id="timeTypeSelect" class="form-select" style="width: 200px;">
-                        <option value="month" selected>월별</option>
-                        <option value="year">연도별</option>
-                    </select>
-                </div>
-                <div class="chart-wrapper">
-                    <canvas id="monthlySalesChart"></canvas>
-                </div>
-            </div>
+    <canvas id="monthlyChart" height="100"></canvas>
+</section>
 
-            <div class="chart-card">
-                <div class="chart-title">📈 강좌별 매출 분석</div>
-                <div class="chart-controls">
-                    <select id="lectureTimeTypeSelect" class="form-select" style="width: 200px;">
-                        <option value="date">날짜별</option>
-                        <option value="month" selected>월별</option>
-                        <option value="year">연도별</option>
-                    </select>
-                    <input type="text" id="lectureDateRange" class="form-control" style="max-width: 250px;">
-                </div>
-                <div class="chart-wrapper">
-                    <canvas id="lectureSalesChart"></canvas>
-                </div>
-            </div>
+<!-- 강좌별 매출 -->
+<section class="mb-5">
+    <h4>강좌별 매출</h4>
+    <div class="mb-2">
+        <input type="text" id="lectureDateRange" class="form-control w-auto d-inline-block"/>
+    </div>
+    <canvas id="lectureChart" height="100"></canvas>
+</section>
+
+<!-- 전체 매출 내역 -->
+<section>
+    <h4>전체 매출 내역</h4>
+    <form id="filterForm" class="row g-2 mb-3">
+        <div class="col-md-2">
+            <select name="searchType" class="form-select">
+                <option value="" selected disabled>검색 조건</option>
+                <option value="lectureTitle">강좌명</option>
+                <option value="memberId">회원 아이디</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="searchWord" class="form-control" placeholder="검색어">
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="dateRange" id="detailDateRange" class="form-control" placeholder="구매일 범위">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">검색</button>
+        </div>
+    </form>
+    <div>
+        <table class="table table-bordered table-hover table-striped text-center align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>주문번호</th>
+                <th>회원 ID</th>
+                <th>강좌명</th>
+                <th>금액</th>
+            </tr>
+            </thead>
+            <tbody id="salesDetailTable">
+            </tbody>
+        </table>
+        <div class="mt-3 d-flex justify-content-center">
+            <ul class="pagination" id="salesPagination"></ul>
         </div>
     </div>
-</div>
+</section>
 
 <script>
-    let monthlyChart, lectureChart;
-    const contextPath = '${pageContext.request.contextPath}';
+    const cp = '${pageContext.request.contextPath}';
 
-    function loadMonthlySalesChart() {
-        const timeType = $('#timeTypeSelect').val();
+    function loadSalesDetail(pageNo = 1) {
+        const formData = $('#filterForm').serializeArray();
+        const params = {};
+        $.each(formData, (i, field) => {
+            params[field.name] = field.value;
+        });
+        params.pageNo = pageNo;
 
-        $.ajax({
-            url: contextPath + '/admin/sales/monthly',
-            method: 'GET',
-            data: {timeType},
-            success: function (response) {
-                const labels = response.map(e => e.period);
-                const data = response.map(e => e.totalAmount);
+        $.get(cp + "/admin/sales/detail", params, function (response) {
+            const rowsHtml = (response.dtoList || []).map(row => {
+                return (
+                    '<tr>' +
+                    '<td>' + row.orderIdx + '</td>' +
+                    '<td>' + row.orderMemberId + '</td>' +
+                    '<td>' + (row.lectureTitle || '-') + '</td>' +
+                    '<td>' + (row.orderAmount != null ? row.orderAmount.toLocaleString() + '원' : '-') + '</td>' +
+                    '</tr>'
+                );
+            }).join("");
 
-                if (monthlyChart) monthlyChart.destroy();
+            $('#salesDetailTable').html(rowsHtml);
+            renderPagination(response);
+        });
+    }
 
-                monthlyChart = new Chart(document.getElementById('monthlySalesChart'), {
+    function renderPagination(data) {
+        const $pagination = $('#salesPagination');
+        $pagination.empty();
+
+        const pageNo = data.pageNo;
+        const startPage = data.pageBlockStart;
+        const endPage = data.pageBlockEnd;
+        const totalPage = data.totalPage;
+        const prev = data.prevPageFlag;
+        const next = data.nextPageFlag;
+
+        if (totalPage <= 1) return;
+
+        if (prev) {
+            $pagination.append(
+                '<li class="page-item">' +
+                '<a class="page-link" href="#" data-page="' + (startPage - 1) + '">&laquo;</a>' +
+                '</li>'
+            );
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            $pagination.append(
+                '<li class="page-item ' + (i === pageNo ? 'active' : '') + '">' +
+                '<a class="page-link" href="#" data-page="' + i + '">' + i + '</a>' +
+                '</li>'
+            );
+        }
+
+        if (next) {
+            $pagination.append(
+                '<li class="page-item">' +
+                '<a class="page-link" href="#" data-page="' + (endPage + 1) + '">&raquo;</a>' +
+                '</li>'
+            );
+        }
+    }
+
+    $(document).on('click', '#salesPagination .page-link', function (e) {
+        e.preventDefault();
+        const page = Number($(this).data('page'));
+        if (page) {
+            loadSalesDetail(page);
+        }
+    });
+
+    $(function () {
+        const now = moment();
+
+        $('#lectureDateRange').daterangepicker({
+            locale: {format: 'YYYY-MM-DD'},
+            startDate: now.clone().subtract(29, 'days'),
+            endDate: now,
+            opens: 'left'
+        }, loadLectureChart);
+
+        let monthlyChartInstance = null; // 전역 변수로 Chart 인스턴스 저장
+
+        function loadMonthlyChart() {
+            const type = $('#timeType').val();
+
+            $.get(cp + "/admin/sales/monthly", {timeType: type}, function (data) {
+                const labels = data.map(item => item.label);
+                const values = data.map(item => item.total);
+
+                // 이미 차트가 있으면 먼저 제거
+                if (monthlyChartInstance) {
+                    monthlyChartInstance.destroy();
+                }
+
+                // 새 차트 생성 및 저장
+                monthlyChartInstance = new Chart($('#monthlyChart'), {
                     type: 'bar',
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: timeType === 'year' ? '연도별 매출 (₩)' : '월별 매출 (₩)',
-                            data: data,
-                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
+                            label: '총 매출',
+                            data: values
                         }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    callback: value => '₩' + value.toLocaleString()
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top'
-                            }
-                        }
                     }
                 });
-            }
-        });
-    }
-
-    function loadLectureSalesChart() {
-        const timeType = $('#lectureTimeTypeSelect').val();
-        const dateRange = $('#lectureDateRange').val();
-
-        if (!dateRange || !dateRange.includes(' - ')) {
-            return; // 초기화 전이므로 실행하지 않음
+            });
         }
 
-        const [startDate, endDate] = dateRange.split(' - ');
+        function loadLectureChart() {
+            const range = $('#lectureDateRange').val().split(' - ');
+            $.get(cp + "/admin/sales/lecture", {
+                timeType: "DAY",
+                startDate: range[0],
+                endDate: range[1]
+            }, function (data) {
+                const labels = data.map(item => item.lectureTitle);
+                const values = data.map(item => item.total);
 
-        $.ajax({
-            url: contextPath + '/admin/sales/lecture',
-            method: 'GET',
-            data: {
-                timeType,
-                startDate,
-                endDate
-            },
-            success: function (response) {
-                const labels = response.map(e => e.lecture);
-                const data = response.map(e => e.totalAmount);
-
-                if (lectureChart) lectureChart.destroy();
-
-                if (response.length === 0) {
-                    if (lectureChart) lectureChart.destroy();
-                    $('#lectureSalesChart').replaceWith('<p class="text-center text-muted">해당 기간에 강좌 매출 데이터가 없습니다.</p>');
-                    return;
-                }
-
-                lectureChart = new Chart(document.getElementById('lectureSalesChart'), {
-                    type: 'doughnut',
+                new Chart($('#lectureChart'), {
+                    type: 'pie',
                     data: {
                         labels: labels,
                         datasets: [{
-                            data: data,
-                            backgroundColor: [
-                                'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray'
-                                , 'lightyellow', 'lightgreen', 'lightgray'
-                                , 'bisque', 'thistle', 'whitesmoke'
-                            ]
+                            label: '강좌 매출',
+                            data: values
                         }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom'
-                            }
-                        }
                     }
                 });
-            }
-        });
-    }
+            });
+        }
 
-    $(function () {
-        const defaultStart = moment().subtract(3, 'months').startOf('day');
-        const defaultEnd = moment().endOf('day');
-
-        $('#lectureDateRange').daterangepicker({
-            locale: {format: 'YYYY-MM-DD'},
-            startDate: defaultStart,
-            endDate: defaultEnd
+        $('#timeType').change(loadMonthlyChart);
+        $('#lectureDateRange').on('apply.daterangepicker', loadLectureChart);
+        $('#filterForm').submit(function (e) {
+            e.preventDefault();
+            loadSalesDetail();
         });
 
-        // 초기값 설정
-        $('#lectureDateRange').val(
-            defaultStart.format('YYYY-MM-DD') + ' - ' + defaultEnd.format('YYYY-MM-DD')
-        );
-
-        // 초기 로딩
-        loadMonthlySalesChart();
-        loadLectureSalesChart();
-
-        $('#timeTypeSelect').on('change', loadMonthlySalesChart);
-        $('#lectureTimeTypeSelect').on('change', loadLectureSalesChart);
-        $('#lectureDateRange').on('apply.daterangepicker', loadLectureSalesChart);
+        loadMonthlyChart();
+        loadLectureChart();
+        loadSalesDetail();
     });
 </script>
 </body>

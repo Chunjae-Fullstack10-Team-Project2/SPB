@@ -5,8 +5,11 @@ import net.spb.spb.domain.LectureVO;
 import net.spb.spb.domain.TeacherVO;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
+import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.TeacherDTO;
 import net.spb.spb.dto.pagingsearch.LecturePageDTO;
+import net.spb.spb.dto.pagingsearch.PageRequestDTO;
+import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.mapper.AdminMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,26 +46,41 @@ public class AdminService {
         return adminMapper.selectLectureCount(lecturePageDTO);
     }
 
+    // 🟢 초기 대시보드용 - 월별 전체 매출 (기본: %Y-%m)
     public List<Map<String, Object>> getMonthlySales() {
-        return adminMapper.selectMonthlySalesDefault(); // 초기 JSP용 (기본 월별)
+        return adminMapper.selectMonthlySalesDefault();
     }
 
+    // 🟢 조건 기반 월별/연도별 매출
     public List<Map<String, Object>> getMonthlySales(String timeType) {
+        // timeType: "YEAR" or "MONTH"
         Map<String, Object> param = new HashMap<>();
         param.put("timeType", timeType);
         return adminMapper.selectMonthlySales(param);
     }
 
+    // 🟢 초기 대시보드용 - 전체 강좌 매출
     public List<Map<String, Object>> getLectureSales() {
-        return adminMapper.selectLectureSalesDefault(); // 초기 JSP용
+        return adminMapper.selectLectureSalesDefault();
     }
 
+    // 🟢 조건 기반 강좌 매출 (날짜 필터 사용)
     public List<Map<String, Object>> getLectureSales(String timeType, String startDate, String endDate) {
         Map<String, Object> param = new HashMap<>();
-        param.put("timeType", timeType);
+        param.put("timeType", timeType); // 현재 사용 X → XML에서 필요하면 추가
         param.put("startDate", startDate);
         param.put("endDate", endDate);
         return adminMapper.selectLectureSales(param);
+    }
+
+    // 🟢 개별 거래 목록
+    public List<OrderDTO> getSalesDetailList(SearchDTO searchDTO, PageRequestDTO pageDTO) {
+        return adminMapper.selectSalesDetailList(searchDTO, pageDTO);
+    }
+
+    // 🟢 거래 수 조회
+    public int getSalesDetailCount(SearchDTO searchDTO) {
+        return adminMapper.selectSalesDetailCount(searchDTO);
     }
 
 }
