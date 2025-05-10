@@ -6,6 +6,7 @@ import net.spb.spb.domain.TeacherVO;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.TeacherDTO;
+import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.dto.pagingsearch.LecturePageDTO;
 import net.spb.spb.mapper.AdminMapper;
 import org.modelmapper.ModelMapper;
@@ -42,5 +43,17 @@ public class AdminService {
 
     public int selectLectureCount(LecturePageDTO lecturePageDTO) {
         return adminMapper.selectLectureCount(lecturePageDTO);
+    }
+
+    public List<MemberDTO> selectTeacherWithoutTeacherProfile() {
+        return adminMapper.selectTeacherWithoutTeacherProfile();
+    }
+
+    public List<MemberDTO> selectTeacherWithTeacherProfile() {
+        return adminMapper.selectTeacherWithTeacherProfile();
+    }
+
+    public int modifyTeacherProfile(TeacherDTO teacherDTO) {
+        return adminMapper.modifyTeacherProfile(modelMapper.map(teacherDTO, TeacherVO.class));
     }
 }
