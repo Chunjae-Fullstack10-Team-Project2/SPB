@@ -125,7 +125,7 @@ public class AdminController {
         return "admin/report/list";
     }
 
-    @GetMapping({"/teacher/list", ""})
+    @GetMapping("/teacher/list")
     public void teacherList(@ModelAttribute MemberPageDTO memberPageDTO, Model model, HttpServletRequest req) {
         List<MemberDTO> teacherWithTeacherProfile = adminService.selectTeacherWithTeacherProfile();
         List<MemberDTO> teacherWithoutTeacherProfile = adminService.selectTeacherWithoutTeacherProfile();
