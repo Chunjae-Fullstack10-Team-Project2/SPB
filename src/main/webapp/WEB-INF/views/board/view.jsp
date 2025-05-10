@@ -3,6 +3,7 @@
 <%-- Created by IntelliJ IDEA. User: sinjihye Date: 2025. 4. 29. Time: 10:27 To
 change this template use File | Settings | File Templates. --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<c:set var="cp" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
   <title>${post.postTitle} - 봄콩이 ${category.displayName}</title>
@@ -26,7 +27,7 @@ change this template use File | Settings | File Templates. --%>
   <div class="container my-5">
     <h2 class="h4 fw-bold">${post.postTitle}</h2>
     <div class="d-flex gap-2 align-items-center mb-2">
-      <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle">
+      <img src="${cp}/upload/${post.memberProfileImg}" width="32" height="32" class="rounded-circle">
       <div>
         <div class="small">${post.postMemberId}</div>
         <div class="text-muted small">조회 ${post.postReadCnt} | 댓글 ${fn:length(post.postComments)}</div>
