@@ -1,6 +1,7 @@
 package net.spb.spb.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.ChapterDTO;
@@ -18,6 +19,10 @@ import net.spb.spb.util.BreadcrumbUtil;
 import net.spb.spb.util.FileUtil;
 import net.spb.spb.util.PagingUtil;
 import net.spb.spb.util.VideoUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -367,5 +373,50 @@ public class AdminController {
                 .pageRequestDTO(pageRequestDTO)
                 .build();
     }
+
+    @GetMapping("/sales/export")
+    public void exportSalesToExcel(
+            @RequestParam(name = "searchType", required = false) String searchType,
+            @RequestParam(name = "searchWord", required = false) String searchWord,
+            @RequestParam(name = "startDate", required = false) String startDate,
+            @RequestParam(name = "endDate", required = false) String endDate,
+            HttpServletResponse response
+    ) throws IOException {
+
+        Map<String, Object> param = new HashMap<>();
+        param.put("searchType", searchType);
+        param.put("searchWord", searchWord);
+        param.put("startDate", startDate);
+        param.put("endDate", endDate);
+
+        List<OrderDTO> list = adminService.getSalesListForExport(param);
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("매출 내역");
+
+        Row header = sheet.createRow(0);
+        header.createCell(0).setCellValue("주문번호");
+        header.createCell(1).setCellValue("회원 ID");
+        header.createCell(2).setCellValue("강좌명");
+        header.createCell(3).setCellValue("금액");
+        header.createCell(4).setCellValue("주문일");
+
+        int rowNum = 1;
+        for (OrderDTO row : list) {
+            Row r = sheet.createRow(rowNum++);
+            r.createCell(0).setCellValue(row.getOrderIdx());
+            r.createCell(1).setCellValue(row.getOrderMemberId());
+            r.createCell(2).setCellValue(row.getLectureTitle());
+            r.createCell(3).setCellValue(row.getOrderAmount());
+            r.createCell(4).setCellValue(row.getOrderCreatedAt().toString());
+        }
+
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=\"sales.xlsx\"");
+
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
+
 }
 

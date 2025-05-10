@@ -36,6 +36,8 @@ public interface AdminMapper {
 
     int selectSalesDetailCount(@Param("searchDTO") SearchDTO searchDTO);
 
+    List<OrderDTO> selectSalesListForExport(Map<String, Object> param);
+
     List<MemberDTO> selectTeacherWithoutTeacherProfile();
 
     List<MemberDTO> selectTeacherWithTeacherProfile();
