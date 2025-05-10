@@ -5,18 +5,20 @@ import net.spb.spb.domain.LectureVO;
 import net.spb.spb.domain.TeacherVO;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
+import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.TeacherDTO;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.dto.pagingsearch.LecturePageDTO;
+import net.spb.spb.dto.pagingsearch.PageRequestDTO;
+import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.mapper.AdminMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
+import java.util.Map;
 
 @Service
 public class AdminService {
@@ -43,6 +45,40 @@ public class AdminService {
 
     public int selectLectureCount(LecturePageDTO lecturePageDTO) {
         return adminMapper.selectLectureCount(lecturePageDTO);
+    }
+
+    public List<Map<String, Object>> getMonthlySales() {
+        Map<String, Object> param = new HashMap<>();
+        param.put("timeType", "MONTH");
+        return adminMapper.selectMonthlySales(param);
+    }
+
+    public List<Map<String, Object>> getMonthlySales(String timeType, String startDate, String endDate) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("timeType", timeType);
+        if (startDate != null && !startDate.isEmpty()) param.put("startDate", startDate);
+        if (endDate != null && !endDate.isEmpty()) param.put("endDate", endDate);
+        return adminMapper.selectMonthlySales(param);
+    }
+
+    public List<Map<String, Object>> getLectureSales() {
+        return adminMapper.selectLectureSalesDefault();
+    }
+
+    public List<Map<String, Object>> getLectureSales(String timeType, String startDate, String endDate) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("timeType", timeType);
+        param.put("startDate", startDate);
+        param.put("endDate", endDate);
+        return adminMapper.selectLectureSales(param);
+    }
+
+    public List<OrderDTO> getSalesDetailList(SearchDTO searchDTO, PageRequestDTO pageDTO) {
+        return adminMapper.selectSalesDetailList(searchDTO, pageDTO);
+    }
+
+    public int getSalesDetailCount(SearchDTO searchDTO) {
+        return adminMapper.selectSalesDetailCount(searchDTO);
     }
 
     public List<MemberDTO> selectTeacherWithoutTeacherProfile() {

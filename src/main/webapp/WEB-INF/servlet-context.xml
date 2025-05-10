@@ -37,8 +37,18 @@
             <mvc:mapping path="/board/**/report/**"/>
             <mvc:mapping path="/payment/*"/>
             <mvc:mapping path="/cart/*"/>
-            <mvc:exclude-mapping path="/login"/>
+            <mvc:mapping path="/notice/*"/>
+            <mvc:exclude-mapping path="/notice/list"/>
+            <mvc:exclude-mapping path="/notice/view"/>
             <bean class="net.spb.spb.interceptor.LoginCheckInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/notice/regist"/>
+            <mvc:mapping path="/notice/modify"/>
+            <mvc:mapping path="/notice/delete"/>
+            <mvc:mapping path="/notice/fix"/>
+            <mvc:mapping path="/notice/unfix"/>
+            <bean class="net.spb.spb.interceptor.AdminCheckInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
 
