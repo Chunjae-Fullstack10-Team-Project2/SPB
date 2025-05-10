@@ -15,4 +15,5 @@ public class ChapterDTO {
     private String chapterName;
     private String chapterVideo;
     private String chapterRuntime;
+    private int lectureChapterCount;
 }

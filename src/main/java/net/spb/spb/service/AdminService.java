@@ -7,6 +7,7 @@ import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.TeacherDTO;
+import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.dto.pagingsearch.LecturePageDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
@@ -46,14 +47,12 @@ public class AdminService {
         return adminMapper.selectLectureCount(lecturePageDTO);
     }
 
-    // 기본 조회 (timeType = "MONTH", 전체 기간)
     public List<Map<String, Object>> getMonthlySales() {
         Map<String, Object> param = new HashMap<>();
         param.put("timeType", "MONTH");
         return adminMapper.selectMonthlySales(param);
     }
 
-    // 조건 기반 조회 (timeType, startDate, endDate)
     public List<Map<String, Object>> getMonthlySales(String timeType, String startDate, String endDate) {
         Map<String, Object> param = new HashMap<>();
         param.put("timeType", timeType);
@@ -62,28 +61,35 @@ public class AdminService {
         return adminMapper.selectMonthlySales(param);
     }
 
-    // 🟢 초기 대시보드용 - 전체 강좌 매출
     public List<Map<String, Object>> getLectureSales() {
         return adminMapper.selectLectureSalesDefault();
     }
 
-    // 🟢 조건 기반 강좌 매출 (날짜 필터 사용)
     public List<Map<String, Object>> getLectureSales(String timeType, String startDate, String endDate) {
         Map<String, Object> param = new HashMap<>();
-        param.put("timeType", timeType); // 현재 사용 X → XML에서 필요하면 추가
+        param.put("timeType", timeType);
         param.put("startDate", startDate);
         param.put("endDate", endDate);
         return adminMapper.selectLectureSales(param);
     }
 
-    // 🟢 개별 거래 목록
     public List<OrderDTO> getSalesDetailList(SearchDTO searchDTO, PageRequestDTO pageDTO) {
         return adminMapper.selectSalesDetailList(searchDTO, pageDTO);
     }
 
-    // 🟢 거래 수 조회
     public int getSalesDetailCount(SearchDTO searchDTO) {
         return adminMapper.selectSalesDetailCount(searchDTO);
     }
 
+    public List<MemberDTO> selectTeacherWithoutTeacherProfile() {
+        return adminMapper.selectTeacherWithoutTeacherProfile();
+    }
+
+    public List<MemberDTO> selectTeacherWithTeacherProfile() {
+        return adminMapper.selectTeacherWithTeacherProfile();
+    }
+
+    public int modifyTeacherProfile(TeacherDTO teacherDTO) {
+        return adminMapper.modifyTeacherProfile(modelMapper.map(teacherDTO, TeacherVO.class));
+    }
 }

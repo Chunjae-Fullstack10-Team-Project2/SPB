@@ -5,6 +5,7 @@ import net.spb.spb.domain.LectureVO;
 import net.spb.spb.domain.TeacherVO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.OrderDTO;
+import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.dto.pagingsearch.LecturePageDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
@@ -35,4 +36,6 @@ public interface AdminMapper {
 
     int selectSalesDetailCount(@Param("searchDTO") SearchDTO searchDTO);
 
-}
+    List<MemberDTO> selectTeacherWithoutTeacherProfile();
+    List<MemberDTO> selectTeacherWithTeacherProfile();
+    int modifyTeacherProfile (TeacherVO teacherVO);

@@ -12,7 +12,9 @@ import net.spb.spb.dto.pagingsearch.*;
 import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.service.AdminService;
 import net.spb.spb.service.ReportService;
+import net.spb.spb.service.TeacherServiceIf;
 import net.spb.spb.service.member.MemberServiceIf;
+import net.spb.spb.util.BreadcrumbUtil;
 import net.spb.spb.util.FileUtil;
 import net.spb.spb.util.PagingUtil;
 import net.spb.spb.util.VideoUtil;
@@ -24,9 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @Log4j2
@@ -37,9 +37,17 @@ public class AdminController {
     private final MemberServiceIf memberService;
     private final ReportService reportService;
     private final AdminService adminService;
+    private final TeacherServiceIf teacherService;
     private final FileUtil fileUtil;
 
     private static final long MAX_FILE_SIZE = 500 * 1024 * 1024;
+    private static final Map<String, String> ROOT_BREADCRUMB = Map.of("name", "관리 페이지", "url", "/admin");
+
+    @GetMapping({"","/"})
+    public String adminMain(Model model) {
+        setBreadcrumb(model, Map.of("관리 페이지", ""));
+        return "admin/main";
+    }
 
     @GetMapping("/member/list")
     public void memberList(@ModelAttribute MemberPageDTO memberPageDTO, Model model, HttpServletRequest req) {
@@ -56,7 +64,7 @@ public class AdminController {
         model.addAttribute("list", memberDTOs);
         model.addAttribute("memberTotalCount", total_count);
         model.addAttribute("paging", paging);
-        addBreadcrumb(model, "회원 목록");
+        setBreadcrumb(model, Map.of("회원 목록", ""));
     }
 
     @PostMapping("/member/update")
@@ -118,6 +126,15 @@ public class AdminController {
         return "admin/report/list";
     }
 
+    @GetMapping("/teacher/list")
+    public void teacherList(@ModelAttribute MemberPageDTO memberPageDTO, Model model, HttpServletRequest req) {
+        List<MemberDTO> teacherWithTeacherProfile = adminService.selectTeacherWithTeacherProfile();
+        List<MemberDTO> teacherWithoutTeacherProfile = adminService.selectTeacherWithoutTeacherProfile();
+        model.addAttribute("teacher1", teacherWithTeacherProfile);
+        model.addAttribute("teacher2", teacherWithoutTeacherProfile);
+        setBreadcrumb(model, Map.of("선생님 목록", ""));
+    }
+
     @GetMapping("/teacher/regist")
     public void teacherRegist(@RequestParam(name = "memberId", defaultValue = "") String memberId, Model model) {
         MemberDTO memberDTO = null;
@@ -125,10 +142,14 @@ public class AdminController {
             memberDTO = memberService.getMemberById(memberId);
         }
         model.addAttribute("memberDTO", memberDTO);
+        setBreadcrumb(model,
+                Map.of("선생님 목록", "/admin/teacher/list"),
+                Map.of("선생님 등록", "")
+        );
     }
 
     @PostMapping("/teacher/regist")
-    public void teacherRegistPost(@RequestParam(name = "file1") MultipartFile file, @ModelAttribute TeacherDTO teacherDTO) {
+    public String teacherRegistPost(@RequestParam(name = "file1") MultipartFile file, @ModelAttribute TeacherDTO teacherDTO) {
         try {
             if (file != null && !file.isEmpty()) {
                 File savedFile = fileUtil.saveFile(file);
@@ -138,6 +159,31 @@ public class AdminController {
             log.info(e.getMessage());
         }
         adminService.insertTeacher(teacherDTO);
+        return "redirect:/admin/teacher/list";
+    }
+
+    @GetMapping("/teacher/modify")
+    public void teacherModify(@RequestParam(name = "teacherId", defaultValue = "") String teacherId, Model model) {
+        TeacherDTO teacherDTO = teacherService.selectTeacher(teacherId);
+        model.addAttribute("teacherDTO", teacherDTO);
+        setBreadcrumb(model,
+                Map.of("선생님 목록", "/admin/teacher/list"),
+                Map.of("선생님 등록", "")
+        );
+    }
+
+    @PostMapping("/teacher/modify")
+    public String teacherModifyPost(@RequestParam(name = "file1") MultipartFile file, @ModelAttribute TeacherDTO teacherDTO) {
+        try {
+            if (file != null && !file.isEmpty()) {
+                File savedFile = fileUtil.saveFile(file);
+                teacherDTO.setTeacherProfileImg(savedFile.getName());
+            }
+        } catch (Exception e) {
+            log.info(e.getMessage());
+        }
+        adminService.modifyTeacherProfile(teacherDTO);
+        return "redirect:/admin/teacher/list";
     }
 
     @GetMapping("/teacher/search")
@@ -155,8 +201,18 @@ public class AdminController {
         return "/admin/teacher/searchPopup";
     }
 
+    @GetMapping("/lecture/list")
+    public void lectureList(@ModelAttribute LecturePageDTO lecturePageDTO, Model model) {
+        List<LectureDTO> lectureDTOs = adminService.selectLecture(lecturePageDTO);
+        model.addAttribute("lectures", lectureDTOs);
+    }
+
     @GetMapping("/lecture/regist")
-    public void lectureRegist() {
+    public void lectureRegist(Model model) {
+        setBreadcrumb(model,
+                Map.of("강좌 목록", "/admin/lecture/list"),
+                Map.of("강좌 등록", "")
+        );
     }
 
     @PostMapping("/lecture/regist")
@@ -170,12 +226,6 @@ public class AdminController {
             log.info(e.getMessage());
         }
         adminService.insertLecture(lectureDTO);
-    }
-
-    @GetMapping("/lecture/list")
-    public void lectureList(@ModelAttribute LecturePageDTO lecturePageDTO, Model model) {
-        List<LectureDTO> lectureDTOs = adminService.selectLecture(lecturePageDTO);
-        model.addAttribute("lectures", lectureDTOs);
     }
 
     @GetMapping("/lecture/search")
@@ -192,14 +242,19 @@ public class AdminController {
         return "/admin/lecture/searchPopup";
     }
 
-    @GetMapping("/lecture/chapter/regist")
-    public void lectureChapterRegist(@RequestParam(name = "lectureIdx", defaultValue = "0") int lectureIdx, Model model) {
+    @GetMapping("/chapter/regist")
+    public void chapterRegist(@RequestParam(name = "lectureIdx", defaultValue = "0") int lectureIdx, Model model) {
         model.addAttribute("lectureIdx", lectureIdx);
+
+        setBreadcrumb(model,
+                Map.of("강좌 목록", "/admin/lecture/list"),
+                Map.of("강의 등록", "")
+        );
     }
 
-    @PostMapping("/lecture/chapter/regist")
+    @PostMapping("/chapter/regist")
     @ResponseBody
-    public ResponseEntity<?> lectureChapterRegistPOST(@RequestParam(name = "file1", required = true) MultipartFile file,
+    public ResponseEntity<?> chapterRegistPOST(@RequestParam(name = "file1", required = true) MultipartFile file,
                                                       @ModelAttribute ChapterDTO chapterDTO) {
         try {
             if (file != null && !file.isEmpty()) {
@@ -222,12 +277,13 @@ public class AdminController {
                 .body(Map.of("message", "강의 등록 중 오류가 발생했습니다."));
     }
 
-    private void addBreadcrumb(Model model, String currentPageName) {
-        List<Map<String, String>> breadcrumbItems = List.of(
-                Map.of("name", "관리자 페이지", "url", "/admin"),
-                Map.of("name", currentPageName, "url", "")
-        );
-        model.addAttribute("breadcrumbItems", breadcrumbItems);
+    // 브레드크럼
+    private void setBreadcrumb(Model model, Map<String, String>... pagePairs) {
+        LinkedHashMap<String, String> pages = new LinkedHashMap<>();
+        for (Map<String, String> page : pagePairs) {
+            pages.putAll(page);
+        }
+        BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
     }
 
     @GetMapping("/sales/info")
@@ -312,3 +368,4 @@ public class AdminController {
                 .build();
     }
 }
+
