@@ -46,6 +46,8 @@ public class BoardController {
     @Autowired
     private NaverNewsService naverNewsService;
 
+    private static final long MAX_FILE_SIZE = 100 * 1024 * 1024;
+
     @GetMapping("/{category}/list")
     public String list(@PathVariable("category") BoardCategory category, Model model, @ModelAttribute PostPageDTO postPageDTO, HttpServletRequest req) {
         String baseUrl = req.getRequestURI();
@@ -84,18 +86,31 @@ public class BoardController {
     }
 
     @PostMapping("/{category}/write")
-    public String writePOST(@RequestParam(name = "files") MultipartFile[] files, @PathVariable("category") BoardCategory category, @ModelAttribute PostDTO dto, HttpSession session) throws IOException {
+    public String writePOST(@RequestParam(name = "files") MultipartFile[] files,
+                            @PathVariable("category") BoardCategory category,
+                            @ModelAttribute PostDTO dto,
+                            HttpSession session,
+                            RedirectAttributes redirectAttributes) throws IOException {
+
+        if (files.length > 10) {
+            redirectAttributes.addFlashAttribute("errorMessage", "파일은 최대 10개까지 업로드할 수 있습니다.");
+            return "redirect:/board/" + category + "/write";
+        }
+
+        for (MultipartFile file : files) {
+            if (file != null && !file.isEmpty() && file.getSize() > (10 * 1024 * 1024)) {
+                redirectAttributes.addFlashAttribute("errorMessage", "각 파일은 10MB 이하만 업로드할 수 있습니다.");
+                return "redirect:/board/" + category + "/write";
+            }
+        }
 
         dto.setPostCategory(category.toString().toUpperCase());
         dto.setPostMemberId((String) session.getAttribute("memberId"));
-
         int postIdx = service.insertPost(dto);
 
-        // 파일 처리
         try {
             for (MultipartFile file : files) {
                 if (file != null && !file.isEmpty()) {
-                    log.info("BoardController >> writePOST >> file upload");
                     int fileIdx = fileUtil.uploadFile(file.getOriginalFilename(), file.getBytes());
                     PostFileDTO postFileDTO = PostFileDTO.builder().postFilePostIdx(postIdx).postFileFileIdx(fileIdx).build();
                     boardFileService.insertBoardFile(postFileDTO);

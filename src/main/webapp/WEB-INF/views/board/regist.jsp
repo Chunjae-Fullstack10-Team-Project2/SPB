@@ -24,6 +24,12 @@ change this template use File | Settings | File Templates. --%>
     <%@ include file="../common/breadcrumb.jsp" %>
     <h1>${category.displayName} 글쓰기</h1>
     <form name="frmRegist" action="/board/${category}/write" method="post" enctype="multipart/form-data" class="border p-4 rounded bg-light shadow-sm">
+      <c:if test="${not empty errorMessage}">
+        <div class="alert alert-danger">
+            ${errorMessage}
+        </div>
+      </c:if>
+
       <!-- 제목 입력 -->
       <div class="mb-3">
         <label for="postTitle" class="form-label">제목</label>

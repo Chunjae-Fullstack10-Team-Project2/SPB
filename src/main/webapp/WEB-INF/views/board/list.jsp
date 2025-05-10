@@ -52,13 +52,9 @@
         <c:choose>
             <c:when test="${not empty posts}">
                 <c:forEach var="post" items="${posts}">
-                    <tr>
+                    <tr class="clickable-row" data-href="view?idx=${post.postIdx}">
                         <td>${post.postIdx}</td>
-                        <td class="text-start">
-                            <a href="view?idx=${post.postIdx}" class="text-dark text-decoration-none">
-                                    ${post.postTitle}
-                            </a>
-                        </td>
+                        <td class="text-start">${post.postTitle}</td>
                         <td>${post.postMemberId}</td>
                         <td>${fn:substringBefore(post.postCreatedAt, 'T')}</td>
                         <td>${post.postReadCnt}</td>
@@ -81,11 +77,13 @@
     </div>
 
     <!-- 글 작성 버튼 -->
+    <c:if test="${not empty sessionScope.memberId}">
     <div class="d-flex justify-content-end mb-4">
         <button type="button" class="btn btn-outline-dark btn-sm" id="btnRegist">
             <i class="bi bi-pencil-square"></i> 글 작성
         </button>
     </div>
+    </c:if>
 
     <!-- 검색창 -->
     <form name="frmSearch" action="" method="get" class="row gy-2 gx-3 align-items-end justify-content-center">
@@ -119,19 +117,29 @@
 
 <!-- 스크립트 -->
 <script>
-    document.getElementById('btnRegist').addEventListener('click', function () {
-        window.location.href = "write";
-    });
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('btnRegist')?.addEventListener('click', function () {
+            window.location.href = "write";
+        });
 
-    document.getElementById('btnSearchInit').addEventListener('click', function () {
-        window.location.href = "list";
-    });
+        document.getElementById('btnSearchInit').addEventListener('click', function () {
+            window.location.href = "list";
+        });
 
-    document.getElementById("selectPageSize").addEventListener('change', function () {
-        const pageSize = this.value;
-        const url = new URL(window.location.href);
-        url.searchParams.set("page_size", pageSize);
-        window.location.href = url.toString();
+        document.getElementById("selectPageSize").addEventListener('change', function () {
+            const pageSize = this.value;
+            const url = new URL(window.location.href);
+            url.searchParams.set("page_size", pageSize);
+            window.location.href = url.toString();
+        });
+
+        const rows = document.querySelectorAll('.clickable-row');
+        rows.forEach(row => {
+            row.addEventListener('click', function () {
+                const url = this.dataset.href;
+                if (url) window.location.href = url;
+            });
+        });
     });
 </script>
 </body>
