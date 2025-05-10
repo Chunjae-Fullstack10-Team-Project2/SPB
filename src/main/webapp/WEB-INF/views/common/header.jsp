@@ -23,6 +23,17 @@
     <link href="/resources/css/global.css" rel="stylesheet">
 
     <style>
+        @font-face {
+            font-family: 'NPSfontBold';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2310@1.0/NPSfontBold.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        header, header * {
+            font-family: 'NPSfontBold', sans-serif !important;
+        }
+
         header {
             position: fixed;
             top: 0;
@@ -68,6 +79,7 @@
                 </li>
                 <li><a href="${cp}/qna/list" class="nav-link px-2 link-body-emphasis">1:1 문의</a></li>
                 <li><a href="${cp}/faq/list" class="nav-link px-2 link-body-emphasis">자주 묻는 질문</a></li>
+                <li><a href="/notice/list" class="nav-link px-2 link-body-emphasis">공지사항</a></li>
             </ul>
 
             <div class="d-flex align-items-center">

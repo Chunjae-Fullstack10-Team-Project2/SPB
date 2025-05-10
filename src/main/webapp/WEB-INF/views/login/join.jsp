@@ -358,22 +358,18 @@
                 </div>
             </div>
 
-            <!-- 개인정보 동의 텍스트 -->
             <div id="agreeText" class="scroll-box" onscroll="checkScrollComplete()">
                 <p>1. 수집항목: 이름, 연락처, 이메일, 생년월일, 주소 등</p>
                 <p>2. 수집목적: 서비스 제공, 고객지원, 본인 확인 등</p>
                 <p>3. 보유기간: 회원 탈퇴 시까지 또는 관련 법령에 따른 보관</p>
                 <p>※ 귀하는 위의 개인정보 수집 및 이용에 대해 동의하지 않으실 수 있으며, 이 경우 서비스 이용이 제한될 수 있습니다.</p>
             </div>
-
-            <!-- 동의 체크박스 (초기 비활성화) -->
             <div class="form-check mt-2">
                 <input class="form-check-input" type="checkbox" value="1" id="memberAgree" name="memberAgree" disabled>
                 <label class="form-check-label text-muted" for="memberAgree">
                     위 내용을 모두 읽었습니다. (동의)
                 </label>
             </div>
-
 
             <div class="text-end d-grid gap-2">
                 <button type="submit" class="btn btn-primary" id="btnSubmitJoin">회원가입</button>
