@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
+import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.TeacherDTO;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.dto.pagingsearch.*;
@@ -285,4 +286,86 @@ public class AdminController {
         BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
     }
 
+    @GetMapping("/sales/info")
+    public String salesInfo(@ModelAttribute SearchDTO searchDTO,
+                            @ModelAttribute PageRequestDTO pageRequestDTO,
+                            Model model) {
+
+        // 월별/강좌별 매출은 기존대로
+        List<Map<String, Object>> monthlySales = adminService.getMonthlySales();
+        List<Map<String, Object>> lectureSales = adminService.getLectureSales();
+
+        // 개별 거래 내역 (조건 기반)
+        List<OrderDTO> detailList = adminService.getSalesDetailList(searchDTO, pageRequestDTO);
+        int count = adminService.getSalesDetailCount(searchDTO);
+
+        PageResponseDTO<OrderDTO> pageResponseDTO = PageResponseDTO.<OrderDTO>withAll()
+                .dtoList(detailList)
+                .totalCount(count)
+                .pageRequestDTO(pageRequestDTO)
+                .build();
+
+        model.addAttribute("monthlySales", monthlySales);
+        model.addAttribute("lectureSales", lectureSales);
+        model.addAttribute("searchDTO", searchDTO);
+        model.addAttribute("responseDTO", pageResponseDTO);
+
+        return "/admin/sales/dashboard";
+    }
+
+
+    @GetMapping("/sales/monthly")
+    @ResponseBody
+    public List<Map<String, Object>> getMonthlySales(
+            @RequestParam("timeType") String timeType,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate
+    ) {
+        return adminService.getMonthlySales(timeType, startDate, endDate);
+    }
+
+    @GetMapping("/sales/lecture")
+    @ResponseBody
+    public List<Map<String, Object>> getLectureSales(
+            @RequestParam("timeType") String timeType,
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate) {
+        return adminService.getLectureSales(timeType, startDate, endDate);
+    }
+
+    @GetMapping("/sales/detail")
+    @ResponseBody
+    public PageResponseDTO<OrderDTO> salesDetailList(
+            @RequestParam(value = "searchWord", required = false) String searchWord,
+            @RequestParam(value = "searchType", required = false) String searchType,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate,
+            @RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(value = "sortColumn", required = false) String sortColumn,
+            @RequestParam(value = "sortOrder", required = false) String sortOrder
+    ) {
+        SearchDTO searchDTO = new SearchDTO();
+        searchDTO.setSearchWord(searchWord);
+        searchDTO.setSearchType(searchType);
+        searchDTO.setSortColumn(sortColumn);
+        searchDTO.setSortOrder(sortOrder);
+        searchDTO.setStartDate(startDate);
+        searchDTO.setEndDate(endDate);
+
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .build();
+
+        List<OrderDTO> detailList = adminService.getSalesDetailList(searchDTO, pageRequestDTO);
+        int count = adminService.getSalesDetailCount(searchDTO);
+
+        return PageResponseDTO.<OrderDTO>withAll()
+                .dtoList(detailList)
+                .totalCount(count)
+                .pageRequestDTO(pageRequestDTO)
+                .build();
+    }
 }
+

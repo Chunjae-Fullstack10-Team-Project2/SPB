@@ -51,7 +51,7 @@
             left: 0;
             width: 280px;
             height: 100vh;
-            background-color: #f8f9fa;
+            background-color: rgba(0, 0, 0, 0.1);
             z-index: 10;
         }
 
@@ -197,9 +197,9 @@
 
 <%-- Sidebar --%>
 <div class="flex-shrink-0 p-3 sidebar" id="sidebar">
-    <a href="${cp}/" class="d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom text-dark">
-        <span class="fs-5 fw-semibold">봄콩이</span>
-    </a>
+<%--    <a href="${cp}/" class="d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom text-dark">--%>
+<%--        <span class="fs-5 fw-semibold">메뉴</span>--%>
+<%--    </a>--%>
     <ul class="list-unstyled ps-0">
         <li class="mb-1">
             <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
@@ -241,7 +241,9 @@
                     <li><a href="${cp}/admin/teacher/regist"
                            class="d-inline-flex text-decoration-none rounded text-dark">강의 등록</a></li>
                     <li><a href="${cp}/admin/notice/regist"
-                           class="d-inline-flex text-decoration-none rounded text-dark">공지사항 작성</a></li>
+                           class="d-inline-flex text-decoration-none rounded text-dark">공지사항 등록</a></li>
+                    <li><a href="${cp}/admin/sales/info"
+                           class="d-inline-flex text-decoration-none rounded text-dark">매출 정보</a></li>
                 </ul>
             </div>
         </li>
