@@ -98,9 +98,11 @@
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">공지사항 목록</h3>
+            <c:if test="${not empty sessionScope.memberGrade and sessionScope.memberGrade == '0'}">
                 <a href="${pageContext.request.contextPath}/notice/regist" class="btn btn-primary">
                     <i class="bi bi-pencil-square"></i> 글 작성
                 </a>
+            </c:if>
         </div>
 
         <div class="card mb-4">
@@ -150,46 +152,50 @@
                         </div>
                         <small class="text-muted">${notice.noticeCreatedAt.toLocalDate()}</small>
                     </div>
-                    <div class="dropdown-section">
-                        <img class="bar-img" src="${pageContext.request.contextPath}/resources/images/bar.svg" onclick="toggleDropdown(this)" />
-                        <div class="dropdown-menu">
-                            <form method="post" action="${pageContext.request.contextPath}/notice/unfix">
-                                <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
-                                <button type="submit" class="dropdown-button">고정 해제</button>
-                            </form>
+
+
+                    <c:if test="${not empty sessionScope.memberGrade and sessionScope.memberGrade == '0'}">
+                        <div class="dropdown-section">
+                            <img class="bar-img" src="${pageContext.request.contextPath}/resources/images/bar.svg" onclick="toggleDropdown(this)" />
+                            <div class="dropdown-menu">
+                                <form method="post" action="${pageContext.request.contextPath}/notice/unfix">
+                                    <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
+                                    <button type="submit" class="dropdown-button">고정 해제</button>
+                                </form>
+                            </div>
                         </div>
-                    </div>
+                    </c:if>
                 </div>
             </c:forEach>
 
             <!-- 일반 공지사항 -->
-            <c:set var="currentNumber" value="${listNumber}" />
-            <c:set var="counter" value="0" />
             <c:forEach var="notice" items="${list}">
                 <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
                         <div class="d-flex align-items-center">
-                            <span class="me-2 text-muted">${currentNumber - counter}</span>
                             <a href="${pageContext.request.contextPath}/notice/view?noticeIdx=${notice.noticeIdx}"
                                class="fw-bold text-decoration-none list-title">${notice.noticeTitle}</a>
                         </div>
                         <small class="text-muted">${notice.noticeCreatedAt.toLocalDate()}</small>
                     </div>
-                    <div class="dropdown-section">
-                        <img class="bar-img" src="${pageContext.request.contextPath}/resources/images/bar.svg" onclick="toggleDropdown(this)" />
-                        <div class="dropdown-menu">
-                            <form method="post" action="${pageContext.request.contextPath}/notice/delete">
-                                <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
-                                <button type="submit" class="dropdown-button">삭제</button>
-                            </form>
-                            <form method="post" action="${pageContext.request.contextPath}/notice/fix">
-                                <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
-                                <button type="submit" class="dropdown-button">고정 공지</button>
-                            </form>
+
+
+                    <c:if test="${not empty sessionScope.memberGrade and sessionScope.memberGrade == '0'}">
+                        <div class="dropdown-section">
+                            <img class="bar-img" src="${pageContext.request.contextPath}/resources/images/bar.svg" onclick="toggleDropdown(this)" />
+                            <div class="dropdown-menu">
+                                <form method="post" action="${pageContext.request.contextPath}/notice/delete">
+                                    <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
+                                    <button type="submit" class="dropdown-button" id="btnDelete">삭제</button>
+                                </form>
+                                <form method="post" action="${pageContext.request.contextPath}/notice/fix">
+                                    <input type="hidden" name="noticeIdx" value="${notice.noticeIdx}" />
+                                    <button type="submit" class="dropdown-button">고정 공지</button>
+                                </form>
+                            </div>
                         </div>
-                    </div>
+                    </c:if>
                 </div>
-                <c:set var="counter" value="${counter + 1}" />
             </c:forEach>
         </div>
 
@@ -229,6 +235,15 @@
             document.querySelectorAll('.dropdown-menu').forEach(menu => {
                 menu.style.display = 'none';
             });
+        }
+
+        if (event.target.id === 'btnDelete') {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (window.confirm('정말 삭제하시겠습니까?')) {
+                event.target.closest("form").submit();
+            }
         }
     });
 
