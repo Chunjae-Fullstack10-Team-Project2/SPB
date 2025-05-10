@@ -265,7 +265,7 @@
                             <td><img src="/upload/${lecture.lectureThumbnailImg}" alt="강의 썸네일" height="80" width="130"></td>
                             <td>
                                 <div class="course-title">
-                                    <a href="/teacher/lecture?lectureIdx=${lecture.lectureIdx}">${lecture.lectureTitle}</a>
+                                    <a href="/lecture/main?lectureIdx=${lecture.lectureIdx}">${lecture.lectureTitle}</a>
                                 </div>
                             </td>
                             <td>₩${lecture.lectureAmount}</td>

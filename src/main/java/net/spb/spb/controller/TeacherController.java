@@ -71,31 +71,4 @@ public class TeacherController {
         model.addAttribute("lectureList", lectureList);
         return "teacher/teacherPersonal";
     }
-
-    @GetMapping("/lecture")
-    public String lectureMain(
-            @RequestParam("lectureIdx") int lectureIdx,
-            Model model
-    ){
-        LectureDTO lectureDTO = teacherService.selectLectureMain(lectureIdx);
-        List<ChapterDTO> chapterList = teacherService.selectLectureChapter(lectureIdx);
-        log.info("chapterList: {}",chapterList);
-        model.addAttribute("lectureDTO", lectureDTO);
-        model.addAttribute("chapterList", chapterList);
-        return "teacher/lectureMain";
-    }
-
-    @PostMapping("/addBookmark")
-    @ResponseBody
-    public int addBookmark(@RequestParam("lectureIdx") int lectureIdx, HttpSession session){
-        String memberId = (String) session.getAttribute("memberId");
-        return teacherService.addBookmark(lectureIdx, memberId);
-    }
-
-    @PostMapping("/deleteBookmark")
-    @ResponseBody
-    public int deleteBookmark(@RequestParam("lectureIdx") int lectureIdx, HttpSession session){
-        String memberId = (String) session.getAttribute("memberId");
-        return teacherService.deleteBookmark(lectureIdx, memberId);
-    }
 }
