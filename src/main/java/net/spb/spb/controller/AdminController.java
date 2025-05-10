@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -259,8 +260,12 @@ public class AdminController {
 
     @GetMapping("/sales/monthly")
     @ResponseBody
-    public List<Map<String, Object>> getMonthlySales(@RequestParam("timeType") String timeType) {
-        return adminService.getMonthlySales(timeType);
+    public List<Map<String, Object>> getMonthlySales(
+            @RequestParam("timeType") String timeType,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate
+    ) {
+        return adminService.getMonthlySales(timeType, startDate, endDate);
     }
 
     @GetMapping("/sales/lecture")
@@ -277,19 +282,20 @@ public class AdminController {
     public PageResponseDTO<OrderDTO> salesDetailList(
             @RequestParam(value = "searchWord", required = false) String searchWord,
             @RequestParam(value = "searchType", required = false) String searchType,
-            @RequestParam(value = "dateRange", required = false) String dateRange,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate,
             @RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
-            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(value = "sortColumn", required = false) String sortColumn,
+            @RequestParam(value = "sortOrder", required = false) String sortOrder
     ) {
         SearchDTO searchDTO = new SearchDTO();
         searchDTO.setSearchWord(searchWord);
         searchDTO.setSearchType(searchType);
-
-        if (dateRange != null && dateRange.contains(" - ")) {
-            String[] parts = dateRange.split(" - ");
-            searchDTO.setStartDate(parts[0]);
-            searchDTO.setEndDate(parts[1]);
-        }
+        searchDTO.setSortColumn(sortColumn);
+        searchDTO.setSortOrder(sortOrder);
+        searchDTO.setStartDate(startDate);
+        searchDTO.setEndDate(endDate);
 
         PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
                 .pageNo(pageNo)
@@ -305,5 +311,4 @@ public class AdminController {
                 .pageRequestDTO(pageRequestDTO)
                 .build();
     }
-
 }

@@ -23,9 +23,7 @@ public interface AdminMapper {
     List<LectureDTO> selectLecture(LecturePageDTO lecturePageDTO);
 
     int selectLectureCount(LecturePageDTO lecturePageDTO);
-
-    List<Map<String, Object>> selectMonthlySalesDefault();
-
+    
     List<Map<String, Object>> selectMonthlySales(Map<String, Object> param);
 
     List<Map<String, Object>> selectLectureSalesDefault();

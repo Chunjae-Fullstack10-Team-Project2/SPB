@@ -46,16 +46,19 @@ public class AdminService {
         return adminMapper.selectLectureCount(lecturePageDTO);
     }
 
-    // 🟢 초기 대시보드용 - 월별 전체 매출 (기본: %Y-%m)
+    // 기본 조회 (timeType = "MONTH", 전체 기간)
     public List<Map<String, Object>> getMonthlySales() {
-        return adminMapper.selectMonthlySalesDefault();
+        Map<String, Object> param = new HashMap<>();
+        param.put("timeType", "MONTH");
+        return adminMapper.selectMonthlySales(param);
     }
 
-    // 🟢 조건 기반 월별/연도별 매출
-    public List<Map<String, Object>> getMonthlySales(String timeType) {
-        // timeType: "YEAR" or "MONTH"
+    // 조건 기반 조회 (timeType, startDate, endDate)
+    public List<Map<String, Object>> getMonthlySales(String timeType, String startDate, String endDate) {
         Map<String, Object> param = new HashMap<>();
         param.put("timeType", timeType);
+        if (startDate != null && !startDate.isEmpty()) param.put("startDate", startDate);
+        if (endDate != null && !endDate.isEmpty()) param.put("endDate", endDate);
         return adminMapper.selectMonthlySales(param);
     }
 

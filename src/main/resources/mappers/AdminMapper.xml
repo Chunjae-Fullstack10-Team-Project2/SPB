@@ -62,16 +62,6 @@
     </select>
 
     <!--  매출   -->
-    <!--  월별 고정  -->
-    <select id="selectMonthlySalesDefault" resultType="map">
-        SELECT DATE_FORMAT(orderCreatedAt, '%Y-%m') AS label,
-               SUM(orderAmount)                     AS total
-        FROM tbl_order_info
-        WHERE orderStatus = 's'
-        GROUP BY label
-        ORDER BY label
-    </select>
-
     <select id="selectMonthlySales" resultType="map" parameterType="map">
         SELECT
         <choose>
@@ -85,6 +75,22 @@
         SUM(orderAmount) AS total
         FROM tbl_order_info
         WHERE orderStatus = 's'
+        <if test="startDate != null and startDate != ''">
+            AND DATE_FORMAT(orderCreatedAt,
+            <choose>
+                <when test="timeType == 'YEAR'">'%Y'</when>
+                <otherwise>'%Y-%m'</otherwise>
+            </choose>
+            ) &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND DATE_FORMAT(orderCreatedAt,
+            <choose>
+                <when test="timeType == 'YEAR'">'%Y'</when>
+                <otherwise>'%Y-%m'</otherwise>
+            </choose>
+            ) &lt;= #{endDate}
+        </if>
         GROUP BY label
         ORDER BY label
     </select>
@@ -124,6 +130,7 @@
         JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
         JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
         WHERE o.orderStatus = 's'
+
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
                 <when test="searchDTO.searchType == 'memberId'">
@@ -134,12 +141,35 @@
                 </when>
             </choose>
         </if>
+
         <if test="searchDTO.startDate != null and searchDTO.endDate != null">
             AND o.orderCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
         </if>
-        ORDER BY o.orderCreatedAt DESC
+
+        <choose>
+            <when test="searchDTO.sortColumn != null and searchDTO.sortOrder != null">
+                ORDER BY
+                <choose>
+                    <when test="searchDTO.sortColumn == 'orderIdx'"> o.orderIdx </when>
+                    <when test="searchDTO.sortColumn == 'orderMemberId'"> o.orderMemberId </when>
+                    <when test="searchDTO.sortColumn == 'orderAmount'"> o.orderAmount </when>
+                    <when test="searchDTO.sortColumn == 'orderCreatedAt'"> o.orderCreatedAt </when>
+                    <when test="searchDTO.sortColumn == 'lectureTitle'"> l.lectureTitle </when>
+                    <otherwise> o.orderCreatedAt </otherwise>
+                </choose>
+                <choose>
+                    <when test="searchDTO.sortOrder == 'asc'"> ASC </when>
+                    <otherwise> DESC </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY o.orderCreatedAt DESC
+            </otherwise>
+        </choose>
+
         LIMIT #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
     </select>
+
 
     <select id="selectSalesDetailCount" resultType="int">
         SELECT COUNT(*)

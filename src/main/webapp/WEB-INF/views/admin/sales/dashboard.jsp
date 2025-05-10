@@ -24,6 +24,11 @@
             <option value="MONTH" selected>월별</option>
         </select>
     </div>
+    <div class="mb-2">
+        <input type="date" id="monthlyStartDate" class="form-control w-auto d-inline-block"/>
+        <input type="date" id="monthlyEndDate" class="form-control w-auto d-inline-block"/>
+        <button type="button" id="btnLoadMonthlyChart" class="btn btn-secondary ms-2">조회</button>
+    </div>
     <canvas id="monthlyChart" height="100"></canvas>
 </section>
 
@@ -31,7 +36,9 @@
 <section class="mb-5">
     <h4>강좌별 매출</h4>
     <div class="mb-2">
-        <input type="text" id="lectureDateRange" class="form-control w-auto d-inline-block"/>
+        <input type="date" id="lectureStartDate" class="form-control w-auto d-inline-block"/>
+        <input type="date" id="lectureEndDate" class="form-control w-auto d-inline-block"/>
+        <button type="button" id="btnLoadLectureChart" class="btn btn-secondary ms-2">조회</button>
     </div>
     <canvas id="lectureChart" height="100"></canvas>
 </section>
@@ -51,7 +58,8 @@
             <input type="text" name="searchWord" class="form-control" placeholder="검색어">
         </div>
         <div class="col-md-3">
-            <input type="text" name="dateRange" id="detailDateRange" class="form-control" placeholder="구매일 범위">
+            <input type="date" name="startDate" class="form-control"/>
+            <input type="date" name="endDate" class="form-control"/>
         </div>
         <div class="col-md-2">
             <button type="submit" class="btn btn-primary">검색</button>
@@ -61,10 +69,50 @@
         <table class="table table-bordered table-hover table-striped text-center align-middle">
             <thead class="table-light">
             <tr>
-                <th>주문번호</th>
-                <th>회원 ID</th>
-                <th>강좌명</th>
-                <th>금액</th>
+                <th>
+                    <a href="javascript:void(0);" onclick="applySort('orderIdx')">
+                        주문번호
+                        <c:if test="${param.sortColumn == 'orderIdx'}">
+                            <c:choose>
+                                <c:when test="${param.sortOrder == 'asc'}">▲</c:when>
+                                <c:otherwise>▼</c:otherwise>
+                            </c:choose>
+                        </c:if>
+                    </a>
+                </th>
+                <th>
+                    <a href="javascript:void(0);" onclick="applySort('orderMemberId')">
+                        회원 ID
+                        <c:if test="${param.sortColumn == 'orderMemberId'}">
+                            <c:choose>
+                                <c:when test="${param.sortOrder == 'asc'}">▲</c:when>
+                                <c:otherwise>▼</c:otherwise>
+                            </c:choose>
+                        </c:if>
+                    </a>
+                </th>
+                <th>
+                    <a href="javascript:void(0);" onclick="applySort('lectureTitle')">
+                        강좌명
+                        <c:if test="${param.sortColumn == 'lectureTitle'}">
+                            <c:choose>
+                                <c:when test="${param.sortOrder == 'asc'}">▲</c:when>
+                                <c:otherwise>▼</c:otherwise>
+                            </c:choose>
+                        </c:if>
+                    </a>
+                </th>
+                <th>
+                    <a href="javascript:void(0);" onclick="applySort('orderAmount')">
+                        금액
+                        <c:if test="${param.sortColumn == 'orderAmount'}">
+                            <c:choose>
+                                <c:when test="${param.sortOrder == 'asc'}">▲</c:when>
+                                <c:otherwise>▼</c:otherwise>
+                            </c:choose>
+                        </c:if>
+                    </a>
+                </th>
             </tr>
             </thead>
             <tbody id="salesDetailTable">
@@ -80,12 +128,27 @@
     const cp = '${pageContext.request.contextPath}';
 
     function loadSalesDetail(pageNo = 1) {
-        const formData = $('#filterForm').serializeArray();
-        const params = {};
-        $.each(formData, (i, field) => {
-            params[field.name] = field.value;
+        const params = {
+            pageNo: pageNo,
+            searchWord: $('input[name=searchWord]').val(),
+            searchType: $('select[name=searchType]').val(),
+            startDate: $('input[name=startDate]').val(),
+            endDate: $('input[name=endDate]').val()
+        };
+
+        // 빈 문자열 제거
+        Object.keys(params).forEach(key => {
+            if (params[key] === "") {
+                delete params[key];
+            }
         });
-        params.pageNo = pageNo;
+
+        // 정렬 정보
+        const url = new URL(window.location.href);
+        const sortColumn = url.searchParams.get('sortColumn');
+        const sortOrder = url.searchParams.get('sortOrder');
+        if (sortColumn) params.sortColumn = sortColumn;
+        if (sortOrder) params.sortOrder = sortOrder;
 
         $.get(cp + "/admin/sales/detail", params, function (response) {
             const rowsHtml = (response.dtoList || []).map(row => {
@@ -150,6 +213,23 @@
         }
     });
 
+    function applySort(column) {
+        const url = new URL(window.location.href);
+        const currentSortColumn = url.searchParams.get("sortColumn");
+        const currentSortOrder = url.searchParams.get("sortOrder") || "desc";
+
+        let newSortOrder = "asc";
+        if (currentSortColumn === column && currentSortOrder === "asc") {
+            newSortOrder = "desc";
+        }
+
+        url.searchParams.set("sortColumn", column);
+        url.searchParams.set("sortOrder", newSortOrder);
+        url.searchParams.set("pageNo", 1); // 정렬 시 첫 페이지로
+
+        location.href = url.toString();
+    }
+
     $(function () {
         const now = moment();
 
@@ -160,21 +240,23 @@
             opens: 'left'
         }, loadLectureChart);
 
-        let monthlyChartInstance = null; // 전역 변수로 Chart 인스턴스 저장
+        let monthlyChartInstance = null;
 
         function loadMonthlyChart() {
             const type = $('#timeType').val();
+            const startDate = $('#monthlyStartDate').val();
+            const endDate = $('#monthlyEndDate').val();
 
-            $.get(cp + "/admin/sales/monthly", {timeType: type}, function (data) {
+            const params = {timeType: type};
+            if (startDate) params.startDate = startDate;
+            if (endDate) params.endDate = endDate;
+
+            $.get(cp + "/admin/sales/monthly", params, function (data) {
                 const labels = data.map(item => item.label);
                 const values = data.map(item => item.total);
 
-                // 이미 차트가 있으면 먼저 제거
-                if (monthlyChartInstance) {
-                    monthlyChartInstance.destroy();
-                }
+                if (monthlyChartInstance) monthlyChartInstance.destroy();
 
-                // 새 차트 생성 및 저장
                 monthlyChartInstance = new Chart($('#monthlyChart'), {
                     type: 'bar',
                     data: {
@@ -188,17 +270,54 @@
             });
         }
 
+        function updateMonthlyInputs() {
+            const type = $('#timeType').val();
+            const $start = $('#monthlyStartDate');
+            const $end = $('#monthlyEndDate');
+
+            if (type === 'YEAR') {
+                $start.attr('type', 'number').attr('placeholder', '예: 2024').val('');
+                $end.attr('type', 'number').attr('placeholder', '예: 2025').val('');
+            } else if (type === 'MONTH') {
+                $start.attr('type', 'month').val('');
+                $end.attr('type', 'month').val('');
+            } else {
+                $start.attr('type', 'date').val('');
+                $end.attr('type', 'date').val('');
+            }
+        }
+
+        $(function () {
+            $('#timeType').on('change', function () {
+                updateMonthlyInputs();
+                loadMonthlyChart(); // 선택이 바뀌면 다시 조회
+            });
+
+            updateMonthlyInputs(); // 초기 로딩 시에도 맞게 설정
+        });
+
+        let lectureChartInstance = null;
+
         function loadLectureChart() {
-            const range = $('#lectureDateRange').val().split(' - ');
+            const startDate = $('#lectureStartDate').val();
+            const endDate = $('#lectureEndDate').val();
+
+            if (!startDate || !endDate) return;
+
             $.get(cp + "/admin/sales/lecture", {
                 timeType: "DAY",
-                startDate: range[0],
-                endDate: range[1]
+                startDate: startDate,
+                endDate: endDate
             }, function (data) {
                 const labels = data.map(item => item.lectureTitle);
                 const values = data.map(item => item.total);
 
-                new Chart($('#lectureChart'), {
+                // 기존 차트 제거
+                if (lectureChartInstance) {
+                    lectureChartInstance.destroy();
+                }
+
+                lectureChartInstance = new Chart($('#lectureChart'), {
                     type: 'pie',
                     data: {
                         labels: labels,
@@ -211,11 +330,29 @@
             });
         }
 
+        $(function () {
+            $('#btnLoadLectureChart').click(function () {
+                loadLectureChart();
+            });
+        });
+
         $('#timeType').change(loadMonthlyChart);
-        $('#lectureDateRange').on('apply.daterangepicker', loadLectureChart);
         $('#filterForm').submit(function (e) {
             e.preventDefault();
             loadSalesDetail();
+        });
+
+        $(function () {
+            $('#btnLoadMonthlyChart').click(function () {
+                loadMonthlyChart();
+            });
+
+            $('#timeType').on('change', function () {
+                updateMonthlyInputs(); // 입력 타입만 바꾸고 조회는 안 함
+            });
+
+            updateMonthlyInputs(); // 초기 설정
+            loadMonthlyChart(); // 첫 차트 로딩
         });
 
         loadMonthlyChart();
