@@ -97,11 +97,12 @@ public class NoticeController {
 
     @GetMapping("/regist")
     public String registForm(HttpSession session) {
-        // 세션에서 회원 정보 가져오기
-        Object memberObj = session.getAttribute("member");
-        if (memberObj == null || !(memberObj instanceof MemberDTO) ||
-                !((MemberDTO)memberObj).getMemberGrade().equals("0")) {
-            // 관리자가 아닌 경우 리스트로 리다이렉트
+        // 세션에서 필요한 값 직접 가져오기
+        String memberId = (String) session.getAttribute("memberId");
+        String memberGrade = (String) session.getAttribute("memberGrade");
+
+        // 값이 없거나 관리자가 아닌 경우 리다이렉트
+        if (memberId == null || memberGrade == null || !memberGrade.equals("0")) {
             return "redirect:/notice/list";
         }
         return "notice/regist";
@@ -109,17 +110,11 @@ public class NoticeController {
 
     @PostMapping("/regist")
     public String regist(@ModelAttribute NoticeDTO dto, HttpSession session) throws Exception {
-        // 세션에서 회원 정보 가져오기
-        Object memberObj = session.getAttribute("member");
-        if (memberObj == null || !(memberObj instanceof MemberDTO) ||
-                !((MemberDTO)memberObj).getMemberGrade().equals("0")) {
-            // 관리자가 아닌 경우 리스트로 리다이렉트
-            return "redirect:/notice/list";
-        }
+        // 세션에서 회원 ID 직접 가져오기
+        String memberId = (String) session.getAttribute("memberId");
 
         // 현재 로그인한 사용자 아이디 설정
-        MemberDTO member = (MemberDTO) memberObj;
-        dto.setNoticeMemberId(member.getMemberId());
+        dto.setNoticeMemberId(memberId);
 
         noticeService.register(dto);
         return "redirect:/notice/list";

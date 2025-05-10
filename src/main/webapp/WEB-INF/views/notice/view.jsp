@@ -68,9 +68,11 @@
 
     <div class="mt-3">
         <a href="/notice/list" class="btn btn-secondary">목록으로</a>
-        <button type="button" id="btnModify" class="btn btn-primary">수정</button>
+        <c:if test="${not empty sessionScope.memberId and not empty sessionScope.memberGrade and sessionScope.memberGrade == '0'}">
+            <button type="button" id="btnModify" class="btn btn-primary">수정</button>
+        </c:if>
 
-        <c:if test="${not empty sessionScope.memberGrade and (sessionScope.memberGrade == 0 or sessionScope.memberGrade == 13)}">
+        <c:if test="${not empty sessionScope.memberGrade and sessionScope.memberGrade == '0'}">
             <form id="frmDelete" method="post" action="/notice/delete" style="display: inline;">
                 <input type="hidden" name="noticeIdx" value="${dto.noticeIdx}"/>
                 <button type="submit" id="btnDelete" class="btn btn-danger">공지 삭제</button>
@@ -85,7 +87,7 @@
         window.location.href = "${pageContext.request.contextPath}/notice/modify?noticeIdx=" + idx;
     });
 
-    <c:if test="${not empty sessionScope.memberGrade and (sessionScope.memberGrade == 0 or sessionScope.memberGrade == 13)}">
+    <c:if test="${not empty sessionScope.memberGrade and sessionScope.memberGrade == '0'}">
     document.getElementById("btnDelete").addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
