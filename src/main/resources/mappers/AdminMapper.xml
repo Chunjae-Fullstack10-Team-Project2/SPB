@@ -57,4 +57,32 @@
             </if>
         </where>
     </select>
+
+    <select id="selectTeacherWithoutTeacherProfile" resultType="net.spb.spb.dto.member.MemberDTO">
+        SELECT *
+        FROM tbl_member m
+        WHERE m.memberGrade = 13 and NOT EXISTS (
+            SELECT 1
+            FROM tbl_teacher t
+            WHERE t.teacherId = m.memberId
+        );
+    </select>
+
+    <select id="selectTeacherWithTeacherProfile" resultType="net.spb.spb.dto.member.MemberDTO">
+        SELECT *
+        FROM tbl_member m
+        WHERE m.memberGrade = 13 and EXISTS (
+            SELECT 1
+            FROM tbl_teacher t
+            WHERE t.teacherId = m.memberId
+        );
+    </select>
+
+    <update id="modifyTeacherProfile" parameterType="net.spb.spb.domain.TeacherVO">
+        update tbl_teacher
+        set teacherSubject = #{teacherSubject},
+            teacherIntro = #{teacherIntro},
+            teacherProfileImg = #{teacherProfileImg}
+        where teacherIdx = #{teacherIdx}
+    </update>
 </mapper>
