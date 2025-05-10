@@ -10,8 +10,10 @@
 <body>
 <%@ include file="../common/sidebarHeader.jsp" %>
 <div class="content">
-    <%@ include file="../common/breadcrumb.jsp" %>
     <div class="container my-5">
+        <%@ include file="../common/breadcrumb.jsp" %>
+
+        <div class="container my-5">
     <h2 class="mb-4">${category.displayName} 🌱</h2>
 
     <!-- 상단 글 개수 및 페이지 사이즈 선택 -->
@@ -27,7 +29,7 @@
     </div>
 
     <!-- 게시판 테이블 -->
-    <table class="table table-bordered table-hover align-middle text-center small">
+    <table class="table table-hover align-middle text-center small">
         <colgroup>
             <col style="width: 80px">
             <col>
@@ -111,6 +113,7 @@
             <button type="button" class="btn btn-outline-secondary btn-sm" id="btnSearchInit">초기화</button>
         </div>
     </form>
+    </div>
     </div>
 </div>
 

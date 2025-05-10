@@ -20,101 +20,104 @@ change this template use File | Settings | File Templates. --%>
 <body>
 <%@ include file="../common/sidebarHeader.jsp" %>
 <div class="content">
-  <%@ include file="../common/breadcrumb.jsp" %>
-  <h2 class="h4 fw-bold">${post.postTitle}</h2>
-  <div class="d-flex gap-2 align-items-center mb-2">
-    <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle">
-    <div>
-      <div class="small">${post.postMemberId}</div>
-      <div class="text-muted small">조회 ${post.postReadCnt} | 댓글 ${fn:length(post.postComments)}</div>
+  <div class="container my-5">
+    <%@ include file="../common/breadcrumb.jsp" %>
+  </div>
+  <div class="container my-5">
+    <h2 class="h4 fw-bold">${post.postTitle}</h2>
+    <div class="d-flex gap-2 align-items-center mb-2">
+      <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle">
+      <div>
+        <div class="small">${post.postMemberId}</div>
+        <div class="text-muted small">조회 ${post.postReadCnt} | 댓글 ${fn:length(post.postComments)}</div>
+      </div>
     </div>
-  </div>
-  <hr/>
+    <hr/>
 
-  <p>${post.postContent}</p>
-  <c:forEach items="${post.postFiles}" var="file">
-    <div class="my-3">
-      <a href="/upload/${file.fileName}" target="_blank">
-        <img src="/upload/${file.fileName}" class="img-fluid rounded border"/>
-      </a>
+    <p>${post.postContent}</p>
+    <c:forEach items="${post.postFiles}" var="file">
+      <div class="my-3">
+        <a href="/upload/${file.fileName}" target="_blank">
+          <img src="/upload/${file.fileName}" class="img-fluid rounded border"/>
+        </a>
+      </div>
+    </c:forEach>
+
+    <div class="d-flex gap-2 mt-3">
+      <button class="btn btn-outline-primary btn-sm"><i class="bi bi-share"></i> 공유</button>
+      <button type="submit" id="btnReport" class="btn btn-outline-danger btn-sm" data-report-ref-idx="${post.postIdx}" data-post-member-id="${post.postMemberId}" data-report-ref-type="POST"><i class="bi bi-flag"></i> 신고</button>
     </div>
-  </c:forEach>
 
-  <div class="d-flex gap-2 mt-3">
-    <button class="btn btn-outline-primary btn-sm"><i class="bi bi-share"></i> 공유</button>
-    <button type="submit" id="btnReport" class="btn btn-outline-danger btn-sm" data-report-ref-idx="${post.postIdx}" data-post-member-id="${post.postMemberId}" data-report-ref-type="POST"><i class="bi bi-flag"></i> 신고</button>
-  </div>
+    <div class="d-flex gap-2 my-4">
+      <button class="btn btn-secondary btn-sm" onclick="location.href='list'"><i class="bi bi-list"></i> 목록</button>
+      <c:if test="${sessionScope.memberId eq post.postMemberId}">
+        <button class="btn btn-warning btn-sm" onclick="location.href='modify?idx=${post.postIdx}'"><i class="bi bi-pencil"></i> 수정</button>
+        <button class="btn btn-danger btn-sm" id="btnPostDelete" data-post-idx="${post.postIdx}" data-member-id="${post.postMemberId}">
+          <i class="bi bi-trash"></i> 삭제
+        </button>
+      </c:if>
+    </div>
 
-  <div class="d-flex gap-2 my-4">
-    <button class="btn btn-secondary btn-sm" onclick="location.href='list'"><i class="bi bi-list"></i> 목록</button>
-    <c:if test="${sessionScope.memberId eq post.postMemberId}">
-      <button class="btn btn-warning btn-sm" onclick="location.href='modify?idx=${post.postIdx}'"><i class="bi bi-pencil"></i> 수정</button>
-      <button class="btn btn-danger btn-sm" id="btnPostDelete" data-post-idx="${post.postIdx}" data-member-id="${post.postMemberId}">
-        <i class="bi bi-trash"></i> 삭제
-      </button>
-    </c:if>
-  </div>
+    <button type="button"
+            class="btn btn-outline-success btn-sm ${post.like ? 'liked' : ''}"
+            id="btnLike"
+            data-post-idx="${post.postIdx}"
+            data-like-ref-type="POST">
+      👍 <span id="likeCount">${post.postLikeCnt}</span>
+    </button>
 
-  <button type="button"
-          class="btn btn-outline-success btn-sm ${post.like ? 'liked' : ''}"
-          id="btnLike"
-          data-post-idx="${post.postIdx}"
-          data-like-ref-type="POST">
-    👍 <span id="likeCount">${post.postLikeCnt}</span>
-  </button>
+    <hr/>
 
-  <hr/>
-
-  <!-- 댓글 목록 -->
-  <div class="post-comments mb-4">
-    <c:forEach items="${post.postComments}" var="postComment">
-      <div class="comment-item border-bottom pb-2 mb-2" data-comment-idx="${postComment.postCommentIdx}">
-        <div class="d-flex justify-content-between">
-          <div>
-            <img src="https://github.com/mdo.png" width="24" height="24" class="rounded-circle me-2">
-            <strong>${postComment.postCommentMemberId}</strong>
+    <!-- 댓글 목록 -->
+    <div class="post-comments mb-4">
+      <c:forEach items="${post.postComments}" var="postComment">
+        <div class="comment-item border-bottom pb-2 mb-2" data-comment-idx="${postComment.postCommentIdx}">
+          <div class="d-flex justify-content-between">
+            <div>
+              <img src="https://github.com/mdo.png" width="24" height="24" class="rounded-circle me-2">
+              <strong>${postComment.postCommentMemberId}</strong>
+            </div>
+            <div class="text-muted small">
+                ${fn:replace(postComment.postCommentCreatedAt, 'T', ' ')}
+              <c:if test="${not empty postComment.postCommentUpdatedAt}">
+                (수정: ${fn:replace(postComment.postCommentUpdatedAt, 'T', ' ')})
+              </c:if>
+            </div>
           </div>
-          <div class="text-muted small">
-              ${fn:replace(postComment.postCommentCreatedAt, 'T', ' ')}
-            <c:if test="${not empty postComment.postCommentUpdatedAt}">
-              (수정: ${fn:replace(postComment.postCommentUpdatedAt, 'T', ' ')})
+          <div class="comment-body mt-2">
+            <div class="comment-text">${postComment.postCommentContent}</div>
+            <div class="comment-edit">
+              <textarea class="form-control edit-textarea">${postComment.postCommentContent}</textarea>
+              <div class="mt-2 text-end">
+                <button class="btn btn-sm btn-outline-primary" onclick="saveEdit(this, ${postComment.postCommentIdx}, '${sessionScope.memberId}')">저장</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="cancelEdit(this)">취소</button>
+              </div>
+            </div>
+            <c:if test="${sessionScope.memberId eq postComment.postCommentMemberId}">
+              <div class="text-end mt-2">
+                <button class="btn btn-sm btn-link text-decoration-none" onclick="enableEdit(this)">편집</button>
+                <button class="btn btn-sm btn-link text-danger text-decoration-none commentDeleteButton"
+                        data-comment-idx="${postComment.postCommentIdx}" data-member-id="${postComment.postCommentMemberId}">삭제</button>
+              </div>
             </c:if>
           </div>
         </div>
-        <div class="comment-body mt-2">
-          <div class="comment-text">${postComment.postCommentContent}</div>
-          <div class="comment-edit">
-            <textarea class="form-control edit-textarea">${postComment.postCommentContent}</textarea>
-            <div class="mt-2 text-end">
-              <button class="btn btn-sm btn-outline-primary" onclick="saveEdit(this, ${postComment.postCommentIdx}, '${sessionScope.memberId}')">저장</button>
-              <button class="btn btn-sm btn-outline-secondary" onclick="cancelEdit(this)">취소</button>
-            </div>
-          </div>
-          <c:if test="${sessionScope.memberId eq postComment.postCommentMemberId}">
-            <div class="text-end mt-2">
-              <button class="btn btn-sm btn-link text-decoration-none" onclick="enableEdit(this)">편집</button>
-              <button class="btn btn-sm btn-link text-danger text-decoration-none commentDeleteButton"
-                      data-comment-idx="${postComment.postCommentIdx}" data-member-id="${postComment.postCommentMemberId}">삭제</button>
-            </div>
-          </c:if>
-        </div>
-      </div>
-    </c:forEach>
-  </div>
-
-  <!-- 댓글 입력 -->
-  <div class="mb-2">
-    <div class="col-8">
-      <textarea id="postCommentContent" class="form-control" rows="3" placeholder="댓글을 입력하세요" style="resize: none;"></textarea>
+      </c:forEach>
     </div>
-    <div class="col-2">
-      <button type="button" class="btn btn-primary btn-sm" id="commentInsertButton"
-              data-member-id="${sessionScope.memberId}"
-              data-post-idx="${post.postIdx}"><i class="bi bi-chat-dots"></i> 댓글 작성</button>
+
+    <!-- 댓글 입력 -->
+    <div class="mb-2">
+      <div class="col-8">
+        <textarea id="postCommentContent" class="form-control" rows="3" placeholder="댓글을 입력하세요" style="resize: none;"></textarea>
+      </div>
+      <div class="col-2">
+        <button type="button" class="btn btn-primary btn-sm" id="commentInsertButton"
+                data-member-id="${sessionScope.memberId}"
+                data-post-idx="${post.postIdx}"><i class="bi bi-chat-dots"></i> 댓글 작성</button>
+      </div>
     </div>
   </div>
 </div>
-
 <!-- Toast 메시지 -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
   <div id="toastMessage" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
