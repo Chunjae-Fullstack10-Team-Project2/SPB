@@ -61,39 +61,63 @@
         </where>
     </select>
 
-    <!--  매출   -->
     <select id="selectMonthlySales" resultType="map" parameterType="map">
-        SELECT
         <choose>
-            <when test="timeType == 'YEAR'">
-                DATE_FORMAT(orderCreatedAt, '%Y') AS label
+            <!-- DAY: 날짜별 매출 -->
+            <when test="timeType == 'DAY'">
+                WITH RECURSIVE date_range AS (
+                SELECT DATE(#{startDate}) AS selected_date
+                UNION ALL
+                SELECT DATE_ADD(selected_date, INTERVAL 1 DAY)
+                FROM date_range
+                WHERE selected_date &lt; #{endDate}
+                )
+                SELECT
+                DATE_FORMAT(d.selected_date, '%Y-%m-%d') AS label,
+                COALESCE(SUM(o.orderAmount), 0) AS total
+                FROM date_range d
+                LEFT JOIN tbl_order_info o
+                ON DATE(o.orderCreatedAt) = d.selected_date
+                GROUP BY d.selected_date
+                ORDER BY d.selected_date
             </when>
+
+            <!-- MONTH/YEAR: 기존 방식 -->
             <otherwise>
-                DATE_FORMAT(orderCreatedAt, '%Y-%m') AS label
+                SELECT
+                <choose>
+                    <when test="timeType == 'YEAR'">
+                        DATE_FORMAT(orderCreatedAt, '%Y') AS label
+                    </when>
+                    <otherwise>
+                        DATE_FORMAT(orderCreatedAt, '%Y-%m') AS label
+                    </otherwise>
+                </choose>,
+                SUM(orderAmount) AS total
+                FROM tbl_order_info
+                WHERE 1=1
+                <if test="startDate != null and startDate != ''">
+                    AND DATE_FORMAT(orderCreatedAt,
+                    <choose>
+                        <when test="timeType == 'YEAR'">'%Y'</when>
+                        <otherwise>'%Y-%m'</otherwise>
+                    </choose>
+                    ) &gt;= #{startDate}
+                </if>
+                <if test="endDate != null and endDate != ''">
+                    AND DATE_FORMAT(orderCreatedAt,
+                    <choose>
+                        <when test="timeType == 'YEAR'">'%Y'</when>
+                        <otherwise>'%Y-%m'</otherwise>
+                    </choose>
+                    ) &lt;= #{endDate}
+                </if>
+                GROUP BY label
+                ORDER BY label
             </otherwise>
-        </choose>,
-        SUM(orderAmount) AS total
-        FROM tbl_order_info
-        WHERE orderStatus = 's'
-        <if test="startDate != null and startDate != ''">
-            AND DATE_FORMAT(orderCreatedAt,
-            <choose>
-                <when test="timeType == 'YEAR'">'%Y'</when>
-                <otherwise>'%Y-%m'</otherwise>
-            </choose>
-            ) &gt;= #{startDate}
-        </if>
-        <if test="endDate != null and endDate != ''">
-            AND DATE_FORMAT(orderCreatedAt,
-            <choose>
-                <when test="timeType == 'YEAR'">'%Y'</when>
-                <otherwise>'%Y-%m'</otherwise>
-            </choose>
-            ) &lt;= #{endDate}
-        </if>
-        GROUP BY label
-        ORDER BY label
+        </choose>
     </select>
+
 
     <!--  강좌별 고정 -->
     <select id="selectLectureSalesDefault" resultType="map">
