@@ -42,5 +42,5 @@ public interface AdminMapper {
 
     List<MemberDTO> selectTeacherWithTeacherProfile();
 
-    int modifyTeacherProfile(TeacherVO teacherVO);
+    int modifyTeacherProfile (TeacherVO teacherVO);
 }

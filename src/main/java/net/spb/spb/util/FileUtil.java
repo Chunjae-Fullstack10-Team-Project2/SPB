@@ -54,9 +54,10 @@ public class FileUtil {
                 .fileName(saveName)
                 .fileExt(orgName.substring(orgName.lastIndexOf(".")))
                 .filePath("/upload")
+                .fileOrgName(orgName)
+                .fileSize(fileData.length)
                 .build();
-        int fileIdx = fileService.insertFile(fileDTO);
-        return fileIdx;
+        return fileService.insertFile(fileDTO);
     }
 
     public void deleteFile(String fileName) throws Exception {
@@ -70,6 +71,26 @@ public class FileUtil {
         if (isDeleted) {
             fileService.deleteFileByFileName(fileName);
         }
+    }
+
+    public static String getIconClass(String ext) {
+        ext = ext.toLowerCase();
+        return switch (ext) {
+            case "pdf" -> "bi-file-earmark-pdf-fill text-danger";
+            case "doc", "docx" -> "bi-file-earmark-word-fill text-primary";
+            case "xls", "xlsx" -> "bi-file-earmark-excel-fill text-success";
+            case "ppt", "pptx" -> "bi-file-earmark-ppt-fill text-warning";
+            case "zip", "rar", "7z" -> "bi-file-earmark-zip-fill text-secondary";
+            case "txt" -> "bi-file-earmark-text";
+            default -> "bi-file-earmark";
+        };
+    }
+
+    public static String formatFileSize(long size) {
+        if (size < 1024) return size + " B";
+        double kb = size / 1024.0;
+        if (kb < 1024) return String.format("%.1f KB", kb);
+        return String.format("%.1f MB", kb / 1024.0);
     }
 
 }
