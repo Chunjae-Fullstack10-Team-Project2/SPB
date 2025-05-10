@@ -18,7 +18,7 @@
     <%--    </style>--%>
 </head>
 <body>
-<%@include file="header.jsp" %>
+<%--<%@include file="header.jsp" %>--%>
 <%--<div class="content-nonside">--%>
 <div class="modal fade" id="pwdChangeModal" tabindex="-1" aria-labelledby="pwdChangeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -104,7 +104,7 @@
                                     <h2 class="text-white">당신의 성장을 위한 첫 걸음</h2>
                                     <p class="text-white">봄콩에서 시작하세요. 초등부터 고등까지, 단계별 맞춤 인강으로 실력을 키워드립니다.</p>
                                 </div>
-                                <a href="/join" class="theme-btn border-btn">Join Us</a>
+                                <a href="/login" class="theme-btn border-btn">Sign Up</a>
                             </div>
                         </div>
                     </div>
