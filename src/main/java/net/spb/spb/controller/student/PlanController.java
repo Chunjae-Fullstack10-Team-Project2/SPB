@@ -1,4 +1,4 @@
-package net.spb.spb.controller;
+package net.spb.spb.controller.student;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

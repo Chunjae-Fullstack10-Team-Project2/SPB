@@ -79,6 +79,9 @@
                             </c:if>
                         </a>
                     </th>
+                    <th>
+                        구매 상태
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -98,6 +101,38 @@
                             <fmt:formatNumber value="${boardReportDTO.orderAmount}" type="currency"/>
                         </td>
                         <td>${boardReportDTO.orderCreatedAt.toLocalDate()}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${boardReportDTO.orderStatus eq 's'}">
+                                    <form method="post" action="/mypage/order/confirm" class="d-inline">
+                                        <input type="hidden" name="orderIdx" value="${boardReportDTO.orderIdx}"/>
+                                        <input type="hidden" name="orderStatus" value="${boardReportDTO.orderStatus}"/>
+                                        <button type="submit" class="btn btn-success btn-sm">구매 확정</button>
+                                    </form>
+                                    <form method="post" action="/mypage/order/refund" class="d-inline">
+                                        <input type="hidden" name="orderIdx" value="${boardReportDTO.orderIdx}"/>
+                                        <input type="hidden" name="orderStatus" value="${boardReportDTO.orderStatus}"/>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">환불 요청</button>
+                                    </form>
+                                </c:when>
+
+                                <c:when test="${boardReportDTO.orderStatus eq 'p'}">
+                                    <form method="post" action="/mypage/order/cancel" class="d-inline">
+                                        <input type="hidden" name="orderIdx" value="${boardReportDTO.orderIdx}"/>
+                                        <input type="hidden" name="orderStatus" value="${boardReportDTO.orderStatus}"/>
+                                        <button type="submit" class="btn btn-warning btn-sm">주문 취소</button>
+                                    </form>
+                                </c:when>
+
+                                <c:when test="${boardReportDTO.orderStatus eq 'r'}">
+                                    <span class="badge bg-secondary">환불 완료</span>
+                                </c:when>
+
+                                <c:when test="${boardReportDTO.orderStatus eq 'f'}">
+                                    <span class="badge bg-success">구매 확정</span>
+                                </c:when>
+                            </c:choose>
+                        </td>
                     </tr>
                 </c:forEach>
                 </tbody>

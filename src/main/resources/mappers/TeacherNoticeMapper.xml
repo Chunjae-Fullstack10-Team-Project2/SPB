@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.TeacherNoticeMapper">
+    <sql id="condition">
+        <where>
+            ttn.teacherNoticeMemberId = #{memberId}
+            <if test="pageDTO.search_category == 'teacherNoticeTitle'">
+                and ttn.teacherNoticeTitle like concat('%', #{pageDTO.search_word}, '%')
+            </if>
+            <if test="pageDTO.search_category == 'teacherNoticeContent'">
+                and ttn.teacherNoticeContent like concat('%', #{pageDTO.search_word}, '%')
+            </if>
+            <if test="pageDTO.search_category == 'content'">
+                and ttn.teacherNoticeTitle like concat('%', #{pageDTO.search_word}, '%')
+                or ttn.teacherNoticeContent like concat('%', #{pageDTO.search_word}, '%')
+            </if>
+            <if test="pageDTO.start_date != null and pageDTO.end_date != null">
+                and ttn.teacherNoticeCreatedAt between #{pageDTO.start_date} and #{pageDTO.end_date}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insertTeacherNotice" useGeneratedKeys="true" keyColumn="teacherNoticeIdx" keyProperty="teacherNoticeIdx">
+        insert into tbl_teacher_notice (teacherNoticeTitle, teacherNoticeContent, teacherNoticeMemberId, teacherNoticeFixed)
+        values (#{teacherNoticeTitle}, #{teacherNoticeContent}, #{teacherNoticeMemberId}, #{teacherNoticeFixed})
+    </insert>
+
+    <select id="selectTeacherNoticeList" resultType="net.spb.spb.dto.teacher.TeacherNoticeResponseDTO">
+        select ttn.teacherNoticeIdx as teacherNoticeIdx, ttn.teacherNoticeTitle as teacherNoticeTitle
+             , ttn.teacherNoticeFixed as teacherNoticeFixed
+             , ttn.teacherNoticeCreatedAt as teacherNoticeCreatedAt
+        from tbl_teacher_notice as ttn
+        <include refid="condition" />
+        order by teacherNoticeFixed desc
+               , ${pageDTO.sort_by} ${pageDTO.sort_direction}
+        limit #{pageDTO.page_skip_count}, #{pageDTO.page_size}
+    </select>
+
+    <select id="selectTeacherNoticeByIdx" resultType="net.spb.spb.dto.teacher.TeacherNoticeResponseDTO">
+        select ttn.teacherNoticeIdx as teacherNoticeIdx, ttn.teacherNoticeTitle as teacherNoticeTitle, ttn.teacherNoticeContent as teacherNoticeContent
+        , ttn.teacherNoticeMemberId as teacherNoticeMemberId, tt.teacherName as teacherName, tm.memberProfileImg as memberProfileImg
+        , ttn.teacherNoticeFixed as teacherNoticeFixed
+        , ttn.teacherNoticeCreatedAt as teacherNoticeCreatedAt, ttn.teacherNoticeUpdatedAt as teacherNoticeUpdatedAt
+        from tbl_teacher_notice as ttn
+        inner join tbl_teacher as tt on ttn.teacherNoticeMemberId = tt.teacherId
+        inner join tbl_member as tm on tt.teacherId = tm.memberId
+        where ttn.teacherNoticeIdx = #{teacherNoticeIdx}
+    </select>
+
+    <update id="updateTeacherNotice">
+        update tbl_teacher_notice
+        set teacherNoticeTitle = #{teacherNoticeTitle}, teacherNoticeContent = #{teacherNoticeContent}, teacherNoticeFixed = #{teacherNoticeFixed}
+        where teacherNoticeIdx = #{teacherNoticeIdx}
+    </update>
+
+    <delete id="deleteTeacherNoticeByIdx">
+        delete from tbl_teacher_notice
+        where teacherNoticeIdx = #{teacherNoticeIdx}
+    </delete>
+
+    <select id="selectTeacherNoticeListTotalCount" resultType="int">
+        select count(*)
+        from tbl_teacher_notice as ttn
+        <include refid="condition" />
+    </select>
+</mapper>
