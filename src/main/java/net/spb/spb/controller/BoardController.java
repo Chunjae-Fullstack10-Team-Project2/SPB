@@ -16,7 +16,7 @@ import net.spb.spb.service.board.BoardServiceImpl;
 import net.spb.spb.service.board.NaverNewsService;
 import net.spb.spb.util.BoardCategory;
 import net.spb.spb.util.FileUtil;
-import net.spb.spb.util.PagingUtil;
+import net.spb.spb.util.NewPagingUtil;
 import net.spb.spb.util.ReportRefType;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,15 +49,18 @@ public class BoardController {
     private static final long MAX_FILE_SIZE = 100 * 1024 * 1024;
 
     @GetMapping("/{category}/list")
-    public String list(@PathVariable("category") BoardCategory category, Model model, @ModelAttribute PostPageDTO postPageDTO, HttpServletRequest req) {
+    public String list(@PathVariable("category") BoardCategory category,
+                       Model model,
+                       @ModelAttribute PostPageDTO postPageDTO,
+                       HttpServletRequest req) {
         String baseUrl = req.getRequestURI();
-        postPageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, postPageDTO));
+        postPageDTO.setLinkUrl(NewPagingUtil.buildLinkUrl(baseUrl, postPageDTO));
         postPageDTO.setPostCategory(category.toString().toUpperCase());
-        postPageDTO.setSearch_type();
+        postPageDTO.normalizeSearchType();
         int postTotalCount = service.getPostCount(postPageDTO);
         postPageDTO.setTotal_count(postTotalCount);
         List<PostDTO> posts = service.getPosts(postPageDTO);
-        String paging = PagingUtil.pagingArea(postPageDTO);
+        String paging = NewPagingUtil.pagingArea(postPageDTO);
         model.addAttribute("posts", posts);
         model.addAttribute("search", postPageDTO);
         model.addAttribute("paging", paging);
@@ -67,7 +70,10 @@ public class BoardController {
     }
 
     @GetMapping("/{category}/view")
-    public String view(@PathVariable("category") BoardCategory category, @RequestParam("idx") int idx, Model model, HttpSession session) {
+    public String view(@PathVariable("category") BoardCategory category,
+                       @RequestParam("idx") int idx,
+                       Model model,
+                       HttpSession session) {
         service.setReadCnt(idx);
         String memberId = (String) session.getAttribute("memberId");
         HashMap<String, Object> param = new HashMap<>();
@@ -80,7 +86,9 @@ public class BoardController {
     }
 
     @GetMapping("/{category}/write")
-    public String write(@PathVariable("category") BoardCategory category, Model model, HttpSession session) {
+    public String write(@PathVariable("category") BoardCategory category,
+                        Model model,
+                        HttpSession session) {
         addBreadcrumb(model, category, "글쓰기");
         return "board/regist";
     }
