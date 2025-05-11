@@ -8,10 +8,7 @@ import lombok.experimental.SuperBuilder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-@Getter
-@Setter
 @Data
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
