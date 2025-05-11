@@ -14,7 +14,7 @@
         where postFileFileIdx = #{fileIdx}
     </delete>
     <select id="selectFile" parameterType="java.lang.Integer" resultType="net.spb.spb.domain.FileVO">
-        select tf.fileIdx, tf.fileName, tf.filePath, tf.fileExt
+        select tf.fileIdx, tf.fileName, tf.filePath, tf.fileExt, tf.fileSize, tf.fileOrgName
         from tbl_file tf
         inner join tbl_post_file tpf
         on tf.fileIdx = tpf.postFileFileIdx

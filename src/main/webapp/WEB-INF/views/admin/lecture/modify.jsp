@@ -1,23 +1,24 @@
 <%--
   Created by IntelliJ IDEA.
   User: sinjihye
-  Date: 2025. 5. 7.
-  Time: 10:43
+  Date: 2025. 5. 11.
+  Time: 02:43
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-  <title>강좌 개설</title>
+  <title>강좌 수정</title>
 </head>
 <body>
 <%@ include file="../../common/sidebarHeader.jsp" %>
-<div class="content">
+<div class="content" style="margin-left: 280px; margin-top: 100px;">
   <div class="container my-5">
-    <%@ include file="../../common/breadcrumb.jsp"%>
+    <%@ include file="../../common/breadcrumb.jsp" %>
   </div>
 
   <div class="container my-5">
+
     <div class="card shadow rounded">
       <div class="card-header bg-primary text-white">
         <h5 class="mb-0">강좌 등록</h5>

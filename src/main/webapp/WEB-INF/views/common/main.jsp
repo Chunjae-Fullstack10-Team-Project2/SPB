@@ -4,10 +4,11 @@
 <head>
     <title>메인 페이지</title>
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/css/bootstrap-5.0.0-alpha.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/css/LineIcons.2.0.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/css/animate.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/css/main.css">
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/resources/mainAssets/css/bootstrap-5.0.0-alpha.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/mainAssets/css/LineIcons.2.0.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/mainAssets/css/animate.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/mainAssets/css/main.css">
 
     <%--    <style>--%>
     <%--        .warning-text {--%>
@@ -18,56 +19,11 @@
     <%--    </style>--%>
 </head>
 <body>
-<%--<%@include file="header.jsp" %>--%>
-<%--<div class="content-nonside">--%>
-<div class="modal fade" id="pwdChangeModal" tabindex="-1" aria-labelledby="pwdChangeModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="pwdChangeModalLabel">비밀번호 변경 안내</h5>
-            </div>
-            <div class="modal-body">
-                <p>비밀번호를 변경하신지 90일이 지났습니다.<br>비밀번호를 변경하시겠습니까?</p>
-            </div>
-            <div class="modal-footer">
-                <a href="/changePwd" class="btn btn-primary">예</a>
-                <button type="button" class="btn btn-secondary" id="btnRemindLater">90일 후 다시 알림</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="emailVerifyModal" tabindex="-1" aria-labelledby="emailVerifyModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">이메일 인증 필요</h5>
-            </div>
-            <div class="modal-body">
-                <p>휴면 상태입니다. 이메일 인증 후 서비스를 이용해주세요.</p>
-                <div class="mb-3">
-                    <input type="email" class="form-control" id="emailInput"
-                           value="${sessionScope.memberDTO.memberEmail}" readonly>
-                </div>
-                <button id="btnSendEmail" class="btn btn-primary w-100 mb-2">인증코드 전송</button>
-
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="codeInput" placeholder="인증코드 입력" maxlength="6">
-                </div>
-                <div class="mb-2">
-                    <span id="emailCountWarning" class="warning-text text-danger"></span>
-                    <span id="emailAuthTimeWarning" class="warning-text text-danger"></span>
-                </div>
-                <button id="btnCheckCode" class="btn btn-success w-100">인증 확인</button>
-            </div>
-        </div>
-    </div>
-</div>
-<%--</div>--%>
+<%@include file="header.jsp" %>
 
 <!--[if lte IE 9]>
-<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a
+        href="https://browsehappy.com/">upgrade
     your browser</a> to improve your experience and security.</p>
 <![endif]-->
 
@@ -95,7 +51,7 @@
     <div id="carouselExampleCaptions" class="carousel slide carousel-fade" data-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-section carousel-item active clip-bg pt-225 pb-200 img-bg"
-                 style="background-image: url('${pageContext.request.contextPath}/resources/img/spb_logo.png');">
+                 style="background-image: url('${pageContext.request.contextPath}/resources/img/spb_illustration1.png');">
                 <div class="container">
                     <div class="row">
                         <div class="col-xl-8 col-lg-10 mx-auto">
@@ -104,14 +60,14 @@
                                     <h2 class="text-white">당신의 성장을 위한 첫 걸음</h2>
                                     <p class="text-white">봄콩에서 시작하세요. 초등부터 고등까지, 단계별 맞춤 인강으로 실력을 키워드립니다.</p>
                                 </div>
-                                <a href="/login" class="theme-btn border-btn">Sign Up</a>
+                                <a href="/login" class="theme-btn border-btn">로그인하기</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="carousel-section carousel-item clip-bg pt-225 pb-200 img-bg"
-                 style="background-image: url('${pageContext.request.contextPath}/resources/assets/img/carousel/2.jpg');">
+                 style="background-image: url('${pageContext.request.contextPath}/resources/img/spb_illustration2.png');">
                 <div class="container">
                     <div class="row">
                         <div class="col-xl-8 col-lg-10 mx-auto">
@@ -120,7 +76,7 @@
                                     <h2 class="text-white">오늘의 공부가 내일을 바꿉니다</h2>
                                     <p class="text-white">검증된 강사진, 탄탄한 커리큘럼, 그리고 당신의 열정. 봄콩에서 만나보세요.</p>
                                 </div>
-                                <a href="/join" class="theme-btn border-btn">Join Us</a>
+                                <a href="/login" class="theme-btn border-btn">로그인하기</a>
                             </div>
                         </div>
                     </div>
@@ -201,12 +157,13 @@
                 <div class="col-xl-6 col-lg-6">
                     <div class="about-img-wrapper">
                         <div class="about-img position-relative d-inline-block wow fadeInLeft" data-wow-delay=".3s">
-                            <img src="${pageContext.request.contextPath}/resources/assets/img/about/about-img.png"
+                            <img src="${pageContext.request.contextPath}/resources/mainAssets/img/about/about-img.png"
                                  alt="">
 
                             <div class="about-experience">
                                 <h2 class="mb-40 wow fadeInRight" data-wow-delay=".4s">학생의 가능성을 키우는 공간</h2>
-                                <p class="mb-45 wow fadeInUp" data-wow-delay=".6s">우리는 단순한 인강 플랫폼이 아닙니다. 봄콩은 학생 한 명 한 명이
+                                <p class="mb-45 wow fadeInUp" data-wow-delay=".6s">우리는 단순한 인강 플랫폼이 아닙니다. 봄콩은 학생 한 명
+                                    한 명이
                                     스스로 성장할 수 있도록 돕는 디지털 학습 환경을 제공합니다.</p>
                             </div>
                         </div>
@@ -226,19 +183,25 @@
                             </p>
                             <div class="counter-up wow fadeInUp" data-wow-delay=".5s">
                                 <div class="counter">
-                                    <span id="secondo" class="countup count color-1" cup-end="10" cup-append="k">10</span>
+                                        <span id="secondo" class="countup count color-1" cup-end="10"
+                                              cup-append="k">10</span>
                                     <h4>누적 수강생</h4>
-                                    <p>많은 학생들이 봄콩을 통해<br class="d-none d-md-block d-lg-none d-xl-block">학습 역량을 키웠습니다</p>
+                                    <p>많은 학생들이 봄콩을 통해<br class="d-none d-md-block d-lg-none d-xl-block">학습 역량을 키웠습니다
+                                    </p>
                                 </div>
                                 <div class="counter">
-                                    <span id="secondo" class="countup count color-2" cup-end="95" cup-append="%">95</span>
+                                        <span id="secondo" class="countup count color-2" cup-end="95"
+                                              cup-append="%">95</span>
                                     <h4>만족도</h4>
-                                    <p>실제 수강생 리뷰 기준 <br class="d-none d-md-block d-lg-none d-xl-block">만족도 95% 이상</p>
+                                    <p>실제 수강생 리뷰 기준 <br class="d-none d-md-block d-lg-none d-xl-block">만족도 95% 이상
+                                    </p>
                                 </div>
                                 <div class="counter">
-                                    <span id="secondo" class="countup count color-2" cup-end="95" cup-append="%">95</span>
+                                        <span id="secondo" class="countup count color-2" cup-end="95"
+                                              cup-append="%">95</span>
                                     <h4>만족도</h4>
-                                    <p>실제 수강생 리뷰 기준 <br class="d-none d-md-block d-lg-none d-xl-block">만족도 95% 이상</p>
+                                    <p>실제 수강생 리뷰 기준 <br class="d-none d-md-block d-lg-none d-xl-block">만족도 95% 이상
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -364,7 +327,8 @@
                         <div class="col-lg-2"></div>
                         <div class="col-lg-5">
                             <div class="timeline-img">
-                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-1.png" alt="강사 탐색">
+                                <img src="${pageContext.request.contextPath}/resources/mainAssets/img/timeline/timeline-1.png"
+                                     alt="강사 탐색">
                             </div>
                         </div>
                     </div>
@@ -376,7 +340,8 @@
                     <div class="row align-items-center">
                         <div class="col-lg-5">
                             <div class="timeline-img">
-                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-2.png" alt="회원가입">
+                                <img src="${pageContext.request.contextPath}/resources/mainAssets/img/timeline/timeline-2.png"
+                                     alt="회원가입">
                             </div>
                         </div>
                         <div class="col-lg-2"></div>
@@ -408,7 +373,8 @@
                         <div class="col-lg-2"></div>
                         <div class="col-lg-5">
                             <div class="timeline-img">
-                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-3.png" alt="강좌 담기">
+                                <img src="${pageContext.request.contextPath}/resources/mainAssets/img/timeline/timeline-3.png"
+                                     alt="강좌 담기">
                             </div>
                         </div>
                     </div>
@@ -420,7 +386,8 @@
                     <div class="row align-items-center">
                         <div class="col-lg-5">
                             <div class="timeline-img">
-                                <img src="${pageContext.request.contextPath}/resources/assets/img/timeline/timeline-4.png" alt="결제 및 수강">
+                                <img src="${pageContext.request.contextPath}/resources/mainAssets/img/timeline/timeline-4.png"
+                                     alt="결제 및 수강">
                             </div>
                         </div>
                         <div class="col-lg-2"></div>
@@ -444,13 +411,14 @@
 
 <!-- ========================= subscribe-section start ========================= -->
 <section class="subscribe-section pt-100 pb-100 img-bg"
-         style="background-image: url('${pageContext.request.contextPath}/resources/assets/img/bg/common-bg.svg')">
+         style="background-image: url('${pageContext.request.contextPath}/resources/mainAssets/img/bg/common-bg.svg')">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-xl-6 col-lg-6">
                 <div class="section-title mb-30">
                     <span class="text-white wow fadeInDown" data-wow-delay=".2s">지금 바로 체험해보세요!</span>
-                    <h2 class="text-white mb-40 wow fadeInUp" data-wow-delay=".4s">회원가입하고 오늘부터 무료 강의를 체험해보세요. 봄콩과 함께라면 공부가
+                    <h2 class="text-white mb-40 wow fadeInUp" data-wow-delay=".4s">회원가입하고 오늘부터 무료 강의를 체험해보세요. 봄콩과
+                        함께라면 공부가
                         즐거워집니다.</h2>
                 </div>
             </div>
@@ -472,7 +440,8 @@
             <div class="col-xl-3 col-lg-4 col-md-6">
                 <div class="footer-widget mb-60 wow fadeInLeft" data-wow-delay=".2s">
                     <a href="index.html" class="logo mb-30"><img
-                            src="${pageContext.request.contextPath}/resources/assets/img/logo/logo.svg" alt="logo"></a>
+                            src="${pageContext.request.contextPath}/resources/mainAssets/img/logo/logo.svg"
+                            alt="logo"></a>
                     <p class="mb-30 footer-desc">We Crafted an awesome desig library that is robust and intuitive to
                         use. No matter you're building a business presentation websit.</p>
                 </div>
@@ -563,137 +532,10 @@
 </a>
 
 <!-- ========================= JS here ========================= -->
-<script src="${pageContext.request.contextPath}/resources/assets/js/bootstrap.bundle-5.0.0.alpha-min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/assets/js/count-up.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/assets/js/wow.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/assets/js/imagesloaded.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/assets/js/main.js"></script>
-
-
-<script>
-    <c:if test="${sessionScope.memberDTO.memberState == '3'}">
-    const modal = new bootstrap.Modal(document.getElementById('pwdChangeModal'), {
-        backdrop: 'static',
-        keyboard: false
-    });
-    window.onload = () => modal.show();
-    </c:if>
-
-    document.getElementById("btnRemindLater").addEventListener("click", function () {
-        const memberId = "${sessionScope.memberDTO.memberId}";
-
-        fetch('/updatePwdChangeDate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({memberId: memberId})
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("알림이 설정되었습니다. 비밀번호 변경 알림이 연기되었습니다.");
-
-                    modal.hide();
-                } else {
-                    alert("알림 설정에 실패했습니다.");
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    });
-
-    <c:if test="${sessionScope.memberDTO.memberState == '5'}">
-    const emailModal = new bootstrap.Modal(document.getElementById('emailVerifyModal'), {
-        backdrop: 'static',
-        keyboard: false
-    });
-    window.onload = () => emailModal.show();
-    </c:if>
-
-    let emailAuthTimer;
-    let emailAuthTimeLimit = 300;
-
-    function startEmailAuthTimer() {
-        clearInterval(emailAuthTimer);
-        emailAuthTimeLimit = 300;
-
-        emailAuthTimer = setInterval(function () {
-            const minutes = Math.floor(emailAuthTimeLimit / 60);
-            const seconds = emailAuthTimeLimit % 60;
-
-            const timeDisplay = "남은 인증 시간: " + minutes + ":" + (seconds < 10 ? '0' + seconds : seconds);
-            document.getElementById('emailAuthTimeWarning').textContent = timeDisplay;
-
-            if (emailAuthTimeLimit <= 0) {
-                clearInterval(emailAuthTimer);
-                document.getElementById('emailAuthTimeWarning').textContent = '인증 시간이 만료되었습니다.';
-                document.getElementById('codeInput').disabled = true;
-                document.getElementById('btnCheckCode').disabled = true;
-
-                // 다시 메일 보낼 수 있도록 버튼 활성화
-                document.getElementById('btnSendEmail').disabled = false;
-            }
-
-            emailAuthTimeLimit--;
-        }, 1000);
-    }
-
-    document.getElementById("btnSendEmail").addEventListener("click", () => {
-        const emailInput = document.getElementById("emailInput");
-        emailInput.value = emailInput.value.trim();
-
-        if (!emailInput.value) {
-            alert("이메일을 입력해주세요.");
-            return;
-        }
-
-        fetch("/email/verify", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({memberEmail: emailInput.value})
-        })
-            .then(res => res.json())
-            .then(data => {
-                alert(data.message);
-
-                if (data.success) {
-                    const count = data.emailTryCount || 1;
-                    document.getElementById('emailCountWarning').innerHTML = "<strong>인증 횟수 " + count + "/3회</strong>";
-
-                    document.getElementById('btnSendEmail').disabled = true;
-                    document.getElementById('codeInput').disabled = false;
-                    document.getElementById('btnCheckCode').disabled = false;
-                    startEmailAuthTimer();
-                }
-            });
-    });
-
-    document.getElementById("btnCheckCode").addEventListener("click", () => {
-        const code = document.getElementById("codeInput").value.trim();
-        const email = document.getElementById("emailInput").value.trim();
-
-        fetch("/email/codeCheck", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                memberEmailCode: code,
-                memberEmail: email
-            })
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert("이메일 인증이 완료되었습니다.");
-                    fetch("/email/reactivate", {
-                        method: "POST",
-                        headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify({memberId: "${sessionScope.memberDTO.memberId}"})
-                    }).then(() => location.reload());
-                } else {
-                    alert(data.message);
-                }
-            });
-    });
-</script>
+<script src="${pageContext.request.contextPath}/resources/mainAssets/js/bootstrap.bundle-5.0.0.alpha-min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/mainAssets/js/count-up.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/mainAssets/js/wow.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/mainAssets/js/imagesloaded.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/mainAssets/js/main.js"></script>
 </body>
 </html>

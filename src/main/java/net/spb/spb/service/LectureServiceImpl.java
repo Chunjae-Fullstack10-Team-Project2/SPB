@@ -45,8 +45,8 @@ public class LectureServiceImpl implements LectureServiceIf {
     }
 
     @Override
-    public ChapterDTO getChapterById(int chapterLectureIdx, int chapterIdx) {
-        return lectureMapper.getChapterById(chapterLectureIdx, chapterIdx);
+    public ChapterDTO getChapterById(int chapterIdx) {
+        return lectureMapper.getChapterById(chapterIdx);
     }
 
 

@@ -20,29 +20,16 @@ public class FileService {
         FileVO vo = modelMapper.map(dto, FileVO.class);
         int rtnResult = fileMapper.insertFile(vo);
         int fileIdx = 0;
-        log.info("=============================");
-        log.info("FileService  >>  insertFile");
-        log.info("rtnResult: "+rtnResult);
-        log.info("vo: "+vo);
-        log.info("dto: "+dto);
         fileIdx = vo.getFileIdx();
-        log.info("fileIdx: "+fileIdx);
-        log.info("=============================");
         return fileIdx;
     }
 
     public int deleteFile(int fileIdx) {
-        int rtnResult = fileMapper.deleteFile(fileIdx);
-        log.info("=============================");
-        log.info("FileService  >>  deleteFile");
-        log.info("rtnResult: "+rtnResult);
-        log.info("=============================");
-        return rtnResult;
+        return fileMapper.deleteFile(fileIdx);
     }
 
     public int deleteFileByFileName(String fileName) {
-        int rtnResult = fileMapper.deleteFileByFileName(fileName);
-        return rtnResult;
+        return fileMapper.deleteFileByFileName(fileName);
     }
 
 }

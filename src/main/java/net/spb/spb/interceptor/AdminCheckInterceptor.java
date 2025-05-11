@@ -14,14 +14,24 @@ public class AdminCheckInterceptor implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) throws Exception {
 
-        HttpSession session = request.getSession();
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null) {
+            log.warn("Session not found, redirecting to login page.");
+            response.sendRedirect(request.getContextPath() + "/login");
+            return false;
+        }
+
         String memberId = (String) session.getAttribute("memberId");
         String memberGrade = (String) session.getAttribute("memberGrade");
 
-        // memberGrade가 null이거나 "0"이 아니면 (관리자가 아니면) 리스트로 리디렉션
+        log.info("Admin Check - memberId: " + memberId + ", memberGrade: " + memberGrade);
+
+        // 관리자가 아닌 경우
         if (memberGrade == null || !memberGrade.equals("0")) {
-            log.info("User is not admin, redirecting to notice list: " + memberId);
-            response.sendRedirect(request.getContextPath() + "/notice/list");
+            log.warn("User is not admin, redirecting to notice list: " + memberId);
+            response.sendRedirect(request.getContextPath() + "/main");
             return false;
         }
 

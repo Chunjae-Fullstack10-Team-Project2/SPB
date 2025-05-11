@@ -1,10 +1,12 @@
 package net.spb.spb.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
+import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.TeacherDTO;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.dto.pagingsearch.*;
@@ -17,6 +19,10 @@ import net.spb.spb.util.BreadcrumbUtil;
 import net.spb.spb.util.FileUtil;
 import net.spb.spb.util.PagingUtil;
 import net.spb.spb.util.VideoUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -25,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -202,8 +209,9 @@ public class AdminController {
 
     @GetMapping("/lecture/list")
     public void lectureList(@ModelAttribute LecturePageDTO lecturePageDTO, Model model) {
-        List<LectureDTO> lectureDTOs = adminService.selectLecture(lecturePageDTO);
+        List<LectureDTO> lectureDTOs = adminService.selectLectureList(lecturePageDTO);
         model.addAttribute("lectures", lectureDTOs);
+        setBreadcrumb(model, Map.of("강좌 목록", ""));
     }
 
     @GetMapping("/lecture/regist")
@@ -227,6 +235,46 @@ public class AdminController {
         adminService.insertLecture(lectureDTO);
     }
 
+
+    @GetMapping("/lecture/modify")
+    public void lectureModify(@RequestParam("lectureIdx") int lectureIdx, Model model) {
+        LectureDTO lectureDTO = adminService.selectLecture(lectureIdx);
+        model.addAttribute("lectureDTO", lectureDTO);
+        setBreadcrumb(model,
+                Map.of("강좌 목록", "/admin/lecture/list"),
+                Map.of("강좌 수정", "")
+        );
+    }
+
+    @PostMapping("/lecture/modify")
+    public void lectureModifyPOST(@RequestParam(name = "file1") MultipartFile file, @ModelAttribute LectureDTO lectureDTO) {
+        try {
+            if (file != null && !file.isEmpty()) {
+                File savedFile = fileUtil.saveFile(file);
+                lectureDTO.setLectureThumbnailImg(savedFile.getName());
+            }
+        } catch (Exception e) {
+            log.info(e.getMessage());
+        }
+        adminService.updateLecture(lectureDTO);
+    }
+
+    @PostMapping("/lecture/delete")
+    @ResponseBody
+    public Map<String, Object> lectureDeletePOST(@ModelAttribute LectureDTO lectureDTO) {
+        Map<String, Object> result = new HashMap<>();
+        int rtnResult = adminService.deleteLecture(lectureDTO);
+        if (rtnResult > 0) {
+            result.put("success", true);
+            result.put("message", "게시글이 삭제되었습니다.");
+            result.put("redirect", "/admin/lecture/list");
+        } else {
+            result.put("success", false);
+            result.put("message", "삭제에 실패했습니다.");
+        }
+        return result;
+    }
+
     @GetMapping("/lecture/search")
     public String lectureSearchPopup(@ModelAttribute LecturePageDTO lecturePageDTO, HttpServletRequest req, Model model) {
         String baseUrl = req.getRequestURI();
@@ -234,7 +282,7 @@ public class AdminController {
         int total_count = adminService.selectLectureCount(lecturePageDTO);
         lecturePageDTO.setTotal_count(total_count);
         String paging = PagingUtil.pagingArea(lecturePageDTO);
-        List<LectureDTO> lectureDTOs = adminService.selectLecture(lecturePageDTO);
+        List<LectureDTO> lectureDTOs = adminService.selectLectureList(lecturePageDTO);
         model.addAttribute("lectures", lectureDTOs);
         model.addAttribute("searchDTO", lecturePageDTO);
         model.addAttribute("paging", paging);
@@ -285,4 +333,131 @@ public class AdminController {
         BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
     }
 
+    @GetMapping("/sales/info")
+    public String salesInfo(@ModelAttribute SearchDTO searchDTO,
+                            @ModelAttribute PageRequestDTO pageRequestDTO,
+                            Model model) {
+
+        // 월별/강좌별 매출은 기존대로
+        List<Map<String, Object>> monthlySales = adminService.getMonthlySales();
+        List<Map<String, Object>> lectureSales = adminService.getLectureSales();
+
+        // 개별 거래 내역 (조건 기반)
+        List<OrderDTO> detailList = adminService.getSalesDetailList(searchDTO, pageRequestDTO);
+        int count = adminService.getSalesDetailCount(searchDTO);
+
+        PageResponseDTO<OrderDTO> pageResponseDTO = PageResponseDTO.<OrderDTO>withAll()
+                .dtoList(detailList)
+                .totalCount(count)
+                .pageRequestDTO(pageRequestDTO)
+                .build();
+
+        model.addAttribute("monthlySales", monthlySales);
+        model.addAttribute("lectureSales", lectureSales);
+        model.addAttribute("searchDTO", searchDTO);
+        model.addAttribute("responseDTO", pageResponseDTO);
+
+        return "/admin/sales/dashboard";
+    }
+
+
+    @GetMapping("/sales/monthly")
+    @ResponseBody
+    public List<Map<String, Object>> getMonthlySales(
+            @RequestParam("timeType") String timeType,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate
+    ) {
+        return adminService.getMonthlySales(timeType, startDate, endDate);
+    }
+
+    @GetMapping("/sales/lecture")
+    @ResponseBody
+    public List<Map<String, Object>> getLectureSales(
+            @RequestParam("timeType") String timeType,
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate) {
+        return adminService.getLectureSales(timeType, startDate, endDate);
+    }
+
+    @GetMapping("/sales/detail")
+    @ResponseBody
+    public PageResponseDTO<OrderDTO> salesDetailList(
+            @RequestParam(value = "searchWord", required = false) String searchWord,
+            @RequestParam(value = "searchType", required = false) String searchType,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate,
+            @RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(value = "sortColumn", required = false) String sortColumn,
+            @RequestParam(value = "sortOrder", required = false) String sortOrder
+    ) {
+        SearchDTO searchDTO = new SearchDTO();
+        searchDTO.setSearchWord(searchWord);
+        searchDTO.setSearchType(searchType);
+        searchDTO.setSortColumn(sortColumn);
+        searchDTO.setSortOrder(sortOrder);
+        searchDTO.setStartDate(startDate);
+        searchDTO.setEndDate(endDate);
+
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .build();
+
+        List<OrderDTO> detailList = adminService.getSalesDetailList(searchDTO, pageRequestDTO);
+        int count = adminService.getSalesDetailCount(searchDTO);
+
+        return PageResponseDTO.<OrderDTO>withAll()
+                .dtoList(detailList)
+                .totalCount(count)
+                .pageRequestDTO(pageRequestDTO)
+                .build();
+    }
+
+    @GetMapping("/sales/export")
+    public void exportSalesToExcel(
+            @RequestParam(name = "searchType", required = false) String searchType,
+            @RequestParam(name = "searchWord", required = false) String searchWord,
+            @RequestParam(name = "startDate", required = false) String startDate,
+            @RequestParam(name = "endDate", required = false) String endDate,
+            HttpServletResponse response
+    ) throws IOException {
+
+        Map<String, Object> param = new HashMap<>();
+        param.put("searchType", searchType);
+        param.put("searchWord", searchWord);
+        param.put("startDate", startDate);
+        param.put("endDate", endDate);
+
+        List<OrderDTO> list = adminService.getSalesListForExport(param);
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("매출 내역");
+
+        Row header = sheet.createRow(0);
+        header.createCell(0).setCellValue("주문번호");
+        header.createCell(1).setCellValue("회원 ID");
+        header.createCell(2).setCellValue("강좌명");
+        header.createCell(3).setCellValue("금액");
+        header.createCell(4).setCellValue("주문일");
+
+        int rowNum = 1;
+        for (OrderDTO row : list) {
+            Row r = sheet.createRow(rowNum++);
+            r.createCell(0).setCellValue(row.getOrderIdx());
+            r.createCell(1).setCellValue(row.getOrderMemberId());
+            r.createCell(2).setCellValue(row.getLectureTitle());
+            r.createCell(3).setCellValue(row.getOrderAmount());
+            r.createCell(4).setCellValue(row.getOrderCreatedAt().toString());
+        }
+
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=\"sales.xlsx\"");
+
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
+
 }
+

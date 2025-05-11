@@ -26,4 +26,5 @@ public class PostDTO {
     private List<FileDTO> postFiles;
     private int postLikeCnt;
     private boolean isLike;
+    private String memberProfileImg;
 }

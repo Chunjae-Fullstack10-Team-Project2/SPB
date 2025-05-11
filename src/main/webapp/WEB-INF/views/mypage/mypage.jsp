@@ -182,6 +182,9 @@
                     <optgroup label="교사">
                         <option value="13" ${memberDTO.memberGrade == '13' ? 'selected' : ''}>교사</option>
                     </optgroup>
+                    <optgroup label="승인 대기 중">
+                        <option value="14" ${memberDTO.memberGrade == '14' ? 'selected' : ''}>승인 대기 중</option>
+                    </optgroup>
                 </select>
                 <label for="memberGrade">학년</label>
             </div>

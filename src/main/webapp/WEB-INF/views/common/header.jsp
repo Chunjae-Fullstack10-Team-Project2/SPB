@@ -56,7 +56,7 @@
 <body>
 <header class="p-3 border-bottom">
     <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-between">
+        <div class="d-flex flex-wrap align-items-center justify-content-between flex-column flex-lg-row">
             <a href="${cp}/main" class="d-flex align-items-center mb-2 mb-lg-0 text-decoration-none">
                 <img width="40" src="${cp}/resources/img/spb_single_logo.png" alt="로고">
             </a>
@@ -79,41 +79,34 @@
                 </li>
                 <li><a href="${cp}/qna/list" class="nav-link px-2 link-body-emphasis">1:1 문의</a></li>
                 <li><a href="${cp}/faq/list" class="nav-link px-2 link-body-emphasis">자주 묻는 질문</a></li>
-                <li><a href="/notice/list" class="nav-link px-2 link-body-emphasis">공지사항</a></li>
+                <li><a href="${cp}/notice/list" class="nav-link px-2 link-body-emphasis">공지사항</a></li>
             </ul>
 
-            <div class="d-flex align-items-center">
-                <a href="/payment/cart?memberId=${sessionScope.memberId}"
-                   class="me-4 text-decoration-none position-relative">
-                    <i class="bi bi-cart" style="font-size: 1.4rem;"></i>
+            <div class="d-flex align-items-center gap-3 flex-wrap justify-content-end user-tools">
+                <div class="greeting">
                     <c:if test="${not empty sessionScope.memberId}">
-                        <span id="cart-count-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                        ${sessionScope.memberId} 님, 오늘도 즐거운 학습 되세요! 😊
                     </c:if>
-                    <c:if test="${empty sessionScope.memberId}">
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
-                    </c:if>
-                </a>
+                </div>
+
+                <c:if test="${not empty sessionScope.memberId}">
+                    <div class="cart">
+                        <a href="/payment/cart?memberId=${sessionScope.memberId}"
+                           class="text-decoration-none position-relative">
+                            <i class="bi bi-cart" style="font-size: 1.4rem;"></i>
+                            <span id="cart-count-badge"
+                                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                        </a>
+                    </div>
+                </c:if>
 
                 <div class="dropdown text-end">
-                    <a href="#" class="d-block text-decoration-none dropdown-toggle"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        <c:choose>
-                            <c:when test="${not empty sessionScope.memberId and not empty memberDTO.memberProfileImg}">
-                                <img id="profilePreview" width="32" height="32" class="rounded-circle"
-                                     src="${pageContext.request.contextPath}/upload/${memberDTO.memberProfileImg}"
-                                     alt="프로필 이미지" class="profile-img">
-                            </c:when>
-                            <c:when test="${not empty sessionScope.memberId and empty memberDTO.memberProfileImg}">
-                                <img id="profilePreview" width="32" height="32" class="rounded-circle"
-                                     src="${pageContext.request.contextPath}/resources/img/default_profileImg.png"
-                                     alt="기본 이미지" class="profile-img">
-                            </c:when>
-                            <c:otherwise>
-                                <img id="profilePreview" width="32" height="32" class="rounded-circle"
-                                     src="${pageContext.request.contextPath}/resources/img/default_profileImg.png"
-                                     alt="기본 이미지" class="profile-img">
-                            </c:otherwise>
-                        </c:choose> </a>
+                    <a href="#" class="d-block text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                        <img id="profilePreview" width="32" height="32" class="rounded-circle"
+                             src="${pageContext.request.contextPath}/upload/${memberDTO.memberProfileImg}"
+                             onerror="this.src='${cp}/resources/img/default_profileImg.png';"
+                             alt="프로필 이미지">
+                    </a>
                     <ul class="dropdown-menu text-small">
                         <c:if test="${empty sessionScope.memberId}">
                             <li><a class="dropdown-item" href="${cp}/login">로그인</a></li>
@@ -127,14 +120,14 @@
                         </c:if>
                     </ul>
                 </div>
-                <div>
-                    <c:if test="${sessionScope.memberGrade == '0'}">
-                        <a href="${cp}/admin/member/list" class="ms-2" title="관리자 페이지">
-                            <i class="bi bi-gear-fill" style="font-size: 1.4rem;"></i>
-                        </a>
-                    </c:if>
-                </div>
+
+                <c:if test="${sessionScope.memberGrade eq 0}">
+                    <a href="${cp}/admin/member/list" class="admin-link" title="관리자 페이지">
+                        <i class="bi bi-gear-fill" style="font-size: 1.4rem;"></i>
+                    </a>
+                </c:if>
             </div>
+
         </div>
     </div>
 </header>

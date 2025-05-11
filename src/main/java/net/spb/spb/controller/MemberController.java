@@ -82,36 +82,11 @@ public class MemberController {
         if (memberId != null) {
             MemberDTO memberDTO = memberService.getMemberById(memberId);
             session.setAttribute("memberGrade", memberDTO.getMemberGrade());
-
-            // 마지막 로그인 체크
-            LocalDate lastLoginDate = memberDTO.getMemberLastLogin();
-            LocalDate pwdChangeDate = memberDTO.getMemberPwdChangeDate();
-
-            if (lastLoginDate != null) {
-                long daysSinceLastLogin = ChronoUnit.DAYS.between(lastLoginDate, LocalDate.now());
-                if (daysSinceLastLogin >= 365) {
-                    memberDTO.setMemberState("5");
-                    memberService.updateMemberStateWithLogin("5", memberId);
-                }
-            } else if (pwdChangeDate != null) {
-                long dayBetween = ChronoUnit.DAYS.between(pwdChangeDate, LocalDate.now());
-                if (dayBetween >= 90) {
-                    memberDTO.setMemberState("3");
-                    memberService.updateMemberStateWithLogin("3", memberId);
-                }
-            }
-
-            if ("1".equals(memberDTO.getMemberState())) {
-                memberService.updateMemberLastLoginWithLogin(LocalDate.now().toString(), memberId);
-            }
-
             session.setAttribute("memberDTO", memberDTO);
 
-            // 로그인 사용자
             return "common/loginMain";
         }
 
-        // 비로그인 사용자
         return "common/main";
     }
 
@@ -153,16 +128,40 @@ public class MemberController {
 
         String accessToken = naverLoginService.getAccessToken(code, state);
         MemberDTO naverMemberDto = naverLoginService.getUserInfo(accessToken);
-
         String naverMemberId = naverMemberDto.getMemberId();
 
         if (!memberService.existMember(naverMemberId)) {
-            // model.addAttribute("memberDTO", naverMemberDto);
             session.setAttribute("memberDTO", naverMemberDto);
             return "redirect:/join";
         }
 
+        MemberDTO memberDTO = memberService.getMemberById(naverMemberId);
+        LocalDate now = LocalDate.now();
+
+        if (memberDTO.getMemberLastLogin() != null) {
+            long daysSinceLogin = ChronoUnit.DAYS.between(memberDTO.getMemberLastLogin(), now);
+            if (daysSinceLogin >= 365) {
+                memberService.updateMemberStateWithLogin("5", memberDTO.getMemberId());
+                memberDTO.setMemberState("5");
+            }
+        }
+
+        if (memberDTO.getMemberPwdChangeDate() != null) {
+            long daysSincePwd = ChronoUnit.DAYS.between(memberDTO.getMemberPwdChangeDate(), now);
+            if (daysSincePwd >= 90) {
+                memberService.updateMemberStateWithLogin("3", memberDTO.getMemberId());
+                memberDTO.setMemberState("3");
+            }
+        }
+
+        if ("1".equals(memberDTO.getMemberState())) {
+            memberService.updateMemberLastLoginWithLogin(now.toString(), memberDTO.getMemberId());
+        }
+
         session.setAttribute("memberId", naverMemberId);
+        session.setAttribute("memberGrade", memberDTO.getMemberGrade());
+        session.setAttribute("memberDTO", memberDTO);
+
         return "redirect:/main";
     }
 
@@ -223,42 +222,48 @@ public class MemberController {
         int returnValue = memberService.login(memberDTO);
 
         if (returnValue == 1) {
-            session.setAttribute("memberId", memberDTO.getMemberId());
-            session.setAttribute("memberGrade", memberDTO.getMemberGrade());
+            MemberDTO fullMember = memberService.getMemberById(memberDTO.getMemberId());
+            LocalDate now = LocalDate.now();
 
-//            // 로그인 일자 오늘로
-//            String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-//            memberService.updateMemberLastLoginWithLogin(today, memberDTO.getMemberId());
-
-            // 아이디 저장 쿠키 처리
-            if (checkIdSave != null) {
-                Cookie idCookie = new Cookie("saveId", memberDTO.getMemberId());
-                idCookie.setMaxAge(60 * 60 * 24); // 1일
-                idCookie.setPath("/");
-                response.addCookie(idCookie);
-            } else {
-                Cookie idCookie = new Cookie("saveId", null);
-                idCookie.setMaxAge(0);
-                idCookie.setPath("/");
-                response.addCookie(idCookie);
+            if (fullMember.getMemberLastLogin() != null) {
+                long daysSinceLogin = ChronoUnit.DAYS.between(fullMember.getMemberLastLogin(), now);
+                if (daysSinceLogin >= 365) {
+                    memberService.updateMemberStateWithLogin("5", fullMember.getMemberId());
+                    fullMember.setMemberState("5");
+                }
             }
 
-            // 자동 로그인 쿠키 처리
-            if (checkAutoLogin != null) {
-                Cookie autoCookie = new Cookie("autoLogin", memberDTO.getMemberId());
-                autoCookie.setMaxAge(60 * 60 * 24); // 1일
-                autoCookie.setPath("/");
-                response.addCookie(autoCookie);
-            } else {
-                Cookie autoCookie = new Cookie("autoLogin", null);
-                autoCookie.setMaxAge(0);
-                autoCookie.setPath("/");
-                response.addCookie(autoCookie);
+            if (fullMember.getMemberPwdChangeDate() != null) {
+                long daysSincePwd = ChronoUnit.DAYS.between(fullMember.getMemberPwdChangeDate(), now);
+                if (daysSincePwd >= 90) {
+                    memberService.updateMemberStateWithLogin("3", fullMember.getMemberId());
+                    fullMember.setMemberState("3");
+                }
             }
+
+            if ("1".equals(fullMember.getMemberState())) {
+                memberService.updateMemberLastLoginWithLogin(now.toString(), fullMember.getMemberId());
+            }
+
+            session.setAttribute("memberId", fullMember.getMemberId());
+            session.setAttribute("memberGrade", fullMember.getMemberGrade());
+            session.setAttribute("memberDTO", fullMember);
+
+            // 아이디 저장 쿠키
+            Cookie idCookie = new Cookie("saveId", checkIdSave != null ? fullMember.getMemberId() : null);
+            idCookie.setMaxAge(checkIdSave != null ? 60 * 60 * 24 : 0);
+            idCookie.setPath("/");
+            response.addCookie(idCookie);
+
+            // 자동 로그인 쿠키
+            Cookie autoCookie = new Cookie("autoLogin", checkAutoLogin != null ? fullMember.getMemberId() : null);
+            autoCookie.setMaxAge(checkAutoLogin != null ? 60 * 60 * 24 : 0);
+            autoCookie.setPath("/");
+            response.addCookie(autoCookie);
 
             return "redirect:/main";
         } else {
-            model.addAttribute("errorMessage", "아이디를 확인해주세요.");
+            model.addAttribute("errorMessage", "아이디 또는 비밀번호를 확인해주세요.");
             return "login/login";
         }
     }

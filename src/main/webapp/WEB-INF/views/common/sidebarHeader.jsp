@@ -51,7 +51,6 @@
             left: 0;
             width: 280px;
             height: 100vh;
-            background-color: #f8f9fa;
             z-index: 10;
         }
 
@@ -116,7 +115,7 @@
 <%-- Header --%>
 <header class="p-3 border-bottom">
     <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-between">
+        <div class="d-flex flex-wrap align-items-center justify-content-between flex-column flex-lg-row">
             <a href="${cp}/main" class="d-flex align-items-center mb-2 mb-lg-0 text-decoration-none">
                 <img width="40" src="${cp}/resources/img/spb_single_logo.png" alt="로고">
             </a>
@@ -139,36 +138,33 @@
                 </li>
                 <li><a href="${cp}/qna/list" class="nav-link px-2 link-body-emphasis">1:1 문의</a></li>
                 <li><a href="${cp}/faq/list" class="nav-link px-2 link-body-emphasis">자주 묻는 질문</a></li>
+                <li><a href="${cp}/notice/list" class="nav-link px-2 link-body-emphasis">공지사항</a></li>
             </ul>
 
-            <div class="d-flex align-items-center">
-                <a href="/payment/cart?memberId=${sessionScope.memberId}"
-                   class="me-4 text-decoration-none position-relative">
-                    <i class="bi bi-cart" style="font-size: 1.4rem;"></i>
+            <div class="d-flex align-items-center gap-3 flex-wrap justify-content-end user-tools">
+                <div class="greeting">
                     <c:if test="${not empty sessionScope.memberId}">
-                        <span id="cart-count-badge"
-                              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                        ${sessionScope.memberId} 님, 오늘도 즐거운 학습 되세요! 😊
                     </c:if>
-                    <c:if test="${empty sessionScope.memberId}">
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
-                    </c:if>
-                </a>
+                </div>
+
+                <c:if test="${not empty sessionScope.memberId}">
+                    <div class="cart">
+                        <a href="/payment/cart?memberId=${sessionScope.memberId}"
+                           class="text-decoration-none position-relative">
+                            <i class="bi bi-cart" style="font-size: 1.4rem;"></i>
+                            <span id="cart-count-badge"
+                                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                        </a>
+                    </div>
+                </c:if>
 
                 <div class="dropdown text-end">
-                    <a href="#" class="d-block text-decoration-none dropdown-toggle"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        <c:choose>
-                            <c:when test="${not empty memberDTO.memberProfileImg}">
-                                <img id="profilePreview" width="32" height="32" class="rounded-circle"
-                                     src="${pageContext.request.contextPath}/upload/${memberDTO.memberProfileImg}"
-                                     alt="프로필 이미지" class="profile-img">
-                            </c:when>
-                            <c:otherwise>
-                                <img id="profilePreview" width="32" height="32" class="rounded-circle"
-                                     src="${pageContext.request.contextPath}/resources/img/default_profileImg.png"
-                                     alt="기본 이미지" class="profile-img">
-                            </c:otherwise>
-                        </c:choose>
+                    <a href="#" class="d-block text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                        <img id="profilePreview" width="32" height="32" class="rounded-circle"
+                             src="${pageContext.request.contextPath}/upload/${memberDTO.memberProfileImg}"
+                             onerror="this.src='${cp}/resources/img/default_profileImg.png';"
+                             alt="프로필 이미지">
                     </a>
                     <ul class="dropdown-menu text-small">
                         <c:if test="${empty sessionScope.memberId}">
@@ -183,37 +179,22 @@
                         </c:if>
                     </ul>
                 </div>
-                <div>
-                    <c:if test="${sessionScope.memberGrade eq 0}">
-                        <a href="${cp}/admin/member/list" class="ms-2" title="관리자 페이지">
-                            <i class="bi bi-gear-fill" style="font-size: 1.4rem;"></i>
-                        </a>
-                    </c:if>
-                </div>
+
+                <c:if test="${sessionScope.memberGrade eq 0}">
+                    <a href="${cp}/admin/member/list" class="admin-link" title="관리자 페이지">
+                        <i class="bi bi-gear-fill" style="font-size: 1.4rem;"></i>
+                    </a>
+                </c:if>
             </div>
+
         </div>
     </div>
 </header>
 
 <%-- Sidebar --%>
 <div class="flex-shrink-0 p-3 sidebar" id="sidebar">
-    <a href="${cp}/" class="d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom text-dark">
-        <span class="fs-5 fw-semibold">봄콩이</span>
-    </a>
     <ul class="list-unstyled ps-0">
-        <li class="mb-1">
-            <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
-                    data-bs-target="#home-collapse">
-                Home
-            </button>
-            <div class="collapse" id="home-collapse">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="#" class="d-inline-flex text-decoration-none rounded text-dark">어쩌구</a></li>
-                    <li><a href="#" class="d-inline-flex text-decoration-none rounded text-dark">Reports</a></li>
-                </ul>
-            </div>
-        </li>
-        <li class="mb-1">
+        <li class="mb-3">
             <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
                     data-bs-target="#dashboard-collapse">
                 게시판
@@ -225,7 +206,7 @@
                 </ul>
             </div>
         </li>
-        <li class="mb-1">
+        <li class="mb-3">
             <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
                     data-bs-target="#admin-collapse">
                 관리 페이지
@@ -240,12 +221,14 @@
                     </li>
                     <li><a href="${cp}/admin/teacher/regist"
                            class="d-inline-flex text-decoration-none rounded text-dark">강의 등록</a></li>
-                    <li><a href="${cp}/admin/notice/regist"
-                           class="d-inline-flex text-decoration-none rounded text-dark">공지사항 작성</a></li>
+                    <li><a href="${cp}/notice/regist"
+                           class="d-inline-flex text-decoration-none rounded text-dark">공지사항 등록</a></li>
+                    <li><a href="${cp}/admin/sales/info"
+                           class="d-inline-flex text-decoration-none rounded text-dark">매출 정보</a></li>
                 </ul>
             </div>
         </li>
-        <li class="mb-1">
+        <li class="mb-3">
             <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
                     data-bs-target="#mypage-collapse">
                 마이 페이지
@@ -265,7 +248,6 @@
         </li>
     </ul>
 </div>
-
 
 <script>
     function adjustSidebarPadding() {
