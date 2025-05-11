@@ -20,6 +20,7 @@ public class LectureReviewResponseDTO {
     private String lectureReviewContent;
     private String lectureReviewMemberId;
     private String memberName;
+    private String memberProfileImg;
     private int lectureReviewGrade;
     private LocalDateTime lectureReviewCreatedAt;
     private LocalDateTime lectureReviewUpdatedAt;

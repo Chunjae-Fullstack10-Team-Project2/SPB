@@ -54,7 +54,7 @@
              , tlr.lectureReviewRefIdx as lectureReviewRefIdx, tl.lectureTitle as lectureTitle
              , tt.teacherId as teacherId, tt.teacherName as teacherName
              , tlr.lectureReviewContent as lectureReviewContent, tlr.lectureReviewGrade as lectureReviewGrade
-             , tlr.lectureReviewMemberId as lectureReviewMemberId, tm.memberName as memberName
+             , tlr.lectureReviewMemberId as lectureReviewMemberId, tm.memberName as memberName, tm.memberProfileImg as memberProfileImg
              , tlr.lectureReviewCreatedAt as lectureReviewCreatedAt, tlr.lectureReviewUpdatedAt as lectureReviewUpdatedAt
         from tbl_lecture_review as tlr
         inner join tbl_lecture as tl on tlr.lectureReviewRefIdx = tl.lectureIdx

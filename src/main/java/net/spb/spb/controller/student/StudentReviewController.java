@@ -16,10 +16,7 @@ import net.spb.spb.util.BreadcrumbUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -99,5 +96,17 @@ public class StudentReviewController {
         lectureReviewService.createLectureReview(memberId, lectureReviewDTO);
 
         return "redirect:/mystudy/review?" + pageDTO.getLinkUrl();
+    }
+
+    @GetMapping("/view")
+    public String view(@ModelAttribute LectureReviewPageDTO pageDTO, @RequestParam("idx") int idx, Model model) {
+        LectureReviewResponseDTO lectureReviewResponseDTO = lectureReviewService.getLectureReviewByIdx(idx);
+
+        model.addAttribute("pageDTO", pageDTO);
+        model.addAttribute("lectureReviewDTO", lectureReviewResponseDTO);
+
+        setBreadcrumb(model, Map.of("수강후기", "/mystudy/review"), Map.of("수강후기 상세보기", "/mystudy/review/view"));
+
+        return "/review/view";
     }
 }

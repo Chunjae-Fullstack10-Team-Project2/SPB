@@ -24,7 +24,7 @@ public class LectureReviewPageDTO extends PageDTO {
     @Builder.Default
     private String sort_direction = "desc";
 
-    private static final List<String> SORT_COLUMNS = List.of("lectureReviewIdx", "lectureTitle", "teacherName", "lectureReviewContent", "lectureReviewGrade");
+    private static final List<String> SORT_COLUMNS = List.of("lectureReviewIdx", "lectureTitle", "teacherName", "lectureReviewContent", "lectureReviewGrade", "lectureReviewCreatedAt");
     private static final List<String> SORT_DIRECTIONS = List.of("asc", "desc");
 
     public String getSort_by() {
