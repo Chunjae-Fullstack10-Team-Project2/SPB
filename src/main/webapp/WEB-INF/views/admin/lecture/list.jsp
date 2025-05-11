@@ -14,37 +14,16 @@
 </head>
 <body>
 <%@ include file="../../common/sidebarHeader.jsp" %>
-<div class="content" style="margin-left: 280px; margin-top: 100px;">
-
-  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-    <symbol id="house-door-fill" viewBox="0 0 16 16">
-      <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
-    </symbol>
-  </svg>
-
+<div class="content">
   <div class="container my-5">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
-        <li class="breadcrumb-item">
-          <a class="link-body-emphasis" href="/">
-            <svg class="bi" width="16" height="16" aria-hidden="true">
-              <use xlink:href="#house-door-fill"></use>
-            </svg>
-            <span class="visually-hidden">Home</span>
-          </a>
-        </li>
-        <li class="breadcrumb-item">
-          <a class="link-body-emphasis fw-semibold text-decoration-none" href="/admin/">관리자 페이지</a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">
-          강좌 목록
-        </li>
-      </ol>
-    </nav>
+    <%@include file="../../common/breadcrumb.jsp"%>
   </div>
 
   <div class="container my-5">
-    <h2 class="h4 fw-bold mb-4">강좌 관리</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 fw-bold">강좌 관리</h2>
+      <a href="regist" class="btn btn-primary"><i class="bi bi-clipboard-plus-fill"></i> 강좌 추가</a>
+    </div>
 
     <table class="table table-hover align-middle">
       <thead class="table-light">
@@ -55,7 +34,7 @@
         <th scope="col">소개</th>
         <th scope="col">선생님</th>
         <th scope="col">금액</th>
-        <th scope="col">시작일</th>
+        <th scope="col">생성일</th>
         <th scope="col">관리</th>
       </tr>
       </thead>
@@ -73,10 +52,7 @@
           <td><fmt:formatDate value="${lecture.lectureCreatedAt}" pattern="yyyy-MM-dd" /></td>
           <td>
             <a href="modify?lectureIdx=${lecture.lectureIdx}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i> 수정</a>
-            <form method="post" action="delete" style="display:inline;" onsubmit="return confirm('삭제하시겠습니까?');">
-              <input type="hidden" name="lectureIdx" value="${lecture.lectureIdx}" />
-              <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> 삭제</button>
-            </form>
+            <button type="button" class="btn btn-sm btn-danger btnDelete" data-lecture-idx="${lecture.lectureIdx}"><i class="bi bi-trash"></i> 삭제</button>
           </td>
         </tr>
       </c:forEach>
@@ -84,5 +60,46 @@
     </table>
   </div>
 </div>
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  <div id="toastMessage" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body" id="toastText">알림 메시지</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+<script>
+  document.querySelectorAll('.btnDelete').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const lectureIdx = $(this).data('lecture-idx');
+      const $row = $(this).closest('tr'); // 삭제할 <tr> 참조
+
+      if (confirm('삭제하시겠습니까?')) {
+        $.ajax({
+          url: 'delete',
+          type: 'POST',
+          data: { lectureIdx: lectureIdx },
+          success: function () {
+            $row.remove();
+            showToast('삭제되었습니다.');
+          },
+          error: function () {
+            showToast('삭제 중 오류가 발생했습니다.', true);
+          }
+        });
+      }
+    })
+  })
+
+  function showToast(message, isError = false) {
+    const toastEl = document.getElementById("toastMessage");
+    const toastText = document.getElementById("toastText");
+    toastText.innerText = message;
+    toastEl.classList.remove("text-bg-success", "text-bg-danger");
+    toastEl.classList.add(isError ? "text-bg-danger" : "text-bg-success");
+    new bootstrap.Toast(toastEl).show();
+  }
+</script>
 </body>
 </html>

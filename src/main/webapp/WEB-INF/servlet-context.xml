@@ -37,6 +37,8 @@
             <mvc:mapping path="/board/**/report/**"/>
             <mvc:mapping path="/payment/*"/>
             <mvc:mapping path="/cart/*"/>
+            <mvc:mapping path="/admin"/>
+            <mvc:mapping path="/admin/**"/>
             <mvc:mapping path="/notice/*"/>
             <mvc:exclude-mapping path="/notice/list"/>
             <mvc:exclude-mapping path="/notice/view"/>
@@ -48,6 +50,8 @@
             <mvc:mapping path="/notice/delete"/>
             <mvc:mapping path="/notice/fix"/>
             <mvc:mapping path="/notice/unfix"/>
+            <mvc:mapping path="/admin"/>
+            <mvc:mapping path="/admin/**"/>
             <mvc:mapping path="/faq/regist"/>
             <mvc:mapping path="/faq/modify"/>
             <mvc:mapping path="/faq/delete"/>

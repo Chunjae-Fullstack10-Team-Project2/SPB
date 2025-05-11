@@ -31,7 +31,7 @@ public class AdminCheckInterceptor implements HandlerInterceptor {
         // 관리자가 아닌 경우
         if (memberGrade == null || !memberGrade.equals("0")) {
             log.warn("User is not admin, redirecting to notice list: " + memberId);
-            response.sendRedirect(request.getContextPath() + "/notice/list");
+            response.sendRedirect(request.getContextPath() + "/main");
             return false;
         }
 

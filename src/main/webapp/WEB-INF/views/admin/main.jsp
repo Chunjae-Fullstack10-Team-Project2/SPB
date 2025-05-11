@@ -66,8 +66,8 @@
         </a>
       </div>
       <div class="col-md-6">
-        <a href="${cp}/admin/lecture/regist" class="btn-admin">
-          <i class="bi bi-book"></i> 강좌 추가
+        <a href="${cp}/admin/lecture/list" class="btn-admin">
+          <i class="bi bi-book"></i> 강좌 관리
         </a>
       </div>
       <div class="col-md-6">
