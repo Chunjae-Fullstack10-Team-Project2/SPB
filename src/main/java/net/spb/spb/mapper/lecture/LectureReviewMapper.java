@@ -17,5 +17,5 @@ public interface LectureReviewMapper {
 
     public int selectLectureReviewListTotalCount(@Param("reqDTO") LectureReviewListRequestDTO reqDTO, @Param("pageDTO") LectureReviewPageDTO pageDTO);
 
-    public boolean hasLectureReview(String memberId, int lectureIdx);
+    public boolean hasLectureReview(@Param("memberId") String memberId, @Param("lectureIdx") int lectureIdx);
 }

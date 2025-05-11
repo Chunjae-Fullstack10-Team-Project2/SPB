@@ -101,7 +101,7 @@
             </div>
 
             <div class="d-grid float-md-end">
-                <button class="btn btn-primary" type="button" id="btnRegist" onclick="location.href='/review/regist?${pageDTO.linkUrl}'">등록</button>
+                <button class="btn btn-primary" type="button" id="btnRegist" onclick="location.href='/mystudy/review/regist?${pageDTO.linkUrl}'">등록</button>
             </div>
         </div>
     </div>
