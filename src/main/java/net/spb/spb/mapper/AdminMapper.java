@@ -48,5 +48,7 @@ public interface AdminMapper {
 
     int updateLecture(LectureVO lectureVO);
 
+    int deleteLecture(LectureVO lectureVO);
+
     int updateChapter(ChapterVO chapterVO);
 }

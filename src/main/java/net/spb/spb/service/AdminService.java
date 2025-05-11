@@ -104,4 +104,9 @@ public class AdminService {
     public int updateLecture(LectureDTO lectureDTO) {
         return adminMapper.updateLecture(modelMapper.map(lectureDTO, LectureVO.class));
     }
+
+    public int deleteLecture(LectureDTO lectureDTO) {
+        lectureDTO.setLectureState(2);
+        return adminMapper.deleteLecture(modelMapper.map(lectureDTO, LectureVO.class));
+    }
 }

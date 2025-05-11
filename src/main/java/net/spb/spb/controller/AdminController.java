@@ -259,6 +259,22 @@ public class AdminController {
         adminService.updateLecture(lectureDTO);
     }
 
+    @PostMapping("/lecture/delete")
+    @ResponseBody
+    public Map<String, Object> lectureDeletePOST(@ModelAttribute LectureDTO lectureDTO) {
+        Map<String, Object> result = new HashMap<>();
+        int rtnResult = adminService.deleteLecture(lectureDTO);
+        if (rtnResult > 0) {
+            result.put("success", true);
+            result.put("message", "게시글이 삭제되었습니다.");
+            result.put("redirect", "/admin/lecture/list");
+        } else {
+            result.put("success", false);
+            result.put("message", "삭제에 실패했습니다.");
+        }
+        return result;
+    }
+
     @GetMapping("/lecture/search")
     public String lectureSearchPopup(@ModelAttribute LecturePageDTO lecturePageDTO, HttpServletRequest req, Model model) {
         String baseUrl = req.getRequestURI();
