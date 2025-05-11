@@ -21,7 +21,9 @@
                     <div class="small">${teacherNoticeDTO.teacherNoticeMemberId}</div>
                     <div class="text-muted small">
                         등록일: ${fn:replace(teacherNoticeDTO.teacherNoticeCreatedAt, 'T', ' ')}
-                        ${teacherNoticeDTO.teacherNoticeUpdatedAt != null ? "| 수정일: " + fn:replace(teacherNoticeDTO.teacherNoticeUpdatedAt, 'T', ' ') : ""}
+                        <c:if test="${teacherNoticeDTO.teacherNoticeUpdatedAt != null}">
+                         &nbsp;| 수정일: ${fn:replace(teacherNoticeDTO.teacherNoticeUpdatedAt, 'T', ' ')}
+                        </c:if>
                     </div>
                 </div>
             </div>
@@ -31,7 +33,7 @@
 
             <form>
                 <div class="gap-2 my-4 d-flex justify-content-between">
-                    <input type="hidden" name="teacherNoticeIdx" value="${teacherNoticeDTO.teacherNoticeIdx}" />
+                    <input type="hidden" name="idx" value="${teacherNoticeDTO.teacherNoticeIdx}" />
 
                     <div>
                         <button class="btn btn-secondary btn-sm" onclick="location.href='/myclass/notice?${pageDTO.linkUrl}'">목록</button>

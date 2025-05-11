@@ -96,7 +96,7 @@ public class TeacherNoticeController {
     }
 
     @GetMapping("/modify")
-    public String modifyGET(@ModelAttribute TeacherNoticePageDTO pageDTO, @RequestParam("teacherNoticeIdx") int idx, Model model) {
+    public String modifyGET(@ModelAttribute TeacherNoticePageDTO pageDTO, @RequestParam("idx") int idx, Model model) {
         TeacherNoticeResponseDTO teacherNoticeDTO = noticeService.getTeacherNoticeByIdx(idx);
 
         model.addAttribute("pageDTO", pageDTO);
@@ -123,5 +123,22 @@ public class TeacherNoticeController {
         model.addAttribute("teacherNoticeDTO", teacherNoticeDTO);
 
         return "redirect:/myclass/notice?idx=" + teacherNoticeDTO.getTeacherNoticeIdx() + "&" + pageDTO.getLinkUrl();
+    }
+
+    @GetMapping("/delete")
+    public String delete(
+            @ModelAttribute TeacherNoticePageDTO pageDTO,
+            @RequestParam("idx") int idx,
+            Model model,
+            HttpServletRequest req
+    ) {
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        noticeService.deleteTeacherNoticeByIdx(memberId, idx);
+
+        model.addAttribute("pageDTO", pageDTO);
+
+        return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
     }
 }
