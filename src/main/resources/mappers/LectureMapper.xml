@@ -33,4 +33,19 @@
         from tbl_lecture_chapter
         where chapterIdx = #{chapterIdx}
     </select>
+    <select id="countValidOrdersForMemberLecture" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_order_info oi
+        INNER JOIN tbl_order_lecture ol ON oi.orderIdx = ol.orderIdx
+        WHERE oi.orderMemberId = #{memberId}
+        AND ol.orderLectureIdx = #{lectureIdx}
+        AND oi.orderStatus = 'f'
+    </select>
+    <select id="isLectureOwner" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_lecture
+        WHERE lectureTeacherId = #{memberId}
+          AND lectureIdx = #{lectureIdx}
+
+    </select>
 </mapper>    

@@ -97,10 +97,12 @@
                                 <div class="faq-view" data-id="${faqDTO.faqIdx}">
                                     <p class="mb-2"><strong>A.</strong></p>
                                     <p class="faq-answer">${faqDTO.faqAnswer}</p>
-                                    <div class="text-end">
-                                        <button class="btn btn-sm btn-outline-secondary btn-edit">수정</button>
-                                        <button class="btn btn-sm btn-outline-danger btn-delete">삭제</button>
-                                    </div>
+                                    <c:if test="${sessionScope.memberGrade eq '0'}">
+                                        <div class="text-end">
+                                            <button class="btn btn-sm btn-outline-secondary btn-edit">수정</button>
+                                            <button class="btn btn-sm btn-outline-danger btn-delete">삭제</button>
+                                        </div>
+                                    </c:if>
                                     <div class="text-end text-muted mt-2">
                                         작성일: <fmt:formatDate value="${faqDTO.faqCreatedAt}" pattern="yyyy-MM-dd"/>
                                     </div>
