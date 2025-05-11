@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-  <title>강의 등록</title>
+  <title>강의 수정</title>
   <style>
     .input-fixed-2 {
       flex: 0 0 10%;
@@ -26,7 +26,7 @@
   <div class="container my-5">
     <div class="card shadow rounded">
       <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">강의 등록</h5>
+        <h5 class="mb-0">강의 수정</h5>
       </div>
       <div class="card-body">
         <form name="frmRegist" id="frmRegist" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
@@ -35,11 +35,11 @@
             <div class="input-group" style="width: 100%">
                 <input type="text" class="form-control input-fixed-2" id="chapterLectureIdx" name="chapterLectureIdx"
                        placeholder="강좌 번호" required
-                       value="${lectureDTO.lectureIdx != null ? lectureDTO.lectureIdx : ''}"
+                       value="${chapterDTO.chapterLectureIdx != null ? chapterDTO.chapterLectureIdx : ''}"
                        readonly>
                 <input type="text" class="form-control " id="lectureTitle" name="lectureTitle"
                        placeholder="강좌 이름" required
-                       value="${lectureDTO.lectureTitle != null ? lectureDTO.lectureTitle : ''}" readonly>
+                       value="${chapterDTO.lectureTitle != null ? chapterDTO.lectureTitle : ''}" readonly>
               <button type="button" class="btn btn-outline-primary" onclick="openLectureSearch()">강좌 검색</button>
             </div>
           </div>
@@ -83,7 +83,7 @@
     const form = document.getElementById("frmRegist");
     const formData = new FormData(form);
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/admin/lecture/chapter/regist");
+    xhr.open("POST", "/admin/chapter/modify");
     xhr.upload.onprogress = function(event) {
       if (event.lengthComputable) {
         const progress = document.querySelector('.progress');
