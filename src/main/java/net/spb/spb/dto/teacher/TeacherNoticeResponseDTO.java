@@ -17,6 +17,7 @@ public class TeacherNoticeResponseDTO {
     private String teacherNoticeContent;
     private String teacherNoticeMemberId;
     private String teacherName;
+    private String memberProfileImg;
     private int teacherNoticeFixed;
     private LocalDateTime teacherNoticeCreatedAt;
     private LocalDateTime teacherNoticeUpdatedAt;

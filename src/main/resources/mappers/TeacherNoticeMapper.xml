@@ -38,10 +38,11 @@
 
     <select id="selectTeacherNoticeByIdx" resultType="net.spb.spb.dto.teacher.TeacherNoticeResponseDTO">
         select ttn.teacherNoticeIdx as teacherNoticeIdx, ttn.teacherNoticeTitle as teacherNoticeTitle, ttn.teacherNoticeContent as teacherNoticeContent
-        , ttn.teacherNoticeMemberId as teacherNoticeMemberId, tt.teacherName as teacherName
+        , ttn.teacherNoticeMemberId as teacherNoticeMemberId, tt.teacherName as teacherName, tm.memberProfileImg as memberProfileImg
         , ttn.teacherNoticeCreatedAt as teacherNoticeCreatedAt, ttn.teacherNoticeUpdatedAt as teacherNoticeUpdatedAt
         from tbl_teacher_notice as ttn
         inner join tbl_teacher as tt on ttn.teacherNoticeMemberId = tt.teacherId
+        inner join tbl_member as tm on tt.teacherId = tm.memberId
         where ttn.teacherNoticeIdx = #{teacherNoticeIdx}
     </select>
 

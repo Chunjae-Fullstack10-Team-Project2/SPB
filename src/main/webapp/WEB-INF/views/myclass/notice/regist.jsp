@@ -17,7 +17,7 @@
     <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
     <div class="content">
         <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
-        <h1>공지사항 등록</h1>
+        <h1 class="mb-4">공지사항 등록</h1>
 
         <form name="frmRegist" action="/myclass/notice/regist" method="post"
               class="border p-4 rounded bg-light shadow-sm">

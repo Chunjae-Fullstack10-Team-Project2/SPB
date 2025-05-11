@@ -60,7 +60,7 @@
                             <tr ${notice.teacherNoticeFixed == 1 ? "class='table-secondary'" : ""}>
                                 <td>${pageDTO.total_count - ((pageDTO.page_no - 1) * pageDTO.page_size) - status.index}</td>
                                 <td class="text-start">
-                                    <a href="/myclass/notice/detail?idx=${notice.teacherNoticeIdx}&${pageDTO.linkUrl}"
+                                    <a href="/myclass/notice/view?idx=${notice.teacherNoticeIdx}&${pageDTO.linkUrl}"
                                        class="text-decoration-none text-dark">
                                        ${notice.teacherNoticeTitle}
                                     </a>

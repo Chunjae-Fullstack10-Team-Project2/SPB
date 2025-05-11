@@ -13,10 +13,7 @@ import net.spb.spb.util.BreadcrumbUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -82,5 +79,17 @@ public class TeacherNoticeController {
         noticeService.createTeacherNotice(teacherNoticeDTO);
 
         return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
+    }
+
+    @GetMapping("/view")
+    public String view(@ModelAttribute TeacherNoticePageDTO pageDTO, @RequestParam("idx") int idx, Model model) {
+        TeacherNoticeResponseDTO teacherNoticeDTO = noticeService.getTeacherNoticeByIdx(idx);
+
+        model.addAttribute("pageDTO", pageDTO);
+        model.addAttribute("teacherNoticeDTO", teacherNoticeDTO);
+
+        setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 상세보기", "/myclass/view?idx=" + idx));
+
+        return "/myclass/notice/view";
     }
 }
