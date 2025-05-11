@@ -1,4 +1,4 @@
-package net.spb.spb.controller;
+package net.spb.spb.controller.student;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -20,7 +20,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/mystudy")
-public class MyStudyController {
+public class MyStudyRoomController {
     private final StudentLectureServiceIf studentLectureService;
 
     @GetMapping("/lecture")

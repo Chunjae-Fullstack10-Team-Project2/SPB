@@ -27,10 +27,9 @@
 
     <select id="selectTeacherNoticeList" resultType="net.spb.spb.dto.teacher.TeacherNoticeResponseDTO">
         select ttn.teacherNoticeIdx as teacherNoticeIdx, ttn.teacherNoticeTitle as teacherNoticeTitle
-             , ttn.teacherNoticeMemberId as teacherNoticeMemberId, tt.teacherName as teacherName
+             , ttn.teacherNoticeFixed as teacherNoticeFixed
              , ttn.teacherNoticeCreatedAt as teacherNoticeCreatedAt
         from tbl_teacher_notice as ttn
-        inner join tbl_teacher as tt on ttn.teacherNoticeMemberId = tt.teacherId
         <include refid="condition" />
         order by teacherNoticeFixed desc
                , ${pageDTO.sort_by} ${pageDTO.sort_direction}
@@ -60,7 +59,6 @@
     <select id="selectTeacherNoticeListTotalCount" resultType="int">
         select count(*)
         from tbl_teacher_notice as ttn
-        inner join tbl_teacher as tt on ttn.teacherNoticeMemberId = tt.teacherId
         <include refid="condition" />
     </select>
 </mapper>

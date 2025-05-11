@@ -60,6 +60,11 @@ public class TeacherNoticePageDTO extends PageDTO {
             sb.append("&end_date=" + this.end_date);
         }
 
+        if (this.sort_by != null && this.sort_direction != null) {
+            sb.append("&sort_by=" + this.sort_by);
+            sb.append("&sort_direction=" + this.sort_direction);
+        }
+
         return sb.toString();
     }
 }
