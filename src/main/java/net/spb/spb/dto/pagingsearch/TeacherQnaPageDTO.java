@@ -13,18 +13,21 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class TeacherNoticePageDTO extends PageDTO {
+public class TeacherQnaPageDTO extends PageDTO {
     private String search_category;
 
+    private String date_type;
     private LocalDate start_date;
     private LocalDate end_date;
 
+    private int qan_state; // 0: 미완료, 1: 답변완료
+
     @Builder.Default
-    private String sort_by = "teacherNoticeIdx";
+    private String sort_by = "";
     @Builder.Default
     private String sort_direction = "desc";
 
-    private static final List<String> SORT_COLUMNS = List.of("teacherNoticeIdx", "teacherNoticeTitle", "teacherNoticeContent", "teacherNoticeCreatedAt");
+    private static final List<String> SORT_COLUMNS = List.of();
     private static final List<String> SORT_DIRECTIONS = List.of("asc", "desc");
 
     public String getSort_by() {
@@ -46,9 +49,14 @@ public class TeacherNoticePageDTO extends PageDTO {
             sb.append("&search_word=" + encode(super.getSearch_word()));
         }
 
-        if (this.start_date != null && this.end_date != null) {
+        if (this.date_type != null && this.start_date != null && this.end_date != null) {
+            sb.append("&date_type=" + this.date_type);
             sb.append("&start_date=" + this.start_date);
             sb.append("&end_date=" + this.end_date);
+        }
+
+        if(this.qan_state > 0) {
+            sb.append("&qan_state=" + this.qan_state);
         }
 
         if (this.sort_by != null && this.sort_direction != null) {
