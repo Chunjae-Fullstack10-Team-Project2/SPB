@@ -1,315 +1,93 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>선생님 메인</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Malgun Gothic', sans-serif;
-        }
-
-        body {
-            background-color: #fff;
-            color: #333;
-            line-height: 1.5;
-        }
-
-        .tContainer {
-            display: flex;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .sidebar {
-            width: 200px;
-            border-right: 1px solid #ddd;
-            padding: 20px;
-        }
-
-        .sidebar-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-menu-item {
-            margin-bottom: 5px;
-        }
-
-        .sidebar-menu-link {
-            display: block;
-            padding: 8px 10px;
-            color: #333;
-            text-decoration: none;
-        }
-
-        .sidebar-menu-link:hover {
-            background-color: #f5f5f5;
-        }
-
-        .sidebar-menu-link.active {
-            background-color: #eef2ff;
-            color: #4a6fdc;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 20px;
-        }
-
-        .section {
-            margin-bottom: 30px;
-        }
-
-        .teacher-profile {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .profile-image {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 1px solid #ddd;
-            overflow: hidden;
-        }
-
-        .profile-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .profile-info h1 {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .profile-info p {
-            color: #666;
-        }
-
-        .card {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-
-        .card-body {
-            padding: 15px;
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .card-text {
-            color: #666;
-            margin-bottom: 15px;
-        }
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .separator {
-            height: 1px;
-            background-color: #ddd;
-            margin: 10px 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f5f5f5;
-            font-weight: normal;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        .course-title {
-            display: flex;
-            align-items: center;
-        }
-
-        .course-badge {
-            margin-left: 8px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 12px;
-            background-color: #f5f5f5;
-        }
-
-        .course-badge.popular {
-            background-color: #fff0f0;
-            color: #e53e3e;
-        }
-
-        .course-badge.new {
-            background-color: #eef2ff;
-            color: #4a6fdc;
-        }
-
-        .actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 5px;
-        }
-
-        .btn-icon {
-            width: 50px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            background-color: transparent;
-            border: 1px solid #ddd;
-            cursor: pointer;
-        }
-
-        .btn-sm {
-            padding: 4px 8px;
-            font-size: 12px;
-        }
-
-        @media (max-width: 768px) {
-            .tContainer {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid #ddd;
-            }
-
-            .teacher-profile {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <%@ include file="../common/sidebarHeader.jsp" %>
 <div class="content">
-<div class="tContainer">
-
-    <main class="main-content">
-        <div class="teacher-profile">
-            <div class="profile-image">
-                <img src="/upload/${teacherDTO.teacherProfileImg}" alt="선생님 프로필">
-            </div>
-            <div class="profile-info">
-                <h1>${teacherDTO.teacherName} 선생님</h1>
-                <p>${teacherDTO.teacherSubject} 전문 강사</p>
-            </div>
+<div class="container my-5">
+    <div class="d-flex align-items-center mb-4">
+        <img src="/upload/${teacherDTO.teacherProfileImg}" alt="프로필" class="rounded-circle me-3" style="width:100px;height:100px;object-fit:cover;">
+        <div>
+            <h3 class="mb-0">${teacherDTO.teacherName} 선생님</h3>
+            <p class="text-muted">${teacherDTO.teacherSubject} 전문 강사</p>
         </div>
+    </div>
 
-        <div class="card">
-            <div class="card-body">
-                <h2 class="card-title">선생님 설명</h2>
-                <p class="card-text">
-                    ${teacherDTO.teacherIntro}
-                </p>
-            </div>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">선생님 설명</h5>
+            <p class="card-text mb-0">${teacherDTO.teacherIntro}</p>
         </div>
+    </div>
 
-        <div class="section">
-            <div class="section-header">
-                <h2 class="section-title">개설강좌</h2>
-            </div>
-            <div class="separator"></div>
+    <div class="mb-3">
+        <h4 class="fw-semibold">개설 강좌</h4>
+    </div>
 
-            <div class="table-container">
-                <table>
-                    <tbody>
-                    <c:forEach var="lecture" items="${lectureList}">
-                        <tr>
-                            <td><img src="/upload/${lecture.lectureThumbnailImg}" alt="강의 썸네일" height="80" width="130"></td>
-                            <td>
-                                <div class="course-title">
-                                    <a href="/lecture/main?lectureIdx=${lecture.lectureIdx}">${lecture.lectureTitle}</a>
-                                </div>
-                            </td>
-                            <td>₩${lecture.lectureAmount}</td>
-                            <td>
-                                <div class="actions">
-                                    <c:set var="isBookmarked" value="false" />
-                                    <c:forEach var="b" items="${bookmarked}">
-                                        <c:if test="${b eq lecture.lectureIdx}">
-                                            <c:set var="isBookmarked" value="true" />
-                                        </c:if>
-                                    </c:forEach>
+    <c:if test="${not empty lectureList}">
+        <div class="table-responsive">
+            <table class="table table-hover text-center align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th></th>
+                    <th>강좌명</th>
+                    <th>가격</th>
+                    <th>북마크/장바구니</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach var="lecture" items="${lectureList}">
+                    <tr>
+                        <td>
+                            <img src="/upload/${lecture.lectureThumbnailImg}" alt="썸네일" class="img-fluid rounded" width="130" height="80">
+                        </td>
+                        <td class="text-start">
+                            <a href="/lecture/main?lectureIdx=${lecture.lectureIdx}" class="text-decoration-none text-dark fw-semibold">${lecture.lectureTitle}</a>
+                        </td>
+                        <td>
+                            <fmt:formatNumber value="${lecture.lectureAmount}" type="number" groupingUsed="true"/>원
+                        </td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <c:set var="isBookmarked" value="false" />
+                                <c:forEach var="b" items="${bookmarked}">
+                                    <c:if test="${b eq lecture.lectureIdx}">
+                                        <c:set var="isBookmarked" value="true" />
+                                    </c:if>
+                                </c:forEach>
 
-                                    <c:choose>
-                                        <c:when test="${isBookmarked}">
-                                            <button class="btn-icon bookmark-btn" data-lecture-idx="${lecture.lectureIdx}" data-bookmarked="true">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bookmark-icon active">
-                                                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" fill="currentColor"></path>
-                                                </svg>
-                                            </button>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <button class="btn-icon bookmark-btn" data-lecture-idx="${lecture.lectureIdx}" data-bookmarked="false">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bookmark-icon">
-                                                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" fill="none"></path>
-                                                </svg>
-                                            </button>
-                                        </c:otherwise>
-                                    </c:choose>
+                                <button class="btn btn-outline-secondary bookmark-btn" data-lecture-idx="${lecture.lectureIdx}" data-bookmarked="${isBookmarked}">
+                                    <i class="bi ${isBookmarked ? 'bi-bookmark-fill text-primary' : 'bi-bookmark'}"></i>
+                                </button>
 
-                                    <button class="btn btn-primary btn-sm" id="btnAddCart" onclick="addCart(${lecture.lectureIdx})">장바구니</button>
-                                </div>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                    </tbody>
-                </table>
-            </div>
+                                <button class="btn btn-sm btn-primary" onclick="addCart(${lecture.lectureIdx})">장바구니</button>
+                            </div>
+                        </td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
         </div>
-    </main>
+    </c:if>
+
+    <c:if test="${empty lectureList}">
+        <div class="alert alert-warning mt-4" role="alert">
+            등록된 강좌가 없습니다.
+        </div>
+    </c:if>
 </div>
 </div>
-    </main>
-</div>
-</div>
+
 <script>
     $(document).ready(function () {
         const memberId = '<c:out value="${sessionScope.memberId}" default="" />';
@@ -322,32 +100,29 @@
             }
 
             const button = $(this);
-            const icon = button.find('svg.bookmark-icon');
-            const path = icon.find('path');
             const lectureIdx = button.data('lecture-idx');
-            const isBookmarked = icon.hasClass('active');
+            const isBookmarked = button.data('bookmarked');
+            const icon = button.find('i');
 
             const url = isBookmarked
                 ? '/teacher/deleteBookmark?lectureIdx=' + lectureIdx
                 : '/teacher/addBookmark?lectureIdx=' + lectureIdx;
-                console.log("idx: "+lectureIdx);
+
             $.ajax({
                 url: url,
                 type: 'POST',
                 success: function () {
+                    button.data('bookmarked', !isBookmarked);
                     if (isBookmarked) {
-                        icon.removeClass('active');
-                        path.attr('fill', 'none');
-                        alert('북마크가 해제되었습니다.');
+                        icon.removeClass('bi-bookmark-fill text-primary').addClass('bi-bookmark');
+                        alert('북마크 해제됨');
                     } else {
-                        icon.addClass('active');
-                        path.attr('fill', 'currentColor');
-                        alert('북마크에 추가되었습니다.');
+                        icon.removeClass('bi-bookmark').addClass('bi-bookmark-fill text-primary');
+                        alert('북마크 추가됨');
                     }
                 },
-                error: function (request,status,error) {
-                    alert('처리 중 오류가 발생했습니다.');
-                    console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                error: function (xhr) {
+                    alert('오류 발생: ' + xhr.responseText);
                 }
             });
         });
@@ -360,37 +135,28 @@
             window.location.href = "/login";
             return;
         }
-        const data = {
-            cartLectureIdx: lectureIdx,
-            cartMemberId: memberId
-        };
+
         $.ajax({
             url: '/payment/addCart',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(data),
+            data: JSON.stringify({cartLectureIdx: lectureIdx, cartMemberId: memberId}),
             success: function (response) {
-                // ✅ 성공 시 콜백
-                console.log('서버 응답:', response);
-                if(response == 999){
-                    alert("해당 강좌가 이미 장바구니에 존재합니다.");
+                if (response == 999) {
+                    alert("이미 장바구니에 존재합니다.");
                 } else {
-                    alert("해당 강좌를 장바구니에 담았습니다.")
+                    alert("장바구니에 추가되었습니다.");
                 }
-                const goCart = confirm("장바구니로 이동하시겠습니까?");
-                if(goCart){
-                    window.location.href = "/payment/cart?memberId=${sessionScope.memberId}";
+
+                if (confirm("장바구니로 이동하시겠습니까?")) {
+                    window.location.href = "/payment/cart?memberId=" + memberId;
                 }
             },
-            error: function (xhr, status, error) {
-                console.error('오류 발생:', error);
-                console.error('상태 코드:', xhr.status);
-                console.error('서버 응답 텍스트:', xhr.responseText);
-                console.error('status:', status);
+            error: function (xhr) {
+                alert("추가 실패: " + xhr.responseText);
             }
         });
     }
-
 </script>
 </body>
 </html>

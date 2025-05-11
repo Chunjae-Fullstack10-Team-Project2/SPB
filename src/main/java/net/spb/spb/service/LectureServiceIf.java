@@ -11,4 +11,6 @@ public interface LectureServiceIf {
     public int addBookmark(int lectureIdx, String memberId);
     public int deleteBookmark(int lectureIdx, String memberId);
     public ChapterDTO getChapterById(int chapterIdx);
+    public boolean checkLecturePermission(String memberId, int lectureIdx);
+    public boolean isLectureOwner(String memberId, int lectureIdx);
 }
