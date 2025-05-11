@@ -30,7 +30,7 @@
             <div class="mb-3">
                 <label for="teacherNoticeContent" class="form-label">내용</label>
                 <textarea class="form-control" rows="10" name="teacherNoticeContent" id="teacherNoticeContent"
-                          placeholder="내용을 입력하세요" required>${teacherNoticeDTO.teacherNoticeContent}</textarea>
+                          placeholder="내용을 입력하세요" required style="resize: none;">${teacherNoticeDTO.teacherNoticeContent}</textarea>
             </div>
 
             <div class="mb-3 form-check d-flex justify-content-between">

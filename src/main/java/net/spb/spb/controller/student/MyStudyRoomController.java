@@ -4,9 +4,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.mystudy.StudentLectureDTO;
+import net.spb.spb.dto.lecture.StudentLectureResponseDTO;
 import net.spb.spb.dto.pagingsearch.StudentLecturePageDTO;
-import net.spb.spb.service.mystudy.StudentLectureServiceIf;
+import net.spb.spb.service.lecture.StudentLectureServiceIf;
 import net.spb.spb.util.PagingUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,10 +29,10 @@ public class MyStudyRoomController {
         String memberId = (String) session.getAttribute("memberId");
 
         String baseUrl = req.getRequestURI();
-        pageDTO.setLinkUrl(PagingUtil.buildStudentLectureLinkUrl(baseUrl, pageDTO));
+        pageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, pageDTO));
         pageDTO.setTotal_count(studentLectureService.getStudentLectureTotalCount(memberId, pageDTO));
 
-        List<StudentLectureDTO> lectures = studentLectureService.getStudentLectureList(memberId, pageDTO);
+        List<StudentLectureResponseDTO> lectures = studentLectureService.getStudentLectureList(memberId, pageDTO);
 
         String paging = PagingUtil.pagingArea(pageDTO);
 

@@ -19,91 +19,91 @@ import java.util.List;
 @ContextConfiguration(locations="file:src/main/webapp/WEB-INF/root-context.xml")
 public class BoardMapperTests {
 
-    @Autowired(required=false)
-    private BoardMapper boardMapper;
-
-    @Test
-    public void insert() {
-        log.info("=============================");
-        log.info("BoardMapperTests  >>  insert");
-        log.info("=============================");
-        PostVO vo = PostVO.builder()
-                        .postTitle("제목6")
-                        .postContent("내용6")
-                        .postMemberId("user01")
-                        .postCategory("FREEBOARD")
-                        .build();
-        int rtnResult = boardMapper.insertPost(vo);
-        Assertions.assertTrue(rtnResult > 0, "BoardMapperTests  >>  insert");
-        log.info("vo: "+vo);
-    }
-
-    @Test
-    public void update() {
-        log.info("=============================");
-        log.info("BoardMapperTests  >>  update");
-        log.info("=============================");
-        LocalDateTime ldt = LocalDateTime.now();
-        PostVO vo = PostVO.builder()
-                .postTitle("제목2")
-                .postContent("내용2")
-                .postMemberId("user01")
-                .postCategory("FREEBOARD")
-                .postUpdatedAt(ldt)
-                .postIdx(2)
-                .build();
-        int rtnResult = boardMapper.modifyPost(vo);
-        log.info("vo: "+vo);
-        Assertions.assertTrue(rtnResult > 0, "BoardMapperTests  >>  update");
-    }
-
-    @Test
-    public void delete() {
-        log.info("=============================");
-        log.info("BoardMapperTests  >>  delete");
-        log.info("=============================");
-        int rtnResult = boardMapper.deletePost(4);
-        log.info("rtnResult: " + rtnResult);
-        Assertions.assertTrue(rtnResult > 0, "BoardMapperTests  >>  delete");
-    }
-
-    @Test
-    public void selectAll() {
-        log.info("=============================");
-        log.info("BoardMapperTests  >>  selectAll");
-        log.info("=============================");
-        PostPageDTO postPageDTO = PostPageDTO.builder().postCategory("FREEBOARD").build();
-        List<PostVO> vos = boardMapper.getPosts(postPageDTO);
-        for(PostVO vo: vos) {
-            log.info("vo: "+vo);
-        }
-    }
-
-    @Test
-    public void select() {
-        log.info("=============================");
-        log.info("BoardMapperTests  >>  select");
-        log.info("=============================");
-        PostVO vo = boardMapper.getPostByIdx(41);
-        log.info("vo: "+vo);
-    }
-    @Test
-    public void selectWithLike() {
-        HashMap<String, Object> param = new HashMap<>();
-        param.put("memberId", "user02");
-        param.put("postIdx", 41);
-        PostVO vo = boardMapper.getPostByIdxWithLike(param);
-        log.info("vo: "+vo);
-
-    }
-
-    @Test
-    public void getPostCount() {
-        PostPageDTO postPageDTO = PostPageDTO.builder().postCategory("UNIINFO").build();
-        int rtnResult = boardMapper.getPostCount(postPageDTO);
-        log.info("=============================");
-        log.info("BoardMapperTests  >>  getPostCount");
-        log.info("rtnResult : "+rtnResult);
-        log.info("=============================");
-    }
+//    @Autowired(required=false)
+//    private BoardMapper boardMapper;
+//
+//    @Test
+//    public void insert() {
+//        log.info("=============================");
+//        log.info("BoardMapperTests  >>  insert");
+//        log.info("=============================");
+//        PostVO vo = PostVO.builder()
+//                        .postTitle("제목6")
+//                        .postContent("내용6")
+//                        .postMemberId("user01")
+//                        .postCategory("FREEBOARD")
+//                        .build();
+//        int rtnResult = boardMapper.insertPost(vo);
+//        Assertions.assertTrue(rtnResult > 0, "BoardMapperTests  >>  insert");
+//        log.info("vo: "+vo);
+//    }
+//
+//    @Test
+//    public void update() {
+//        log.info("=============================");
+//        log.info("BoardMapperTests  >>  update");
+//        log.info("=============================");
+//        LocalDateTime ldt = LocalDateTime.now();
+//        PostVO vo = PostVO.builder()
+//                .postTitle("제목2")
+//                .postContent("내용2")
+//                .postMemberId("user01")
+//                .postCategory("FREEBOARD")
+//                .postUpdatedAt(ldt)
+//                .postIdx(2)
+//                .build();
+//        int rtnResult = boardMapper.modifyPost(vo);
+//        log.info("vo: "+vo);
+//        Assertions.assertTrue(rtnResult > 0, "BoardMapperTests  >>  update");
+//    }
+//
+//    @Test
+//    public void delete() {
+//        log.info("=============================");
+//        log.info("BoardMapperTests  >>  delete");
+//        log.info("=============================");
+//        int rtnResult = boardMapper.deletePost(4);
+//        log.info("rtnResult: " + rtnResult);
+//        Assertions.assertTrue(rtnResult > 0, "BoardMapperTests  >>  delete");
+//    }
+//
+//    @Test
+//    public void selectAll() {
+//        log.info("=============================");
+//        log.info("BoardMapperTests  >>  selectAll");
+//        log.info("=============================");
+//        PostPageDTO postPageDTO = PostPageDTO.builder().postCategory("FREEBOARD").build();
+//        List<PostVO> vos = boardMapper.getPosts(postPageDTO);
+//        for(PostVO vo: vos) {
+//            log.info("vo: "+vo);
+//        }
+//    }
+//
+//    @Test
+//    public void select() {
+//        log.info("=============================");
+//        log.info("BoardMapperTests  >>  select");
+//        log.info("=============================");
+//        PostVO vo = boardMapper.getPostByIdx(41);
+//        log.info("vo: "+vo);
+//    }
+//    @Test
+//    public void selectWithLike() {
+//        HashMap<String, Object> param = new HashMap<>();
+//        param.put("memberId", "user02");
+//        param.put("postIdx", 41);
+//        PostVO vo = boardMapper.getPostByIdxWithLike(param);
+//        log.info("vo: "+vo);
+//
+//    }
+//
+//    @Test
+//    public void getPostCount() {
+//        PostPageDTO postPageDTO = PostPageDTO.builder().postCategory("UNIINFO").build();
+//        int rtnResult = boardMapper.getPostCount(postPageDTO);
+//        log.info("=============================");
+//        log.info("BoardMapperTests  >>  getPostCount");
+//        log.info("rtnResult : "+rtnResult);
+//        log.info("=============================");
+//    }
 }

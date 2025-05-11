@@ -1,11 +1,11 @@
-package net.spb.spb.service.mystudy;
+package net.spb.spb.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.domain.PlanVO;
-import net.spb.spb.dto.PlanDTO;
+import net.spb.spb.dto.mystudy.PlanDTO;
 import net.spb.spb.dto.mystudy.PlanResponseDTO;
-import net.spb.spb.mapper.mystudy.PlanMapper;
+import net.spb.spb.mapper.PlanMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

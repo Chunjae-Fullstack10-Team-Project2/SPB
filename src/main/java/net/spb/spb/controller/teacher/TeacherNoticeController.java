@@ -70,6 +70,7 @@ public class TeacherNoticeController {
     ) {
         if (bindingResult.hasErrors()) {
             // 잘못된 입력이 있습니다. 다시 확인해주세요.
+            model.addAttribute("pageDTO", pageDTO);
             model.addAttribute("teacherNoticeDTO", teacherNoticeDTO);
             return "myclass/notice/regist";
         }

@@ -1,4 +1,4 @@
-package net.spb.spb.mapper.mystudy;
+package net.spb.spb.mapper;
 
 import net.spb.spb.domain.PlanVO;
 import net.spb.spb.dto.mystudy.PlanResponseDTO;

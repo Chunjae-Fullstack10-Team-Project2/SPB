@@ -13,7 +13,7 @@ import net.spb.spb.dto.pagingsearch.*;
 import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.service.AdminService;
 import net.spb.spb.service.ReportService;
-import net.spb.spb.service.TeacherServiceIf;
+import net.spb.spb.service.teacher.TeacherServiceIf;
 import net.spb.spb.service.member.MemberServiceIf;
 import net.spb.spb.util.*;
 import org.apache.poi.ss.usermodel.Row;

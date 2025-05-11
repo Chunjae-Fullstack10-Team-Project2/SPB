@@ -1,17 +1,14 @@
-package net.spb.spb.service;
+package net.spb.spb.service.teacher;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.domain.ChapterVO;
 import net.spb.spb.domain.LectureVO;
 import net.spb.spb.domain.TeacherVO;
-import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.TeacherDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
-import net.spb.spb.mapper.TeacherMapper;
-import org.apache.ibatis.annotations.Param;
+import net.spb.spb.mapper.teacher.TeacherMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

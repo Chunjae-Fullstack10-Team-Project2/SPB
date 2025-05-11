@@ -63,7 +63,7 @@
                     <button type="button" class="btn btn-link flex-fill text-decoration-none" id="btnReset">초기화</button>
                 </div>
             </div>
-            <div class="row g-2 align-items-center mb-3">
+            <div class="row g-2 align-items-center">
                 <div class="col-md-2">
                     <select name="page_size" class="form-select" onchange="submitSearch();">
                         <option disabled ${empty param.page_size ? "selected" : ""}>선택</option>

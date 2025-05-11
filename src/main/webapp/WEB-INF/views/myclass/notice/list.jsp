@@ -1,12 +1,6 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
-<%@ page import="java.util.ArrayList" %><%--
-  Created by IntelliJ IDEA.
-  User: MAIN
-  Date: 2025-05-11
-  Time: 오후 2:02
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="java.util.ArrayList" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -86,11 +80,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        <c:if test="${not empty message}">
-            alert("${message}");
-        </c:if>
-    </script>
 </body>
 </html>
