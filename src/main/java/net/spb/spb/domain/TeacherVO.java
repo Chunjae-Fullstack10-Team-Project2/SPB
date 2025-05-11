@@ -15,6 +15,6 @@ public class TeacherVO {
     private String teacherId;
     private String teacherIntro;
     private String teacherSubject;
-    private String teacherApproval;
+    private int teacherState;
     private String teacherProfileImg;
 }
