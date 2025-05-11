@@ -21,7 +21,7 @@
 <body>
 <div class="container my-5">
     <h4 class="mb-4" onclick="clearSearch()">강좌 검색</h4>
-    <form method="get">
+    <form method="get" id="searchForm">
         <div class="input-group mb-3">
             <select class="form-select input-fixed-2" name="search_type">
                 <option value="">선택</option>
@@ -30,6 +30,7 @@
             </select>
             <input type="text" class="form-control" name="search_word" placeholder="검색어 입력" value="${searchDTO.search_word}">
             <button type="submit" class="btn btn-primary">검색</button>
+            <button type="button" class="btn btn-outline-secondary" id="btnSearchInit">초기화</button>
         </div>
     </form>
     <div class="table-responsive">
@@ -72,6 +73,13 @@
     function clearSearch() {
         window.location.href="search";
     }
+
+    // 초기화 버튼
+    document.getElementById('btnSearchInit').addEventListener('click', function() {
+        document.querySelector('select[name="search_type"]').value = '';
+        document.querySelector('input[name="search_word"]').value = '';
+        document.getElementById('searchForm').submit();
+    });
 </script>
 
 </body>

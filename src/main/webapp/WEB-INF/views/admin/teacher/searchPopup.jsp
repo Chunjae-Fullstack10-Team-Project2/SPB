@@ -19,10 +19,11 @@
     <h4 class="mb-4" onclick="clearSearch()">선생님 검색</h4>
 
     <!-- 검색 폼 -->
-    <form method="get">
+    <form method="get" id="searchForm">
         <div class="input-group mb-3">
             <input type="text" class="form-control" name="search_word" placeholder="아이디 또는 이름" value="${searchDTO.search_word}">
             <button type="submit" class="btn btn-primary">검색</button>
+            <button type="button" class="btn btn-outline-secondary" id="btnSearchInit">초기화</button>
         </div>
     </form>
 
@@ -72,6 +73,12 @@
     function clearSearch() {
         window.location.href="search";
     }
+
+    // 초기화 버튼
+    document.getElementById('btnSearchInit').addEventListener('click', function() {
+        document.querySelector('input[name="search_word"]').value = '';
+        document.getElementById('searchForm').submit();
+    });
 </script>
 </body>
 </html>
