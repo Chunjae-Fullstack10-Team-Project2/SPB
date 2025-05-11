@@ -122,6 +122,33 @@
             message.classList.add("d-none");
         }
     }
+
+    document.getElementById("frmChangePwd").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const form = this;
+        const memberId = "${sessionScope.memberDTO.memberId}";
+
+        fetch('/updatePwdChangeDate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ memberId: memberId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    alert("비밀번호 변경일 업데이트에 실패했습니다.");
+                }
+                form.submit(); // Ajax 완료 후 실제 form 제출
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("비밀번호 변경 요청 중 오류 발생");
+                form.submit();
+            });
+    });
 </script>
 <c:if test="${not empty message}">
     <script>

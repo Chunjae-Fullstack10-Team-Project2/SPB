@@ -15,4 +15,5 @@ public class ChapterVO {
     private String chapterName;
     private String chapterVideo;
     private String chapterRuntime;
+    private int chapterState;
 }

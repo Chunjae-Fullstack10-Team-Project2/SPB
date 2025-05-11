@@ -18,8 +18,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="p-4">
-
-<div class="join-container mt-5 mb-5">
+<div class="mb-5">
     <h2 class="mb-4">회원 상세 정보</h2>
     <form action="/admin/member/update" method="post" onsubmit="return confirm('정말 상태를 변경하시겠습니까?');" >
         <input type="hidden" name="memberId" value="${memberDTO.memberId}"/>
@@ -30,7 +29,6 @@
                                placeholder="아이디" maxlength="20" disabled/>
             </div>
         </div>
-
         <div class="mb-3 row">
             <div class="col-sm-4">
                 <input type="text" class="form-control" name="memberName" id="memberName"
@@ -64,7 +62,6 @@
                     </optgroup>
                 </select>
             </div>
-
             <div class="col-sm-4">
                 <input type="text" class="form-control" name="memberBirth" id="memberBirth"
                        value="${memberDTO.memberBirth != null ? memberDTO.memberBirth : ''}" maxlength="8"
@@ -72,15 +69,11 @@
             </div>
         </div>
 
-
         <div class="mb-3 row">
             <div class="col-sm-10 input-group">
                 <input type="text" class="form-control" id="memberZipCode" name="memberZipCode"
                        value="${memberDTO.memberZipCode != null ? memberDTO.memberZipCode : ''}"
                        placeholder="우편번호" >
-                <button class="btn btn-outline-secondary" type="button" onclick="sample6_execDaumPostcode()" >
-                    우편번호 찾기
-                </button>
             </div>
         </div>
 
@@ -94,56 +87,19 @@
                        value="${memberDTO.memberAddr2 != null ? memberDTO.memberAddr2 : ''}" placeholder="상세주소">
             </div>
         </div>
-
-        <input type="hidden" name="memberEmail" id="memberEmail">
-
         <div class="mb-3 row">
             <div class="col-sm-10 input-group">
-                <c:set var="memberEmail1" value="${fn:split(memberDTO.memberEmail, '@')}"/>
-                <c:choose>
-                    <c:when test="${memberDTO.memberJoinPath eq '2'}">
-                        <!-- 네이버 가입한 사용자: 이메일 입력 비활성화 -->
-                        <input type="text" class="form-control" name="memberEmail1" id="memberEmail1"
-                               value="${memberDTO.memberEmail != null ? memberEmail1[0] : ''}"
-                               placeholder="이메일" required
-                               oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')" disabled>
-                        <span class="input-group-text">@</span>
-                        <select class="form-select" id="memberEmail2" name="memberEmail2"
-                                onchange="toggleCustomEmailInput(this)" disabled>
-                            <option>naver.com</option>
-                            <option>gmail.com</option>
-                            <option>hanmail.net</option>
-                            <option value="custom">직접 입력</option>
-                        </select>
-                        <input type="text" class="form-control d-none" id="memberEmailCustom" placeholder="직접 입력"
-                               maxlength="20" oninput="this.value=this.value.replace(/[^a-zA-Z0-9.]/g, '')" disabled>
-                    </c:when>
-                    <c:otherwise>
-                        <!-- 일반 사용자: 입력 및 중복 확인 가능 -->
-                        <input type="text" class="form-control" name="memberEmail1" id="memberEmail1"
-                               value="${memberDTO.memberEmail != null ? memberEmail1[0] : ''}"
-                               placeholder="이메일" required oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
-                        <span class="input-group-text">@</span>
-                        <select class="form-select" id="memberEmail2" name="memberEmail2"
-                                onchange="toggleCustomEmailInput(this)">
-                            <option>naver.com</option>
-                            <option>gmail.com</option>
-                            <option>hanmail.net</option>
-                            <option value="custom">직접 입력</option>
-                        </select>
-                        <input type="text" class="form-control d-none" id="memberEmailCustom" placeholder="직접 입력"
-                               maxlength="20" oninput="this.value=this.value.replace(/[^a-zA-Z0-9.]/g, '')">
-                    </c:otherwise>
-                </c:choose>
+                <input type="text" class="form-control" value="${memberDTO.memberEmail}" readonly>
             </div>
         </div>
 
         <div class="mb-3 row">
             <div class="col-sm-10 input-group">
+                <c:set var="rawPhoneNumber" value="${memberDTO.memberPhone}" />
                 <input type="text" class="form-control" name="memberPhone" id="memberPhone"
-                       value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}"
+                       value="${fn:substring(rawPhoneNumber, 0, 3)}-${fn:substring(rawPhoneNumber, 3, 7)}-${fn:substring(rawPhoneNumber, 7, 11)}"
                        maxlength="11"
-                       placeholder="휴대전화번호" required oninput="this.value=this.value.replace(/[^0-9]/g, '')">
+                       placeholder="휴대전화번호" required oninput="this.value=this.value.replace(/[^0-9]/g, '')" readonly>
             </div>
         </div>
 
@@ -166,33 +122,5 @@
     </form>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    function sample6_execDaumPostcode() {
-        new daum.Postcode({
-            oncomplete: function (data) {
-                var addr = '';
-                addr = data.roadAddress;
-
-                document.getElementById('memberZipCode').value = data.zonecode;
-                document.getElementById("memberAddr1").value = addr;
-                document.getElementById("memberAddr2").focus();
-            }
-        }).open();
-    }
-    function toggleCustomEmailInput(selectEl) {
-        const memberEmailCustom = document.getElementById("memberEmailCustom");
-        const memberEmail2 = document.getElementById("memberEmail2");
-
-        if (selectEl.value === "custom") {
-            memberEmailCustom.classList.remove("d-none");
-            memberEmail2.classList.add("no-radius");
-            memberEmailCustom.focus();
-        } else {
-            memberEmailCustom.classList.add("d-none");
-            memberEmail2.classList.remove("no-radius");
-            memberEmailCustom.value = '';
-        }
-    }
-</script>
 </body>
 </html>

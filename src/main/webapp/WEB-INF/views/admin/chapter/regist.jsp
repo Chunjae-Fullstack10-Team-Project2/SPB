@@ -17,7 +17,7 @@
   </style>
 </head>
 <body>
-<%@ include file="../../../common/sidebarHeader.jsp" %>
+<%@ include file="../../common/sidebarHeader.jsp" %>
 <div class="content" style="margin-left: 280px; margin-top: 100px;">
 
   <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -96,7 +96,7 @@
 <script>
 
   function openLectureSearch() {
-    window.open('/admin/lecture/searchPopup','lectureSearch', 'width=600,height=500,scrollbars=yes,resizable=no');
+    window.open('/admin/lecture/search','lectureSearch', 'width=600,height=500,scrollbars=yes,resizable=no');
   }
 
   function setLecture(lectureIdx, lectureTitle) {

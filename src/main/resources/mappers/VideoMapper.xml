@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.VideoMapper">
+    <!--강의 마지막 위치 저장-->
+    <insert id="saveProgress" parameterType="net.spb.spb.dto.LectureHistoryDTO">
+        INSERT INTO tbl_lecture_history (
+            lectureMemberId, lectureHistoryChapterIdx,
+            lectureHistoryLastPosition, lectureHistoryWatchTime, lectureHistoryLastWatchDate, lectureHistoryCompleted
+        ) VALUES (
+                     #{dto.lectureMemberId}, #{dto.lectureHistoryChapterIdx},
+                     #{dto.lectureHistoryLastPosition}, #{dto.lectureHistoryWatchTime}, NOW(), #{dto.lectureHistoryCompleted}
+                 )
+    </insert>
+    <!--강의 마지막 위치 수정-->
+    <update id="updateProgress" parameterType="net.spb.spb.dto.LectureHistoryDTO">
+        UPDATE tbl_lecture_history
+        SET lectureHistoryLastPosition = #{dto.lectureHistoryLastPosition},
+            lectureHistoryWatchTime = #{dto.lectureHistoryWatchTime},
+            lectureHistoryLastWatchDate = NOW(),
+            lectureHistoryCompleted = #{dto.lectureHistoryCompleted}
+        WHERE lectureMemberId = #{dto.lectureMemberId}
+          AND lectureHistoryChapterIdx = #{dto.lectureHistoryChapterIdx}
+    </update>
+    <!--강의 저장 위치 불러오기-->
+    <select id="getLastWatchedTime" >
+        SELECT lectureHistoryLastPosition
+        FROM tbl_lecture_history
+        WHERE lectureMemberId = #{lectureMemberId}
+          AND lectureHistoryChapterIdx = #{lectureHistoryChapterIdx}
+    </select>
+
+    <select id="countByMemberIdAndChapterIdx" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_lecture_history
+        WHERE lectureMemberId = #{lectureMemberId}
+          AND lectureHistoryChapterIdx = #{lectureHistoryChapterIdx}
+    </select>
+</mapper>    

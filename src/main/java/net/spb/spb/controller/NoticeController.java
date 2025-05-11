@@ -1,8 +1,11 @@
 package net.spb.spb.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import net.spb.spb.dto.NoticeDTO;
+import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.service.NoticeService;
+import net.spb.spb.util.NoticePaging;
 import net.spb.spb.util.Paging;
 import net.spb.spb.util.PagingUtil;
 import org.springframework.stereotype.Controller;
@@ -13,6 +16,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,6 +25,7 @@ public class NoticeController {
 
     private final NoticeService noticeService;
 
+
     @GetMapping("/list")
     public String list(@RequestParam(name = "page", defaultValue = "1") int page,
                        @RequestParam(name = "size", defaultValue = "5") int size,
@@ -28,52 +33,48 @@ public class NoticeController {
                        @RequestParam(name = "searchType", required = false) String searchType,
                        Model model) throws Exception {
 
-        int offset = Paging.getOffset(page, size);
+        int offset = NoticePaging.getOffset(page, size);
         List<NoticeDTO> list;
         int totalCount;
 
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            if ("content".equals(searchType)) {
+        // 일반 공지사항
+        if (keyword != null && !keyword.isEmpty()) {
+            if ("title".equals(searchType)) {
+                totalCount = noticeService.getSearchCountByTitle(keyword);
+                list = noticeService.searchByTitle(keyword, offset, size);
+            } else if ("content".equals(searchType)) {
                 totalCount = noticeService.getSearchCountByContent(keyword);
                 list = noticeService.searchByContent(keyword, offset, size);
             } else {
-                totalCount = noticeService.getSearchCountByTitle(keyword);
-                list = noticeService.searchByTitle(keyword, offset, size);
+                totalCount = noticeService.getSearchCount(keyword);
+                list = noticeService.searchList(keyword, offset, size);
             }
         } else {
+
             totalCount = noticeService.getTotalCount();
             list = noticeService.getListPaged(offset, size);
         }
 
-        // 고정된 공지사항
+        //  고정 공지사항
         List<NoticeDTO> fixedList = noticeService.getFixedNotices();
 
-        int totalPage = Paging.getTotalPage(totalCount, size);
+        int totalPage = NoticePaging.getTotalPage(totalCount, size);
+        String pagination = NoticePaging.getPagination(page, totalPage, "/notice/list", keyword, searchType, size);
+        int listNumber = NoticePaging.getStartNum(totalCount, page, size);
 
-        String queryParams = "&size=" + size;
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            queryParams += "&keyword=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8);
-            if (searchType != null) {
-                queryParams += "&searchType=" + searchType;
-            }
-        }
-
-        int listNumber = totalCount - offset;
-
-        String paginationHtml = PagingUtil.getPagination(page, totalPage, "/notice/list", queryParams);
-
+        // 4. 모델에 list와 fixedList 추가
         model.addAttribute("list", list);
-        model.addAttribute("pagination", paginationHtml);
+        model.addAttribute("fixedList", fixedList);
+        model.addAttribute("pagination", pagination);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("size", size);
         model.addAttribute("keyword", keyword);
         model.addAttribute("searchType", searchType);
         model.addAttribute("listNumber", listNumber);
-        model.addAttribute("fixedList", fixedList);
+
         return "notice/list";
     }
-
 
     @GetMapping("/view")
     public String view(@RequestParam("noticeIdx") int noticeIdx, Model model) throws Exception {
@@ -95,13 +96,26 @@ public class NoticeController {
     }
 
     @GetMapping("/regist")
-    public String registForm() {
+    public String registForm(HttpSession session) {
+        // 세션에서 필요한 값 직접 가져오기
+        String memberId = (String) session.getAttribute("memberId");
+        String memberGrade = (String) session.getAttribute("memberGrade");
+
+        // 값이 없거나 관리자가 아닌 경우 리다이렉트
+        if (memberId == null || memberGrade == null || !memberGrade.equals("0")) {
+            return "redirect:/notice/list";
+        }
         return "notice/regist";
     }
 
     @PostMapping("/regist")
-    public String regist(@ModelAttribute NoticeDTO dto) throws Exception {
-        dto.setNoticeMemberId("system");
+    public String regist(@ModelAttribute NoticeDTO dto, HttpSession session) throws Exception {
+        // 세션에서 회원 ID 직접 가져오기
+        String memberId = (String) session.getAttribute("memberId");
+
+        // 현재 로그인한 사용자 아이디 설정
+        dto.setNoticeMemberId(memberId);
+
         noticeService.register(dto);
         return "redirect:/notice/list";
     }
@@ -137,4 +151,5 @@ public class NoticeController {
         noticeService.unfixNotice(noticeIdx);
         return "redirect:/notice/list";
     }
+
 }

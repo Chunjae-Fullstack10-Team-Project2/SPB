@@ -11,10 +11,12 @@ import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.service.member.MailService;
 import net.spb.spb.service.member.MemberServiceImpl;
 import net.spb.spb.service.member.NaverLoginService;
+import net.spb.spb.util.FileUtil;
 import net.spb.spb.util.PasswordUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,19 +24,31 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @Controller
 @Log4j2
 public class MemberController {
+
+    @Autowired(required = false)
+    private FileUtil fileUtil;
+
+    @Value("${app.upload.path}")
+    private String uploadBasePath;
+
     @Autowired(required = false)
     private MemberServiceImpl memberService;
 
@@ -67,32 +81,10 @@ public class MemberController {
         String memberId = (String) session.getAttribute("memberId");
         if (memberId != null) {
             MemberDTO memberDTO = memberService.getMemberById(memberId);
-
-            // 마지막 로그인 일자가 1년 경과
-            LocalDate lastLoginDate = memberDTO.getMemberLastLogin();
-            // 비밀번호 90일 이상 경과
-            LocalDate pwdChangeDate = memberDTO.getMemberPwdChangeDate();
-
-            if (lastLoginDate != null) {
-                long daysSinceLastLogin = ChronoUnit.DAYS.between(lastLoginDate, LocalDate.now());
-                if (daysSinceLastLogin >= 365) {
-                    memberDTO.setMemberState("5");
-                    memberService.updateMemberStateWithLogin("5", memberId);
-
-                }
-            } else if (pwdChangeDate != null) {
-                long dayBetween = ChronoUnit.DAYS.between(pwdChangeDate, LocalDate.now());
-                if (dayBetween >= 90) {
-                    memberDTO.setMemberState("3");
-                    memberService.updateMemberStateWithLogin("3", memberId);
-                }
-            }
-
-            if (memberDTO.getMemberState().equals("1")) {
-                memberService.updateMemberLastLoginWithLogin(LocalDate.now().toString(), memberId);
-            }
-
+            session.setAttribute("memberGrade", memberDTO.getMemberGrade());
             session.setAttribute("memberDTO", memberDTO);
+
+            return "common/loginMain";
         }
 
         return "common/main";
@@ -136,16 +128,40 @@ public class MemberController {
 
         String accessToken = naverLoginService.getAccessToken(code, state);
         MemberDTO naverMemberDto = naverLoginService.getUserInfo(accessToken);
-
         String naverMemberId = naverMemberDto.getMemberId();
 
         if (!memberService.existMember(naverMemberId)) {
-            // model.addAttribute("memberDTO", naverMemberDto);
             session.setAttribute("memberDTO", naverMemberDto);
             return "redirect:/join";
         }
 
+        MemberDTO memberDTO = memberService.getMemberById(naverMemberId);
+        LocalDate now = LocalDate.now();
+
+        if (memberDTO.getMemberLastLogin() != null) {
+            long daysSinceLogin = ChronoUnit.DAYS.between(memberDTO.getMemberLastLogin(), now);
+            if (daysSinceLogin >= 365) {
+                memberService.updateMemberStateWithLogin("5", memberDTO.getMemberId());
+                memberDTO.setMemberState("5");
+            }
+        }
+
+        if (memberDTO.getMemberPwdChangeDate() != null) {
+            long daysSincePwd = ChronoUnit.DAYS.between(memberDTO.getMemberPwdChangeDate(), now);
+            if (daysSincePwd >= 90) {
+                memberService.updateMemberStateWithLogin("3", memberDTO.getMemberId());
+                memberDTO.setMemberState("3");
+            }
+        }
+
+        if ("1".equals(memberDTO.getMemberState())) {
+            memberService.updateMemberLastLoginWithLogin(now.toString(), memberDTO.getMemberId());
+        }
+
         session.setAttribute("memberId", naverMemberId);
+        session.setAttribute("memberGrade", memberDTO.getMemberGrade());
+        session.setAttribute("memberDTO", memberDTO);
+
         return "redirect:/main";
     }
 
@@ -206,42 +222,48 @@ public class MemberController {
         int returnValue = memberService.login(memberDTO);
 
         if (returnValue == 1) {
-            session.setAttribute("memberId", memberDTO.getMemberId());
-            session.setAttribute("memberGrade", memberDTO.getMemberGrade());
+            MemberDTO fullMember = memberService.getMemberById(memberDTO.getMemberId());
+            LocalDate now = LocalDate.now();
 
-//            // 로그인 일자 오늘로
-//            String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-//            memberService.updateMemberLastLoginWithLogin(today, memberDTO.getMemberId());
-
-            // 아이디 저장 쿠키 처리
-            if (checkIdSave != null) {
-                Cookie idCookie = new Cookie("saveId", memberDTO.getMemberId());
-                idCookie.setMaxAge(60 * 60 * 24); // 1일
-                idCookie.setPath("/");
-                response.addCookie(idCookie);
-            } else {
-                Cookie idCookie = new Cookie("saveId", null);
-                idCookie.setMaxAge(0);
-                idCookie.setPath("/");
-                response.addCookie(idCookie);
+            if (fullMember.getMemberLastLogin() != null) {
+                long daysSinceLogin = ChronoUnit.DAYS.between(fullMember.getMemberLastLogin(), now);
+                if (daysSinceLogin >= 365) {
+                    memberService.updateMemberStateWithLogin("5", fullMember.getMemberId());
+                    fullMember.setMemberState("5");
+                }
             }
 
-            // 자동 로그인 쿠키 처리
-            if (checkAutoLogin != null) {
-                Cookie autoCookie = new Cookie("autoLogin", memberDTO.getMemberId());
-                autoCookie.setMaxAge(60 * 60 * 24); // 1일
-                autoCookie.setPath("/");
-                response.addCookie(autoCookie);
-            } else {
-                Cookie autoCookie = new Cookie("autoLogin", null);
-                autoCookie.setMaxAge(0);
-                autoCookie.setPath("/");
-                response.addCookie(autoCookie);
+            if (fullMember.getMemberPwdChangeDate() != null) {
+                long daysSincePwd = ChronoUnit.DAYS.between(fullMember.getMemberPwdChangeDate(), now);
+                if (daysSincePwd >= 90) {
+                    memberService.updateMemberStateWithLogin("3", fullMember.getMemberId());
+                    fullMember.setMemberState("3");
+                }
             }
+
+            if ("1".equals(fullMember.getMemberState())) {
+                memberService.updateMemberLastLoginWithLogin(now.toString(), fullMember.getMemberId());
+            }
+
+            session.setAttribute("memberId", fullMember.getMemberId());
+            session.setAttribute("memberGrade", fullMember.getMemberGrade());
+            session.setAttribute("memberDTO", fullMember);
+
+            // 아이디 저장 쿠키
+            Cookie idCookie = new Cookie("saveId", checkIdSave != null ? fullMember.getMemberId() : null);
+            idCookie.setMaxAge(checkIdSave != null ? 60 * 60 * 24 : 0);
+            idCookie.setPath("/");
+            response.addCookie(idCookie);
+
+            // 자동 로그인 쿠키
+            Cookie autoCookie = new Cookie("autoLogin", checkAutoLogin != null ? fullMember.getMemberId() : null);
+            autoCookie.setMaxAge(checkAutoLogin != null ? 60 * 60 * 24 : 0);
+            autoCookie.setPath("/");
+            response.addCookie(autoCookie);
 
             return "redirect:/main";
         } else {
-            model.addAttribute("errorMessage", "아이디를 확인해주세요.");
+            model.addAttribute("errorMessage", "아이디 또는 비밀번호를 확인해주세요.");
             return "login/login";
         }
     }
@@ -364,7 +386,9 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public String join(@Valid @ModelAttribute MemberDTO memberDTO, BindingResult bindingResult, HttpServletRequest request, HttpSession session, Model model) {
+    public String join(@Valid @ModelAttribute MemberDTO memberDTO, BindingResult bindingResult,
+                       @RequestParam(value = "profileImgFile", required = false) MultipartFile profileImg,
+                       HttpServletRequest request, HttpSession session, Model model) {
         if (!"2".equals(memberDTO.getMemberJoinPath()) && bindingResult.hasErrors()) {
             for (FieldError error : bindingResult.getFieldErrors()) {
                 System.out.println("필드: " + error.getField() + " / 메시지: " + error.getDefaultMessage());
@@ -433,6 +457,27 @@ public class MemberController {
         } catch (NoSuchAlgorithmException e) {
             model.addAttribute("errorMessage", "비밀번호 암호화 오류가 발생했습니다.");
             model.addAttribute("memberDTO", memberDTO);
+            return "login/join";
+        }
+
+        // 프로필 이미지 파일 저장
+        if (profileImg != null && !profileImg.isEmpty()) {
+            try {
+                File savedFile = fileUtil.saveFile(profileImg);
+                String savedFileName = savedFile.getName();
+                memberDTO.setMemberProfileImg(savedFileName);
+            } catch (IOException e) {
+                model.addAttribute("errorMessage", "프로필 이미지 업로드에 실패했습니다.");
+                return "login/join";
+            }
+        }
+
+        String memberAgree = request.getParameter("memberAgree");
+        if (!"1".equals(memberAgree)) {
+            model.addAttribute("errorMessage", "개인정보 수집 및 이용에 동의해야 회원가입이 가능합니다.");
+            model.addAttribute("memberDTO", memberDTO);
+            model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
+            model.addAttribute("memberEmailCode", request.getParameter("memberEmailCode"));
             return "login/join";
         }
 

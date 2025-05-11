@@ -12,7 +12,7 @@ public interface PaymentMapper {
     public List<CartDTO> selectCart(String memberId);
     public int cartCount(CartDTO cartDTO);
     public int addCart(CartVO cartVO);
-    public int deleteCartItems(String cartMemberId, int cartLectureIdx);
+    public int deleteCartItems(@Param("cartMemberId") String cartMemberId, @Param("cartLectureIdx") int cartLectureIdx);
     public List<LectureVO> findLecturesByIds(@Param("lectureIdxs") List<Integer> lectureIdxs);
     public int insertOrder(OrderVO orderVO);
     public int insertOrderLecture(int orderLectureIdx);
@@ -25,5 +25,5 @@ public interface PaymentMapper {
     public PaymentVO getPaymentInfo(int orderIdx);
     public void updateOrderInfo(PaymentVO paymentVO);
     public void updatePaymentStatus(@Param("merchantUid") String merchantUid, @Param("status") String status);
-    public int getCartCount(String memberId);
+    public int getCartCount(@Param("memberId") String memberId);
 }

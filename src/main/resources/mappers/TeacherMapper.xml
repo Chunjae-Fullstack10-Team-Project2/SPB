@@ -3,29 +3,69 @@
 <mapper namespace="net.spb.spb.mapper.TeacherMapper">
     <!--선생님 메인 조회-->
     <select id="selectTeacher" resultType="net.spb.spb.domain.TeacherVO">
-        select teacherIdx, teacherName, teacherId, teacherIntro, teacherApproval, teacherProfileImg, teacherSubject
+        select teacherIdx, teacherName, teacherId, teacherIntro, teacherState, teacherProfileImg, teacherSubject
         from tbl_teacher
         where teacherId = #{teacherId}
     </select>
     <!--선생님 강좌 조회-->
     <select id="selectTeacherLecture" resultType="net.spb.spb.domain.LectureVO">
-        select lectureIdx, lectureTitle, lectureThumbnailImg
+        select lectureIdx, lectureTitle, lectureThumbnailImg, lectureAmount
         from tbl_lecture
         where lectureTeacherId = #{teacherId}
+          and lectureState = '1'
         order by lectureIdx desc
     </select>
-    <!--강좌 메인 조회-->
-    <select id="selectLectureMain" resultType="net.spb.spb.domain.LectureVO">
-        select lectureTitle, lectureDescription
-        from tbl_lecture
-        where lectureIdx = #{lectureIdx}
+    <!--선생님 메인 조회-->
+    <select id="getTeacherMain">
+        select teacherId, teacherName, teacherProfileImg, teacherSubject
+        from tbl_teacher
+        where teacherSubject = #{subject}
+        and teacherState = '1'
+        <if test="searchDTO.searchWord != null">
+            AND teacherName like CONCAT('%', #{searchDTO.searchWord}, '%')
+        </if>
+        order by teacherName asc
+        limit #{pageRequestDTO.pageSkipCount}, #{pageRequestDTO.pageSize}
     </select>
-    <!--강좌별 강의 조회-->
-    <select id="selectLectureChapter" resultType="net.spb.spb.domain.ChapterVO">
-        select chapterIdx, chapterName, chapterRuntime
-        from tbl_lecture_chapter
-        where chapterLectureIdx = #{lectureIdx}
-        order by chapterIdx asc
+    <!--과목 전체 조회-->
+    <select id="getAllSubject">
+        select distinct teacherSubject
+        from tbl_teacher
+        where 1=1
+        order by teacherSubject
     </select>
-
+    <!--과목별 선생님 조회-->
+    <select id="getAllTeacher">
+        select teacherId, teacherName, teacherProfileImg, teacherSubject
+        from tbl_teacher
+        where 1=1
+        and teacherState = '1'
+        <if test="searchDTO.searchWord != null">
+            AND teacherName like CONCAT('%', #{searchDTO.searchWord}, '%')
+        </if>
+        order by teacherName asc
+        limit #{pageRequestDTO.pageSkipCount}, #{pageRequestDTO.pageSize}
+    </select>
+    <!--북마크 정보 조회-->
+    <select id="selectBookmark">
+        select a.bookmarkLectureIdx
+        from tbl_bookmark a
+                 join tbl_lecture b on a.bookmarkLectureIdx = b.lectureIdx
+        where b.lectureTeacherId = #{teacherId}
+          and a.bookmarkMemberId = #{memberId}
+          and b.lectureState = '1'
+    </select>
+    <!--선생님 정보 총 개수 조회-->
+    <select id="getTotalCount">
+        select count(*)
+        from tbl_teacher
+        where 1=1
+        and teacherState = '1'
+        <if test="subject != null">
+            AND teacherSubject =#{subject}
+        </if>
+        <if test="searchDTO.searchType != null">
+            AND teacherName LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+        </if>
+    </select>
 </mapper>    

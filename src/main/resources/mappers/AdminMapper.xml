@@ -1,44 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.spb.spb.mapper.AdminMapper">
+
     <insert id="insertLecture" parameterType="net.spb.spb.domain.LectureVO">
         insert into tbl_lecture (lectureTitle, lectureDescription, lectureTeacherId, lectureThumbnailImg, lectureAmount)
         values (#{lectureTitle}, #{lectureDescription}, #{lectureTeacherId}, #{lectureThumbnailImg}, #{lectureAmount})
     </insert>
+
     <insert id="insertChapter" parameterType="net.spb.spb.domain.ChapterVO">
         insert into tbl_lecture_chapter (chapterLectureIdx, chapterName, chapterVideo, chapterRuntime)
         values (#{chapterLectureIdx}, #{chapterName}, #{chapterVideo}, #{chapterRuntime})
     </insert>
+
     <insert id="insertTeacher" parameterType="net.spb.spb.domain.TeacherVO">
-        insert into tbl_teacher (teacherName, teacherId, teacherIntro, teacherApproval, teacherProfileImg, teacherSubject)
-        values (#{teacherName}, #{teacherId}, #{teacherIntro}, #{teacherApproval}, #{teacherProfileImg}, #{teacherSubject})
+        insert into tbl_teacher (teacherName, teacherId, teacherIntro, teacherApproval, teacherProfileImg,
+                                 teacherSubject)
+        values (#{teacherName}, #{teacherId}, #{teacherIntro}, #{teacherApproval}, #{teacherProfileImg},
+                #{teacherSubject})
     </insert>
-    <select id="selectLecture" parameterType="net.spb.spb.dto.pagingsearch.LecturePageDTO" resultType="net.spb.spb.dto.LectureDTO">
+
+    <select id="selectLectureList" parameterType="net.spb.spb.dto.pagingsearch.LecturePageDTO"
+            resultType="net.spb.spb.dto.LectureDTO">
         select
-            tl.lectureIdx,
-            tl.lectureTitle,
-            tl.lectureThumbnailImg,
-            tl.lectureAmount,
-            tl.lectureTeacherId,
-            tl.lectureDescription,
-            tl.lectureCreatedAt,
-            tt.teacherName as lectureTeacherName,
-            count(tlc.chapterIdx) as lectureChapterCount
+        tl.lectureIdx,
+        tl.lectureTitle,
+        tl.lectureThumbnailImg,
+        tl.lectureAmount,
+        tl.lectureTeacherId,
+        tl.lectureDescription,
+        tl.lectureCreatedAt,
+        tt.teacherName as lectureTeacherName,
+        count(tlc.chapterIdx) as lectureChapterCount
         from tbl_lecture tl
         inner join tbl_teacher tt on tl.lectureTeacherId = tt.teacherId
         left outer join tbl_lecture_chapter tlc on tl.lectureIdx = tlc.chapterLectureIdx
         <where>
+            tl.lectureState = 1
             <if test="search_type != null and search_type != '' and search_word != null and search_word != ''">
                 <if test="search_type == 'teacherName'">
-                    tt.teacherName like concat('%', #{search_word}, '%')
+                    and tt.teacherName like concat('%', #{search_word}, '%')
                 </if>
                 <if test="search_type == 'lectureTitle'">
-                    tl.lectureTitle like concat('%', #{search_word}, '%')
+                    and tl.lectureTitle like concat('%', #{search_word}, '%')
                 </if>
             </if>
         </where>
         group by tl.lectureIdx, tl.lectureTitle, tt.teacherName
         order by tl.${sort_by} ${sort_direction}
+    </select>
+
+    <select id="selectLecture" parameterType="java.lang.Integer"
+            resultType="net.spb.spb.dto.LectureDTO">
+        select
+        tl.lectureIdx,
+        tl.lectureTitle,
+        tl.lectureThumbnailImg,
+        tl.lectureAmount,
+        tl.lectureTeacherId,
+        tl.lectureDescription,
+        tl.lectureCreatedAt,
+        tt.teacherName as lectureTeacherName,
+        count(tlc.chapterIdx) as lectureChapterCount
+        from tbl_lecture tl
+        inner join tbl_teacher tt on tl.lectureTeacherId = tt.teacherId
+        left outer join tbl_lecture_chapter tlc on tl.lectureIdx = tlc.chapterLectureIdx
+        where tl.lectureIdx = #{lectureIdx}
+        group by tl.lectureIdx, tl.lectureTitle, tt.teacherName
     </select>
 
     <select id="selectLectureCount" parameterType="net.spb.spb.dto.pagingsearch.LecturePageDTO">
@@ -57,4 +84,229 @@
             </if>
         </where>
     </select>
+
+    <select id="selectMonthlySales" resultType="map" parameterType="map">
+        <choose>
+            <!-- DAY: 날짜별 매출 -->
+            <when test="timeType == 'DAY'">
+                WITH RECURSIVE date_range AS (
+                SELECT DATE(#{startDate}) AS selected_date
+                UNION ALL
+                SELECT DATE_ADD(selected_date, INTERVAL 1 DAY)
+                FROM date_range
+                WHERE selected_date &lt; #{endDate}
+                )
+                SELECT
+                DATE_FORMAT(d.selected_date, '%Y-%m-%d') AS label,
+                COALESCE(SUM(o.orderAmount), 0) AS total
+                FROM date_range d
+                LEFT JOIN tbl_order_info o
+                ON DATE(o.orderCreatedAt) = d.selected_date
+                GROUP BY d.selected_date
+                ORDER BY d.selected_date
+            </when>
+
+            <!-- MONTH/YEAR: 기존 방식 -->
+            <otherwise>
+                SELECT
+                <choose>
+                    <when test="timeType == 'YEAR'">
+                        DATE_FORMAT(orderCreatedAt, '%Y') AS label
+                    </when>
+                    <otherwise>
+                        DATE_FORMAT(orderCreatedAt, '%Y-%m') AS label
+                    </otherwise>
+                </choose>,
+                SUM(orderAmount) AS total
+                FROM tbl_order_info
+                WHERE 1=1
+                <if test="startDate != null and startDate != ''">
+                    AND DATE_FORMAT(orderCreatedAt,
+                    <choose>
+                        <when test="timeType == 'YEAR'">'%Y'</when>
+                        <otherwise>'%Y-%m'</otherwise>
+                    </choose>
+                    ) &gt;= #{startDate}
+                </if>
+                <if test="endDate != null and endDate != ''">
+                    AND DATE_FORMAT(orderCreatedAt,
+                    <choose>
+                        <when test="timeType == 'YEAR'">'%Y'</when>
+                        <otherwise>'%Y-%m'</otherwise>
+                    </choose>
+                    ) &lt;= #{endDate}
+                </if>
+                GROUP BY label
+                ORDER BY label
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <!--  강좌별 고정 -->
+    <select id="selectLectureSalesDefault" resultType="map">
+        SELECT l.lectureTitle       AS lectureTitle,
+               SUM(l.lectureAmount) AS total,
+               COUNT(ol.orderIdx)   AS soldCount
+        FROM tbl_order_info o
+                 JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
+                 JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
+        WHERE o.orderStatus = 's'
+        GROUP BY l.lectureTitle
+        ORDER BY total DESC
+    </select>
+
+    <select id="selectLectureSales" resultType="map" parameterType="map">
+        SELECT l.lectureTitle AS lectureTitle,
+        SUM(l.lectureAmount) AS total,
+        COUNT(ol.orderIdx) AS soldCount
+        FROM tbl_order_info o
+        JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
+        JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
+        WHERE o.orderStatus = 's'
+        <if test="startDate != null and endDate != null">
+            AND o.orderCreatedAt BETWEEN #{startDate} AND #{endDate}
+        </if>
+        GROUP BY l.lectureTitle
+        ORDER BY total DESC
+    </select>
+
+    <select id="selectSalesDetailList" resultType="net.spb.spb.dto.OrderDTO">
+        SELECT o.orderIdx, o.orderMemberId, o.orderAmount, o.orderCreatedAt,
+        l.lectureIdx, l.lectureTitle, l.lectureAmount
+        FROM tbl_order_info o
+        JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
+        JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
+        WHERE o.orderStatus = 's'
+
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'memberId'">
+                    AND o.orderMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'lectureTitle'">
+                    AND l.lectureTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            AND o.orderCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+        </if>
+
+        <choose>
+            <when test="searchDTO.sortColumn != null and searchDTO.sortOrder != null">
+                ORDER BY
+                <choose>
+                    <when test="searchDTO.sortColumn == 'orderIdx'"> o.orderIdx </when>
+                    <when test="searchDTO.sortColumn == 'orderMemberId'"> o.orderMemberId </when>
+                    <when test="searchDTO.sortColumn == 'orderAmount'"> o.orderAmount </when>
+                    <when test="searchDTO.sortColumn == 'orderCreatedAt'"> o.orderCreatedAt </when>
+                    <when test="searchDTO.sortColumn == 'lectureTitle'"> l.lectureTitle </when>
+                    <otherwise> o.orderCreatedAt </otherwise>
+                </choose>
+                <choose>
+                    <when test="searchDTO.sortOrder == 'asc'"> ASC </when>
+                    <otherwise> DESC </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY o.orderCreatedAt DESC
+            </otherwise>
+        </choose>
+
+        LIMIT #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
+    </select>
+
+    <select id="selectSalesDetailCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_order_info o
+        JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
+        JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
+        WHERE o.orderStatus = 's'
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'memberId'">
+                    AND o.orderMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'lectureTitle'">
+                    AND l.lectureTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            AND o.orderCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+        </if>
+    </select>
+
+    <select id="selectSalesListForExport">
+        SELECT o.orderIdx, orderMemberId, lectureTitle, orderAmount, orderCreatedAt
+        FROM tbl_order_info AS o
+        JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
+        JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
+        WHERE orderStatus = 's'
+
+        <if test="searchType != null and searchWord != null">
+            AND ${searchType} LIKE CONCAT('%', #{searchWord}, '%')
+        </if>
+        <if test="startDate != null and startDate != ''">
+            AND orderCreatedAt &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND orderCreatedAt &lt;= #{endDate}
+        </if>
+        ORDER BY orderCreatedAt DESC
+    </select>
+
+    <select id="selectTeacherWithoutTeacherProfile" resultType="net.spb.spb.dto.member.MemberDTO">
+        SELECT *
+        FROM tbl_member m
+        WHERE m.memberGrade = 13 and NOT EXISTS (
+            SELECT 1
+            FROM tbl_teacher t
+            WHERE t.teacherId = m.memberId
+        );
+    </select>
+
+    <select id="selectTeacherWithTeacherProfile" resultType="net.spb.spb.dto.member.MemberDTO">
+        SELECT *
+        FROM tbl_member m
+        WHERE m.memberGrade = 13 and EXISTS (
+            SELECT 1
+            FROM tbl_teacher t
+            WHERE t.teacherId = m.memberId
+        );
+    </select>
+
+    <update id="modifyTeacherProfile" parameterType="net.spb.spb.domain.TeacherVO">
+        update tbl_teacher
+        set teacherSubject = #{teacherSubject},
+            teacherIntro = #{teacherIntro},
+            teacherProfileImg = #{teacherProfileImg}
+        where teacherIdx = #{teacherIdx}
+    </update>
+
+    <update id="updateLecture" parameterType="net.spb.spb.domain.LectureVO">
+        update tbl_lecture
+        set lectureTitle = #{lectureTitle},
+            lectureDescription = #{lectureDescription},
+            lectureTeacherId = #{lectureTeacherId},
+            lectureThumbnailImg = #{lectureThumbnailImg},
+            lectureAmount = #{lectureAmount}
+        where lectureIdx = #{lectureIdx}
+    </update>
+
+    <update id="deleteLecture" parameterType="net.spb.spb.domain.LectureVO">
+        update tbl_lecture
+        set lectureState = #{lectureState}
+        where lectureIdx = #{lectureIdx}
+    </update>
+
+    <update id="updateChapter" parameterType="net.spb.spb.domain.ChapterVO">
+        update tbl_lecture_chapter
+        set chapterName = #{chapterName},
+            chapterVideo = #{chapterVideo},
+            chapterRuntime = #{chapterRuntime}
+        where chapterLectureIdx = #{chapterLectureIdx}
+    </update>
 </mapper>

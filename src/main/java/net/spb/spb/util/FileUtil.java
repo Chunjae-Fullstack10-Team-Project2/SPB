@@ -1,9 +1,10 @@
 package net.spb.spb.util;
 
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import net.spb.spb.dto.FileDTO;
 import net.spb.spb.service.FileService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,10 +15,12 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
+@PropertySource("classpath:application.properties")
 public class FileUtil {
 
     private final FileService fileService;
-    @Resource(name="uploadPath")
+
+    @Value("${app.upload.path}")
     private String uploadDir;
 
     public String saveFile(String orgName, byte[] fileData) throws Exception {
@@ -51,9 +54,10 @@ public class FileUtil {
                 .fileName(saveName)
                 .fileExt(orgName.substring(orgName.lastIndexOf(".")))
                 .filePath("/upload")
+                .fileOrgName(orgName)
+                .fileSize(fileData.length)
                 .build();
-        int fileIdx = fileService.insertFile(fileDTO);
-        return fileIdx;
+        return fileService.insertFile(fileDTO);
     }
 
     public void deleteFile(String fileName) throws Exception {
@@ -67,6 +71,26 @@ public class FileUtil {
         if (isDeleted) {
             fileService.deleteFileByFileName(fileName);
         }
+    }
+
+    public static String getIconClass(String ext) {
+        ext = ext.toLowerCase();
+        return switch (ext) {
+            case "pdf" -> "bi-file-earmark-pdf-fill text-danger";
+            case "doc", "docx" -> "bi-file-earmark-word-fill text-primary";
+            case "xls", "xlsx" -> "bi-file-earmark-excel-fill text-success";
+            case "ppt", "pptx" -> "bi-file-earmark-ppt-fill text-warning";
+            case "zip", "rar", "7z" -> "bi-file-earmark-zip-fill text-secondary";
+            case "txt" -> "bi-file-earmark-text";
+            default -> "bi-file-earmark";
+        };
+    }
+
+    public static String formatFileSize(long size) {
+        if (size < 1024) return size + " B";
+        double kb = size / 1024.0;
+        if (kb < 1024) return String.format("%.1f KB", kb);
+        return String.format("%.1f MB", kb / 1024.0);
     }
 
 }

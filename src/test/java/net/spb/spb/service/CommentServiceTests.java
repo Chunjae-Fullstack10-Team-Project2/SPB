@@ -42,7 +42,7 @@ public class CommentServiceTests {
                 .postCommentMemberId("user01")
                 .postCommentContent("서비스 댓글 테스트 수정 테스트")
                 .build();
-        int rtnResult = service.updateComment(dto);
+        int rtnResult = service.modifyComment(dto);
         log.info("=============================");
         log.info("CommentServiceTests  >>  updateComment");
         log.info("dto: " + dto);
