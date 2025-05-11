@@ -44,7 +44,7 @@
             </div>
             <div class="col-md-3">
                 <input type="text" name="searchWord" class="form-control" placeholder="검색어 입력"
-                       value="${searchDTO.searchWord}"/>
+                       value="${searchDTO.searchWord != null ? searchDTO.searchWord : ''}"/>
             </div>
             <div class="col-md-3 d-flex gap-1">
                 <button type="submit" class="btn btn-primary flex-fill" id="btnSearch">검색</button>
