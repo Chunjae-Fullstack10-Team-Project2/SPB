@@ -10,5 +10,5 @@ public interface LectureServiceIf {
     public List<ChapterDTO> selectLectureChapter(int lectureIdx);
     public int addBookmark(int lectureIdx, String memberId);
     public int deleteBookmark(int lectureIdx, String memberId);
-    public ChapterDTO getChapterById(int chapterLectureIdx, int chapterIdx);
+    public ChapterDTO getChapterById(int chapterIdx);
 }

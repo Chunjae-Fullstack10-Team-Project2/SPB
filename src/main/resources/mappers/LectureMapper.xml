@@ -13,6 +13,7 @@
         select chapterIdx, chapterName, chapterRuntime
         from tbl_lecture_chapter
         where chapterLectureIdx = #{lectureIdx}
+        and chapterState = '1'
         order by chapterIdx asc
     </select>
     <!--북마크 저장-->
@@ -28,7 +29,7 @@
     </delete>
     <!--동영상 주소 조회-->
     <select id="getChapterById">
-        select chapterVideo, chapterRuntime
+        select chapterIdx, chapterVideo, chapterRuntime
         from tbl_lecture_chapter
         where chapterIdx = #{chapterIdx}
     </select>
