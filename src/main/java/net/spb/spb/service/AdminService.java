@@ -8,6 +8,7 @@ import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.TeacherDTO;
 import net.spb.spb.dto.member.MemberDTO;
+import net.spb.spb.dto.pagingsearch.ChapterPageDTO;
 import net.spb.spb.dto.pagingsearch.LecturePageDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
@@ -45,6 +46,14 @@ public class AdminService {
 
     public LectureDTO selectLecture(int lectureIdx) {
         return adminMapper.selectLecture(lectureIdx);
+    }
+
+    public List<ChapterDTO> selectChapterList(ChapterPageDTO chapterPageDTO) {
+        return adminMapper.selectChapterList(chapterPageDTO);
+    }
+
+    public ChapterDTO selectChapter(int chapterIdx) {
+        return adminMapper.selectChapter(chapterIdx);
     }
 
     public int selectLectureCount(LecturePageDTO lecturePageDTO) {
@@ -108,5 +117,9 @@ public class AdminService {
     public int deleteLecture(LectureDTO lectureDTO) {
         lectureDTO.setLectureState(2);
         return adminMapper.deleteLecture(modelMapper.map(lectureDTO, LectureVO.class));
+    }
+
+    public int updateChapter(ChapterDTO chapterDTO) {
+        return adminMapper.updateChapter(modelMapper.map(chapterDTO, ChapterVO.class));
     }
 }

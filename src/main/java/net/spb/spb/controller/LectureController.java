@@ -57,6 +57,7 @@ public class LectureController {
 
     @GetMapping("/chapter/play")
     public String playVideo(@RequestParam("chapterIdx") int chapterIdx, Model model) {
+        log.info("💡 컨트롤러 진입 확인");
         ChapterDTO chapter = lectureService.getChapterById(chapterIdx);
         model.addAttribute("chapter", chapter);
         return "lecture/chapterPlay";

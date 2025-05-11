@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
+@Service("lectureService")
 @Log4j2
 @Transactional
 @RequiredArgsConstructor
@@ -49,5 +49,14 @@ public class LectureServiceImpl implements LectureServiceIf {
         return lectureMapper.getChapterById(chapterIdx);
     }
 
+    @Override
+    public boolean checkLecturePermission(String memberId, int lectureIdx) {
+        Integer count = lectureMapper.countValidOrdersForMemberLecture(memberId, lectureIdx);
+        return count != null && count > 0;
+    }
 
+    @Override
+    public boolean isLectureOwner(String memberId, int lectureIdx) {
+        return lectureMapper.isLectureOwner(memberId, lectureIdx) > 0;
+    }
 }

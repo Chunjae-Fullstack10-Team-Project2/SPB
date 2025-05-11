@@ -40,9 +40,11 @@
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">문의 목록</h3>
-            <a href="/faq/regist" class="btn btn-primary">
-                <i class="bi bi-pencil-square"></i> 문의 등록
-            </a>
+            <c:if test="${memberGrade eq '0'}">
+                <a href="/faq/regist" class="btn btn-primary">
+                    <i class="bi bi-pencil-square"></i> 문의 등록
+                </a>
+            </c:if>
         </div>
         <div class="search-box" style="max-width: 700px;">
             <form name="frmSearch" method="get" action="/faq/list" class="mb-1 p-4">
@@ -95,10 +97,12 @@
                                 <div class="faq-view" data-id="${faqDTO.faqIdx}">
                                     <p class="mb-2"><strong>A.</strong></p>
                                     <p class="faq-answer">${faqDTO.faqAnswer}</p>
-                                    <div class="text-end">
-                                        <button class="btn btn-sm btn-outline-secondary btn-edit">수정</button>
-                                        <button class="btn btn-sm btn-outline-danger btn-delete">삭제</button>
-                                    </div>
+                                    <c:if test="${sessionScope.memberGrade eq '0'}">
+                                        <div class="text-end">
+                                            <button class="btn btn-sm btn-outline-secondary btn-edit">수정</button>
+                                            <button class="btn btn-sm btn-outline-danger btn-delete">삭제</button>
+                                        </div>
+                                    </c:if>
                                     <div class="text-end text-muted mt-2">
                                         작성일: <fmt:formatDate value="${faqDTO.faqCreatedAt}" pattern="yyyy-MM-dd"/>
                                     </div>

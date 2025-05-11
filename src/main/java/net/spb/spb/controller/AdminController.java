@@ -15,10 +15,7 @@ import net.spb.spb.service.AdminService;
 import net.spb.spb.service.ReportService;
 import net.spb.spb.service.teacher.TeacherServiceIf;
 import net.spb.spb.service.member.MemberServiceIf;
-import net.spb.spb.util.BreadcrumbUtil;
-import net.spb.spb.util.FileUtil;
-import net.spb.spb.util.PagingUtil;
-import net.spb.spb.util.VideoUtil;
+import net.spb.spb.util.*;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -64,7 +61,7 @@ public class AdminController {
         }
         int total_count = memberService.getMemberCount(memberPageDTO);
         memberPageDTO.setTotal_count(total_count);
-        String paging = PagingUtil.pagingArea(memberPageDTO);
+        String paging = NewPagingUtil.pagingArea(memberPageDTO);
         List<MemberDTO> memberDTOs = memberService.getMembers(memberPageDTO);
         model.addAttribute("searchDTO", memberPageDTO);
         model.addAttribute("list", memberDTOs);
@@ -289,6 +286,16 @@ public class AdminController {
         return "/admin/lecture/searchPopup";
     }
 
+    @GetMapping("/chapter/list")
+    public void chapterList(@ModelAttribute ChapterPageDTO chapterPageDTO, Model model) {
+        List<ChapterDTO> chapters = adminService.selectChapterList(chapterPageDTO);
+        model.addAttribute("chapters", chapters);
+        setBreadcrumb(model,
+                Map.of("강좌 목록", "/admin/lecture/list"),
+                Map.of("강의 목록", "")
+        );
+    }
+
     @GetMapping("/chapter/regist")
     public void chapterRegist(@RequestParam(name = "lectureIdx", defaultValue = "0") int lectureIdx, Model model) {
         model.addAttribute("lectureIdx", lectureIdx);
@@ -324,13 +331,39 @@ public class AdminController {
                 .body(Map.of("message", "강의 등록 중 오류가 발생했습니다."));
     }
 
-    // 브레드크럼
-    private void setBreadcrumb(Model model, Map<String, String>... pagePairs) {
-        LinkedHashMap<String, String> pages = new LinkedHashMap<>();
-        for (Map<String, String> page : pagePairs) {
-            pages.putAll(page);
+    @GetMapping("/chapter/modify")
+    public void chapterModify(@RequestParam("chapterIdx") int chapterIdx, Model model) {
+        ChapterDTO chapterDTO = adminService.selectChapter(chapterIdx);
+        model.addAttribute("chapterDTO", chapterDTO);
+        setBreadcrumb(model,
+                Map.of("강의 목록", "/admin/chapter/list"),
+                Map.of("강의 수정", "")
+        );
+    }
+
+    @PostMapping("/chapter/modify")
+    @ResponseBody
+    public ResponseEntity<?> chapterModifyPOST(@RequestParam(name = "file1", required = true) MultipartFile file,
+                                               @ModelAttribute ChapterDTO chapterDTO) {
+        try {
+            if (file != null && !file.isEmpty()) {
+                if (file.getSize() > MAX_FILE_SIZE) {
+                    return ResponseEntity
+                            .status(HttpStatus.PAYLOAD_TOO_LARGE)
+                            .body(Map.of("message", "파일 크기가 100MB를 초과했습니다."));
+                }
+                File savedFile = fileUtil.saveFile(file);
+                chapterDTO.setChapterVideo(savedFile.getName());
+                chapterDTO.setChapterRuntime(VideoUtil.getVideoDuration(savedFile));
+                adminService.updateChapter(chapterDTO);
+                return ResponseEntity.ok(Map.of("message", "강의 등록 완료"));
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
-        BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("message", "강의 등록 중 오류가 발생했습니다."));
     }
 
     @GetMapping("/sales/info")
@@ -459,5 +492,14 @@ public class AdminController {
         workbook.close();
     }
 
+
+    // 브레드크럼
+    private void setBreadcrumb(Model model, Map<String, String>... pagePairs) {
+        LinkedHashMap<String, String> pages = new LinkedHashMap<>();
+        for (Map<String, String> page : pagePairs) {
+            pages.putAll(page);
+        }
+        BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
+    }
 }
 

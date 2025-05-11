@@ -71,8 +71,8 @@
         </a>
       </div>
       <div class="col-md-6">
-        <a href="${cp}/admin/chapter/regist" class="btn-admin">
-          <i class="bi bi-journals"></i> 강의 추가
+        <a href="${cp}/admin/chapter/list" class="btn-admin">
+          <i class="bi bi-journals"></i> 강의 관리
         </a>
       </div>
       <div class="col-md-6">
