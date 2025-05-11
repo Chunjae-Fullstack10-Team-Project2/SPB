@@ -26,7 +26,7 @@
     </style>
 </head>
 <body>
-<%@ include file="../common/sidebarHeader.jsp" %>
+<%@ include file="../common/header.jsp" %>
 <div class="modal fade" id="pwdChangeModal" tabindex="-1" aria-labelledby="pwdChangeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -71,26 +71,7 @@
         </div>
     </div>
 </div>
-<div class="content">
-    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-        <symbol id="house-door-fill" viewBox="0 0 16 16">
-            <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
-        </symbol>
-    </svg>
-    <div class="container my-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
-                <li class="breadcrumb-item">
-                    <a class="link-body-emphasis text-decoration-none" href="/">
-                        ${sessionScope.memberId} 님, 오늘도 즐거운 학습 되세요! 😊
-                    </a>
-                </li>
-            </ol>
-        </nav>
-    </div>
-    <%--    <div class="container mt-2 mb-5">--%>
-    <%--        <h2 class="mb-4">${sessionScope.memberId} 님, 오늘도 즐거운 학습 되세요! 😊</h2>--%>
-    <%--    </div>--%>
+<div>
     <div id="myCarousel" class="carousel slide mb-6" data-bs-ride="carousel">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"
@@ -154,19 +135,19 @@
         <div class="row">
             <div class="col-lg-4">
                 <img src="/resources/img/spb_logo.png" class="rounded-circle" width="140" height="140" alt="강사진">
-                <h2 class="fw-normal">우수 강사진</h2>
+                <h2 class="fw-bold">우수 강사진</h2>
                 <p>현직 교사, 교육 전문가들이 직접 강의합니다.</p>
                 <p><a class="btn btn-secondary" href="#">더 알아보기 &raquo;</a></p>
             </div>
             <div class="col-lg-4">
                 <img src="/resources/img/spb_logo.png" class="rounded-circle" width="140" height="140" alt="콘텐츠">
-                <h2 class="fw-normal">다양한 콘텐츠</h2>
+                <h2 class="fw-bold">다양한 콘텐츠</h2>
                 <p>기초부터 심화까지! 초·중·고 전과목 학습자료 제공.</p>
                 <p><a class="btn btn-secondary" href="#">콘텐츠 보기 &raquo;</a></p>
             </div>
             <div class="col-lg-4">
                 <img src="/resources/img/spb_logo.png" class="rounded-circle" width="140" height="140" alt="AI 진단">
-                <h2 class="fw-normal">AI 학습 진단</h2>
+                <h2 class="fw-bold">AI 학습 진단</h2>
                 <p>맞춤 진단으로 나에게 꼭 맞는 강의를 추천해드립니다.</p>
                 <p><a class="btn btn-secondary" href="#">AI 진단 시작 &raquo;</a></p>
             </div>
