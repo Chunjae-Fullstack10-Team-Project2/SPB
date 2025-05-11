@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.pagingsearch.TeacherNoticePageDTO;
 import net.spb.spb.dto.teacher.TeacherNoticeDTO;
+import net.spb.spb.dto.teacher.TeacherNoticeRequestDTO;
 import net.spb.spb.dto.teacher.TeacherNoticeResponseDTO;
 import net.spb.spb.service.teacher.TeacherNoticeService;
 import net.spb.spb.util.BreadcrumbUtil;
@@ -54,6 +55,7 @@ public class TeacherNoticeController {
 
     @GetMapping("/regist")
     public String registGET(@ModelAttribute TeacherNoticePageDTO pageDTO, Model model) {
+        model.addAttribute("pageDTO", pageDTO);
         setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 등록", "/myclass/regist"));
         return "myclass/notice/regist";
     }
@@ -88,8 +90,38 @@ public class TeacherNoticeController {
         model.addAttribute("pageDTO", pageDTO);
         model.addAttribute("teacherNoticeDTO", teacherNoticeDTO);
 
-        setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 상세보기", "/myclass/view?idx=" + idx));
+        setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 상세보기", "/myclass/notice/view"));
 
         return "/myclass/notice/view";
+    }
+
+    @GetMapping("/modify")
+    public String modifyGET(@ModelAttribute TeacherNoticePageDTO pageDTO, @RequestParam("teacherNoticeIdx") int idx, Model model) {
+        TeacherNoticeResponseDTO teacherNoticeDTO = noticeService.getTeacherNoticeByIdx(idx);
+
+        model.addAttribute("pageDTO", pageDTO);
+        model.addAttribute("teacherNoticeDTO", teacherNoticeDTO);
+
+        setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 수정", "/myclass/notice/modify"));
+
+        return "myclass/notice/modify";
+    }
+
+    @PostMapping("/modify")
+    public String modifyPost(
+            @ModelAttribute TeacherNoticePageDTO pageDTO,
+            @ModelAttribute TeacherNoticeDTO teacherNoticeDTO,
+            Model model,
+            HttpServletRequest req
+    ) {
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        noticeService.updateTeacherNotice(memberId, teacherNoticeDTO);
+
+        model.addAttribute("pageDTO", pageDTO);
+        model.addAttribute("teacherNoticeDTO", teacherNoticeDTO);
+
+        return "redirect:/myclass/notice?idx=" + teacherNoticeDTO.getTeacherNoticeIdx() + "&" + pageDTO.getLinkUrl();
     }
 }

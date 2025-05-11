@@ -29,10 +29,9 @@
 
             <p>${teacherNoticeDTO.teacherNoticeContent}</p>
 
-            <form method="post">
+            <form>
                 <div class="gap-2 my-4 d-flex justify-content-between">
                     <input type="hidden" name="teacherNoticeIdx" value="${teacherNoticeDTO.teacherNoticeIdx}" />
-                    <input type="hidden" name="teacherNoticeMemberId" value="${teacherNoticeDTO.teacherNoticeMemberId}" />
 
                     <div>
                         <button class="btn btn-secondary btn-sm" onclick="location.href='/myclass/notice?${pageDTO.linkUrl}'">목록</button>
@@ -55,14 +54,14 @@
         document.getElementById('btnModify').addEventListener('click', () => {
            const frm = document.forms[0];
            frm.action = "/myclass/notice/modify?" + urlParams;
-           frm.method = "post";
+           frm.method = "get";
            frm.submit();
         });
 
         document.getElementById('btnDelete').addEventListener('click', () => {
             const frm = document.forms[0];
             frm.action = "/myclass/notice/delete?" + urlParams;
-            frm.method = "post";
+            frm.method = "get";
             frm.submit();
         });
     </script>
