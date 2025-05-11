@@ -109,4 +109,55 @@ public class StudentReviewController {
 
         return "/review/view";
     }
+
+    @GetMapping("/modify")
+    public String modifyGET(@ModelAttribute LectureReviewPageDTO pageDTO, @RequestParam("idx") int idx, Model model, HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        List<StudentLectureResponseDTO> lectures = studentLectureService.getStudentLectureList(memberId, null);
+        LectureReviewResponseDTO lectureReviewDTO = lectureReviewService.getLectureReviewByIdx(idx);
+
+        model.addAttribute("pageDTO", pageDTO);
+        model.addAttribute("lectureList", lectures);
+        model.addAttribute("lectureReviewDTO", lectureReviewDTO);
+
+        setBreadcrumb(model, Map.of("수강후기", "/mystudy/review"), Map.of("수강후기 수정", "/mystudy/review/modify"));
+        return "review/modify";
+    }
+
+    @PostMapping("/modify")
+    public String modifyPost(
+            @ModelAttribute LectureReviewPageDTO pageDTO,
+            @ModelAttribute LectureReviewDTO lectureReviewDTO,
+            Model model,
+            HttpServletRequest req
+    ) {
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        lectureReviewService.updateLectureReview(memberId, lectureReviewDTO);
+
+        model.addAttribute("pageDTO", pageDTO);
+        model.addAttribute("lectureReviewDTO", lectureReviewDTO);
+
+        return "redirect:/mystudy/review?idx=" + lectureReviewDTO.getLectureReviewIdx() + "&" + pageDTO.getLinkUrl();
+    }
+
+    @GetMapping("/delete")
+    public String delete(
+            @ModelAttribute LectureReviewPageDTO pageDTO,
+            @RequestParam("idx") int idx,
+            Model model,
+            HttpServletRequest req
+    ) {
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        lectureReviewService.deleteLectureReviewByIdx(memberId, idx);
+
+        model.addAttribute("pageDTO", pageDTO);
+
+        return "redirect:/mystudy/review?" + pageDTO.getLinkUrl();
+    }
 }
