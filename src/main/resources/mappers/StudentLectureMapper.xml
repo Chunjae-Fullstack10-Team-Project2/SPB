@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="net.spb.spb.mapper.mystudy.StudentLectureMapper">
+<mapper namespace="net.spb.spb.mapper.lecture.StudentLectureMapper">
     <!-- 검색 조건 -->
     <sql id="whereCondition">
         <where>
@@ -28,13 +28,16 @@
     </select>
 
     <!-- 나의 강의 목록 -->
-    <select id="getStudentLectureList" resultType="net.spb.spb.dto.mystudy.StudentLectureDTO">
+    <select id="getStudentLectureList" resultType="net.spb.spb.dto.lecture.StudentLectureResponseDTO">
         select tlr.lectureRegisterIdx as lectureRegisterIdx
              , tlr.lectureRegisterRefIdx as lectureRegisterRefIdx, tl.lectureTitle as lectureTitle, tt.teacherName as teacherName
              , tlr.lectureRegisterStartedAt as lectureRegisterStatedAt, tlr.lectureRegisterStatus as lecturRegisterStatus
         from tbl_lecture_register as tlr
         inner join tbl_lecture as tl on tlr.lectureRegisterRefIdx = tl.lectureIdx
         inner join tbl_teacher as tt on tl.lectureTeacherId = tt.teacherId
+        <if test="pageDTO == null">
+            where tlr.lectureRegisterMemberId = #{memberId}
+        </if>
         <if test="pageDTO != null">
             <include refid="whereCondition"></include>
             <if test="pageDTO.page_skip_count != null and pageDTO.page_size != null">
@@ -70,5 +73,12 @@
                     where chapterLectureIdx = #{lectureIdx}
                 ) * 100.0
             ) as lectureProgress
+    </select>
+
+    <select id="isLectureRegisteredByMemberId" resultType="boolean">
+        select count(1)
+        from tbl_lecture_register
+        where lectureRegisterMemberId = #{memberId}
+        and lectureRegisterRefIdx = #{lectureIdx}
     </select>
 </mapper>

@@ -1,8 +1,7 @@
-package net.spb.spb.mapper;
+package net.spb.spb.mapper.lecture;
 
 import net.spb.spb.domain.LectureVO;
 import net.spb.spb.dto.ChapterDTO;
-import net.spb.spb.dto.pagingsearch.SearchDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

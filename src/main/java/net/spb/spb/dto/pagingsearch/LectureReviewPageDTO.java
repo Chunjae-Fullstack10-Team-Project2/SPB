@@ -13,18 +13,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class TeacherNoticePageDTO extends PageDTO {
+public class LectureReviewPageDTO extends PageDTO {
     private String search_category;
 
     private LocalDate start_date;
     private LocalDate end_date;
 
     @Builder.Default
-    private String sort_by = "teacherNoticeIdx";
+    private String sort_by = "lectureReviewIdx";
     @Builder.Default
     private String sort_direction = "desc";
 
-    private static final List<String> SORT_COLUMNS = List.of("teacherNoticeIdx", "teacherNoticeTitle", "teacherNoticeContent", "teacherNoticeCreatedAt");
+    private static final List<String> SORT_COLUMNS = List.of("lectureReviewIdx", "lectureTitle", "teacherName", "lectureReviewContent", "lectureReviewGrade", "lectureReviewCreatedAt");
     private static final List<String> SORT_DIRECTIONS = List.of("asc", "desc");
 
     public String getSort_by() {

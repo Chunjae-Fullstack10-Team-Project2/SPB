@@ -1,4 +1,4 @@
-package net.spb.spb.mapper;
+package net.spb.spb.mapper.teacher;
 
 import net.spb.spb.domain.TeacherNoticeVO;
 import net.spb.spb.dto.pagingsearch.TeacherNoticePageDTO;
