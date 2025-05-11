@@ -372,7 +372,7 @@
             </div>
 
             <div class="text-end d-grid gap-2">
-                <button type="submit" class="btn btn-primary" id="btnSubmitJoin">회원가입</button>
+                <button type="submit" class="btn btn-primary" disabled id="btnSubmitJoin">회원가입</button>
             </div>
         </form>
     </div>
@@ -663,6 +663,38 @@
         }
     }
 
+    function validateFormFields() {
+        const memberId = document.getElementById('memberId')?.value?.trim();
+        const memberPwd = document.getElementById('memberPwd')?.value?.trim();
+        const memberPwdConfirm = document.getElementById('memberPwdConfirm')?.value?.trim();
+        const memberName = document.getElementById('memberName')?.value?.trim();
+        const memberPhone = document.getElementById('memberPhone')?.value?.trim();
+        const memberBirth = document.getElementById('memberBirth')?.value?.trim();
+        const memberZip = document.getElementById('memberZipCode')?.value?.trim();
+        const memberAddr1 = document.getElementById('memberAddr1')?.value?.trim();
+        const memberAgree = document.getElementById('memberAgree')?.checked;
+
+        const memberEmail1 = document.getElementById("memberEmail1")?.value?.trim();
+        let memberEmail2 = document.getElementById("memberEmail2")?.value;
+        if (memberEmail2 === "custom") {
+            memberEmail2 = document.getElementById("memberEmailCustom")?.value?.trim();
+        }
+
+        const idRegEx = /^[a-zA-Z0-9]{4,20}$/;
+        const pwdRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{4,15}$/;
+
+        const allFilled = memberId && memberPwd && memberPwdConfirm && memberName &&
+            memberPhone && memberBirth && memberZip && memberAddr1 &&
+            memberEmail1 && memberEmail2 && memberAgree;
+
+        const isValid = allFilled &&
+            idRegEx.test(memberId) &&
+            pwdRegEx.test(memberPwd) &&
+            memberPwd === memberPwdConfirm;
+
+        document.getElementById("btnSubmitJoin").disabled = !isValid;
+    }
+
     const btnSubmitJoin = document.getElementById("btnSubmitJoin");
     btnSubmitJoin?.addEventListener("click", (e) => {
         const memberIdValue = document.getElementById('memberId').value.trim();
@@ -758,6 +790,18 @@
 
         document.querySelector('input[name="memberEmail"]').value = memberEmailValue;
         document.getElementById('frmJoin').submit();
+    });
+
+
+    $(function () {
+        // 실시간 유효성 검사 연결
+        $('#frmJoin input, #frmJoin select').on('input change', function () {
+            validateFormFields();
+        });
+
+        $('#memberAgree').on('change', function () {
+            validateFormFields();
+        });
     });
 </script>
 </body>
