@@ -3,7 +3,7 @@
 <mapper namespace="net.spb.spb.mapper.TeacherMapper">
     <!--선생님 메인 조회-->
     <select id="selectTeacher" resultType="net.spb.spb.domain.TeacherVO">
-        select teacherIdx, teacherName, teacherId, teacherIntro, teacherApproval, teacherProfileImg, teacherSubject
+        select teacherIdx, teacherName, teacherId, teacherIntro, teacherState, teacherProfileImg, teacherSubject
         from tbl_teacher
         where teacherId = #{teacherId}
     </select>
