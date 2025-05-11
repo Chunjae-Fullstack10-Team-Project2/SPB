@@ -1,7 +1,9 @@
-package net.spb.spb.dto.mystudy;
+package net.spb.spb.dto.lecture;
 
-import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -9,23 +11,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LectureReviewDTO {
-    @NotNull
+public class LectureReviewResponseDTO {
     private int lectureReviewIdx;
-
-    @NotNull
     private int lectureReviewRefIdx;
-
-    @NotBlank
+    private String lectureTitle;
+    private String lectureTeacherId;
+    private String teacherName;
     private String lectureReviewContent;
-
     private String lectureReviewMemberId;
-
-    @NotNull
-    @Min(0)
-    @Max(5)
+    private String memberName;
     private int lectureReviewGrade;
-
     private LocalDateTime lectureReviewCreatedAt;
     private LocalDateTime lectureReviewUpdatedAt;
 }

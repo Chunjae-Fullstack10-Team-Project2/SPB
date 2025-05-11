@@ -1,26 +1,27 @@
-package net.spb.spb.service.mystudy;
+package net.spb.spb.service.lecture;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.domain.LectureReviewVO;
-import net.spb.spb.dto.mystudy.LectureReviewDTO;
-import net.spb.spb.dto.mystudy.LectureReviewResponseDTO;
+import net.spb.spb.dto.lecture.LectureReviewDTO;
+import net.spb.spb.dto.lecture.LectureReviewListRequestDTO;
+import net.spb.spb.dto.lecture.LectureReviewResponseDTO;
 import net.spb.spb.dto.pagingsearch.LectureReviewPageDTO;
-import net.spb.spb.exception.NotFoundException;
+import net.spb.spb.mapper.lecture.LectureMapper;
 import net.spb.spb.mapper.lecture.LectureReviewMapper;
-import net.spb.spb.mapper.mystudy.StudentLectureMapper;
+import net.spb.spb.mapper.lecture.StudentLectureMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Log4j2
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class LectureReviewService implements LectureReviewServiceIf {
+
     private final ModelMapper modelMapper;
+    private final LectureMapper lectureMapper;
     private final LectureReviewMapper lectureReviewMapper;
     private final StudentLectureMapper studentLectureMapper;
 
@@ -39,8 +40,9 @@ public class LectureReviewService implements LectureReviewServiceIf {
     }
 
     @Override
-    public List<LectureReviewResponseDTO> getLectureReviewList(LectureReviewPageDTO pageDTO) {
-        return lectureReviewMapper.selectLectureReviewList(pageDTO);
+    public List<LectureReviewResponseDTO> getLectureReviewList(LectureReviewListRequestDTO reqDTO, LectureReviewPageDTO pageDTO) {
+        pageDTO.setTotal_count(lectureReviewMapper.selectLectureReviewListTotalCount(reqDTO, pageDTO));
+        return lectureReviewMapper.selectLectureReviewList(reqDTO, pageDTO);
     }
 
     @Override
@@ -48,7 +50,7 @@ public class LectureReviewService implements LectureReviewServiceIf {
         LectureReviewResponseDTO review = lectureReviewMapper.selectLectureReviewByIdx(idx);
 
         if (review == null) {
-            throw new NotFoundException("요청한 수강후기를 찾을 수 없습니다.", "LectureReview", idx);
+            // 요청한 수강후기를 찾을 수 없습니다.
         }
 
         return review;
@@ -60,10 +62,10 @@ public class LectureReviewService implements LectureReviewServiceIf {
         LectureReviewResponseDTO review = lectureReviewMapper.selectLectureReviewByIdx(reviewIdx);
 
         if(review == null) {
-            // throw new NotFoundException("LectureReview", reviewIdx);
+            // 요청한 수강후기를 찾을 수 없습니다.
         }
         if(!review.getLectureReviewMemberId().equals(memberId)) {
-            // throw new AccessDeniedException("LectureReview", reviewIdx);
+            // 수정 권한이 없습니다.
         }
 
         LectureReviewVO lectureReviewVO = modelMapper.map(lectureReviewDTO, LectureReviewVO.class);
@@ -75,17 +77,12 @@ public class LectureReviewService implements LectureReviewServiceIf {
         LectureReviewResponseDTO review = lectureReviewMapper.selectLectureReviewByIdx(idx);
 
         if(review == null) {
-            // throw new NotFoundException("LectureReview", idx);
+            // 요청한 수강후기를 찾을 수 없습니다.
         }
         if(!review.getLectureReviewMemberId().equals(memberId)) {
-            // throw new AccessDeniedException("LectureReview", idx);
+            // 삭제 권한이 없습니다.
         }
 
         return lectureReviewMapper.deleteLectureReviewByIdx(idx);
-    }
-
-    @Override
-    public int getLectureReviewListTotalCount(LectureReviewPageDTO pageDTO) {
-        return lectureReviewMapper.selectLectureReviewListTotalCount(pageDTO);
     }
 }

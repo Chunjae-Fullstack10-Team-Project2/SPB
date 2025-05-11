@@ -1,11 +1,11 @@
-package net.spb.spb.service;
+package net.spb.spb.service.lecture;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.domain.LectureVO;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
-import net.spb.spb.mapper.LectureMapper;
+import net.spb.spb.mapper.lecture.LectureMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

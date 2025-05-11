@@ -1,4 +1,4 @@
-package net.spb.spb.service.mystudy;
+package net.spb.spb.service;
 
 import net.spb.spb.dto.mystudy.PlanDTO;
 import net.spb.spb.dto.mystudy.PlanResponseDTO;

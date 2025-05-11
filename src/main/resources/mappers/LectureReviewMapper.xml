@@ -3,7 +3,7 @@
 <mapper namespace="net.spb.spb.mapper.lecture.LectureReviewMapper">
     <sql id="condition">
         <where>
-            ${pageDTO.where_column} = #{where_value}
+            ${reqDTO.where_column} = #{reqDTO.where_value}
             <if test="pageDTO.search_category == 'lectureTitle'">
                 and tl.lectureTitle like concat('%', #{pageDTO.search_word} ,'%')
             </if>
@@ -13,9 +13,9 @@
             <if test="pageDTO.search_category == 'lectureReviewContent'">
                 and tlr.lectureReviewContent like concat('%', #{pageDTO.search_word} ,'%')
             </if>
-            <if test="pageDTO.search_start_date != null and pageDTO.search_end_date != null
-                      and pageDTO.search_start_date != '' and pageDTO.search_end_date != ''">
-                and tlr.lectureReviewCreatedAt between #{pageDTO.search_start_date} and #{pageDTO.search_end_date}
+            <if test="pageDTO.start_date != null and pageDTO.end_date != null
+                      and pageDTO.start_date != '' and pageDTO.end_date != ''">
+                and tlr.lectureReviewCreatedAt between #{pageDTO.start_date} and #{pageDTO.end_date}
             </if>
         </where>
     </sql>
@@ -33,12 +33,13 @@
         <include refid="condition" />
     </select>
 
-    <select id="selectLectureReviewList" resultType="net.spb.spb.dto.mystudy.LectureReviewResponseDTO">
+    <select id="selectLectureReviewList" resultType="net.spb.spb.dto.lecture.LectureReviewResponseDTO">
         select tlr.lectureReviewIdx as lectureReviewIdx
              , tlr.lectureReviewRefIdx as lectureReviewRefIdx, tl.lectureTitle as lectureTitle
              , tt.teacherId as teacherId, tt.teacherName as teacherName
              , tlr.lectureReviewContent as lectureReviewContent, tlr.lectureReviewGrade as lectureReviewGrade
              , tlr.lectureReviewMemberId as lectureReviewMemberId, tm.memberName as memberName
+             , tlr.lectureReviewCreatedAt as lectureReviewCreatedAt
         from tbl_lecture_review as tlr
         inner join tbl_lecture as tl on tlr.lectureReviewRefIdx = tl.lectureIdx
         inner join tbl_teacher as tt on tl.lectureTeacherId = tt.teacherId
@@ -48,7 +49,7 @@
         limit #{pageDTO.page_skip_count}, #{pageDTO.page_size}
     </select>
 
-    <select id="selectLectureReviewByIdx" resultType="net.spb.spb.dto.mystudy.LectureReviewResponseDTO">
+    <select id="selectLectureReviewByIdx" resultType="net.spb.spb.dto.lecture.LectureReviewResponseDTO">
         select tlr.lectureReviewIdx as lectureReviewIdx
              , tlr.lectureReviewRefIdx as lectureReviewRefIdx, tl.lectureTitle as lectureTitle
              , tt.teacherId as teacherId, tt.teacherName as teacherName

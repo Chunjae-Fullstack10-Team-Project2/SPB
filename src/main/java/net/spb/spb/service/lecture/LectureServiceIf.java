@@ -1,4 +1,4 @@
-package net.spb.spb.service;
+package net.spb.spb.service.lecture;
 
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;

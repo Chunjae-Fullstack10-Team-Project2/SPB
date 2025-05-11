@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="net.spb.spb.mapper.mystudy.StudentLectureMapper">
+<mapper namespace="net.spb.spb.mapper.lecture.StudentLectureMapper">
     <!-- 검색 조건 -->
     <sql id="whereCondition">
         <where>
@@ -28,7 +28,7 @@
     </select>
 
     <!-- 나의 강의 목록 -->
-    <select id="getStudentLectureList" resultType="net.spb.spb.dto.mystudy.StudentLectureResponseDTO">
+    <select id="getStudentLectureList" resultType="net.spb.spb.dto.lecture.StudentLectureResponseDTO">
         select tlr.lectureRegisterIdx as lectureRegisterIdx
              , tlr.lectureRegisterRefIdx as lectureRegisterRefIdx, tl.lectureTitle as lectureTitle, tt.teacherName as teacherName
              , tlr.lectureRegisterStartedAt as lectureRegisterStatedAt, tlr.lectureRegisterStatus as lecturRegisterStatus

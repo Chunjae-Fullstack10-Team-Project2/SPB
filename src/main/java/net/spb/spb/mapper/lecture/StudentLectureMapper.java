@@ -1,6 +1,6 @@
-package net.spb.spb.mapper.mystudy;
+package net.spb.spb.mapper.lecture;
 
-import net.spb.spb.dto.mystudy.StudentLectureResponseDTO;
+import net.spb.spb.dto.lecture.StudentLectureResponseDTO;
 import net.spb.spb.dto.pagingsearch.StudentLecturePageDTO;
 
 import java.time.LocalDateTime;
