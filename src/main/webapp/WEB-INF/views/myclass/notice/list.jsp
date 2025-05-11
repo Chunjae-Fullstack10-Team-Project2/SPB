@@ -20,7 +20,7 @@
     <div class="content">
         <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
         <div class="container my-5">
-            <h2 class="mb-4">공지사항</h2>
+            <h1 class="mb-4">공지사항</h1>
 
             <%
                 List<Map<String, String>> searchSelect = new ArrayList<>();
@@ -57,7 +57,7 @@
                     </thead>
                     <tbody>
                         <c:forEach items="${noticeList}" var="notice" varStatus="status">
-                            <tr>
+                            <tr ${notice.teacherNoticeFixed == 1 ? "class='table-secondary'" : ""}>
                                 <td>${pageDTO.total_count - ((pageDTO.page_no - 1) * pageDTO.page_size) - status.index}</td>
                                 <td class="text-start">
                                     <a href="/myclass/notice/detail?idx=${notice.teacherNoticeIdx}&${pageDTO.linkUrl}"

@@ -2,16 +2,20 @@ package net.spb.spb.controller.teacher;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.pagingsearch.TeacherNoticePageDTO;
+import net.spb.spb.dto.teacher.TeacherNoticeDTO;
 import net.spb.spb.dto.teacher.TeacherNoticeResponseDTO;
 import net.spb.spb.service.teacher.TeacherNoticeService;
 import net.spb.spb.util.BreadcrumbUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.LinkedHashMap;
@@ -49,5 +53,34 @@ public class TeacherNoticeController {
         setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"));
 
         return "myclass/notice/list";
+    }
+
+    @GetMapping("/regist")
+    public String registGET(@ModelAttribute TeacherNoticePageDTO pageDTO, Model model) {
+        setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 등록", "/myclass/regist"));
+        return "myclass/notice/regist";
+    }
+
+    @PostMapping("/regist")
+    public String registPOST(
+            @ModelAttribute TeacherNoticePageDTO pageDTO,
+            @Valid @ModelAttribute TeacherNoticeDTO teacherNoticeDTO,
+            BindingResult bindingResult,
+            Model model,
+            HttpServletRequest req
+    ) {
+        if (bindingResult.hasErrors()) {
+            // 잘못된 입력이 있습니다. 다시 확인해주세요.
+            model.addAttribute("teacherNoticeDTO", teacherNoticeDTO);
+            return "myclass/notice/regist";
+        }
+
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        teacherNoticeDTO.setTeacherNoticeMemberId(memberId);
+        noticeService.createTeacherNotice(teacherNoticeDTO);
+
+        return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
     }
 }

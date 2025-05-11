@@ -5,7 +5,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<c:if test="${not empty pageDTO}">
+<c:if test="${not empty pageDTO and pageDTO.total_count > 0}">
     <%
         String url = request.getRequestURI().toString();
         request.setAttribute("baseUrl", url);
