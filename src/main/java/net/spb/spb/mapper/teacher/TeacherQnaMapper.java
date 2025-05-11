@@ -1,9 +1,10 @@
-package net.spb.spb.mapper;
+package net.spb.spb.mapper.teacher;
 
 import net.spb.spb.domain.TeacherQnaVO;
 import net.spb.spb.dto.pagingsearch.TeacherQnaPageDTO;
 import net.spb.spb.dto.teacher.TeacherQnaListRequestDTO;
 import net.spb.spb.dto.teacher.TeacherQnaResponseDTO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
