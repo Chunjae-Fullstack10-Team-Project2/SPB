@@ -3,9 +3,11 @@ package net.spb.spb.mapper;
 import net.spb.spb.domain.ChapterVO;
 import net.spb.spb.domain.LectureVO;
 import net.spb.spb.domain.TeacherVO;
+import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.member.MemberDTO;
+import net.spb.spb.dto.pagingsearch.ChapterPageDTO;
 import net.spb.spb.dto.pagingsearch.LecturePageDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
@@ -24,6 +26,10 @@ public interface AdminMapper {
     List<LectureDTO> selectLectureList(LecturePageDTO lecturePageDTO);
 
     LectureDTO selectLecture(int lectureIdx);
+
+    List<ChapterDTO> selectChapterList(ChapterPageDTO chapterPageDTO);
+
+    ChapterDTO selectChapter(int chapterIdx);
 
     int selectLectureCount(LecturePageDTO lecturePageDTO);
 

@@ -85,6 +85,36 @@
         </where>
     </select>
 
+    <select id="selectChapterList" resultType="net.spb.spb.dto.ChapterDTO" parameterType="net.spb.spb.dto.pagingsearch.ChapterPageDTO">
+        select c.chapterIdx,
+               c.chapterLectureIdx,
+               c.chapterName,
+               c.chapterVideo,
+               c.chapterRuntime,
+               c.chapterState,
+               l.lectureTitle
+        from tbl_lecture_chapter c
+        inner join tbl_lecture l on c.chapterLectureIdx = l.lectureIdx
+        <where>
+            <if test="lectureIdx != null and lectureIdx > 0">
+                c.chapterLectureIdx = #{lectureIdx}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectChapter" parameterType="java.lang.Integer" resultType="net.spb.spb.dto.ChapterDTO">
+        select c.chapterIdx,
+               c.chapterLectureIdx,
+               c.chapterName,
+               c.chapterVideo,
+               c.chapterRuntime,
+               c.chapterState,
+               l.lectureTitle
+        from tbl_lecture_chapter c
+        inner join tbl_lecture l on c.chapterLectureIdx = l.lectureIdx
+        where c.chapterIdx = #{chapterIdx}
+    </select>
+
     <select id="selectMonthlySales" resultType="map" parameterType="map">
         <choose>
             <!-- DAY: 날짜별 매출 -->
@@ -308,5 +338,11 @@
             chapterVideo = #{chapterVideo},
             chapterRuntime = #{chapterRuntime}
         where chapterLectureIdx = #{chapterLectureIdx}
+    </update>
+
+    <update id="deleteChapter" parameterType="net.spb.spb.domain.ChapterVO">
+        update tbl_lecture_chapter
+        set chapterState = #{chapterState}
+        where chapterIdx = #{chapterIdx}
     </update>
 </mapper>
