@@ -29,5 +29,9 @@ public interface MyPageMapper {
     // 주문번호 기반으로 강좌까지 포함된 주문 상세 조회
     List<OrderDTO> listLecturesByOrderIdxList(@Param("orderIdxList") List<Integer> orderIdxList, @Param("searchDTO") SearchDTO searchDTO);
 
+    boolean updateOrderStatus(@Param("orderIdx") int orderIdx,
+                              @Param("orderStatus") String orderStatus,
+                              @Param("memberId") String memberId);
+
     boolean changePwd(@Param("memberPwd") String memberPwd, @Param("memberId") String memberId);
 }
