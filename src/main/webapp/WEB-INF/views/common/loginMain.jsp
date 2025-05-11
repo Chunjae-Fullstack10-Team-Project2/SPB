@@ -26,28 +26,52 @@
     </style>
 </head>
 <body>
-<%@ include file="../common/sidebarHeader.jsp" %>
-
-<div class="content">
-    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-        <symbol id="house-door-fill" viewBox="0 0 16 16">
-            <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
-        </symbol>
-    </svg>
-    <div class="container my-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
-                <li class="breadcrumb-item">
-                    <a class="link-body-emphasis text-decoration-none" href="/">
-                        ${sessionScope.memberId} 님, 오늘도 즐거운 학습 되세요! 😊
-                    </a>
-                </li>
-            </ol>
-        </nav>
+<%@ include file="../common/header.jsp" %>
+<div class="modal fade" id="pwdChangeModal" tabindex="-1" aria-labelledby="pwdChangeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pwdChangeModalLabel">비밀번호 변경 안내</h5>
+            </div>
+            <div class="modal-body">
+                <p>비밀번호를 변경하신지 90일이 지났습니다.<br>비밀번호를 변경하시겠습니까?</p>
+            </div>
+            <div class="modal-footer">
+                <a href="/mypage/changePwd" class="btn btn-primary">예</a>
+                <button type="button" class="btn btn-secondary" id="btnRemindLater">90일 후 다시 알림</button>
+            </div>
+        </div>
     </div>
-<%--    <div class="container mt-2 mb-5">--%>
-<%--        <h2 class="mb-4">${sessionScope.memberId} 님, 오늘도 즐거운 학습 되세요! 😊</h2>--%>
-<%--    </div>--%>
+</div>
+
+<div class="modal fade" id="emailVerifyModal" tabindex="-1" aria-labelledby="emailVerifyModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">이메일 인증 필요</h5>
+            </div>
+            <div class="modal-body">
+                <p>휴면 상태입니다. 이메일 인증 후 서비스를 이용해주세요.</p>
+                <div class="mb-3">
+                    <input type="email" class="form-control" id="emailInput"
+                           value="${sessionScope.memberDTO.memberEmail}" readonly>
+                </div>
+                <button id="btnSendEmail" class="btn btn-primary w-100 mb-2">인증코드 전송</button>
+
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="codeInput" placeholder="인증코드 입력" maxlength="6">
+                </div>
+                <div class="mb-2">
+                    <span id="emailCountWarning" class="warning-text text-danger"></span>
+                    <span id="emailAuthTimeWarning" class="warning-text text-danger"></span>
+                </div>
+                <button id="btnCheckCode" class="btn btn-success w-100">인증 확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
     <div id="myCarousel" class="carousel slide mb-6" data-bs-ride="carousel">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"
@@ -111,19 +135,19 @@
         <div class="row">
             <div class="col-lg-4">
                 <img src="/resources/img/spb_logo.png" class="rounded-circle" width="140" height="140" alt="강사진">
-                <h2 class="fw-normal">우수 강사진</h2>
+                <h2 class="fw-bold">우수 강사진</h2>
                 <p>현직 교사, 교육 전문가들이 직접 강의합니다.</p>
                 <p><a class="btn btn-secondary" href="#">더 알아보기 &raquo;</a></p>
             </div>
             <div class="col-lg-4">
                 <img src="/resources/img/spb_logo.png" class="rounded-circle" width="140" height="140" alt="콘텐츠">
-                <h2 class="fw-normal">다양한 콘텐츠</h2>
+                <h2 class="fw-bold">다양한 콘텐츠</h2>
                 <p>기초부터 심화까지! 초·중·고 전과목 학습자료 제공.</p>
                 <p><a class="btn btn-secondary" href="#">콘텐츠 보기 &raquo;</a></p>
             </div>
             <div class="col-lg-4">
                 <img src="/resources/img/spb_logo.png" class="rounded-circle" width="140" height="140" alt="AI 진단">
-                <h2 class="fw-normal">AI 학습 진단</h2>
+                <h2 class="fw-bold">AI 학습 진단</h2>
                 <p>맞춤 진단으로 나에게 꼭 맞는 강의를 추천해드립니다.</p>
                 <p><a class="btn btn-secondary" href="#">AI 진단 시작 &raquo;</a></p>
             </div>
@@ -163,8 +187,147 @@
     </div><!-- /.container -->
 </div>
 <script>
+    let modal = null;
+    let emailModal = null;
 
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // 비밀번호 변경 모달 처리
+        <c:if test="${sessionScope.memberDTO.memberState == '3'}">
+        modal = new bootstrap.Modal(document.getElementById('pwdChangeModal'), {
+            backdrop: 'static',
+            keyboard: false
+        });
+        modal.show();
+        </c:if>
+
+        const remindBtn = document.getElementById("btnRemindLater");
+        if (remindBtn) {
+            remindBtn.addEventListener("click", function () {
+                const memberId = "${sessionScope.memberDTO.memberId}";
+
+                fetch('/updatePwdChangeDate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({memberId: memberId})
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("알림이 설정되었습니다. 비밀번호 변경 알림이 연기되었습니다.");
+                            if (modal) modal.hide();
+                        } else {
+                            alert("알림 설정에 실패했습니다.");
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        }
+
+        // 휴면 계정 이메일 인증 모달 처리
+        <c:if test="${sessionScope.memberDTO.memberState == '5'}">
+        emailModal = new bootstrap.Modal(document.getElementById('emailVerifyModal'), {
+            backdrop: 'static',
+            keyboard: false
+        });
+        emailModal.show();
+        </c:if>
+
+        let emailAuthTimer;
+        let emailAuthTimeLimit = 300;
+
+        function startEmailAuthTimer() {
+            clearInterval(emailAuthTimer);
+            emailAuthTimeLimit = 300;
+
+            emailAuthTimer = setInterval(function () {
+                const minutes = Math.floor(emailAuthTimeLimit / 60);
+                const seconds = emailAuthTimeLimit % 60;
+
+                const timeDisplay = "남은 인증 시간: " + minutes + ":" + (seconds < 10 ? '0' + seconds : seconds);
+                document.getElementById('emailAuthTimeWarning').textContent = timeDisplay;
+
+                if (emailAuthTimeLimit <= 0) {
+                    clearInterval(emailAuthTimer);
+                    document.getElementById('emailAuthTimeWarning').textContent = '인증 시간이 만료되었습니다.';
+                    document.getElementById('codeInput').disabled = true;
+                    document.getElementById('btnCheckCode').disabled = true;
+                    document.getElementById('btnSendEmail').disabled = false;
+                }
+
+                emailAuthTimeLimit--;
+            }, 1000);
+        }
+
+        const sendBtn = document.getElementById("btnSendEmail");
+        if (sendBtn) {
+            sendBtn.addEventListener("click", () => {
+                const emailInput = document.getElementById("emailInput");
+                const email = emailInput.value.trim();
+
+                if (!email) {
+                    alert("이메일을 입력해주세요.");
+                    return;
+                }
+
+                fetch("/email/verify", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({memberEmail: email})
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        alert(data.message);
+
+                        if (data.success) {
+                            const count = data.emailTryCount || 1;
+                            document.getElementById('emailCountWarning').innerHTML =
+                                "<strong>인증 횟수 " + count + "/3회</strong>";
+
+                            document.getElementById('btnSendEmail').disabled = true;
+                            document.getElementById('codeInput').disabled = false;
+                            document.getElementById('btnCheckCode').disabled = false;
+                            startEmailAuthTimer();
+                        }
+                    });
+            });
+        }
+
+        const checkBtn = document.getElementById("btnCheckCode");
+        if (checkBtn) {
+            checkBtn.addEventListener("click", () => {
+                const code = document.getElementById("codeInput").value.trim();
+                const email = document.getElementById("emailInput").value.trim();
+
+                fetch("/email/codeCheck", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({
+                        memberEmailCode: code,
+                        memberEmail: email
+                    })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("이메일 인증이 완료되었습니다.");
+                            fetch("/email/reactivate", {
+                                method: "POST",
+                                headers: {"Content-Type": "application/json"},
+                                body: JSON.stringify({memberId: "${sessionScope.memberDTO.memberId}"})
+                            }).then(() => location.reload());
+                        } else {
+                            alert(data.message);
+                        }
+                    });
+            });
+        }
+
+    });
 </script>
+
 <c:if test="${not empty message}">
     <script>
         alert("${message}");
