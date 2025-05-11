@@ -51,6 +51,19 @@ public class MyPageService {
         return myPageMapper.listLecturesByOrderIdxList(orderIdxList, searchDTO);
     }
 
+    public boolean confirmOrder(int orderIdx, String orderStatus, String memberId) {
+        return myPageMapper.updateOrderStatus(orderIdx, "f", memberId);
+    }
+
+    public boolean requestRefund(int orderIdx, String orderStatus, String memberId) {
+        return myPageMapper.updateOrderStatus(orderIdx, "r", memberId);
+    }
+
+    public boolean orderCancel(int orderIdx, String orderStatus, String memberId) {
+        return myPageMapper.updateOrderStatus(orderIdx, "c", memberId);
+    }
+
+
     public boolean changePwd(String memberPwd, String memberId) {
         return myPageMapper.changePwd(memberPwd, memberId);
     }

@@ -141,7 +141,7 @@
                 <li><a href="${cp}/notice/list" class="nav-link px-2 link-body-emphasis">공지사항</a></li>
             </ul>
 
-            <div class="d-flex align-items-center gap-3 flex-wrap justify-content-end user-tools">
+            <div class="d-flex align-items-center gap-4 flex-wrap justify-content-end user-tools">
                 <div class="greeting">
                     <c:if test="${not empty sessionScope.memberId}">
                         ${sessionScope.memberId} 님, 오늘도 즐거운 학습 되세요! 😊

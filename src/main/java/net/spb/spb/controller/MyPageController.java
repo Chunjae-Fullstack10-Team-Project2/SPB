@@ -239,10 +239,37 @@ public class MyPageController {
                 .dtoList(finalOrderList)
                 .build();
 
-         model.addAttribute("responseDTO", pageResponseDTO);
+        model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("orderList", finalOrderList);
         model.addAttribute("searchDTO", searchDTO);
         return "mypage/order";
+    }
+
+    @PostMapping("/order/confirm")
+    public String confirmOrder(@RequestParam("orderIdx") int orderIdx, @RequestParam("orderStatus") String orderStatus,
+                               HttpSession session, RedirectAttributes rttr) {
+        String memberId = (String) session.getAttribute("memberId");
+        boolean success = myPageService.confirmOrder(orderIdx, orderStatus, memberId);
+        rttr.addFlashAttribute("message", success ? "구매가 확정되었습니다." : "처리 중 오류 발생");
+        return "redirect:/mypage/order";
+    }
+
+    @PostMapping("/order/refund")
+    public String refundOrder(@RequestParam("orderIdx") int orderIdx, @RequestParam("orderStatus") String orderStatus,
+                              HttpSession session, RedirectAttributes rttr) {
+        String memberId = (String) session.getAttribute("memberId");
+        boolean success = myPageService.requestRefund(orderIdx, orderStatus, memberId);
+        rttr.addFlashAttribute("message", success ? "환불이 요청되었습니다." : "처리 중 오류 발생");
+        return "redirect:/mypage/order";
+    }
+
+    @PostMapping("/order/cancel")
+    public String orderCancel(@RequestParam("orderIdx") int orderIdx, @RequestParam("orderStatus") String orderStatus,
+                              HttpSession session, RedirectAttributes rttr) {
+        String memberId = (String) session.getAttribute("memberId");
+        boolean success = myPageService.requestRefund(orderIdx, orderStatus, memberId);
+        rttr.addFlashAttribute("message", success ? "주문이 취소되었습니다." : "처리 중 오류 발생");
+        return "redirect:/mypage/order";
     }
 
     @GetMapping("/changePwd")

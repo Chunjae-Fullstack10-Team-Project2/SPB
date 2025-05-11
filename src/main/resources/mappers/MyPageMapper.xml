@@ -245,29 +245,24 @@
         LIMIT #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
     </select>
     <select id="orderTotalCount" resultType="int">
-        SELECT COUNT(*)
+        SELECT COUNT(DISTINCT o.orderIdx)
         FROM tbl_order_info o
+        JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
+        JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
         WHERE o.orderMemberId = #{orderMemberId}
-        AND o.orderStatus = 's'
 
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
-            AND EXISTS (
-            SELECT 1
-            FROM tbl_order_lecture ol
-            JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
-            WHERE ol.orderIdx = o.orderIdx
             <choose>
                 <when test="searchDTO.searchType == 'lectureTitle'">
                     AND l.lectureTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
                 </when>
-                <when test="searchDTO.searchType == 'lectureTeacherId'">
-                    AND l.lectureTeacherId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
-                </when>
                 <when test="searchDTO.searchType == 'lectureDescription'">
                     AND l.lectureDescription LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
                 </when>
+                <when test="searchDTO.searchType == 'lectureTeacherId'">
+                    AND l.lectureTeacherId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
             </choose>
-            )
         </if>
 
         <if test="searchDTO.startDate != null and searchDTO.endDate != null">
@@ -276,25 +271,42 @@
                     AND o.orderCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
                 </when>
                 <when test="searchDTO.dateType == 'lectureCreatedAt'">
-                    AND EXISTS (
-                    SELECT 1
-                    FROM tbl_order_lecture ol
-                    JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
-                    WHERE ol.orderIdx = o.orderIdx
                     AND l.lectureCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
-                    )
                 </when>
             </choose>
         </if>
     </select>
     <select id="listMyOrdersByPage" resultType="Integer">
-        SELECT o.orderIdx
+        SELECT DISTINCT o.orderIdx
         FROM tbl_order_info o
+        JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
+        JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
         WHERE o.orderMemberId = #{orderMemberId}
-        AND o.orderStatus = 's'
-        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
-            AND o.orderCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'lectureTitle'">
+                    AND l.lectureTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'lectureDescription'">
+                    AND l.lectureDescription LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'lectureTeacherId'">
+                    AND l.lectureTeacherId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
         </if>
+
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            <choose>
+                <when test="searchDTO.dateType == 'orderCreatedAt'">
+                    AND o.orderCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+                <when test="searchDTO.dateType == 'lectureCreatedAt'">
+                    AND l.lectureCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+            </choose>
+        </if>
+
         ORDER BY
         <choose>
             <when test="searchDTO.sortColumn == 'orderAmount'">o.orderAmount</when>
@@ -305,9 +317,10 @@
             <when test="searchDTO.sortOrder == 'asc'">ASC</when>
             <otherwise>DESC</otherwise>
         </choose>
+
         LIMIT #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
     </select>
-    <select id="listLecturesByOrderIdxList">
+    <select id="listLecturesByOrderIdxList" resultType="net.spb.spb.dto.OrderDTO">
         SELECT
         o.orderIdx,
         o.orderMemberId,
@@ -329,6 +342,32 @@
         <foreach collection="orderIdxList" item="idx" open="(" separator="," close=")">
             #{idx}
         </foreach>
+
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'lectureTitle'">
+                    AND l.lectureTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'lectureDescription'">
+                    AND l.lectureDescription LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'lectureTeacherId'">
+                    AND l.lectureTeacherId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            <choose>
+                <when test="searchDTO.dateType == 'orderCreatedAt'">
+                    AND o.orderCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+                <when test="searchDTO.dateType == 'lectureCreatedAt'">
+                    AND l.lectureCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
+                </when>
+            </choose>
+        </if>
+
         ORDER BY
         <choose>
             <when test="searchDTO.sortColumn == 'orderAmount'">o.orderAmount</when>
@@ -340,6 +379,15 @@
             <otherwise>DESC</otherwise>
         </choose>
     </select>
+
+    <update id="updateOrderStatus">
+        UPDATE tbl_order_info
+        SET orderStatus = #{orderStatus},
+            orderUpdatedAt = NOW()
+        WHERE orderIdx = #{orderIdx}
+          AND orderMemberId = #{memberId}
+          AND orderStatus = 's'
+    </update>
 
     <!--  비밀번호 변경  -->
     <update id="changePwd">
