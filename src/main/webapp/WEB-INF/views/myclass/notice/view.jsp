@@ -36,7 +36,7 @@
                     <input type="hidden" name="idx" value="${teacherNoticeDTO.teacherNoticeIdx}" />
 
                     <div>
-                        <button class="btn btn-secondary btn-sm" onclick="location.href='/myclass/notice?${pageDTO.linkUrl}'">목록</button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='/myclass/notice?${pageDTO.linkUrl}'">목록</button>
                     </div>
 
                     <div>
