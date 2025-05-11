@@ -40,9 +40,11 @@
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">문의 목록</h3>
-            <a href="/faq/regist" class="btn btn-primary">
-                <i class="bi bi-pencil-square"></i> 문의 등록
-            </a>
+            <c:if test="${memberGrade eq '0'}">
+                <a href="/faq/regist" class="btn btn-primary">
+                    <i class="bi bi-pencil-square"></i> 문의 등록
+                </a>
+            </c:if>
         </div>
         <div class="search-box" style="max-width: 700px;">
             <form name="frmSearch" method="get" action="/faq/list" class="mb-1 p-4">

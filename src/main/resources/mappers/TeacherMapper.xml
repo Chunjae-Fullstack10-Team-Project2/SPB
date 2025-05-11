@@ -12,6 +12,7 @@
         select lectureIdx, lectureTitle, lectureThumbnailImg, lectureAmount
         from tbl_lecture
         where lectureTeacherId = #{teacherId}
+          and lectureState = '1'
         order by lectureIdx desc
     </select>
     <!--선생님 메인 조회-->
@@ -19,6 +20,7 @@
         select teacherId, teacherName, teacherProfileImg, teacherSubject
         from tbl_teacher
         where teacherSubject = #{subject}
+        and teacherState = '1'
         <if test="searchDTO.searchWord != null">
             AND teacherName like CONCAT('%', #{searchDTO.searchWord}, '%')
         </if>
@@ -37,6 +39,7 @@
         select teacherId, teacherName, teacherProfileImg, teacherSubject
         from tbl_teacher
         where 1=1
+        and teacherState = '1'
         <if test="searchDTO.searchWord != null">
             AND teacherName like CONCAT('%', #{searchDTO.searchWord}, '%')
         </if>
@@ -47,15 +50,17 @@
     <select id="selectBookmark">
         select a.bookmarkLectureIdx
         from tbl_bookmark a
-        join tbl_lecture b on a.bookmarkLectureIdx = b.lectureIdx
+                 join tbl_lecture b on a.bookmarkLectureIdx = b.lectureIdx
         where b.lectureTeacherId = #{teacherId}
-        and a.bookmarkMemberId = #{memberId}
+          and a.bookmarkMemberId = #{memberId}
+          and b.lectureState = '1'
     </select>
     <!--선생님 정보 총 개수 조회-->
     <select id="getTotalCount">
         select count(*)
         from tbl_teacher
         where 1=1
+        and teacherState = '1'
         <if test="subject != null">
             AND teacherSubject =#{subject}
         </if>

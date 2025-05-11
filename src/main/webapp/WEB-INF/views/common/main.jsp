@@ -9,14 +9,13 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/mainAssets/css/LineIcons.2.0.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/mainAssets/css/animate.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/mainAssets/css/main.css">
+    <!-- ========================= JS here ========================= -->
+    <script src="${pageContext.request.contextPath}/resources/mainAssets/js/bootstrap.bundle-5.0.0.alpha-min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/mainAssets/js/count-up.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/mainAssets/js/wow.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/mainAssets/js/imagesloaded.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/mainAssets/js/main.js"></script>
 
-    <%--    <style>--%>
-    <%--        .warning-text {--%>
-    <%--            color: red;--%>
-    <%--            font-size: 0.8rem;--%>
-    <%--            margin: 0.2rem 0 0 0.2rem;--%>
-    <%--        }--%>
-    <%--    </style>--%>
 </head>
 <body>
 <%@include file="header.jsp" %>
@@ -55,7 +54,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-xl-8 col-lg-10 mx-auto">
-                            <div class="carousel-content text-center">
+                            <div class="carousel-content text-center mt-100">
                                 <div class="section-title">
                                     <h2 class="text-white">당신의 성장을 위한 첫 걸음</h2>
                                     <p class="text-white">봄콩에서 시작하세요. 초등부터 고등까지, 단계별 맞춤 인강으로 실력을 키워드립니다.</p>
@@ -71,7 +70,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-xl-8 col-lg-10 mx-auto">
-                            <div class="carousel-content text-center">
+                            <div class="carousel-content text-center mt-100">
                                 <div class="section-title">
                                     <h2 class="text-white">오늘의 공부가 내일을 바꿉니다</h2>
                                     <p class="text-white">검증된 강사진, 탄탄한 커리큘럼, 그리고 당신의 열정. 봄콩에서 만나보세요.</p>
@@ -85,14 +84,15 @@
         </div>
         <a class="carousel-control carousel-control-prev" href="#carouselExampleCaptions" role="button"
            data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"><i class="lni lni-arrow-left"></i></span>
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="sr-only">Previous</span>
         </a>
         <a class="carousel-control carousel-control-next" href="#carouselExampleCaptions" role="button"
            data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"><i class="lni lni-arrow-right"></i></span>
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="sr-only">Next</span>
         </a>
+
     </div>
 </section>
 <!-- ========================= carousel-section end ========================= -->
@@ -157,11 +157,12 @@
                 <div class="col-xl-6 col-lg-6">
                     <div class="about-img-wrapper">
                         <div class="about-img position-relative d-inline-block wow fadeInLeft" data-wow-delay=".3s">
-                            <img src="${pageContext.request.contextPath}/resources/mainAssets/img/about/about-img.png"
+                            <img src="${pageContext.request.contextPath}/resources/img/spb_illustration3.png"
                                  alt="">
 
                             <div class="about-experience">
-                                <h2 class="mb-40 wow fadeInRight" data-wow-delay=".4s">학생의 가능성을 키우는 공간</h2>
+                                <h2 class="mb-40 wow fadeInRight" data-wow-delay=".4s"
+                                    style="color: #5e3e0f; font-weight: 700;">학생의 가능성을 키우는 공간</h2>
                                 <p class="mb-45 wow fadeInUp" data-wow-delay=".6s">우리는 단순한 인강 플랫폼이 아닙니다. 봄콩은 학생 한 명
                                     한 명이
                                     스스로 성장할 수 있도록 돕는 디지털 학습 환경을 제공합니다.</p>
@@ -172,7 +173,7 @@
                 <div class="col-xl-6 col-lg-6">
                     <div class="about-content-wrapper">
                         <div class="section-title">
-                            <span class="wow fadeInUp" data-wow-delay=".2s">봄콩 소개</span>
+                            <span class="wow fadeInUp" data-wow-delay=".2s" style="color: #f9a683;">봄콩 소개</span>
                             <h2 class="mb-40 wow fadeInRight" data-wow-delay=".4s">학생의 가능성을 키우는 온라인 클래스</h2>
                         </div>
                         <div class="about-content">
@@ -410,8 +411,8 @@
 <!-- ========================= process-section end ========================= -->
 
 <!-- ========================= subscribe-section start ========================= -->
-<section class="subscribe-section pt-100 pb-100 img-bg"
-         style="background-image: url('${pageContext.request.contextPath}/resources/mainAssets/img/bg/common-bg.svg')">
+<section class="subscribe-section pt-100 pb-100"
+         style="background-image: url('${pageContext.request.contextPath}/resources/mainAssets/img/bg/common-bg.svg'); background-repeat: no-repeat; background-size: cover;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-xl-6 col-lg-6">
@@ -423,119 +424,22 @@
                 </div>
             </div>
             <div class="col-xl-6 col-lg-6">
-                <form action="#" class="subscribe-form wow fadeInRight" data-wow-delay=".4s">
-                    <input type="text" name="subs-email" id="subs-email" placeholder="Your Email">
-                    <button type="submit"><i class="lni lni-telegram-original"></i></button>
-                </form>
+                <div class="subscribe-form wow fadeInRight" data-wow-delay=".4s">
+                    <a href="${pageContext.request.contextPath}/member/register"
+                       class="subscribe-join-btn w-100 text-white text-center d-inline-block">
+                        회원가입 하러 가기
+                    </a>
+                </div>
             </div>
+
         </div>
     </div>
 </section>
 <!-- ========================= subscribe-section end ========================= -->
 
-<!-- ========================= footer start ========================= -->
-<footer class="footer pt-100">
-    <div class="container">
-        <div class="row">
-            <div class="col-xl-3 col-lg-4 col-md-6">
-                <div class="footer-widget mb-60 wow fadeInLeft" data-wow-delay=".2s">
-                    <a href="index.html" class="logo mb-30"><img
-                            src="${pageContext.request.contextPath}/resources/mainAssets/img/logo/logo.svg"
-                            alt="logo"></a>
-                    <p class="mb-30 footer-desc">We Crafted an awesome desig library that is robust and intuitive to
-                        use. No matter you're building a business presentation websit.</p>
-                </div>
-            </div>
-            <div class="col-xl-2 offset-xl-1 col-lg-2 col-md-6">
-                <div class="footer-widget mb-60 wow fadeInUp" data-wow-delay=".4s">
-                    <h4>Quick Link</h4>
-                    <ul class="footer-links">
-                        <li>
-                            <a href="javascript:void(0)">Home</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">About Us</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">Service</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">Contact</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-6">
-                <div class="footer-widget mb-60 wow fadeInUp" data-wow-delay=".6s">
-                    <h4>Service</h4>
-                    <ul class="footer-links">
-                        <li>
-                            <a href="javascript:void(0)">Marketing</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">Branding</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">Web Design</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">Graphics Design</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-6">
-                <div class="footer-widget mb-60 wow fadeInRight" data-wow-delay=".8s">
-                    <h4>Contact</h4>
-                    <ul class="footer-contact">
-                        <li>
-                            <p>+00983467367234</p>
-                        </li>
-                        <li>
-                            <p>yourmail@gmail.com</p>
-                        </li>
-                        <li>
-                            <p>Jackson Heights, NY</br>
-                                USA</p>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="copyright-area">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <div class="footer-social-links">
-                        <ul class="d-flex">
-                            <li><a href="javascript:void(0)"><i class="lni lni-facebook-original"></i></a></li>
-                            <li><a href="javascript:void(0)"><i class="lni lni-twitter-original"></i></a></li>
-                            <li><a href="javascript:void(0)"><i class="lni lni-linkedin-original"></i></a></li>
-                            <li><a href="javascript:void(0)"><i class="lni lni-instagram-original"></i></a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <p class="wow fadeInUp" data-wow-delay=".3s">Template by <a
-                            href="https://uideck.com" rel="nofollow">UIdeck</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
-<!-- ========================= footer end ========================= -->
-
-
 <!-- ========================= scroll-top ========================= -->
 <a href="#" class="scroll-top">
-    <i class="lni lni-arrow-up"></i>
+    <i class="lni lni-chevron-up"></i>
 </a>
-
-<!-- ========================= JS here ========================= -->
-<script src="${pageContext.request.contextPath}/resources/mainAssets/js/bootstrap.bundle-5.0.0.alpha-min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/mainAssets/js/count-up.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/mainAssets/js/wow.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/mainAssets/js/imagesloaded.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/mainAssets/js/main.js"></script>
 </body>
 </html>

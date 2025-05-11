@@ -13,5 +13,5 @@ public interface LectureMapper {
     public List<ChapterDTO> selectLectureChapter(int lectureIdx);
     public int addBookmark(@Param("lectureIdx")int lectureIdx, @Param("memberId")String memberId);
     public int deleteBookmark(@Param("lectureIdx")int lectureIdx, @Param("memberId")String memberId);
-    public ChapterDTO getChapterById(@Param("chapterLectureIdx") int chapterLectureIdx, @Param("chapterIdx") int chapterIdx);
+    public ChapterDTO getChapterById(@Param("chapterIdx") int chapterIdx);
 }

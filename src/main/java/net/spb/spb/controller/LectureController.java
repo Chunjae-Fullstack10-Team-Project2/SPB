@@ -5,14 +5,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
+import net.spb.spb.dto.LectureHistoryDTO;
 import net.spb.spb.service.LectureServiceIf;
 import net.spb.spb.service.PaymentServiceIf;
 import net.spb.spb.service.TeacherServiceIf;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @Controller
@@ -56,8 +59,8 @@ public class LectureController {
     }
 
     @GetMapping("/chapter/play")
-    public String playVideo(@RequestParam("chapterLectureIdx") int chapterLectureIdx, @RequestParam("chapterIdx") int chapterIdx, Model model) {
-        ChapterDTO chapter = lectureService.getChapterById(chapterLectureIdx, chapterIdx);
+    public String playVideo(@RequestParam("chapterIdx") int chapterIdx, Model model) {
+        ChapterDTO chapter = lectureService.getChapterById(chapterIdx);
         model.addAttribute("chapter", chapter);
         return "lecture/chapterPlay";
     }
