@@ -157,7 +157,7 @@
                 <div class="col-xl-6 col-lg-6">
                     <div class="about-img-wrapper">
                         <div class="about-img position-relative d-inline-block wow fadeInLeft" data-wow-delay=".3s">
-                            <img src="${pageContext.request.contextPath}/resources/img/spb_illustration2.png"
+                            <img src="${pageContext.request.contextPath}/resources/img/spb_illustration3.png"
                                  alt="">
 
                             <div class="about-experience">
