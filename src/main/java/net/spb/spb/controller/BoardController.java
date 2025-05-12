@@ -2,6 +2,7 @@ package net.spb.spb.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
@@ -22,6 +23,8 @@ import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -32,6 +35,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @Log4j2
@@ -96,25 +100,40 @@ public class BoardController {
     @PostMapping("/{category}/write")
     public String writePOST(@RequestParam(name = "files") MultipartFile[] files,
                             @PathVariable("category") BoardCategory category,
-                            @ModelAttribute PostDTO dto,
                             HttpSession session,
-                            RedirectAttributes redirectAttributes) throws IOException {
+                            RedirectAttributes redirectAttributes,
+                            @Valid @ModelAttribute PostDTO postDTO,
+                            BindingResult bindingResult) throws IOException {
+
+        // 제목 / 내용 체크
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)  // 메시지만 추출
+                    .collect(Collectors.toList());
+
+            redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
+            redirectAttributes.addFlashAttribute("postDTO", postDTO);
+            return "redirect:/board/" + category + "/write";
+        }
+
+        postDTO.setPostCategory(category.toString().toUpperCase());
+        postDTO.setPostMemberId((String) session.getAttribute("memberId"));
 
         if (files.length > 10) {
-            redirectAttributes.addFlashAttribute("errorMessage", "파일은 최대 10개까지 업로드할 수 있습니다.");
+            redirectAttributes.addFlashAttribute("errorMessage", "파일은 한 번에 최대 10개까지 업로드할 수 있습니다.");
+            redirectAttributes.addFlashAttribute("postDTO", postDTO);
             return "redirect:/board/" + category + "/write";
         }
 
         for (MultipartFile file : files) {
             if (file != null && !file.isEmpty() && file.getSize() > (10 * 1024 * 1024)) {
                 redirectAttributes.addFlashAttribute("errorMessage", "각 파일은 10MB 이하만 업로드할 수 있습니다.");
+                redirectAttributes.addFlashAttribute("postDTO", postDTO);
                 return "redirect:/board/" + category + "/write";
             }
         }
 
-        dto.setPostCategory(category.toString().toUpperCase());
-        dto.setPostMemberId((String) session.getAttribute("memberId"));
-        int postIdx = service.insertPost(dto);
+        int postIdx = service.insertPost(postDTO);
 
         try {
             for (MultipartFile file : files) {
@@ -151,14 +170,40 @@ public class BoardController {
     @PostMapping("/{category}/modify")
     public String modifyPOST(@RequestParam(name = "files") MultipartFile[] files,
                              @PathVariable("category") BoardCategory category,
-                             @ModelAttribute PostDTO postDTO,
+                             @Valid @ModelAttribute PostDTO postDTO,
+                             BindingResult bindingResult,
                              @RequestParam(name = "deleteFile", defaultValue = "") String[] deleteFile,
                              HttpSession session,
                              RedirectAttributes redirectAttributes) throws IOException {
+
+        // 제목 / 내용 체크
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)
+                    .collect(Collectors.toList());
+            redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
+            redirectAttributes.addFlashAttribute("postDTO", postDTO);
+            return "redirect:/board/" + category + "/modify?idx="+postDTO.getPostIdx();
+        }
+
         String sessionMemberId = (String) session.getAttribute("memberId");
         if (!sessionMemberId.equals(postDTO.getPostMemberId())) {
             redirectAttributes.addFlashAttribute("errorMessage", "수정 권한이 없습니다.");
             return "redirect:/board/"+category+"/list";
+        }
+
+        if (files.length > 10) {
+            redirectAttributes.addFlashAttribute("errorMessage", "파일은 한 번에 최대 10개까지 업로드할 수 있습니다.");
+            redirectAttributes.addFlashAttribute("postDTO", postDTO);
+            return "redirect:/board/" + category + "/modify?idx="+postDTO.getPostIdx();
+        }
+
+        for (MultipartFile file : files) {
+            if (file != null && !file.isEmpty() && file.getSize() > (10 * 1024 * 1024)) {
+                redirectAttributes.addFlashAttribute("errorMessage", "각 파일은 10MB 이하만 업로드할 수 있습니다.");
+                redirectAttributes.addFlashAttribute("postDTO", postDTO);
+                return "redirect:/board/" + category + "/modify?idx="+postDTO.getPostIdx();
+            }
         }
 
         postDTO.setPostUpdatedAt(LocalDateTime.now());
@@ -188,7 +233,8 @@ public class BoardController {
                 log.info(e.getMessage());
             }
         }
-        return "redirect:/board/" + category + "/list";
+
+        return "redirect:/board/" + category + "/view?idx="+postDTO.getPostIdx();
     }
 
     @PostMapping("/{category}/delete")
@@ -239,7 +285,7 @@ public class BoardController {
             result.put("message", "신고가 접수되었습니다.");
         } else {
             result.put("success", false);
-            result.put("message", "신고 접수에 실패했습니다.");
+            result.put("message", "이미 신고한 게시글입니다.");
         }
 
         return result;
