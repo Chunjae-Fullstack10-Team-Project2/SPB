@@ -18,8 +18,9 @@ public class PostReportDTO {
     private String reportRefIdx;
     private String reportMemberId;
     private Date reportCreatedAt;
-    private String reportState;
+    private Integer reportState;
     private ReportRefType reportRefType;
+    private String reportCount;
 
     // tbl_post
     private int postIdx;
