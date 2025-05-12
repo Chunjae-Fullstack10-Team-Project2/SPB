@@ -30,7 +30,7 @@ public class NaverNewsService {
         String CLIENT_SECRET = servletContext.getInitParameter("naver.clientSecret");
 
         if (query == null || query.trim().isEmpty()) {
-            query = "네이버";
+            return List.of();
         }
 
         String encodedQuery = URLEncoder.encode(query, "UTF-8");
