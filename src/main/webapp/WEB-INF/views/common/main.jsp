@@ -405,30 +405,23 @@
 <!-- ========================= process-section end ========================= -->
 
 <!-- ========================= subscribe-section start ========================= -->
-<section class="subscribe-section pt-100 pb-100"
-         style="background-image: url('${pageContext.request.contextPath}/resources/mainAssets/img/bg/common-bg.svg'); background-repeat: no-repeat; background-size: cover;">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-xl-6 col-lg-6">
-                <div class="section-title mb-30">
-                    <span class="text-white wow fadeInDown" data-wow-delay=".2s">지금 바로 체험해보세요!</span>
-                    <h2 class="text-white mb-40 wow fadeInUp" data-wow-delay=".4s">회원가입하고 오늘부터 무료 강의를 체험해보세요. 봄콩과
-                        함께라면 공부가
-                        즐거워집니다.</h2>
-                </div>
-            </div>
-            <div class="col-xl-6 col-lg-6">
-                <div class="subscribe-form wow fadeInRight" data-wow-delay=".4s">
-                    <a href="${pageContext.request.contextPath}/join"
-                       class="subscribe-join-btn w-100 text-white text-center d-inline-block">
-                        회원가입 하러 가기
-                    </a>
-                </div>
-            </div>
-
+<section class="bg-primary text-white py-5" style="background-image: url('${pageContext.request.contextPath}/resources/mainAssets/img/bg/common-bg.svg'); background-size: cover; background-repeat: no-repeat;">
+    <div class="p-5 mb-5 bg-primary bg-opacity-75 rounded-3 text-white"
+         style="background-image: url('${pageContext.request.contextPath}/resources/mainAssets/img/bg/common-bg.svg'); background-size: cover; background-repeat: no-repeat; background-position: center;">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">지금 바로 체험해보세요!</h1>
+            <p class="col-md-8 fs-4 text-white lh-base">
+                회원가입하고 오늘부터 무료 강의를 체험해보세요.<br>
+                <strong>봄콩</strong>과 함께라면 공부가 즐거워집니다.
+            </p>
+            <a href="${pageContext.request.contextPath}/join" class="btn btn-light btn-lg fw-bold">
+                회원가입 하러 가기
+            </a>
         </div>
     </div>
+
 </section>
+
 <!-- ========================= subscribe-section end ========================= -->
 
 <!-- ========================= scroll-top ========================= -->
