@@ -186,11 +186,10 @@
             </choose>
         </if>
     </select>
-    <update id="deleteReport">
-        update tbl_report
-        set reportState = '2'
+    <delete id="deleteReport">
+        delete from tbl_report
         where reportIdx = #{reportIdx}
-    </update>
+    </delete>
 
 
     <!-- 주문 목록  -->
@@ -495,10 +494,93 @@
             </choose>
         </if>
     </select>
-
-    <update id="cancelBookmark">
-        update tbl_bookmark
-        set bookmarkState = '2'
+    <delete id="cancelBookmark">
+        delete
+        from tbl_bookmark
         where bookmarkIdx = #{bookmarkIdx}
-    </update>
+    </delete>
+
+
+    <!--  게시글   -->
+    <select id="listMyPost" resultType="net.spb.spb.dto.post.PostDTO">
+        select
+        postIdx,
+        postTitle,
+        postContent,
+        postMemberId,
+        postCategory,
+        postReadCnt,
+        postCreatedAt,
+        postUpdatedAt,
+        postState
+        from tbl_post
+        where postMemberId = #{postMemberId}
+
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'postTitle'">
+                    and postTitle like concat('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'postContent'">
+                    and postContent like concat('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+        <if test="searchDTO.startDate != null and searchDTO.startDate != '' and
+               searchDTO.endDate != null and searchDTO.endDate != ''">
+            <choose>
+                <when test="searchDTO.dateType == 'postCreatedAt'">
+                    and postCreatedAt between #{searchDTO.startDate} and #{searchDTO.endDate}
+                </when>
+                <when test="searchDTO.dateType == 'postUpdatedAt'">
+                    and postUpdatedAt between #{searchDTO.startDate} and #{searchDTO.endDate}
+                </when>
+            </choose>
+        </if>
+
+        <if test="searchDTO.sortColumn != null and searchDTO.sortOrder != null">
+            order by
+            <choose>
+                <when test="searchDTO.sortColumn == 'postIdx'">postIdx</when>
+                <when test="searchDTO.sortColumn == 'postTitle'">postTitle</when>
+                <when test="searchDTO.sortColumn == 'postContent'">postContent</when>
+                <when test="searchDTO.sortColumn == 'postCreatedAt'">postCreatedAt</when>
+                <otherwise>postIdx</otherwise>
+            </choose>
+            <choose>
+                <when test="searchDTO.sortOrder == 'asc'">asc</when>
+                <otherwise>desc</otherwise>
+            </choose>
+        </if>
+
+        limit #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
+    </select>
+    <select id="postTotalCount" resultType="int">
+        select count(postIdx)
+        from tbl_post
+        where postMemberId = #{postMemberId}
+
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'postTitle'">
+                    and postTitle like concat('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'postContent'">
+                    and postContent like concat('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+
+        <if test="searchDTO.startDate != null and searchDTO.startDate != '' and
+               searchDTO.endDate != null and searchDTO.endDate != ''">
+            <choose>
+                <when test="searchDTO.dateType == 'postCreatedAt'">
+                    and postCreatedAt between #{searchDTO.startDate} and #{searchDTO.endDate}
+                </when>
+                <when test="searchDTO.dateType == 'postUpdatedAt'">
+                    and postUpdatedAt between #{searchDTO.startDate} and #{searchDTO.endDate}
+                </when>
+            </choose>
+        </if>
+    </select>
 </mapper>
