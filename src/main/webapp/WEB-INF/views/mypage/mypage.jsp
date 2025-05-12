@@ -233,7 +233,7 @@
                 <label for="memberAddr2">상세주소</label>
             </div>
 
-            <div class="text-end d-grid gap-2">
+            <div class="text-end gap-2">
                 <button type="button" class="btn btn-primary" id="btnUpdate" data-bs-toggle="modal"
                         data-bs-target="#pwdModal">정보 수정
                 </button>
@@ -243,6 +243,10 @@
                 <button type="button" class="btn btn-secondary" id="btnChangePwd"
                         onclick="location.href='/mypage/changePwd'">
                     비밀번호 변경
+                </button>
+                <button type="button" class="btn btn-secondary" id="btnCart"
+                        onclick="location.href='/payment/cart?memberId=${sessionScope.memberId}'">
+                    장바구니
                 </button>
             </div>
         </form>
