@@ -5,6 +5,7 @@ import net.spb.spb.dto.FileDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import jakarta.validation.constraints.*;
 
 @Getter
 @Setter
@@ -14,7 +15,11 @@ import java.util.List;
 @Builder
 public class PostDTO {
     private int postIdx;
+    @NotBlank(message="제목은 필수입니다.")
+    @Size(max = 50, message = "제목은 1자 이상 50자 이하로 입력해주세요.")
     private String postTitle;
+    @NotBlank(message="내용은 필수입니다.")
+    @Size(max = 20000, message = "내용은 20,000자 이하로 입력해주세요.")
     private String postContent;
     private String postMemberId;
     private String postCategory;

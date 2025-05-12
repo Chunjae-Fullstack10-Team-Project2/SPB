@@ -34,16 +34,33 @@ change this template use File | Settings | File Templates. --%>
     <input type="hidden" name="postIdx" value="${post.postIdx}"/>
     <input type="hidden" name="postMemberId" value="${post.postMemberId}"/>
 
+    <c:if test="${not empty errorMessages}">
+      <c:forEach items="${errorMessages}" var="errorMessage">
+        <div class="alert alert-danger">
+            ${errorMessage}
+        </div>
+      </c:forEach>
+    </c:if>
+    <c:if test="${not empty errorMessage}">
+      <div class="alert alert-danger">
+          ${errorMessage}
+      </div>
+    </c:if>
+
     <!-- 제목 -->
     <div class="mb-3">
       <label for="postTitle" class="form-label">제목</label>
-      <input type="text" class="form-control" id="postTitle" name="postTitle" value="${post.postTitle}" required>
+      <input type="text" class="form-control" id="postTitle" name="postTitle" value="${post.postTitle}" maxlength="50" required>
+      <div class="form-text text-end"><span id="titleCharCount">0</span> / 50자</div>
     </div>
 
     <!-- 내용 -->
     <div class="mb-3">
       <label for="postContent" class="form-label">내용</label>
-      <textarea class="form-control" rows="10" id="postContent" name="postContent" required>${post.postContent}</textarea>
+      <textarea class="form-control" rows="10" id="postContent" name="postContent" maxlength="20000" required>${post.postContent}</textarea>
+      <div class="form-text text-end" id="contentCharCountWrapper">
+        <span id="contentCharCount">0</span> / 20000자
+      </div>
     </div>
 
     <!-- 기존 파일 목록 -->
@@ -81,7 +98,91 @@ change this template use File | Settings | File Templates. --%>
     </div>
   </form>
 </div>
+<script>
 
+  const titleInput = document.getElementById('postTitle');
+  const contentInput = document.getElementById('postContent');
+  const titleCharCount = document.getElementById('titleCharCount');
+  const contentCharCount = document.getElementById('contentCharCount');
+  const titleCharCountWrapper = document.getElementById('titleCharCountWrapper');
+  const contentCharCountWrapper = document.getElementById('contentCharCountWrapper');
+
+  function updateContentCharCount() {
+    const length = contentInput.value.length;
+    contentCharCount.textContent = length;
+
+    // 글자수 초과 시 빨간색
+    if (length > 20000) {
+      contentCharCountWrapper.classList.add('text-danger');
+    } else {
+      contentCharCountWrapper.classList.remove('text-danger');
+    }
+  }
+  function updateTitleCharCount() {
+    const length = titleInput.value.length;
+    titleCharCount.textContent = length;
+    if (length>50) {
+      titleCharCountWrapper.classList.add('text-danger');
+    } else {
+      titleCharCountWrapper.classList.remove('text-danger');
+    }
+  }
+
+  titleInput.addEventListener('input', updateTitleCharCount);
+  contentInput.addEventListener('input', updateContentCharCount);
+  document.addEventListener('DOMContentLoaded', ()=> {
+    updateTitleCharCount();
+    updateContentCharCount();
+  });
+
+
+  document.forms['frmModify'].addEventListener('submit', function(e) {
+    const title = document.getElementById('postTitle').value.trim();
+    const content = document.getElementById('postContent').value.trim();
+    const files = document.getElementById('files').files;
+    let errors = [];
+
+    if (!title) {
+      errors.push("제목을 입력해주세요.");
+    } else if (title.length > 50) {
+      errors.push("제목은 50자 이하로 입력해주세요.");
+    }
+
+    if (!content) {
+      errors.push("내용을 입력해주세요.");
+    } else if (content.length > 19000) {
+      errors.push("내용은 19,000자 이하로 입력해주세요.");
+    }
+
+    if (files.length > 10) {
+      errors.push("파일은 최대 10개까지 첨부할 수 있습니다.");
+    }
+
+    const maxFileSize = 10 * 1024 * 1024;
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].size > maxFileSize) {
+        errors.push(`"${files[i].name}" 파일은 10MB 이하만 업로드할 수 있습니다.`);
+        break;
+      }
+    }
+
+    if (errors.length > 0) {
+      e.preventDefault();
+      displayErrors(errors);
+    }
+  });
+
+  function displayErrors(errors) {
+    document.querySelectorAll('.alert.alert-danger.js-validation-error').forEach(el => el.remove());
+    const form = document.querySelector('form[name="frmModify"]');
+    errors.forEach(msg => {
+      const div = document.createElement('div');
+      div.className = 'alert alert-danger js-validation-error';
+      div.innerText = msg;
+      form.insertBefore(div, form.firstChild);
+    });
+  }
+</script>
 </body>
 </html>
 
