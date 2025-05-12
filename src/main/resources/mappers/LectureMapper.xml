@@ -46,6 +46,63 @@
         FROM tbl_lecture
         WHERE lectureTeacherId = #{memberId}
           AND lectureIdx = #{lectureIdx}
-
+    </select>
+    <select id="getAllLecture">
+        select tl.lectureIdx,
+        tl.lectureTitle,
+        tl.lectureDescription,
+        tl.lectureThumbnailImg,
+        tl.lectureAmount,
+        tm.memberName AS lectureTeacherName,
+        tt.teacherSubject AS lectureSubject
+        FROM tbl_lecture tl
+        JOIN tbl_member tm ON tl.lectureTeacherId = tm.memberId
+        join tbl_teacher tt on tl.lectureTeacherId = tt.teacherId
+        where 1=1
+        and tl.lectureState = '1'
+        order by tl.lectureTitle asc
+        limit #{pageRequestDTO.pageSkipCount}, #{pageRequestDTO.pageSize}
+    </select>
+    <select id="getLectureMain">
+        select l.lectureIdx,
+        l.lectureTitle,
+        l.lectureDescription,
+        l.lectureThumbnailImg,
+        l.lectureAmount,
+        m.memberName AS lectureTeacherName,
+        t.teacherSubject as lectureSubject
+        FROM tbl_lecture l
+        JOIN tbl_member m ON l.lectureTeacherId = m.memberId
+        join tbl_teacher t on l.lectureTeacherId = t.teacherId
+        where 1=1
+        <if test="subject != null">
+         and  t.teacherSubject = #{subject}
+        </if>
+        and l.lectureState = '1'
+        <if test="searchDTO.searchWord != null">
+            AND l.lectureTitle like CONCAT('%', #{searchDTO.searchWord}, '%')
+        </if>
+        order by l.lectureTitle asc
+        limit #{pageRequestDTO.pageSkipCount}, #{pageRequestDTO.pageSize}
+    </select>
+    <!--과목 전체 조회-->
+    <select id="getAllSubject">
+        select distinct teacherSubject
+        from tbl_teacher
+        where 1=1
+        order by teacherSubject
+    </select>
+    <select id="getTotalCount">
+        select count(*)
+        from tbl_lecture tl
+        join tbl_teacher tt on tl.lectureTeacherId = tt.teacherId
+        where 1=1
+        and tl.lectureState = '1'
+        <if test="subject != null">
+            AND tt.teacherSubject =#{subject}
+        </if>
+        <if test="searchDTO.searchType != null">
+            AND tl.lectureTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+        </if>
     </select>
 </mapper>    
