@@ -84,66 +84,39 @@
                             </c:if>
                         </a>
                     </th>
-<<<<<<< HEAD
                     <th>북마크 상태</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach items="${bookmarkList}" var="bookmarkDTO" varStatus="status">
-=======
-                    <th>강좌 상태</th>
                     <th>장바구니 추가</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${bookmarkList}" var="reportDTO" varStatus="status">
->>>>>>> develop
+                <c:forEach items="${bookmarkList}" var="postDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
                             <a href="#"
                                class="text-decoration-none text-dark">
-<<<<<<< HEAD
-                                    ${bookmarkDTO.lectureTitle}
+                                    ${postDTO.lectureTitle}
                             </a>
                         </td>
-                        <td>${bookmarkDTO.teacherName}</td>
-                        <td><fmt:formatDate value="${bookmarkDTO.bookmarkCreatedAt}" pattern="yyyy-MM-dd" /></td>
+                        <td>${postDTO.teacherName}</td>
+                        <td><fmt:formatDate value="${postDTO.bookmarkCreatedAt}" pattern="yyyy-MM-dd" /></td>
                         <td>
-                            <c:if test="${bookmarkDTO.bookmarkState == 1}">
+                            <c:if test="${postDTO.bookmarkState == 1}">
                                 <button type="button" class="btn btn-sm btn-outline-danger"
-                                        onclick="cancelBookmark(${bookmarkDTO.bookmarkIdx})">
+                                        onclick="cancelBookmark(${postDTO.bookmarkIdx})">
                                     북마크 취소
                                 </button>
                             </c:if>
-                            <c:if test="${bookmarkDTO.bookmarkState == 2}">
+                            <c:if test="${postDTO.bookmarkState == 2}">
                                 <span class="badge bg-secondary">취소 완료</span>
-                            </c:if>
-                        </td>
-=======
-                                    ${reportDTO.lectureTitle}
-                            </a>
-                        </td>
-                        <td>${reportDTO.teacherName}</td>
-                        <td><fmt:formatDate value="${reportDTO.bookmarkCreatedAt}" pattern="yyyy-MM-dd" /></td>
-                        <td>
-                            <c:if test="${reportDTO.bookmarkState == 1}">
-                                <button type="button" class="btn btn-sm btn-outline-danger"
-                                        onclick="cancelBookmark(${reportDTO.bookmarkIdx})">
-                                    삭제
-                                </button>
-                            </c:if>
-                            <c:if test="${reportDTO.bookmarkState == 2}">
-                                <span class="badge bg-secondary">결제 완료</span>
                             </c:if>
                         </td>
                         <td>
                             <button type="button" class="btn btn-sm btn-outline-primary"
-                                    onclick="addCart('${reportDTO.bookmarkLectureIdx}')">
+                                    onclick="addCart('${postDTO.bookmarkLectureIdx}')">
                                 장바구니
                             </button>
                         </td>
->>>>>>> develop
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -182,8 +155,6 @@
     <c:if test="${not empty message}">
     alert("${message}");
     </c:if>
-<<<<<<< HEAD
-=======
 
     function addCart(lectureIdx) {
         const memberId = '<c:out value="${sessionScope.memberId}" default="" />';
@@ -215,7 +186,6 @@
             }
         });
     }
->>>>>>> develop
 </script>
 </body>
 </html>

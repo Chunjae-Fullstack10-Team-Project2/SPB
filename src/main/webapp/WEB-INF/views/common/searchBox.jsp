@@ -65,7 +65,7 @@
                 </select>
             </div>
         </div>
-        <c:if test="${fn:contains(currentURI, '/qna')}">
+        <c:if test="${fn:contains(currentURI, '/qna') or fn:contains(currentURI, '/mypage/myQna')}">
             <div class="d-flex flex-wrap gap-3 justify-content-end">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="answered" id="status_1" value="1"
