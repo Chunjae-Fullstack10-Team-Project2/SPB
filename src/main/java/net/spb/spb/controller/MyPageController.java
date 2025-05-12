@@ -422,6 +422,7 @@ public class MyPageController {
                 .totalCount(myPageService.bookmarkTotalCount(searchDTO, bookmarkMemberId))
                 .dtoList(bookmarkList)
                 .build();
+
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("bookmarkList", bookmarkList);
         model.addAttribute("searchDTO", searchDTO);

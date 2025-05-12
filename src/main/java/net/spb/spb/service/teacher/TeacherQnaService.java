@@ -74,4 +74,9 @@ public class TeacherQnaService implements TeacherQnaServiceIf {
 
         return teacherQnaMapper.deleteTeacherQnaByIdx(idx);
     }
+
+    @Override
+    public String getTeacherQnaPwdByIdx(int idx) {
+        return teacherQnaMapper.selectTeacherQnaPwdByIdx(idx);
+    }
 }

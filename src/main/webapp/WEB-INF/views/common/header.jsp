@@ -96,8 +96,12 @@
                         <a href="/payment/cart?memberId=${sessionScope.memberId}"
                            class="text-decoration-none position-relative">
                             <i class="bi bi-cart" style="font-size: 1.4rem;"></i>
-                            <span id="cart-count-badge"
-                                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                            <c:if test="${not empty sessionScope.memberId}">
+                                <span id="cart-count-badge"
+                                      class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        ${cartCount}
+                                </span>
+                            </c:if>
                         </a>
                     </div>
                 </c:if>
