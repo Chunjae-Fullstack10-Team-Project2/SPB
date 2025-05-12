@@ -183,6 +183,8 @@
 </div>
 
 <script>
+
+
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('btnSearchInit').addEventListener('click', function () {
             window.location.href = "list";
@@ -276,6 +278,17 @@
                     $('#modalPostViews').text(data.postReadCnt);
                     $('#modalPostContent').html(data.postContent);
                     $('#btnAdminDelete').data('id', data.postIdx);
+
+
+                    $('#btnAdminDelete').data('state', data.postState);
+
+
+                    if (data.postState == 3) {
+                        $('#btnAdminDelete').addClass('disabled').text('이미 삭제됨');
+                    } else {
+                        $('#btnAdminDelete').removeClass('disabled').text('관리자 삭제');
+                    }
+
                     const modal = new bootstrap.Modal(document.getElementById('postDetailModal'));
                     modal.show();
                 },
@@ -288,6 +301,14 @@
 
     $('#btnAdminDelete').on('click', function () {
         const postIdx = $(this).data('id');
+        const postState = $(this).data('state');
+
+
+        if (postState == 3) {
+            showToast("이미 삭제된 게시글입니다.", true);
+            return;
+        }
+
         console.log("삭제할 postIdx:", postIdx);
         if (!confirm("정말 이 게시글을 삭제하시겠습니까?")) return;
 
@@ -296,13 +317,11 @@
             method: 'POST',
             data: { postIdx: postIdx },
             success: function (res) {
+                showToast(res.message, !res.success);
                 if (res.success) {
-                    showToast(res.message);
                     const modal = bootstrap.Modal.getInstance(document.getElementById('postDetailModal'));
                     modal.hide();
                     window.location.reload();
-                } else {
-                    showToast(res.message, true);
                 }
             },
             error: function () {
