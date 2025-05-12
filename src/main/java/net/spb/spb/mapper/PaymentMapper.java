@@ -4,10 +4,12 @@ import net.spb.spb.domain.*;
 import net.spb.spb.dto.CartDTO;
 import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.PaymentDTO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+@Mapper
 public interface PaymentMapper {
     public List<CartDTO> selectCart(String memberId);
     public int cartCount(CartDTO cartDTO);
