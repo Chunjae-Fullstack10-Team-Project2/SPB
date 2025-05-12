@@ -85,7 +85,7 @@
             <div class="d-flex align-items-center gap-4 flex-wrap justify-content-end user-tools">
                 <div class="greeting">
                     <c:if test="${not empty sessionScope.memberId}">
-                        ${sessionScope.memberId} 님, 오늘도 즐거운 학습 되세요! 😊
+                        ${sessionScope.memberDTO.memberName} 님, 오늘도 즐거운 학습 되세요! 😊
                     </c:if>
                 </div>
 
