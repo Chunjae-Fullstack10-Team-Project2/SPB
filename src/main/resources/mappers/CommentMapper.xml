@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.spb.spb.mapper.CommentMapper">
-    <insert id="insertComment" parameterType="net.spb.spb.domain.PostCommentVO">
+    <insert id="insertComment" parameterType="net.spb.spb.domain.PostCommentVO" useGeneratedKeys="true" keyProperty="postCommentIdx">
         insert into tbl_post_comment (postCommentRefPostIdx, postCommentParentIdx, postCommentMemberId, postCommentContent)
         values (#{postCommentRefPostIdx}, #{postCommentParentIdx}, #{postCommentMemberId}, #{postCommentContent})
     </insert>
@@ -14,9 +14,19 @@
         delete from tbl_post_comment
         where postCommentIdx = #{postCommentIdx}
     </delete>
-    <select id="selectComments" parameterType="java.lang.Integer" resultType="net.spb.spb.domain.PostCommentVO">
-        select postCommentIdx, postCommentRefPostIdx, postCommentParentIdx, postCommentMemberId, postCommentContent, postCommentCreatedAt, postCommentUpdatedAt, postCommentState
-        from tbl_post_comment
+    <select id="selectComments" parameterType="java.lang.Integer" resultType="net.spb.spb.dto.post.PostCommentDTO">
+        select c.postCommentIdx,
+               c.postCommentRefPostIdx,
+               c.postCommentParentIdx,
+               c.postCommentMemberId,
+               c.postCommentContent,
+               c.postCommentCreatedAt,
+               c.postCommentUpdatedAt,
+               c.postCommentState,
+               m.memberProfileImg as postCommentMemberProfileImg
+        from tbl_post_comment c
+        inner join tbl_member m on c.postCommentMemberId = m.memberId
         where postCommentRefPostIdx = #{postCommentRefPostIdx}
+        order by c.postCommentIdx asc
     </select>
 </mapper>
