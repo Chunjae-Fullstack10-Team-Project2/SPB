@@ -23,7 +23,6 @@
     <div class="search-box">
         <form name="frmSearch" method="get" action="${searchAction}" class="mb-1 p-4">
             <div class="row g-2 align-items-center mb-3">
-                <div class="col-md-1 ">날짜</div>
                 <c:if test="${param['start_date'] != null and param['end_date'] != null}">
                     <c:set var="date_value" value="${param['start_date']} - ${param['end_date']}" />
                 </c:if>
@@ -44,7 +43,6 @@
                 </div>
             </div>
             <div class="row g-2 align-items-center mb-3">
-                <div class="col-md-1">구분</div>
                 <div class="col-md-2">
                     <select name="search_category" class="form-select">
                         <c:forEach var="item" items="${searchSelect}">
@@ -63,7 +61,7 @@
                     <button type="button" class="btn btn-link flex-fill text-decoration-none" id="btnReset">초기화</button>
                 </div>
             </div>
-            <div class="row g-2 align-items-center mb-3">
+            <div class="row g-2 align-items-center">
                 <div class="col-md-2">
                     <select name="page_size" class="form-select" onchange="submitSearch();">
                         <option disabled ${empty param.page_size ? "selected" : ""}>선택</option>
@@ -108,8 +106,8 @@
                 const params = url.searchParams;
                 params.delete('start_date');
                 params.delete('end_date');
-                params.delete('search_category', search_category);
-                params.delete('search_word', search_word);
+                params.delete('search_category');
+                params.delete('search_word');
 
                 location.href = url.toString();
             });

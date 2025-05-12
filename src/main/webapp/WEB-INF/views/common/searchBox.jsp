@@ -12,6 +12,9 @@
 <div class="search-box">
     <form name="frmSearch" method="get" action="${searchAction}" class="mb-1 p-4">
         <div class="row g-2 align-items-center mb-3">
+            <c:if test="${param.startDate != null and param.endDate != null}">
+                <c:set var="datefilter" value="${param.startDate} - ${param.endDate}" />
+            </c:if>
             <c:if test="${not empty dateOptions}">
                 <div class="col-md-2">
                     <select name="dateType" class="form-select">
@@ -24,10 +27,9 @@
                 </div>
             </c:if>
             <c:if test="${empty isTeacher}">
-                <div class="col-md-3">
-                    <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택"
-                           autocomplete="off"
-                           value="${not empty param.datefilter ? param.datefilter : ''}"/>
+                <div class="col-md-${not empty dateOptions ? '4' : '6'}">
+                    <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택" autocomplete="off"
+                           value="${datefilter != null ? datefilter : ''}"/>
                 </div>
             </c:if>
         </div>
@@ -42,18 +44,18 @@
                     </c:forEach>
                 </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <input type="text" name="searchWord" class="form-control" placeholder="검색어 입력"
                        value="${searchDTO.searchWord != null ? searchDTO.searchWord : ''}"/>
             </div>
             <div class="col-md-3 d-flex gap-1">
-                <button type="submit" class="btn btn-primary flex-fill" id="btnSearch">검색</button>
-                <button type="button" class="btn btn-link text-decoration-none" id="btnReset">초기화</button>
+                <button type="button" class="btn btn-primary flex-fill" id="btnSearch" onclick="submitSearch();">검색</button>
+                <button type="button" class="btn btn-link flex-fill text-decoration-none" id="btnReset">초기화</button>
             </div>
         </div>
-        <div class="row g-2 align-items-center mb-3">
+        <div class="row g-2 align-items-center">
             <div class="col-md-2">
-                <select name="pageSize" class="form-select" onchange="this.form.submit()">
+                <select name="pageSize" class="form-select" onchange="submitSearch();">
                     <option disabled ${empty pageDTO.pageSize ? 'selected' : ''}>선택</option>
                     <option value="1" ${pageDTO.pageSize == 1 ? "selected" : ""}>1개씩 보기</option>
                     <option value="5" ${pageDTO.pageSize == 5 ? "selected" : ""}>5개씩 보기</option>
@@ -76,17 +78,6 @@
     </form>
 </div>
 
-<form id="frmSort" method="get" action="${searchAction}">
-    <input type="hidden" name="pageSize" value="${responseDTO.pageSize}"/>
-    <input type="hidden" name="searchWord" value="${searchDTO.searchWord}"/>
-    <input type="hidden" name="searchType" value="${searchDTO.searchType}"/>
-    <input type="hidden" name="dateType" value="${searchDTO.dateType}"/>
-    <input type="hidden" name="startDate" value="${searchDTO.startDate}"/>
-    <input type="hidden" name="endDate" value="${searchDTO.endDate}"/>
-    <input type="hidden" name="sortColumn" id="sortColumn" value="${searchDTO.sortColumn}"/>
-    <input type="hidden" name="sortOrder" id="sortOrder" value="${searchDTO.sortOrder}"/>
-</form>
-
 <script>
     $(function () {
         $('input[name="datefilter"]').daterangepicker({
@@ -108,28 +99,6 @@
             $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
         });
 
-        $('#btnSearch').click(function (e) {
-            e.preventDefault();
-
-            const url = new URL(window.location.href);
-            const params = url.searchParams;
-
-            const datefilter = $('input[name="datefilter"]').val();
-            if (datefilter) {
-                const dates = datefilter.split(' - ');
-                params.set('startDate', dates[0]);
-                params.set('endDate', dates[1]);
-            } else {
-                params.delete('startDate');
-                params.delete('endDate');
-            }
-
-            params.set('searchType', $('select[name="searchType"]').val());
-            params.set('searchWord', $('input[name="searchWord"]').val());
-
-            window.location.href = url.toString();
-        });
-
         $('#btnReset').click(function () {
             $('input[name="searchWord"]').val('');
             $('select[name="searchType"]').val('${searchTypeOptions[0].value}');
@@ -137,7 +106,6 @@
 
             const url = new URL(window.location.href);
             const params = url.searchParams;
-            params.delete('datefilter');
             params.delete('startDate');
             params.delete('endDate');
             params.delete('searchType');
@@ -147,14 +115,58 @@
         });
     });
 
+    function submitSearch() {
+        const url = new URL(location.href);
+        const params = url.searchParams;
+
+        const datefilter = document.querySelector('input[name="datefilter"]').value;
+        if (datefilter) {
+            const dates = datefilter.split(' - ');
+            params.set('startDate', dates[0]);
+            params.set('endDate', dates[1]);
+        } else {
+            params.delete('startDate');
+            params.delete('endDate');
+        }
+
+        const searchType = document.querySelector('select[name="searchType"]').value;
+        const searchWord = document.querySelector('input[name="searchWord"]').value;
+        if (searchWord) {
+            params.set('searchType', searchType);
+            params.set('searchWord', searchWord);
+        } else {
+            params.delete('searchType', searchType);
+            params.delete('searchWord', searchWord);
+        }
+
+        const pageSize = document.querySelector('select[name="pageSize"]').value;
+        if (pageSize) {
+            params.set('pageSize', pageSize);
+        } else {
+            params.delete('pageSize');
+        }
+
+        const answered = document.querySelector('select[name="answered"]').value;
+        if (answered) {
+            params.set('answered', answered);
+        } else {
+            params.delete('answered');
+        }
+
+        location.href = url.toString();
+    }
+
     function applySort(column) {
         const currentColumn = '${searchDTO.sortColumn}';
         const currentOrder = '${searchDTO.sortOrder}';
         const nextOrder = (currentColumn === column && currentOrder === 'asc') ? 'desc' : 'asc';
 
-        document.getElementById('sortColumn').value = column;
-        document.getElementById('sortOrder').value = nextOrder;
-        document.getElementById('frmSort').submit();
+        const url = new URL(location.href);
+        const params = url.searchParams;
+        params.set('sortColumn', column);
+        params.set('sortOrder', nextOrder);
+
+        location.href = url.toString();
     }
 </script>
 </body>

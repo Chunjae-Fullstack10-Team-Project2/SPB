@@ -42,5 +42,28 @@
             </div>
         </form>
     </div>
+
+    <script>
+        document.querySelector('button[type="submit"]').addEventListener('click', (e) => {
+            e.preventDefault();
+
+            const frm = document.forms[0];
+            const title = frm.teacherNoticeTitle.value;
+            const content = frm.teacherNoticeContent.value;
+
+            if (title == null || title.length < 1 || title.length > 50) {
+                alert("제목은 1자 이상 50자 이하로 입력해주세요.");
+                frm.teacherNoticeTitle.focus();
+                return;
+            }
+            if (content == null) {
+                alert("내용은 필수 항목입니다.");
+                frm.teacherNoticeContent.focus();
+                return;
+            }
+
+            frm.submit();
+        });
+    </script>
 </body>
 </html>

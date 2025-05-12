@@ -85,20 +85,27 @@
                             </c:if>
                         </a>
                     </th>
+                    <th>좋아요 상태</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${likesList}" var="boardReportDTO" varStatus="status">
+                <c:forEach items="${likesList}" var="bookmarkDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
-                            <a href="/post/detail?postIdx=${boardReportDTO.postLikeRefIdx}"
+                            <a href="/post/detail?postIdx=${bookmarkDTO.postLikeRefIdx}"
                                class="text-decoration-none text-dark">
-                                    ${boardReportDTO.postTitle}
+                                    ${bookmarkDTO.postTitle}
                             </a>
                         </td>
-                        <td>${boardReportDTO.postMemberId}</td>
-                        <td>${boardReportDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>${bookmarkDTO.postMemberId}</td>
+                        <td>${bookmarkDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                    onclick="cancelLike(${bookmarkDTO.postLikeRefIdx})">
+                                좋아요 취소
+                            </button>
+                        </td>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -117,6 +124,23 @@
     </div>
 </div>
 <script>
+    function cancelLike(postLikeRefIdx) {
+        if (!confirm("정말 좋아요를 취소하시겠습니까?")) return;
+
+        $.ajax({
+            url: "/mypage/likes/delete",
+            type: "POST",
+            data: {postLikeRefIdx: postLikeRefIdx},
+            success: function (response) {
+                alert(response);
+                location.reload();
+            },
+            error: function (xhr) {
+                alert(xhr.responseText || "좋아요 취소 중 오류가 발생했습니다.");
+            }
+        });
+    }
+
     <c:if test="${not empty message}">
     alert("${message}");
     </c:if>

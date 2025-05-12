@@ -6,7 +6,7 @@ import net.spb.spb.domain.TeacherNoticeVO;
 import net.spb.spb.dto.pagingsearch.TeacherNoticePageDTO;
 import net.spb.spb.dto.teacher.TeacherNoticeDTO;
 import net.spb.spb.dto.teacher.TeacherNoticeResponseDTO;
-import net.spb.spb.mapper.TeacherNoticeMapper;
+import net.spb.spb.mapper.teacher.TeacherNoticeMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +38,7 @@ public class TeacherNoticeService implements TeacherNoticeServiceIf {
         TeacherNoticeResponseDTO teacherNotice = teacherNoticeMapper.selectTeacherNoticeByIdx(idx);
 
         if (teacherNotice == null) {
-            // 요청한 수강후기를 찾을 수 없습니다.
+            // 요청한 공지사항을 찾을 수 없습니다.
         }
 
         return teacherNotice;
@@ -50,7 +50,7 @@ public class TeacherNoticeService implements TeacherNoticeServiceIf {
         TeacherNoticeResponseDTO teacherNotice = teacherNoticeMapper.selectTeacherNoticeByIdx(idx);
 
         if (teacherNotice == null) {
-            // 요청한 수강후기를 찾을 수 없습니다.
+            // 요청한 공지사항을 찾을 수 없습니다.
         }
         if (!teacherNotice.getTeacherNoticeMemberId().equals(memberId)) {
             // 수정 권한이 없습니다.
@@ -65,7 +65,7 @@ public class TeacherNoticeService implements TeacherNoticeServiceIf {
         TeacherNoticeResponseDTO teacherNotice = teacherNoticeMapper.selectTeacherNoticeByIdx(idx);
 
         if (teacherNotice == null) {
-            // 요청한 수강후기를 찾을 수 없습니다.
+            // 요청한 공지사항을 찾을 수 없습니다.
         }
         if (!teacherNotice.getTeacherNoticeMemberId().equals(memberId)) {
             // 삭제 권한이 없습니다.

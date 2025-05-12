@@ -5,13 +5,13 @@
         select count(postIdx) from tbl_post
         <where>
             postState=1 and postCategory = #{postCategory}
-            <if test="search_word!=null and search_word!=''">
-                and ${search_type} like concat("%", #{search_word}, "%")
+            <if test="search_word != null and search_word != '' and search_type != null and search_type != ''">
+                and ${search_type} like concat('%', #{search_word}, '%')
             </if>
-            <if test="search_date1!=null">
+            <if test="search_date1 != null and search_date1 != ''">
                 and date(postCreatedAt) <![CDATA[>=]]> #{search_date1}
             </if>
-            <if test="search_date2!=null">
+            <if test="search_date2 != null and search_date2 != ''">
                 and date(postCreatedAt) <![CDATA[<=]]> #{search_date2}
             </if>
         </where>
@@ -23,13 +23,13 @@
         on tp.postIdx = tpl.postLikeRefIdx and tpl.postLikeRefType='POST'
         <where>
             tp.postState=1 and tp.postCategory = #{postCategory}
-            <if test="search_word!=null and search_word!=''">
-                and tp.${search_type} like concat("%", #{search_word}, "%")
+            <if test="search_word != null and search_word != '' and search_type != null and search_type != ''">
+                and ${search_type} like concat('%', #{search_word}, '%')
             </if>
-            <if test="search_date1!=null">
+            <if test="search_date1 != null and search_date1 != ''">
                 and date(tp.postCreatedAt) <![CDATA[>=]]> #{search_date1}
             </if>
-            <if test="search_date2!=null">
+            <if test="search_date2 != null and search_date2 != ''">
                 and date(tp.postCreatedAt) <![CDATA[<=]]> #{search_date2}
             </if>
         </where>

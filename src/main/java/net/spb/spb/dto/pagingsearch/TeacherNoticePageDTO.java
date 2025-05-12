@@ -27,15 +27,6 @@ public class TeacherNoticePageDTO extends PageDTO {
     private static final List<String> SORT_COLUMNS = List.of("teacherNoticeIdx", "teacherNoticeTitle", "teacherNoticeContent", "teacherNoticeCreatedAt");
     private static final List<String> SORT_DIRECTIONS = List.of("asc", "desc");
 
-    public void getSearch_type() {
-        switch (search_category) {
-            case "title" : this.search_category = "teacherNoticeTitle";
-            case "content" : this.search_category = "teacherNoticeContent";
-            case "title-content" : this.search_category = "title-content";
-            default: this.search_category = null;
-        }
-    }
-
     public String getSort_by() {
         return SORT_COLUMNS.contains(this.sort_by) ? this.sort_by : "lectureReviewIdx";
     }

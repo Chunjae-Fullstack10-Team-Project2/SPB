@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="net.spb.spb.mapper.mystudy.PlanMapper">
+<mapper namespace="net.spb.spb.mapper.PlanMapper">
     <insert id="insert" useGeneratedKeys="true"
         keyColumn="planIdx" keyProperty="planIdx">
         insert into tbl_plan (planLectureIdx, planMemberId, planContent, planDate)

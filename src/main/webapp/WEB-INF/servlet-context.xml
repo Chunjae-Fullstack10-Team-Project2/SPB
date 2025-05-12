@@ -27,6 +27,10 @@
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
 
+    <bean id="lectureAccessInterceptor" class="net.spb.spb.interceptor.LectureAccessInterceptor">
+        <property name="lectureService" ref="lectureService"/>
+    </bean>
+
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/board/**/write"/>
@@ -68,6 +72,10 @@
             <mvc:exclude-mapping path="/main"/>
             <mvc:exclude-mapping path="/updatePwdChangeDate"/>
             <bean class="net.spb.spb.interceptor.MemberStateCheckInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/lecture/chapter/play"/>
+            <ref bean="lectureAccessInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
 

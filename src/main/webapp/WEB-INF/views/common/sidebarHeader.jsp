@@ -203,31 +203,43 @@
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     <li><a href="${cp}/board/freeboard/list"
                            class="d-inline-flex text-decoration-none rounded text-dark">자유게시판</a></li>
-                </ul>
-            </div>
-        </li>
-        <li class="mb-3">
-            <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
-                    data-bs-target="#admin-collapse">
-                관리 페이지
-            </button>
-            <div class="collapse" id="admin-collapse">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="${cp}/admin/member/list" class="d-inline-flex text-decoration-none rounded text-dark">회원
-                        목록</a></li>
-                    <li><a href="${cp}/admin/report/list/board"
-                           class="d-inline-flex text-decoration-none rounded text-dark">신고
-                        내역 목록</a>
+                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/freeboard/list">자유게시판</a>
                     </li>
-                    <li><a href="${cp}/admin/teacher/regist"
-                           class="d-inline-flex text-decoration-none rounded text-dark">강의 등록</a></li>
-                    <li><a href="${cp}/notice/regist"
-                           class="d-inline-flex text-decoration-none rounded text-dark">공지사항 등록</a></li>
-                    <li><a href="${cp}/admin/sales/info"
-                           class="d-inline-flex text-decoration-none rounded text-dark">매출 정보</a></li>
+                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/eduinfo/list">교육정보</a>
+                    </li>
+                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/uniinfo/list">대학정보</a>
+                    </li>
+                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/exactivity/list">대외활동</a>
+                    </li>
+                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/reference/list">자료공유</a>
+                    </li>
+                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/news">뉴스</a>
+                    </li>
                 </ul>
             </div>
         </li>
+        <c:if test="${sessionScope.memberGrade eq 0}">
+            <li class="mb-3">
+                <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
+                        data-bs-target="#admin-collapse">
+                    관리 페이지
+                </button>
+                <div class="collapse" id="admin-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="${cp}/admin/member/list"
+                               class="d-inline-flex text-decoration-none rounded text-dark">회원 목록</a></li>
+                        <li><a href="${cp}/admin/report/list/board"
+                               class="d-inline-flex text-decoration-none rounded text-dark">신고 내역 목록</a></li>
+                        <li><a href="${cp}/admin/teacher/regist"
+                               class="d-inline-flex text-decoration-none rounded text-dark">강의 등록</a></li>
+                        <li><a href="${cp}/notice/regist" class="d-inline-flex text-decoration-none rounded text-dark">공지사항
+                            등록</a></li>
+                        <li><a href="${cp}/admin/sales/info"
+                               class="d-inline-flex text-decoration-none rounded text-dark">매출 정보</a></li>
+                    </ul>
+                </div>
+            </li>
+        </c:if>
         <li class="mb-3">
             <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
                     data-bs-target="#mypage-collapse">
@@ -235,12 +247,11 @@
             </button>
             <div class="collapse" id="mypage-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded text-dark">좋아요
-                        목록</a></li>
-                    <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded text-dark">게시글
-                        신고</a></li>
+                    <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded text-dark">추천한 게시글</a></li>
+                    <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded text-dark">신고한 게시글</a></li>
                     <li><a href="${cp}/qna/myQna" class="d-inline-flex text-decoration-none rounded text-dark">나의 문의</a>
                     </li>
+                    <li><a href="${cp}/mypage/bookmark" class="d-inline-flex text-decoration-none rounded text-dark">북마크한 강좌</a></li>
                     <li><a href="${cp}/mypage/order" class="d-inline-flex text-decoration-none rounded text-dark">강좌 주문
                         내역</a></li>
                 </ul>
@@ -250,6 +261,31 @@
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const path = location.pathname;
+
+        if (path.includes('/mypage')) {
+            const myCollapse = document.querySelector('#mypage-collapse');
+            const myToggle = document.querySelector('[data-bs-target="#mypage-collapse"]');
+            myCollapse.classList.add('show');
+            myToggle.setAttribute('aria-expanded', 'true');
+        }
+
+        if (path.includes('/admin')) {
+            const adminCollapse = document.querySelector('#admin-collapse');
+            const adminToggle = document.querySelector('[data-bs-target="#admin-collapse"]');
+            adminCollapse.classList.add('show');
+            adminToggle.setAttribute('aria-expanded', 'true');
+        }
+
+        if (path.includes('/board')) {
+            const boardCollapse = document.querySelector('#dashboard-collapse');
+            const boardToggle = document.querySelector('[data-bs-target="#dashboard-collapse"]');
+            boardCollapse.classList.add('show');
+            boardToggle.setAttribute('aria-expanded', 'true');
+        }
+    });
+
     function adjustSidebarPadding() {
         const header = document.querySelector('header');
         const sidebar = document.getElementById('sidebar');

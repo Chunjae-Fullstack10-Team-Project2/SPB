@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="net.spb.spb.mapper.TeacherMapper">
+<mapper namespace="net.spb.spb.mapper.teacher.TeacherMapper">
     <!--선생님 메인 조회-->
     <select id="selectTeacher" resultType="net.spb.spb.domain.TeacherVO">
         select teacherIdx, teacherName, teacherId, teacherIntro, teacherState, teacherProfileImg, teacherSubject
