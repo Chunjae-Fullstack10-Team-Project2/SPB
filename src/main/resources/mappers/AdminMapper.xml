@@ -411,4 +411,24 @@
             </if>
         </where>
     </select>
+
+    <select id="selectPostByIdx" parameterType="java.lang.Integer" resultType="net.spb.spb.dto.post.PostDTO">
+        select p.postIdx, p.postTitle, p.postContent, p.postMemberId, p.postCategory, p.postReadCnt, p.postCreatedAt, p.postUpdatedAt, p.postState, m.memberProfileImg
+        from tbl_post p
+                 inner join tbl_member m on p.postMemberId = m.memberId
+        where 1=1
+          and p.postIdx = #{postIdx}
+    </select>
+
+    <update id="deletePostByAdmin" parameterType="java.lang.Integer">
+        update tbl_post
+        set postState = 3
+        where postIdx = #{postIdx};
+    </update>
+
+    <update id="updateReportState" parameterType="net.spb.spb.domain.ReportVO">
+        update tbl_report
+        set reportState = #{reportState}
+        where reportIdx = #{reportIdx}
+    </update>
 </mapper>

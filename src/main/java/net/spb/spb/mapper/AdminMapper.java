@@ -2,6 +2,7 @@ package net.spb.spb.mapper;
 
 import net.spb.spb.domain.ChapterVO;
 import net.spb.spb.domain.LectureVO;
+import net.spb.spb.domain.ReportVO;
 import net.spb.spb.domain.TeacherVO;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
@@ -67,4 +68,11 @@ public interface AdminMapper {
     List<PostDTO> selectReportedPosts(PostPageDTO postPageDTO);
 
     int selectReportedPostsCount(PostPageDTO postPageDTO);
+
+    PostDTO selectPostByIdx(int postIdx);
+
+    int deletePostByAdmin(int postIdx);
+
+    int updateReportState(ReportVO reportVO);
+
 }
