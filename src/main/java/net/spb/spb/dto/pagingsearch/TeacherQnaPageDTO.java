@@ -20,14 +20,14 @@ public class TeacherQnaPageDTO extends PageDTO {
     private LocalDate start_date;
     private LocalDate end_date;
 
-    private int qan_state; // 0: 미완료, 1: 답변완료
+    private String qna_status; // 0: 미완료, 1: 답변완료
 
     @Builder.Default
     private String sort_by = "teacherQnaIdx";
     @Builder.Default
     private String sort_direction = "desc";
 
-    private static final List<String> SORT_COLUMNS = List.of();
+    private static final List<String> SORT_COLUMNS = List.of("teacherQnaIdx", "teacherQnaTitle", "questionMemberName", "teacherQnaStatus", "teacherQnaCreatedAt");
     private static final List<String> SORT_DIRECTIONS = List.of("asc", "desc");
 
     public String getSort_by() {
@@ -55,8 +55,8 @@ public class TeacherQnaPageDTO extends PageDTO {
             sb.append("&end_date=" + this.end_date);
         }
 
-        if(this.qan_state > 0) {
-            sb.append("&qan_state=" + this.qan_state);
+        if(this.qna_status != null) {
+            sb.append("&qna_status=" + this.qna_status);
         }
 
         if (this.sort_by != null && this.sort_direction != null) {
