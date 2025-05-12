@@ -88,7 +88,7 @@
 </script>
 <c:if test="${param.denied eq 'true'}">
     <script>
-        alert("해당 강좌에 대한 수강 권한이 없습니다.");
+        alert("강좌 구매 후 시청 하실 수 있습니다.");
         history.back();
     </script>
 </c:if>
