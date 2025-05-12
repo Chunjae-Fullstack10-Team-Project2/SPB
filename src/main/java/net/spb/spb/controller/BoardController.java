@@ -358,7 +358,6 @@ public class BoardController {
 
     private void addBreadcrumb(Model model, BoardCategory category, String currentPageName) {
         List<Map<String, String>> breadcrumbItems = List.of(
-                Map.of("name", "게시판", "url", "/board"),
                 Map.of("name", category.getDisplayName(), "url", "/board/" + category.name().toLowerCase() + "/list"),
                 Map.of("name", currentPageName, "url", "")
         );
