@@ -65,6 +65,8 @@
             width: 20px;
             height: 20px;
             background-color: #DDEB9D;
+            border :  4px #DDEB9D;
+            border-radius: 100%;
         }
     </style>
 </head>
@@ -212,15 +214,7 @@
 
 
 <script>
-
-    document.addEventListener('DOMContentLoaded', function () {
-        console.log("Bootstrap Dropdown Initialization");
-        const dropdownElements = document.querySelectorAll('.dropdown-toggle');
-        dropdownElements.forEach(function (dropdownToggleEl) {
-            new bootstrap.Dropdown(dropdownToggleEl);
-        });
-
-    // toggle
+    // 전역 범위에 toggleDropdown 함수 정의
     function toggleDropdown(imgElement) {
         const dropdown = imgElement.nextElementSibling;
         document.querySelectorAll('.dropdown-menu').forEach(menu => {
@@ -231,27 +225,34 @@
         dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
     }
 
-    document.addEventListener('click', function(event) {
-        const isDropdownButton = event.target.closest('.bar-img');
-        const isDropdownMenu = event.target.closest('.dropdown-menu');
-        const isWriteButton = event.target.closest('.btn-primary');
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log("Bootstrap Dropdown Initialization");
+        const dropdownElements = document.querySelectorAll('.dropdown-toggle');
+        dropdownElements.forEach(function (dropdownToggleEl) {
+            new bootstrap.Dropdown(dropdownToggleEl);
+        });
 
-        if (!isDropdownButton && !isDropdownMenu && !isWriteButton) {
-            document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                menu.style.display = 'none';
-            });
-        }
+        document.addEventListener('click', function(event) {
+            const isDropdownButton = event.target.closest('.bar-img');
+            const isDropdownMenu = event.target.closest('.dropdown-menu');
+            const isWriteButton = event.target.closest('.btn-primary');
 
-        if (event.target.id === 'btnDelete') {
-            event.preventDefault();
-            event.stopPropagation();
-
-            if (window.confirm('정말 삭제하시겠습니까?')) {
-                event.target.closest("form").submit();
+            if (!isDropdownButton && !isDropdownMenu && !isWriteButton) {
+                document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                    menu.style.display = 'none';
+                });
             }
-        }
-    });
 
+            if (event.target.id === 'btnDelete') {
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (window.confirm('정말 삭제하시겠습니까?')) {
+                    event.target.closest("form").submit();
+                }
+            }
+        });
+    });
 </script>
 </body>
 </html>
