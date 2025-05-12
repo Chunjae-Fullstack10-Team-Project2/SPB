@@ -111,7 +111,7 @@ public class QnaController {
     @PostMapping("/delete")
     public String delete(@RequestParam("qnaIdx") String qnaIdx, Model model, HttpSession session) {
         int memberGrade = Integer.parseInt(session.getAttribute("memberGrade").toString());
-        if (memberGrade != 0 && memberGrade != 13) {
+        if (memberGrade != 0) {
             return "redirect:/qna/view?qnaIdx=" + qnaIdx + "&message=unauthorized";
         } else {
             boolean result = qnaService.delete(qnaIdx);
@@ -134,7 +134,7 @@ public class QnaController {
         qnaDTO.setQnaAMemberId(memberId);
 
         int memberGrade = Integer.parseInt(session.getAttribute("memberGrade").toString());
-        if (memberGrade != 0 && memberGrade != 13) {
+        if (memberGrade != 0) {
             return "redirect:/qna/view?qnaIdx=" + qnaIdx + "&message=unauthorized";
         }
 
