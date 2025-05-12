@@ -214,7 +214,6 @@
 
 
 <script>
-    // 전역 범위에 toggleDropdown 함수 정의
     function toggleDropdown(imgElement) {
         const dropdown = imgElement.nextElementSibling;
         document.querySelectorAll('.dropdown-menu').forEach(menu => {
