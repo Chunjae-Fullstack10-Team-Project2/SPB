@@ -77,6 +77,10 @@
             <mvc:mapping path="/lecture/chapter/play"/>
             <ref bean="lectureAccessInterceptor"/>
         </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/mypage/**"/>
+            <bean class="net.spb.spb.interceptor.MemberOnlyCheckInterceptor"/>
+        </mvc:interceptor>
     </mvc:interceptors>
 
 </beans>
