@@ -96,7 +96,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${bookmarkList}" var="postDTO" varStatus="status">
+                <c:forEach items="${bookmarkList}" var="reportDTO" varStatus="status">
 >>>>>>> develop
                     <tr>
                         <td>${status.index + 1}</td>
@@ -121,25 +121,25 @@
                             </c:if>
                         </td>
 =======
-                                    ${postDTO.lectureTitle}
+                                    ${reportDTO.lectureTitle}
                             </a>
                         </td>
-                        <td>${postDTO.teacherName}</td>
-                        <td><fmt:formatDate value="${postDTO.bookmarkCreatedAt}" pattern="yyyy-MM-dd" /></td>
+                        <td>${reportDTO.teacherName}</td>
+                        <td><fmt:formatDate value="${reportDTO.bookmarkCreatedAt}" pattern="yyyy-MM-dd" /></td>
                         <td>
-                            <c:if test="${postDTO.bookmarkState == 1}">
+                            <c:if test="${reportDTO.bookmarkState == 1}">
                                 <button type="button" class="btn btn-sm btn-outline-danger"
-                                        onclick="cancelBookmark(${postDTO.bookmarkIdx})">
+                                        onclick="cancelBookmark(${reportDTO.bookmarkIdx})">
                                     삭제
                                 </button>
                             </c:if>
-                            <c:if test="${postDTO.bookmarkState == 2}">
+                            <c:if test="${reportDTO.bookmarkState == 2}">
                                 <span class="badge bg-secondary">결제 완료</span>
                             </c:if>
                         </td>
                         <td>
                             <button type="button" class="btn btn-sm btn-outline-primary"
-                                    onclick="addCart('${postDTO.bookmarkLectureIdx}')">
+                                    onclick="addCart('${reportDTO.bookmarkLectureIdx}')">
                                 장바구니
                             </button>
                         </td>
