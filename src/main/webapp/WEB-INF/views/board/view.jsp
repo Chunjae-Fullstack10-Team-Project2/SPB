@@ -60,7 +60,9 @@ change this template use File | Settings | File Templates. --%>
       <div class="card-body">
         <h2 class="h4 fw-bold">${post.postTitle}</h2>
         <div class="d-flex gap-3 align-items-center border-bottom pb-3 mb-4">
-          <img src="${cp}/upload/${post.memberProfileImg}" width="40" height="40" class="rounded-circle">
+          <img src="${cp}/upload/${post.memberProfileImg}" width="40" height="40" class="rounded-circle"
+               onerror="this.src='${cp}/resources/img/default_profileImg.png';"
+               alt="프로필 이미지">
           <div>
             <div class="fw-semibold">${post.postMemberId}</div>
             <div class="text-muted small">조회 ${post.postReadCnt} | 댓글 ${fn:length(post.postComments)}</div>
