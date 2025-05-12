@@ -1,3 +1,6 @@
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -46,37 +49,14 @@
                 </a>
             </c:if>
         </div>
-        <div class="search-box" style="max-width: 700px;">
-            <form name="frmSearch" method="get" action="/faq/list" class="mb-1 p-4">
-                <%--            border rounded shadow-sm bg-light--%>
-                <div class="row g-2 align-items-center mb-3">
-                    <div class="col-md-8">
-                        <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택"
-                               autocomplete="off"
-                               value="${not empty param.datefilter ? param.datefilter : ''}"/>
-                    </div>
-                </div>
-
-                <div class="row g-2 align-items-center mb-3">
-                    <div class="col-md-3">
-                        <select name="searchType" class="form-select">
-                            <option value="faqQuestion" ${searchDTO.searchType eq "faqQuestion" ? "selected":""}>질문 내용
-                            </option>
-                            <option value="faqAnswer" ${searchDTO.searchType eq "faqAnswer" ? "selected":""}>답변 내용
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-5">
-                        <input type="text" name="searchWord" class="form-control" placeholder="검색어 입력"
-                               value="${searchDTO.searchWord}"/>
-                    </div>
-                    <div class="col-md-3 d-flex gap-1">
-                        <button type="submit" class="btn btn-primary flex-fill" id="btnSearch">검색</button>
-                        <button type="button" class="btn btn-link text-decoration-none" id="btnReset">초기화</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+        <%
+            List<Map<String, String>> searchTypeOptions = new ArrayList<>();
+            searchTypeOptions.add(Map.of("value", "faqQuestion", "label", "질문"));
+            searchTypeOptions.add(Map.of("value", "faqAnswer", "label", "답변"));
+            request.setAttribute("searchTypeOptions", searchTypeOptions);
+            request.setAttribute("searchAction", "/faq/list");
+        %>
+        <jsp:include page="../common/searchBox.jsp"/>
         <c:if test="${not empty faqList}">
             <div class="accordion" id="faqAccordion">
                 <c:forEach var="faqDTO" items="${faqList}" varStatus="status">
