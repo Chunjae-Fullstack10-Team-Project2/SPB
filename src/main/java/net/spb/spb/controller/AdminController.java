@@ -10,6 +10,7 @@ import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.TeacherDTO;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.dto.pagingsearch.*;
+import net.spb.spb.dto.post.PostDTO;
 import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.service.AdminService;
 import net.spb.spb.service.ReportService;
@@ -492,7 +493,23 @@ public class AdminController {
         workbook.close();
     }
 
-
+    // Board manage
+    @GetMapping("/board/manage")
+    public String boardReportList(@ModelAttribute PostPageDTO postPageDTO, Model model, HttpServletRequest req) {
+        String baseUrl = req.getRequestURI();
+        postPageDTO.normalizeSearchType();
+        postPageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, postPageDTO));
+        int totalCount = adminService.selectReportedPostsCount(postPageDTO);
+        postPageDTO.setTotal_count(totalCount);
+        String paging = NewPagingUtil.pagingArea(postPageDTO);
+        List<PostDTO> postDTOs = adminService.selectReportedPosts(postPageDTO);
+        model.addAttribute("postTotalCount", totalCount);
+        model.addAttribute("posts", postDTOs);
+        model.addAttribute("search", postPageDTO);
+        model.addAttribute("paging", paging);
+        setBreadcrumb(model, Map.of("자유게시판 관리", ""));
+        return "/admin/board/list";
+    }
     // 브레드크럼
     private void setBreadcrumb(Model model, Map<String, String>... pagePairs) {
         LinkedHashMap<String, String> pages = new LinkedHashMap<>();

@@ -2,21 +2,46 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.spb.spb.mapper.AdminMapper">
 
-    <insert id="insertLecture" parameterType="net.spb.spb.domain.LectureVO">
-        insert into tbl_lecture (lectureTitle, lectureDescription, lectureTeacherId, lectureThumbnailImg, lectureAmount)
-        values (#{lectureTitle}, #{lectureDescription}, #{lectureTeacherId}, #{lectureThumbnailImg}, #{lectureAmount})
-    </insert>
-
-    <insert id="insertChapter" parameterType="net.spb.spb.domain.ChapterVO">
-        insert into tbl_lecture_chapter (chapterLectureIdx, chapterName, chapterVideo, chapterRuntime)
-        values (#{chapterLectureIdx}, #{chapterName}, #{chapterVideo}, #{chapterRuntime})
-    </insert>
-
+    <!-- Teacher-->
     <insert id="insertTeacher" parameterType="net.spb.spb.domain.TeacherVO">
         insert into tbl_teacher (teacherName, teacherId, teacherIntro, teacherApproval, teacherProfileImg,
                                  teacherSubject)
         values (#{teacherName}, #{teacherId}, #{teacherIntro}, #{teacherApproval}, #{teacherProfileImg},
                 #{teacherSubject})
+    </insert>
+
+    <select id="selectTeacherWithoutTeacherProfile" resultType="net.spb.spb.dto.member.MemberDTO">
+        SELECT *
+        FROM tbl_member m
+        WHERE m.memberGrade = 13 and NOT EXISTS (
+            SELECT 1
+            FROM tbl_teacher t
+            WHERE t.teacherId = m.memberId
+        );
+    </select>
+
+    <select id="selectTeacherWithTeacherProfile" resultType="net.spb.spb.dto.member.MemberDTO">
+        SELECT *
+        FROM tbl_member m
+        WHERE m.memberGrade = 13 and EXISTS (
+            SELECT 1
+            FROM tbl_teacher t
+            WHERE t.teacherId = m.memberId
+        );
+    </select>
+
+    <update id="modifyTeacherProfile" parameterType="net.spb.spb.domain.TeacherVO">
+        update tbl_teacher
+        set teacherSubject = #{teacherSubject},
+            teacherIntro = #{teacherIntro},
+            teacherProfileImg = #{teacherProfileImg}
+        where teacherIdx = #{teacherIdx}
+    </update>
+
+    <!-- Lecture -->
+    <insert id="insertLecture" parameterType="net.spb.spb.domain.LectureVO">
+        insert into tbl_lecture (lectureTitle, lectureDescription, lectureTeacherId, lectureThumbnailImg, lectureAmount)
+        values (#{lectureTitle}, #{lectureDescription}, #{lectureTeacherId}, #{lectureThumbnailImg}, #{lectureAmount})
     </insert>
 
     <select id="selectLectureList" parameterType="net.spb.spb.dto.pagingsearch.LecturePageDTO"
@@ -52,18 +77,18 @@
     <select id="selectLecture" parameterType="java.lang.Integer"
             resultType="net.spb.spb.dto.LectureDTO">
         select
-        tl.lectureIdx,
-        tl.lectureTitle,
-        tl.lectureThumbnailImg,
-        tl.lectureAmount,
-        tl.lectureTeacherId,
-        tl.lectureDescription,
-        tl.lectureCreatedAt,
-        tt.teacherName as lectureTeacherName,
-        count(tlc.chapterIdx) as lectureChapterCount
+            tl.lectureIdx,
+            tl.lectureTitle,
+            tl.lectureThumbnailImg,
+            tl.lectureAmount,
+            tl.lectureTeacherId,
+            tl.lectureDescription,
+            tl.lectureCreatedAt,
+            tt.teacherName as lectureTeacherName,
+            count(tlc.chapterIdx) as lectureChapterCount
         from tbl_lecture tl
-        inner join tbl_teacher tt on tl.lectureTeacherId = tt.teacherId
-        left outer join tbl_lecture_chapter tlc on tl.lectureIdx = tlc.chapterLectureIdx
+                 inner join tbl_teacher tt on tl.lectureTeacherId = tt.teacherId
+                 left outer join tbl_lecture_chapter tlc on tl.lectureIdx = tlc.chapterLectureIdx
         where tl.lectureIdx = #{lectureIdx}
         group by tl.lectureIdx, tl.lectureTitle, tt.teacherName
     </select>
@@ -84,6 +109,28 @@
             </if>
         </where>
     </select>
+
+    <update id="updateLecture" parameterType="net.spb.spb.domain.LectureVO">
+        update tbl_lecture
+        set lectureTitle = #{lectureTitle},
+            lectureDescription = #{lectureDescription},
+            lectureTeacherId = #{lectureTeacherId},
+            lectureThumbnailImg = #{lectureThumbnailImg},
+            lectureAmount = #{lectureAmount}
+        where lectureIdx = #{lectureIdx}
+    </update>
+
+    <update id="deleteLecture" parameterType="net.spb.spb.domain.LectureVO">
+        update tbl_lecture
+        set lectureState = #{lectureState}
+        where lectureIdx = #{lectureIdx}
+    </update>
+
+    <!-- Chapter -->
+    <insert id="insertChapter" parameterType="net.spb.spb.domain.ChapterVO">
+        insert into tbl_lecture_chapter (chapterLectureIdx, chapterName, chapterVideo, chapterRuntime)
+        values (#{chapterLectureIdx}, #{chapterName}, #{chapterVideo}, #{chapterRuntime})
+    </insert>
 
     <select id="selectChapterList" resultType="net.spb.spb.dto.ChapterDTO" parameterType="net.spb.spb.dto.pagingsearch.ChapterPageDTO">
         select c.chapterIdx,
@@ -115,6 +162,21 @@
         where c.chapterIdx = #{chapterIdx}
     </select>
 
+    <update id="updateChapter" parameterType="net.spb.spb.domain.ChapterVO">
+        update tbl_lecture_chapter
+        set chapterName = #{chapterName},
+            chapterVideo = #{chapterVideo},
+            chapterRuntime = #{chapterRuntime}
+        where chapterLectureIdx = #{chapterLectureIdx}
+    </update>
+
+    <update id="deleteChapter" parameterType="net.spb.spb.domain.ChapterVO">
+        update tbl_lecture_chapter
+        set chapterState = #{chapterState}
+        where chapterIdx = #{chapterIdx}
+    </update>
+
+    <!-- Sales -->
     <select id="selectMonthlySales" resultType="map" parameterType="map">
         <choose>
             <!-- DAY: 날짜별 매출 -->
@@ -171,7 +233,6 @@
             </otherwise>
         </choose>
     </select>
-
 
     <!--  강좌별 고정 -->
     <select id="selectLectureSalesDefault" resultType="map">
@@ -288,61 +349,66 @@
         ORDER BY orderCreatedAt DESC
     </select>
 
-    <select id="selectTeacherWithoutTeacherProfile" resultType="net.spb.spb.dto.member.MemberDTO">
-        SELECT *
-        FROM tbl_member m
-        WHERE m.memberGrade = 13 and NOT EXISTS (
-            SELECT 1
-            FROM tbl_teacher t
-            WHERE t.teacherId = m.memberId
-        );
+    <select id="selectReportedPosts" resultType="net.spb.spb.dto.post.PostDTO" parameterType="net.spb.spb.dto.pagingsearch.PostPageDTO">
+        select p.postIdx, p.postTitle, p.postMemberId, p.postReadCnt, p.postCreatedAt, p.postUpdatedAt, p.postState, count(r.reportIdx) as postReportCnt
+        from tbl_post p
+        inner join tbl_report r on p.postIdx = r.reportRefIdx and r.reportRefType= "POST"
+        <where>
+            p.postCategory = "FREEBOARD"
+            <if test="search_word != null and search_word != '' and search_type != null and search_type != ''">
+                and ${search_type} like concat('%', #{search_word}, '%')
+            </if>
+            <if test="search_date1 != null and search_date1 != ''">
+                and date(p.postCreatedAt) <![CDATA[>=]]> #{search_date1}
+            </if>
+            <if test="search_date2 != null and search_date2 != ''">
+                and date(p.postCreatedAt) <![CDATA[<=]]> #{search_date2}
+            </if>
+        </where>
+        GROUP BY
+            p.postIdx,
+            p.postTitle,
+            p.postMemberId,
+            p.postReadCnt,
+            p.postCreatedAt,
+            p.postUpdatedAt,
+            p.postState
+        <choose>
+            <when test="sort_by == 'postTitle'">
+                ORDER BY p.postTitle
+            </when>
+            <when test="sort_by == 'postReadCnt'">
+                ORDER BY p.postReadCnt
+            </when>
+            <when test="sort_by == 'postReportCnt'">
+                ORDER BY postReportCnt
+            </when>
+            <otherwise>
+                ORDER BY p.postIdx
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="sort_direction == 'asc'"> ASC </when>
+            <otherwise> DESC </otherwise>
+        </choose>
+        limit #{page_skip_count}, #{page_size}
     </select>
 
-    <select id="selectTeacherWithTeacherProfile" resultType="net.spb.spb.dto.member.MemberDTO">
-        SELECT *
-        FROM tbl_member m
-        WHERE m.memberGrade = 13 and EXISTS (
-            SELECT 1
-            FROM tbl_teacher t
-            WHERE t.teacherId = m.memberId
-        );
+    <select id="selectReportedPostsCount" resultType="java.lang.Integer" parameterType="net.spb.spb.dto.pagingsearch.PostPageDTO">
+        select count(distinct p.postIdx)
+        from tbl_post p
+        inner join tbl_report r on p.postIdx = r.reportRefIdx and r.reportRefType= "POST"
+        <where>
+            p.postCategory = "FREEBOARD"
+            <if test="search_word != null and search_word != '' and search_type != null and search_type != ''">
+                and ${search_type} like concat('%', #{search_word}, '%')
+            </if>
+            <if test="search_date1 != null and search_date1 != ''">
+                and date(p.postCreatedAt) <![CDATA[>=]]> #{search_date1}
+            </if>
+            <if test="search_date2 != null and search_date2 != ''">
+                and date(p.postCreatedAt) <![CDATA[<=]]> #{search_date2}
+            </if>
+        </where>
     </select>
-
-    <update id="modifyTeacherProfile" parameterType="net.spb.spb.domain.TeacherVO">
-        update tbl_teacher
-        set teacherSubject = #{teacherSubject},
-            teacherIntro = #{teacherIntro},
-            teacherProfileImg = #{teacherProfileImg}
-        where teacherIdx = #{teacherIdx}
-    </update>
-
-    <update id="updateLecture" parameterType="net.spb.spb.domain.LectureVO">
-        update tbl_lecture
-        set lectureTitle = #{lectureTitle},
-            lectureDescription = #{lectureDescription},
-            lectureTeacherId = #{lectureTeacherId},
-            lectureThumbnailImg = #{lectureThumbnailImg},
-            lectureAmount = #{lectureAmount}
-        where lectureIdx = #{lectureIdx}
-    </update>
-
-    <update id="deleteLecture" parameterType="net.spb.spb.domain.LectureVO">
-        update tbl_lecture
-        set lectureState = #{lectureState}
-        where lectureIdx = #{lectureIdx}
-    </update>
-
-    <update id="updateChapter" parameterType="net.spb.spb.domain.ChapterVO">
-        update tbl_lecture_chapter
-        set chapterName = #{chapterName},
-            chapterVideo = #{chapterVideo},
-            chapterRuntime = #{chapterRuntime}
-        where chapterLectureIdx = #{chapterLectureIdx}
-    </update>
-
-    <update id="deleteChapter" parameterType="net.spb.spb.domain.ChapterVO">
-        update tbl_lecture_chapter
-        set chapterState = #{chapterState}
-        where chapterIdx = #{chapterIdx}
-    </update>
 </mapper>

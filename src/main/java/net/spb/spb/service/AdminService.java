@@ -8,10 +8,8 @@ import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.TeacherDTO;
 import net.spb.spb.dto.member.MemberDTO;
-import net.spb.spb.dto.pagingsearch.ChapterPageDTO;
-import net.spb.spb.dto.pagingsearch.LecturePageDTO;
-import net.spb.spb.dto.pagingsearch.PageRequestDTO;
-import net.spb.spb.dto.pagingsearch.SearchDTO;
+import net.spb.spb.dto.pagingsearch.*;
+import net.spb.spb.dto.post.PostDTO;
 import net.spb.spb.mapper.AdminMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,5 +119,13 @@ public class AdminService {
 
     public int updateChapter(ChapterDTO chapterDTO) {
         return adminMapper.updateChapter(modelMapper.map(chapterDTO, ChapterVO.class));
+    }
+
+    public List<PostDTO> selectReportedPosts(PostPageDTO postPageDTO) {
+        return adminMapper.selectReportedPosts(postPageDTO);
+    }
+
+    public int selectReportedPostsCount(PostPageDTO postPageDTO) {
+        return adminMapper.selectReportedPostsCount(postPageDTO);
     }
 }

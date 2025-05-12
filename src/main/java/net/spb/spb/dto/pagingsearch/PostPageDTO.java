@@ -43,4 +43,8 @@ public class PostPageDTO extends PageDTO {
         }
     }
 
+    @Builder.Default
+    public String sort_by = "postIdx";
+    @Builder.Default
+    public String sort_direction = "desc";
 }

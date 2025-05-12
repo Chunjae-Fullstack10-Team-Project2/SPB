@@ -27,4 +27,5 @@ public class PostDTO {
     private int postLikeCnt;
     private boolean isLike;
     private String memberProfileImg;
+    private int postReportCnt;
 }
