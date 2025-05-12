@@ -66,8 +66,9 @@ change this template use File | Settings | File Templates. --%>
                     </c:choose>
 
                     <div>
-                        <div class="fw-semibold">${post.postMemberId}</div>
-                        <div class="text-muted small">조회 ${post.postReadCnt} | 댓글 ${fn:length(post.postComments)} | 좋아요 <span class="likeCount">${post.postLikeCnt}</span></div>
+                        <div class="fw-semibold">${post.memberName} (${post.postMemberId})</div>
+                        <div class="text-muted small">조회 ${post.postReadCnt} | 댓글 ${fn:length(post.postComments)} | 좋아요
+                            <span class="likeCount">${post.postLikeCnt}</span></div>
                     </div>
                 </div>
 
@@ -89,9 +90,7 @@ change this template use File | Settings | File Templates. --%>
                                 <div>
                                     <i class="bi ${FileUtil.getIconClass(file.fileExt)} me-2"></i>
                                         ${file.fileOrgName}
-                                    <span class="text-muted small ms-2">
-                      (${FileUtil.formatFileSize(file.fileSize)})
-                  </span>
+                                    <span class="text-muted small ms-2">(${FileUtil.formatFileSize(file.fileSize)})</span>
                                 </div>
                                 <a class="btn btn-sm btn-outline-secondary"
                                    href="/upload/${file.fileName}" download>
@@ -106,7 +105,7 @@ change this template use File | Settings | File Templates. --%>
                     <button class="btn btn-outline-primary btn-sm" id="btnCopyUrl"><i class="bi bi-share"></i> 공유
                     </button>
 
-                    <c:if test="${not empty sessionScope.memberId}">
+                    <c:if test="${category == 'freeboard' and not empty sessionScope.memberId}">
                         <button type="submit" id="btnReport" class="btn btn-outline-danger btn-sm"
                                 data-report-ref-idx="${post.postIdx}" data-post-member-id="${post.postMemberId}"
                                 data-report-ref-type="POST">
@@ -136,69 +135,76 @@ change this template use File | Settings | File Templates. --%>
                             id="btnLike"
                             data-post-idx="${post.postIdx}"
                             data-like-ref-type="POST">
-                        👍 <span class="likeCount">${post.postLikeCnt}</span>
+                        ${category != 'freeboard' ? '도움이 돼요 ': ''}
+                        👍&nbsp;&nbsp;<span class="likeCount">${post.postLikeCnt}</span>
                     </button>
                 </c:if>
                 <hr/>
 
                 <!-- 댓글 목록 -->
-                <div class="post-comments mb-4" id="commentList">
-                    <c:forEach items="${post.postComments}" var="postComment">
-                        <div class="comment-item border-bottom pb-2 mb-2"
-                             data-comment-idx="${postComment.postCommentIdx}">
-                            <div class="d-flex justify-content-between">
-                                <div class="d-flex align-items-center">
-                                    <img src="${cp}/upload/${postComment.postCommentMemberProfileImg}" width="24"
-                                         height="24"
-                                         class="rounded-circle me-2"
-                                         onerror="this.src='${cp}/resources/img/default_profileImg.png';"
-                                         alt="댓글 작성자 프로필 이미지">
-                                    <strong>${postComment.postCommentMemberId}</strong>
-                                </div>
-                                <div class="text-muted small comment-info">
-                                        ${fn:replace(postComment.postCommentCreatedAt, 'T', ' ')}
-                                    <c:if test="${not empty postComment.postCommentUpdatedAt}">
-                                        (수정: ${fn:replace(postComment.postCommentUpdatedAt, 'T', ' ')})
-                                    </c:if>
-                                </div>
-                            </div>
-                            <div class="comment-body mt-2">
-                                <div class="comment-text"><c:out value="${postComment.postCommentContent}"/></div>
-                                <!-- 댓글 수정 -->
-                                <div class="comment-edit position-relative border rounded p-3 bg-light mt-2" style="min-height: 100px;">
-                                    <div class="position-absolute top-0 end-0 pe-3 pt-2 small text-muted">
-                                        <span class="editCharCount">0</span> / 3000
+                <c:if test="${category == 'freeboard'}">
+                    <div class="post-comments mb-4" id="commentList">
+                        <c:forEach items="${post.postComments}" var="postComment">
+                            <div class="comment-item border-bottom pb-2 mb-2"
+                                 data-comment-idx="${postComment.postCommentIdx}">
+                                <div class="d-flex justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <img src="${cp}/upload/${postComment.postCommentMemberProfileImg}" width="24"
+                                             height="24"
+                                             class="rounded-circle me-2"
+                                             onerror="this.src='${cp}/resources/img/default_profileImg.png';"
+                                             alt="댓글 작성자 프로필 이미지">
+                                        <strong>${postComment.postCommentMemberId}</strong>
                                     </div>
-
-                                    <textarea class="form-control edit-textarea border-0 shadow-none mb-4 ps-0"
-                                              style="resize: none; overflow: hidden; height: auto; background: transparent;"
-                                              maxlength="3000">${postComment.postCommentContent}</textarea>
-
-                                    <div class="position-absolute end-0 bottom-0 p-2">
-                                        <button class="btn btn-sm btn-outline-primary"
-                                                onclick="saveEdit(this, ${postComment.postCommentIdx}, '${sessionScope.memberId}')">저장</button>
-                                        <button class="btn btn-sm btn-outline-secondary" onclick="cancelEdit(this)">취소</button>
+                                    <div class="text-muted small comment-info">
+                                            ${fn:replace(postComment.postCommentCreatedAt, 'T', ' ')}
+                                        <c:if test="${not empty postComment.postCommentUpdatedAt}">
+                                            (수정: ${fn:replace(postComment.postCommentUpdatedAt, 'T', ' ')})
+                                        </c:if>
                                     </div>
                                 </div>
+                                <div class="comment-body mt-2">
+                                    <div class="comment-text"><c:out value="${postComment.postCommentContent}"/></div>
+                                    <!-- 댓글 수정 -->
+                                    <div class="comment-edit position-relative border rounded p-3 bg-light mt-2"
+                                         style="min-height: 100px;">
+                                        <div class="position-absolute top-0 end-0 pe-3 pt-2 small text-muted">
+                                            <span class="editCharCount">0</span> / 3000
+                                        </div>
 
-                                <div class="text-end mt-2">
-                                    <c:if test="${sessionScope.memberId eq postComment.postCommentMemberId}">
-                                        <button class="btn btn-sm btn-link text-decoration-none"
-                                                onclick="enableEdit(this)">수정
-                                        </button>
-                                        <button class="btn btn-sm btn-link text-danger text-decoration-none commentDeleteButton"
-                                                data-comment-idx="${postComment.postCommentIdx}"
-                                                data-member-id="${postComment.postCommentMemberId}">삭제
-                                        </button>
-                                    </c:if>
+                                        <textarea class="form-control edit-textarea border-0 shadow-none mb-4 ps-0"
+                                                  style="resize: none; overflow: hidden; height: auto; background: transparent;"
+                                                  maxlength="3000">${postComment.postCommentContent}</textarea>
+
+                                        <div class="position-absolute end-0 bottom-0 p-2">
+                                            <button class="btn btn-sm btn-outline-primary"
+                                                    onclick="saveEdit(this, ${postComment.postCommentIdx}, '${sessionScope.memberId}')">
+                                                저장
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary" onclick="cancelEdit(this)">
+                                                취소
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-end mt-2">
+                                        <c:if test="${sessionScope.memberId eq postComment.postCommentMemberId}">
+                                            <button class="btn btn-sm btn-link text-decoration-none"
+                                                    onclick="enableEdit(this)">수정
+                                            </button>
+                                            <button class="btn btn-sm btn-link text-danger text-decoration-none commentDeleteButton"
+                                                    data-comment-idx="${postComment.postCommentIdx}"
+                                                    data-member-id="${postComment.postCommentMemberId}">삭제
+                                            </button>
+                                        </c:if>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </c:forEach>
-                </div>
-
+                        </c:forEach>
+                    </div>
+                </c:if>
                 <!-- 댓글 입력 -->
-                <c:if test="${not empty sessionScope.memberId}">
+                <c:if test="${category == 'freeboard' and not empty sessionScope.memberId}">
                     <div class="comment-input-wrapper position-relative border rounded p-3 bg-white"
                          style="min-height: 100px;">
 
@@ -214,7 +220,8 @@ change this template use File | Settings | File Templates. --%>
                         <textarea id="postCommentContent"
                                   class="comment-textarea form-control border-0 shadow-none p-0 my-4"
                                   placeholder="댓글을 입력하세요"
-                                  style="resize: none; height: auto; background: transparent;" maxlength="3000"></textarea>
+                                  style="resize: none; height: auto; background: transparent;"
+                                  maxlength="3000"></textarea>
 
                         <div class="comment-controls position-absolute end-0 bottom-0 p-2 mt-2">
                             <button type="button" class="btn btn-primary btn-sm" id="commentInsertButton"
@@ -264,7 +271,7 @@ change this template use File | Settings | File Templates. --%>
     });
 
     // 댓글 삭제
-    document.getElementById('commentList').addEventListener('click', function (e) {
+    document.getElementById('commentList')?.addEventListener('click', function (e) {
         if (e.target.classList.contains('commentDeleteButton')) {
             if (!confirm("댓글을 삭제할까요?")) return;
             const commentItem = e.target.closest('.comment-item');
@@ -389,16 +396,6 @@ change this template use File | Settings | File Templates. --%>
                     showToast(json.message);
                     const comment = json.comment;
                     let createdAt = json.createdAt;
-                    // if (Array.isArray(createdAt)) {
-                    //     const dateObj = new Date(
-                    //         createdAt[0], createdAt[1] - 1, createdAt[2],
-                    //         createdAt[3], createdAt[4], createdAt[5]
-                    //     );
-                    //     createdAt = dateObj.toISOString().split('T')[0];
-                    // } else {
-                    //     createdAt = new Date().toISOString().split('T')[0];
-                    // }
-
                     const profileImg = comment.postCommentMemberProfileImg
                         ? (comment.postCommentMemberProfileImg.startsWith("/upload/")
                             ? comment.postCommentMemberProfileImg
@@ -419,9 +416,12 @@ change this template use File | Settings | File Templates. --%>
                         '</div>' +
                         '<div class="comment-body mt-2">' +
                         '<div class="comment-text">' + comment.postCommentContent + '</div>' +
-                        '<div class="comment-edit" style="display:none;">' +
-                        '<textarea class="form-control edit-textarea" style="resize: none;">' + comment.postCommentContent + '</textarea>' +
-                        '<div class="mt-2 text-end">' +
+                        '<div class="comment-edit position-relative border rounded p-3 bg-light mt-2" style="min-height: 100px;">' +
+                        '<div class="position-absolute top-0 end-0 pe-3 pt-2 small text-muted">' +
+                            '<span class="editCharCount">0</span> / 3000</div>' +
+
+                        '<textarea class="form-control edit-textarea border-0 shadow-none mb-4 ps-0" style="resize: none; overflow: hidden; height: auto; background: transparent;" maxlength="3000">' + comment.postCommentContent + '</textarea>' +
+                        '<div class="position-absolute end-0 bottom-0 p-2">' +
                         '<button class="btn btn-sm btn-outline-primary" onclick="saveEdit(this, ' + comment.postCommentIdx + ', \'' + sessionMemberId + '\')">저장</button>' +
                         '<button class="btn btn-sm btn-outline-secondary" onclick="cancelEdit(this)">취소</button>' +
                         '</div>' +
@@ -466,9 +466,9 @@ change this template use File | Settings | File Templates. --%>
                     showToast(json.message);
                     btn.classList.toggle("liked");
                     const countSpans = document.querySelectorAll(".likeCount");
-                    countSpans.forEach((countSpan)=> {
+                    countSpans.forEach((countSpan) => {
                         let count = parseInt(countSpan.textContent.trim(), 10);
-                        if(!isNaN(count))
+                        if (!isNaN(count))
                             countSpan.textContent = isLiked ? count - 1 : count + 1;
                     })
 

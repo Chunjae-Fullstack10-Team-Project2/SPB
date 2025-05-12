@@ -35,6 +35,7 @@ public class PostDTO {
     private boolean isLike;
     private String memberProfileImg;
     private int postReportCnt;
+    private String memberName;
 
     private String reportIdx;
     private String reportRefIdx;

@@ -49,8 +49,19 @@
     </select>
 
     <select id="getPostByIdxWithLike" parameterType="HashMap" resultType="net.spb.spb.dto.post.PostDTO">
-        select tp.postIdx, tp.postTitle, tp.postContent, tp.postMemberId, tp.postCategory, tp.postReadCnt, tp.postCreatedAt, tp.postUpdatedAt, tp.postState, tm.memberProfileImg
-             , count(tpl.postLikeIdx) as postLikeCnt, max(case when tpl.postLikeMemberId = #{memberId} then 1 else 0 end) as isLike
+        select tp.postIdx,
+               tp.postTitle,
+               tp.postContent,
+               tp.postMemberId,
+               tp.postCategory,
+               tp.postReadCnt,
+               tp.postCreatedAt,
+               tp.postUpdatedAt,
+               tp.postState,
+               tm.memberProfileImg,
+               tm.memberName,
+               count(tpl.postLikeIdx) as postLikeCnt,
+               max(case when tpl.postLikeMemberId = #{memberId} then 1 else 0 end) as isLike
         from tbl_post tp
           inner join tbl_member tm on tp.postMemberId = tm.memberId
           left outer join tbl_post_like tpl
