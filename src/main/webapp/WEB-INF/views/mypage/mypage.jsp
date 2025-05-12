@@ -160,7 +160,8 @@
             </div>
 
             <div class="form-floating mb-3">
-                <select class="form-select" id="memberGrade" name="memberGrade" aria-label="학년 선택">
+                <select class="form-select" id="memberGrade" name="memberGrade" aria-label="학년 선택"
+                        <c:if test="${memberDTO.memberGrade == '13' || memberDTO.memberGrade == '14'}">disabled</c:if>>>
                     <optgroup label="초등학교">
                         <option value="1" ${memberDTO.memberGrade == '1' ? 'selected' : ''}>초1</option>
                         <option value="2" ${memberDTO.memberGrade == '2' ? 'selected' : ''}>초2</option>
@@ -187,7 +188,12 @@
                     </optgroup>
                 </select>
                 <label for="memberGrade">학년</label>
+
+                <c:if test="${memberDTO.memberGrade == '13' || memberDTO.memberGrade == '14'}">
+                    <input type="hidden" name="memberGrade" value="${memberDTO.memberGrade}" />
+                </c:if>
             </div>
+
 
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="memberBirth" name="memberBirth"
