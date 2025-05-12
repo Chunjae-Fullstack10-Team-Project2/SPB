@@ -495,7 +495,9 @@ public class AdminController {
 
     // Board manage
     @GetMapping("/board/manage")
-    public String boardReportList(@ModelAttribute PostPageDTO postPageDTO, Model model, HttpServletRequest req) {
+    public String boardReportList(@ModelAttribute PostPageDTO postPageDTO,
+                                  Model model,
+                                  HttpServletRequest req) {
         String baseUrl = req.getRequestURI();
         postPageDTO.normalizeSearchType();
         postPageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, postPageDTO));
@@ -510,6 +512,45 @@ public class AdminController {
         setBreadcrumb(model, Map.of("자유게시판 관리", ""));
         return "/admin/board/list";
     }
+
+    @GetMapping("/board/manage/view")
+    @ResponseBody
+    public ResponseEntity<PostDTO> boardManageView(@RequestParam("idx") int idx) {
+        PostDTO postDTO = adminService.selectPostByIdx(idx);
+        return ResponseEntity.ok(postDTO);
+    }
+
+    @PostMapping("/board/report/state")
+    public Map<String, Object> boardReportState() {
+        Map<String, Object> result = new HashMap<>();
+        int rtnResult = 0;
+        //adminService.updateReport();
+        if (rtnResult > 0) {
+            result.put("success", true);
+            result.put("message", "신고가 접수되었습니다.");
+        } else {
+            result.put("success", false);
+            result.put("message", "신고 접수에 실패했습니다.");
+        }
+
+        return result;
+    }
+
+    @PostMapping("/board/delete")
+    @ResponseBody
+    public Map<String, Object> boardReportDelete(@RequestParam("postIdx") int postIdx) {
+        Map<String, Object> result = new HashMap<>();
+        int rtnResult = adminService.deletePostByAdmin(postIdx);
+        if (rtnResult > 0) {
+            result.put("success", true);
+            result.put("message", "게시글이 삭제되었습니다.");
+        } else {
+            result.put("success", false);
+            result.put("message", "게시글 삭제에 실패했습니다.");
+        }
+        return result;
+    }
+
     // 브레드크럼
     private void setBreadcrumb(Model model, Map<String, String>... pagePairs) {
         LinkedHashMap<String, String> pages = new LinkedHashMap<>();

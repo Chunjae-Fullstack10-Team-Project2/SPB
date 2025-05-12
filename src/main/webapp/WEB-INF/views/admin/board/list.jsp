@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <c:choose>
@@ -83,6 +84,7 @@
                             <col style="width: 118px">
                             <col style="width: 68px">
                             <col style="width: 68px">
+                            <col style="width: 118px">
                         </colgroup>
                         <thead class="table-light">
                         <tr>
@@ -92,17 +94,38 @@
                             <th>작성일</th>
                             <th>조회수</th>
                             <th>신고수</th>
+                            <th>상태</th>
                         </tr>
                         </thead>
                         <tbody>
                             <c:forEach var="post" items="${posts}">
-                                <tr class="clickable-row" data-href="/board/freeboard/view?idx=${post.postIdx}">
+                                <tr>
                                     <td>${post.postIdx}</td>
-                                    <td class="text-start">${post.postTitle}</td>
+                                    <td class="text-start">
+                                        <a href="#" class="text-decoration-none link-primary btn-show-modal" data-id="${post.postIdx}">
+                                                ${post.postTitle}
+                                        </a>
+                                    </td>
                                     <td>${post.postMemberId}</td>
                                     <td>${fn:substringBefore(post.postCreatedAt, 'T')}</td>
                                     <td>${post.postReadCnt}</td>
                                     <td>${post.postReportCnt}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${post.postState == 1}">
+                                                <i class="bi bi-eye text-success me-1"></i> 공개
+                                            </c:when>
+                                            <c:when test="${post.postState == 2}">
+                                                <i class="bi bi-person-x text-secondary me-1"></i> 작성자 삭제
+                                            </c:when>
+                                            <c:when test="${post.postState == 3}">
+                                                <i class="bi bi-shield-x text-danger me-1"></i> 관리자 삭제
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="text-muted">알 수 없음</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -123,6 +146,38 @@
                     </div>
                 </c:otherwise>
             </c:choose>
+        </div>
+    </div>
+    <!-- 게시글 상세 모달 -->
+    <div class="modal fade" id="postDetailModal" tabindex="-1" aria-labelledby="postDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="postDetailModalLabel">게시글 상세 보기</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+                </div>
+                <div class="modal-body">
+                    <h5 id="modalPostTitle" class="fw-bold mb-2"></h5>
+                    <div class="text-muted small mb-3">
+                        <span id="modalPostAuthor"></span> |
+                        <span id="modalPostDate"></span> |
+                        조회수: <span id="modalPostViews"></span>
+                    </div>
+                    <div id="modalPostContent" class="border-top pt-3"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="btnAdminDelete" data-id="">관리자 삭제</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Toast 메시지 -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="toastMessage" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastText">알림 메시지</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
         </div>
     </div>
 </div>
@@ -204,6 +259,66 @@
         });
 
     });
+
+    $(document).ready(function () {
+        $('.btn-show-modal').on('click', function (e) {
+            e.preventDefault();
+            const postIdx = $(this).data('id');
+
+            $.ajax({
+                url: '/admin/board/manage/view',
+                method: 'GET',
+                data: { idx: postIdx },
+                success: function (data) {
+                    $('#modalPostTitle').text(data.postTitle);
+                    $('#modalPostAuthor').text("작성자: " + data.postMemberId);
+                    $('#modalPostDate').text("작성일: " + moment(data.postCreatedAt).format('YYYY-MM-DD'));
+                    $('#modalPostViews').text(data.postReadCnt);
+                    $('#modalPostContent').html(data.postContent);
+                    $('#btnAdminDelete').data('id', data.postIdx);
+                    const modal = new bootstrap.Modal(document.getElementById('postDetailModal'));
+                    modal.show();
+                },
+                error: function () {
+                    alert('게시글 정보를 불러오지 못했습니다.');
+                }
+            });
+        });
+    });
+
+    $('#btnAdminDelete').on('click', function () {
+        const postIdx = $(this).data('id');
+        console.log("삭제할 postIdx:", postIdx);
+        if (!confirm("정말 이 게시글을 삭제하시겠습니까?")) return;
+
+        $.ajax({
+            url: '/admin/board/delete',
+            method: 'POST',
+            data: { postIdx: postIdx },
+            success: function (res) {
+                if (res.success) {
+                    showToast(res.message);
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('postDetailModal'));
+                    modal.hide();
+                    window.location.reload();
+                } else {
+                    showToast(res.message, true);
+                }
+            },
+            error: function () {
+                showToast('삭제 중 오류가 발생했습니다.', true);
+            }
+        });
+    });
+
+    function showToast(message, isError = false) {
+        const toastEl = document.getElementById("toastMessage");
+        const toastText = document.getElementById("toastText");
+        toastText.innerText = message;
+        toastEl.classList.remove("text-bg-success", "text-bg-danger");
+        toastEl.classList.add(isError ? "text-bg-danger" : "text-bg-success");
+        new bootstrap.Toast(toastEl).show();
+    }
 </script>
 </body>
 </html>
