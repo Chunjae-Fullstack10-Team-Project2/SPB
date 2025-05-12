@@ -36,6 +36,10 @@ public class AdminService {
         return adminMapper.insertChapter(modelMapper.map(chapterDTO, ChapterVO.class));
     }
 
+    public boolean existsByTeacherId(String teacherId) {
+        return adminMapper.existsByTeacherId(teacherId) == 1 ? true: false;
+    }
+
     public int insertTeacher(TeacherDTO teacherDTO) {
         return adminMapper.insertTeacher(modelMapper.map(teacherDTO, TeacherVO.class));
     }

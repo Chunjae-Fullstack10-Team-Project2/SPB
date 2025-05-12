@@ -3,10 +3,16 @@
 <mapper namespace="net.spb.spb.mapper.AdminMapper">
 
     <!-- Teacher-->
+    <select id="existsByTeacherId" parameterType="string" resultType="java.lang.Integer">
+         select count(teacherIdx)
+         from tbl_teacher
+         where teacherId = #{teacherId}
+    </select>
+
     <insert id="insertTeacher" parameterType="net.spb.spb.domain.TeacherVO">
-        insert into tbl_teacher (teacherName, teacherId, teacherIntro, teacherApproval, teacherProfileImg,
+        insert into tbl_teacher (teacherName, teacherId, teacherIntro, teacherProfileImg,
                                  teacherSubject)
-        values (#{teacherName}, #{teacherId}, #{teacherIntro}, #{teacherApproval}, #{teacherProfileImg},
+        values (#{teacherName}, #{teacherId}, #{teacherIntro}, #{teacherProfileImg},
                 #{teacherSubject})
     </insert>
 

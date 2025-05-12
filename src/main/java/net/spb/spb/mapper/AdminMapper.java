@@ -18,6 +18,8 @@ import java.util.Map;
 public interface AdminMapper {
 
     // Teacher
+    int existsByTeacherId(String teacherId);
+
     int insertTeacher(TeacherVO teacherVO);
 
     List<MemberDTO> selectTeacherWithoutTeacherProfile();
