@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
+import net.spb.spb.dto.BookmarkDTO;
 import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.post.PostLikeRequestDTO;
 import net.spb.spb.dto.post.PostReportDTO;
@@ -368,10 +369,55 @@ public class MyPageController {
         boolean result = myPageService.changePwd(encryptedNewPwd, memberId);
 
         if (result) {
-            return "redirect:/mypage/changePwd";
+            model.addAttribute("message", "비밀번호 변경에 성공했습니다.");
+            return "redirect:/mypage";
         } else {
             model.addAttribute("message", "비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
             return "mypage/changePwd";
+        }
+    }
+
+    @GetMapping("/bookmark")
+    public String listMyBookmark(HttpSession session, Model model,
+                                 @ModelAttribute SearchDTO searchDTO,
+                                 @ModelAttribute PageRequestDTO pageRequestDTO) {
+        String bookmarkMemberId = (String) session.getAttribute("memberId");
+
+        if (searchDTO.getDateType() == null || searchDTO.getDateType().isEmpty()) {
+            searchDTO.setDateType("bookmarkCreatedAt");
+        }
+
+        List<BookmarkDTO> bookmarkList = myPageService.listMyBookmark(searchDTO, pageRequestDTO, bookmarkMemberId);
+        PageResponseDTO<BookmarkDTO> pageResponseDTO = PageResponseDTO.<BookmarkDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .totalCount(myPageService.bookmarkTotalCount(searchDTO, bookmarkMemberId))
+                .dtoList(bookmarkList)
+                .build();
+
+        model.addAttribute("responseDTO", pageResponseDTO);
+        model.addAttribute("bookmarkList", bookmarkList);
+        model.addAttribute("searchDTO", searchDTO);
+        return "mypage/bookmark";
+    }
+
+    @PostMapping("/bookmark/delete")
+    @ResponseBody
+    public ResponseEntity<String> cancelBookmark(@RequestParam("bookmarkIdx") int bookmarkIdx, HttpSession session) {
+        String memberId = (String) session.getAttribute("memberId");
+
+        if (memberId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+
+        boolean success = myPageService.cancelBookmark(bookmarkIdx);
+
+        if (success) {
+            return ResponseEntity
+                    .ok()
+                    .header("Content-Type", "text/plain; charset=UTF-8")
+                    .body("북마크가 삭제되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("삭제에 실패했습니다.");
         }
     }
 }

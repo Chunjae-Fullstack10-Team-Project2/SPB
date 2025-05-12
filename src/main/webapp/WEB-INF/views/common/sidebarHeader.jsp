@@ -251,6 +251,7 @@
                     <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded text-dark">신고한 게시글</a></li>
                     <li><a href="${cp}/qna/myQna" class="d-inline-flex text-decoration-none rounded text-dark">나의 문의</a>
                     </li>
+                    <li><a href="${cp}/mypage/bookmark" class="d-inline-flex text-decoration-none rounded text-dark">북마크한 강좌</a></li>
                     <li><a href="${cp}/mypage/order" class="d-inline-flex text-decoration-none rounded text-dark">강좌 주문
                         내역</a></li>
                 </ul>

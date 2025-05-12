@@ -94,7 +94,8 @@
         </if>
     </select>
     <delete id="cancelLike">
-        delete from tbl_post_like
+        delete
+        from tbl_post_like
         where postLikeRefIdx = #{postIdx}
     </delete>
 
@@ -392,7 +393,7 @@
 
     <update id="updateOrderStatus">
         UPDATE tbl_order_info
-        SET orderStatus = #{orderStatus},
+        SET orderStatus    = #{orderStatus},
             orderUpdatedAt = NOW()
         WHERE orderIdx = #{orderIdx}
           AND orderMemberId = #{memberId}
@@ -405,5 +406,99 @@
         set memberPwd           = #{memberPwd},
             memberPwdChangeDate = now()
         where memberId = #{memberId}
+    </update>
+
+    <!--  북마크   -->
+    <select id="listMyBookmark" resultType="net.spb.spb.dto.BookmarkDTO">
+        select
+        b.bookmarkIdx,
+        b.bookmarkLectureIdx,
+        b.bookmarkMemberId,
+        b.bookmarkState,
+        b.bookmarkCreatedAt,
+        l.lectureTitle,
+        l.lectureThumbnailImg,
+        l.lectureAmount,
+        t.teacherName,
+        l.lectureCreatedAt
+        from tbl_bookmark b
+        join tbl_lecture l on b.bookmarkLectureIdx = l.lectureIdx
+        join tbl_teacher t on l.lectureTeacherId = t.teacherId
+        where b.bookmarkMemberId = #{bookmarkMemberId}
+
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'lectureTitle'">
+                    and l.lectureTitle like concat('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'teacherName'">
+                    and t.teacherName like concat('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+        <if test="searchDTO.startDate != null and searchDTO.startDate != '' and
+               searchDTO.endDate != null and searchDTO.endDate != ''">
+            <choose>
+                <when test="searchDTO.dateType == 'lectureCreatedAt'">
+                    and l.lectureCreatedAt between #{searchDTO.startDate} and #{searchDTO.endDate}
+                </when>
+                <when test="searchDTO.dateType == 'bookmarkCreatedAt'">
+                    and bookmarkCreatedAt between #{searchDTO.startDate} and #{searchDTO.endDate}
+                </when>
+            </choose>
+        </if>
+
+        <if test="searchDTO.sortColumn != null and searchDTO.sortOrder != null">
+            order by
+            <choose>
+                <when test="searchDTO.sortColumn == 'lectureTitle'">l.lectureTitle</when>
+                <when test="searchDTO.sortColumn == 'teacherName'">t.teacherName</when>
+                <when test="searchDTO.sortColumn == 'lectureCreatedAt'">l.lectureCreatedAt</when>
+                <when test="searchDTO.sortColumn == 'bookmarkCreatedAt'">b.bookmarkCreatedAt</when>
+                <otherwise>bookmarkCreatedAt</otherwise>
+            </choose>
+            <choose>
+                <when test="searchDTO.sortOrder == 'asc'">asc</when>
+                <otherwise>desc</otherwise>
+            </choose>
+        </if>
+
+        limit #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
+    </select>
+    <select id="bookmarkTotalCount" resultType="int">
+        select count(bookmarkIdx)
+        from tbl_bookmark b
+        join tbl_lecture l on b.bookmarkLectureIdx = l.lectureIdx
+        join tbl_teacher t on l.lectureTeacherId = t.teacherId
+        where b.bookmarkMemberId = #{bookmarkMemberId}
+
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'lectureTitle'">
+                    and l.lectureTitle like concat('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'teacherName'">
+                    and t.teacherName like concat('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+
+        <if test="searchDTO.startDate != null and searchDTO.startDate != '' and
+               searchDTO.endDate != null and searchDTO.endDate != ''">
+            <choose>
+                <when test="searchDTO.dateType == 'lectureCreatedAt'">
+                    and l.lectureCreatedAt between #{searchDTO.startDate} and #{searchDTO.endDate}
+                </when>
+                <when test="searchDTO.dateType == 'bookmarkCreatedAt'">
+                    and bookmarkCreatedAt between #{searchDTO.startDate} and #{searchDTO.endDate}
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <update id="cancelBookmark">
+        update tbl_bookmark
+        set bookmarkState = '2'
+        where bookmarkIdx = #{bookmarkIdx}
     </update>
 </mapper>
