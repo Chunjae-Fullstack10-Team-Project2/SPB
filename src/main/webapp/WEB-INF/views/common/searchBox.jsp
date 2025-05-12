@@ -69,13 +69,18 @@
             <div class="d-flex flex-wrap gap-3 justify-content-end">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="answered" id="status_1" value="1"
-                        ${param.answered eq null or param.answered eq 1 ? "checked" : ""} onchange="submitSearch();"/>
-                    <label for="status_1">미답변</label>
+                        ${param.answered eq 1 ? "checked" : ""} onchange="submitSearch();"/>
+                    <label for="status_1">답변완료</label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="answered" id="status_2" value="2"
                         ${param.answered eq 2 ? "checked" : ""} onchange="submitSearch();"/>
-                    <label for="status_2">답변완료</label>
+                    <label for="status_2">미답변</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="answered" id="status_3" value="3"
+                        ${param.answered eq 3 ? "checked" : ""} onchange="submitSearch();"/>
+                    <label for="status_3">전체</label>
                 </div>
             </div>
         </c:if>
