@@ -22,6 +22,7 @@ public interface QnaService {
     int totalCount(SearchDTO searchDTO);
 
     List<QnaDTO> myQna(SearchDTO searchDTO, PageRequestDTO pageRequestDTO, String qnaQMemberId);
+    int myQnaTotalCount(SearchDTO searchDTO, String qnaQMemberId);
 
     String getPwdByQnaIdx(String qnaIdx);
 }

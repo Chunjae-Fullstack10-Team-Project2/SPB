@@ -28,5 +28,8 @@ public interface QnaMapper {
                        @Param("pageDTO") PageRequestDTO pageRequestDTO,
                        @Param("qnaQMemberId") String qnaQMemberId);
 
+    int myQnaTotalCount(@Param("searchDTO") SearchDTO searchDTO,
+                        @Param("qnaQMemberId") String qnaQMemberId);
+
     String getPwdByQnaIdx(String qnaIdx);
 }

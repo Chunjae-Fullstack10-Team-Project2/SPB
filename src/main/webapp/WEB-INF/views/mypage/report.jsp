@@ -44,7 +44,7 @@
             </ol>
         </nav>
     </div>
-    <div class="container my-5">
+    <div class="container my-5"  style="height: 100%; min-height: 100vh;">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">신고 목록</h3>
         </div>
@@ -97,27 +97,27 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${reportList}" var="postDTO" varStatus="status">
+                <c:forEach items="${reportList}" var="reportDTO">
                     <tr>
-                        <td>${status.index + 1}</td>
+                        <td>${reportDTO.reportIdx}</td>
                         <td class="text-start">
-                            <a href="/post/detail?postIdx=${postDTO.postIdx}"
+                            <a href="/board/freeboard/view?idx=${reportDTO.reportRefIdx}"
                                class="text-decoration-none text-dark">
-                                    ${postDTO.postTitle}
+                                    ${reportDTO.postTitle}
                             </a>
                         </td>
-                        <td>${postDTO.postMemberId}</td>
-                        <td>${postDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>${reportDTO.postMemberId}</td>
+                        <td>${reportDTO.postCreatedAt.toLocalDate()}</td>
                         <td>
                             <c:choose>
-                                <c:when test="${postDTO.reportState == 1}">
+                                <c:when test="${reportDTO.reportState == 1}">
                                     <button type="button" class="btn btn-sm btn-danger"
-                                            onclick="deleteReport(${postDTO.reportIdx})">
+                                            onclick="deleteReport(${reportDTO.reportIdx})">
                                         삭제
                                     </button>
                                 </c:when>
-                                <c:when test="${postDTO.reportState == 2}">
-                                    <span class="badge bg-secondary">취소 완료</span>
+                                <c:when test="${reportDTO.reportState == 2}">
+                                    <span class="badge bg-secondary">관리자에 의해 삭제됨</span>
                                 </c:when>
                             </c:choose>
                         </td>

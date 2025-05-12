@@ -84,43 +84,17 @@
                             </c:if>
                         </a>
                     </th>
-<<<<<<< HEAD
                     <th>북마크 상태</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach items="${bookmarkList}" var="bookmarkDTO" varStatus="status">
-=======
-                    <th>강좌 상태</th>
                     <th>장바구니 추가</th>
                 </tr>
                 </thead>
                 <tbody>
                 <c:forEach items="${bookmarkList}" var="postDTO" varStatus="status">
->>>>>>> develop
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
                             <a href="#"
                                class="text-decoration-none text-dark">
-<<<<<<< HEAD
-                                    ${bookmarkDTO.lectureTitle}
-                            </a>
-                        </td>
-                        <td>${bookmarkDTO.teacherName}</td>
-                        <td><fmt:formatDate value="${bookmarkDTO.bookmarkCreatedAt}" pattern="yyyy-MM-dd" /></td>
-                        <td>
-                            <c:if test="${bookmarkDTO.bookmarkState == 1}">
-                                <button type="button" class="btn btn-sm btn-outline-danger"
-                                        onclick="cancelBookmark(${bookmarkDTO.bookmarkIdx})">
-                                    북마크 취소
-                                </button>
-                            </c:if>
-                            <c:if test="${bookmarkDTO.bookmarkState == 2}">
-                                <span class="badge bg-secondary">취소 완료</span>
-                            </c:if>
-                        </td>
-=======
                                     ${postDTO.lectureTitle}
                             </a>
                         </td>
@@ -130,11 +104,11 @@
                             <c:if test="${postDTO.bookmarkState == 1}">
                                 <button type="button" class="btn btn-sm btn-outline-danger"
                                         onclick="cancelBookmark(${postDTO.bookmarkIdx})">
-                                    삭제
+                                    북마크 취소
                                 </button>
                             </c:if>
                             <c:if test="${postDTO.bookmarkState == 2}">
-                                <span class="badge bg-secondary">결제 완료</span>
+                                <span class="badge bg-secondary">취소 완료</span>
                             </c:if>
                         </td>
                         <td>
@@ -143,7 +117,6 @@
                                 장바구니
                             </button>
                         </td>
->>>>>>> develop
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -182,8 +155,6 @@
     <c:if test="${not empty message}">
     alert("${message}");
     </c:if>
-<<<<<<< HEAD
-=======
 
     function addCart(lectureIdx) {
         const memberId = '<c:out value="${sessionScope.memberId}" default="" />';
@@ -215,7 +186,6 @@
             }
         });
     }
->>>>>>> develop
 </script>
 </body>
 </html>

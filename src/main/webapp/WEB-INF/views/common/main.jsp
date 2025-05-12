@@ -418,6 +418,10 @@
                 회원가입 하러 가기
             </a>
         </div>
+<%--        <div class="ml-5 about-img position-relative d-inline-block wow fadeInRight" data-wow-delay=".3s">--%>
+<%--            <img src="${pageContext.request.contextPath}/resources/img/spb_illustration3_transparent.png"--%>
+<%--                 alt="">--%>
+<%--        </div>--%>
     </div>
 
 </section>
