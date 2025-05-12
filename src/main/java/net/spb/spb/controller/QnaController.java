@@ -184,7 +184,7 @@ public class QnaController {
         List<QnaDTO> qnaList = qnaService.myQna(searchDTO, pageRequestDTO, qnaQMemberId);
         PageResponseDTO<QnaDTO> pageResponseDTO = PageResponseDTO.<QnaDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
-                .totalCount(qnaService.totalCount(searchDTO))
+                .totalCount(qnaService.myQnaTotalCount(searchDTO, qnaQMemberId))
                 .dtoList(qnaList)
                 .build();
 

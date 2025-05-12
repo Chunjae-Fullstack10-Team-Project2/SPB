@@ -56,17 +56,17 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach items="${boardReportList}" var="postDTO" varStatus="status">
+    <c:forEach items="${boardReportList}" var="reportDTO" varStatus="status">
         <tr>
-            <td>${postDTO.reportIdx}</td>
+            <td>${reportDTO.reportIdx}</td>
             <td class="text-start">
-                <a href="/post/detail?postIdx=${postDTO.reportRefIdx}"
+                <a href="/post/detail?postIdx=${reportDTO.reportRefIdx}"
                    class="text-decoration-none text-dark">
-                        ${postDTO.postTitle}
+                        ${reportDTO.postTitle}
                 </a>
             </td>
-            <td>${postDTO.postMemberId}</td>
-            <td>${postDTO.postCreatedAt.toLocalDate()}</td>
+            <td>${reportDTO.postMemberId}</td>
+            <td>${reportDTO.postCreatedAt.toLocalDate()}</td>
         </tr>
     </c:forEach>
     </tbody>
