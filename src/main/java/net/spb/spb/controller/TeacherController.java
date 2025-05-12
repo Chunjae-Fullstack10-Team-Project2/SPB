@@ -42,7 +42,7 @@ public class TeacherController {
         BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
     }
 
-    @GetMapping("/main")
+    @GetMapping("")
     public String teacherMain(
             @RequestParam(value="subject", required = false) String subject,
             Model model,
@@ -87,7 +87,8 @@ public class TeacherController {
     }
 
     @GetMapping("/personal/qna")
-    public String teacherQna(@ModelAttribute TeacherQnaPageDTO pageDTO, @RequestParam("teacherId") String teacherId, Model model) {
+    public String teacherQnaList(@ModelAttribute TeacherQnaPageDTO pageDTO, Model model) {
+        String teacherId = pageDTO.getTeacherId();
         TeacherDTO teacherDTO = teacherService.selectTeacher(teacherId);
 
         TeacherQnaListRequestDTO reqDTO = TeacherQnaListRequestDTO.builder()
@@ -103,6 +104,20 @@ public class TeacherController {
         setBreadcrumb(model, Map.of(teacherDTO.getTeacherName() + " 선생님", "/teacher/personal"), Map.of("QnA", "/teacher/personal/qna"));
 
         return "teacher/qna/list";
+    }
+
+    @GetMapping("/personal/qna/view")
+    public String teacherQnaView(@ModelAttribute TeacherQnaPageDTO pageDTO, @RequestParam("idx") int idx, Model model) {
+        String teacherId = pageDTO.getTeacherId();
+        TeacherDTO teacherDTO = teacherService.selectTeacher(teacherId);
+        TeacherQnaResponseDTO teacherQnaDTO = teacherQnaService.getTeacherQnaByIdx(idx);
+
+        model.addAttribute("pageDTO", pageDTO);
+        model.addAttribute("teacherQnaDTO", teacherQnaDTO);
+
+        setBreadcrumb(model, Map.of(teacherDTO.getTeacherName() + " 선생님", "/teacher/personal"), Map.of("QnA", "/teacher/personal/qna"), Map.of("QnA 상세보기", "/teacher/personal/qna/view"));
+
+        return "teacher/qna/view";
     }
 
     @PostMapping("/personal/qna/checkPwd")

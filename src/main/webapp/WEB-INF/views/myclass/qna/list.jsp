@@ -81,7 +81,7 @@
                             <c:if test="${not empty qna.teacherQnaPwd}">
                                 <i class="bi bi-lock-fill"></i>
                             </c:if>
-                            <a href="/myclass/qna/view?idx=${qna.teacherQnaIdx}&${pageDTO.linkUrl}"
+                            <a href="/teacher/personal/qna/view?idx=${qna.teacherQnaIdx}&teacherId=${qna.teacherQnaAMemberId}&${pageDTO.linkUrl}"
                                class="text-decoration-none text-dark">
                                     ${qna.teacherQnaTitle}
                             </a>

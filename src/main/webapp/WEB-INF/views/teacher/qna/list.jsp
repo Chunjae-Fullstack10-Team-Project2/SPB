@@ -141,7 +141,11 @@
                 $('#pwdError').hide();
                 $('#pwdModal').modal('show');
             } else {
-                window.location.href = '/teacher/personal/qna/view?idx=' + idx + "&" + "${pageDTO.linkUrl}";
+                const url = new URL(location.href);
+                const params = url.searchParams;
+                params.set('idx', idx);
+
+                location.href = url.toString();
             }
         }
 
@@ -149,15 +153,18 @@
             const idx = $('#selectedQnaIdx').val();
             const pwd = $('#qnaQPwdConfirm').val();
 
-            console.log(pwd);
-
             $.post('/teacher/personal/qna/checkPwd', {
                 idx: idx,
                 pwd: pwd
             }).done(function () {
                 $('#pwdError').hide();
                 $('#pwdModal').modal('hide');
-                window.location.href = '/teacher/personal/qna/view?idx=' + idx + "&" + "${pageDTO.linkUrl}";
+
+                const url = new URL(location.href);
+                const params = url.searchParams;
+                params.set('idx', idx);
+
+                location.href = url.toString();
             }).fail(function () {
                 $('#pwdError').show();
             });

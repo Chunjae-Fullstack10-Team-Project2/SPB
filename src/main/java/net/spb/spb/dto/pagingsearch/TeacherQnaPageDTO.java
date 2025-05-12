@@ -14,6 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder
 public class TeacherQnaPageDTO extends PageDTO {
+    private String teacherId;
+
     private String search_category;
 
     private String date_type;
@@ -43,6 +45,10 @@ public class TeacherQnaPageDTO extends PageDTO {
         sb.append("page_no=" + super.getPage_no());
         sb.append("&page_size=" + super.getPage_size());
         sb.append("&page_bock_size=" + super.getPage_block_size());
+
+        if (this.teacherId != null && !this.teacherId.isEmpty()) {
+            sb.append("&teacher_id=" + this.teacherId);
+        }
 
         if (this.search_category != null && super.getSearch_word() != null) {
             sb.append("&search_category=" + this.search_category);
