@@ -85,6 +85,7 @@
                         </a>
                     </th>
                     <th>북마크 상태</th>
+                    <th>장바구니 추가</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -109,6 +110,12 @@
                             <c:if test="${postDTO.bookmarkState == 2}">
                                 <span class="badge bg-secondary">취소 완료</span>
                             </c:if>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                    onclick="addCart(${bookmarkDTO.bookmarkLectureIdx})">
+                                장바구니
+                            </button>
                         </td>
                     </tr>
                 </c:forEach>
@@ -148,6 +155,36 @@
     <c:if test="${not empty message}">
     alert("${message}");
     </c:if>
+
+    function addCart(lectureIdx) {
+        const memberId = '<c:out value="${sessionScope.memberId}" default="" />';
+        if (!memberId || memberId.trim() === "") {
+            alert("로그인이 필요합니다.");
+            window.location.href = "/login";
+            return;
+        }
+
+        $.ajax({
+            url: '/payment/addCart',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({cartLectureIdx: lectureIdx, cartMemberId: memberId}),
+            success: function (response) {
+                if (response == 999) {
+                    alert("이미 장바구니에 존재합니다.");
+                } else {
+                    alert("장바구니에 추가되었습니다.");
+                }
+
+                if (confirm("장바구니로 이동하시겠습니까?")) {
+                    window.location.href = "/payment/cart?memberId=" + memberId;
+                }
+            },
+            error: function (xhr) {
+                alert("추가 실패: " + xhr.responseText);
+            }
+        });
+    }
 </script>
 </body>
 </html>

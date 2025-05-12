@@ -5,6 +5,7 @@ import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.PaymentDTO;
 import net.spb.spb.dto.member.MemberDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -27,4 +28,5 @@ public interface PaymentServiceIf {
     public void updateOrderInfo(PaymentDTO paymentDTO);
     public Map<String, Object> cancelPayment(String merchantUid, String reason, int amount) throws Exception;
     public int getCartCount(String memberId);
+    public void updateBookmarkState(PaymentDTO dto);
 }
