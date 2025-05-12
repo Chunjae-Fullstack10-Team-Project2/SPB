@@ -23,7 +23,7 @@
         <h5 class="mb-0">강좌 등록</h5>
       </div>
       <div class="card-body">
-        <form name="frmRegist" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
+        <form name="frmRegist" method="post" id="frmRegist" class="needs-validation"  enctype="multipart/form-data">
           <div class="mb-3">
             <label for="lectureTitle" class="form-label">강좌명</label>
             <input type="text" class="form-control" id="lectureTitle" name="lectureTitle"
@@ -32,26 +32,26 @@
           </div>
 
           <div class="mb-3">
-            <label for="lectureTeacherName" class="form-label">담당 선생님</label>
+            <label for="lectureTeacherName" class="form-label" >담당 선생님</label>
             <input type="hidden" class="form-control" id="lectureTeacherId" name="lectureTeacherId"
-                   value="${lectureDTO.lectureTeacherId}">
+                   value="${lectureDTO.lectureTeacherId}" required>
             <div class="input-group">
               <input type="text" class="form-control" id="lectureTeacherName" name="lectureTeacherName"
-                     value="${lectureDTO.lectureTeacherName}" placeholder="담당 선생님을 입력하세요." required>
+                     value="${lectureDTO.lectureTeacherName}" placeholder="담당 선생님을 입력하세요." required disabled>
               <button type="button" class="btn btn-outline-primary" onclick="openTeacherSearch()">선생님 검색</button>
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="lectureTeacherId" class="form-label">강좌 가격</label>
+            <label for="lectureAmount" class="form-label">강좌 가격</label>
             <input type="text" class="form-control" id="lectureAmount" name="lectureAmount"
                    placeholder="강좌 가격을 입력하세요."
-                   value="${lectureDTO.lectureAmount}">
+                   value="${lectureDTO.lectureAmount}" required  maxlength="10" >
           </div>
 
           <div class="mb-3">
             <label for="file1" class="form-label">강좌 썸네일 이미지</label>
-            <input type="file" class="form-control" id="file1" name="file1" accept="image/*">
+            <input type="file" class="form-control" id="file1" name="file1" accept="image/*" required>
           </div>
 
           <div class="mb-3">
@@ -79,7 +79,14 @@
   function selectTeacher(id, name) {
     document.getElementById('lectureTeacherId').value = id;
     document.getElementById('lectureTeacherName').value = name+"("+id+")";
+
   }
+
+  document.getElementById('lectureAmount').addEventListener('input', function (event) {
+    const value = event.target.value;
+    event.target.value = value.replace(/[^0-9]/g, '');
+  });
+
 </script>
 </body>
 </html>

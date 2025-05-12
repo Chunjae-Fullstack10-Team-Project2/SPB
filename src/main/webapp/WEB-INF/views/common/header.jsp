@@ -83,12 +83,14 @@
             </ul>
 
             <div class="d-flex align-items-center gap-4 flex-wrap justify-content-end user-tools">
-                <div class="greeting">
-                    <c:if test="${not empty sessionScope.memberId}">
-                        ${sessionScope.memberId} 님, 오늘도 즐거운 학습 되세요! 😊
-                    </c:if>
-                </div>
-
+                <c:if test="${sessionScope.memberGrade eq 0}">
+                    <a href="${cp}/admin/member/list" class="admin-link" title="관리자 페이지">
+                        <i class="bi bi-gear-fill" style="font-size: 1.4rem;"></i>
+                    </a>
+                </c:if>
+                <c:if test="${not empty sessionScope.memberId and sessionScope.memberGrade ne 0}">
+                    <div class="greeting">${sessionScope.memberDTO.memberName} 님, 오늘도 즐거운 학습 되세요! 😊</div>
+                </c:if>
                 <c:if test="${not empty sessionScope.memberId}">
                     <div class="cart">
                         <a href="/payment/cart?memberId=${sessionScope.memberId}"
@@ -116,22 +118,17 @@
                             <li><a class="dropdown-item" href="${cp}/login">로그인</a></li>
                         </c:if>
                         <c:if test="${not empty sessionScope.memberId}">
-                            <li><a class="dropdown-item" href="${cp}/mypage">마이페이지</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
+                            <c:if test="${sessionScope.memberGrade != 0}">
+                                <li><a class="dropdown-item" href="${cp}/mypage">마이페이지</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                            </c:if>
                             <li><a class="dropdown-item" href="${cp}/login?action=logout">로그아웃</a></li>
                         </c:if>
                     </ul>
                 </div>
-
-                <c:if test="${sessionScope.memberGrade eq 0}">
-                    <a href="${cp}/admin/member/list" class="admin-link" title="관리자 페이지">
-                        <i class="bi bi-gear-fill" style="font-size: 1.4rem;"></i>
-                    </a>
-                </c:if>
             </div>
-
         </div>
     </div>
 </header>

@@ -156,17 +156,17 @@
             <div class="row">
                 <div class="col-xl-6 col-lg-6">
                     <div class="about-img-wrapper">
-                        <div class="about-img position-relative d-inline-block wow fadeInLeft" data-wow-delay=".3s">
-                            <img src="${pageContext.request.contextPath}/resources/img/spb_illustration3.png"
+                        <div class="ml-5 about-img position-relative d-inline-block wow fadeInLeft" data-wow-delay=".3s">
+                            <img src="${pageContext.request.contextPath}/resources/img/spb_illustration3_transparent.png"
                                  alt="">
 
-                            <div class="about-experience">
-                                <h2 class="mb-40 wow fadeInRight" data-wow-delay=".4s"
-                                    style="color: #5e3e0f; font-weight: 700;">학생의 가능성을 키우는 공간</h2>
-                                <p class="mb-45 wow fadeInUp" data-wow-delay=".6s">우리는 단순한 인강 플랫폼이 아닙니다. 봄콩은 학생 한 명
-                                    한 명이
-                                    스스로 성장할 수 있도록 돕는 디지털 학습 환경을 제공합니다.</p>
-                            </div>
+<%--                            <div class="about-experience">--%>
+<%--                                <h2 class="mb-40 wow fadeInRight" data-wow-delay=".4s"--%>
+<%--                                    style="color: #5e3e0f; font-weight: 700;">학생의 가능성을 키우는 공간</h2>--%>
+<%--                                <p class="mb-45 wow fadeInUp" data-wow-delay=".6s">우리는 단순한 인강 플랫폼이 아닙니다. 봄콩은 학생 한 명--%>
+<%--                                    한 명이--%>
+<%--                                    스스로 성장할 수 있도록 돕는 디지털 학습 환경을 제공합니다.</p>--%>
+<%--                            </div>--%>
                         </div>
                     </div>
                 </div>
@@ -182,27 +182,21 @@
                                 검증된 강사진, 학년별 커리큘럼, 그리고 성장 데이터 기반 학습 시스템으로
                                 스스로 학습하고 성장할 수 있는 환경을 제공합니다.
                             </p>
-                            <div class="counter-up wow fadeInUp" data-wow-delay=".5s">
-                                <div class="counter">
-                                        <span id="secondo" class="countup count color-1" cup-end="10"
-                                              cup-append="k">10</span>
-                                    <h4>누적 수강생</h4>
-                                    <p>많은 학생들이 봄콩을 통해<br class="d-none d-md-block d-lg-none d-xl-block">학습 역량을 키웠습니다
-                                    </p>
+                            <div class="d-flex justify-content-between text-center px-4 py-5" style="background-color: #f8f9fc;">
+                                <div class="flex-fill">
+                                    <div class="fw-bold display-5 text-warning countup" cup-end="10" cup-append="k">0</div>
+                                    <h4 class="mt-2 fw-bold">누적 수강생</h4>
+                                    <p class="text-secondary">지금까지 1만 명 이상의 학생이<br>봄콩과 함께 성장했습니다.</p>
                                 </div>
-                                <div class="counter">
-                                        <span id="secondo" class="countup count color-2" cup-end="95"
-                                              cup-append="%">95</span>
-                                    <h4>만족도</h4>
-                                    <p>실제 수강생 리뷰 기준 <br class="d-none d-md-block d-lg-none d-xl-block">만족도 95% 이상
-                                    </p>
+                                <div class="flex-fill">
+                                    <div class="fw-bold display-5 text-warning countup" cup-end="95" cup-append="%">0</div>
+                                    <h4 class="mt-2 fw-bold">수강 만족도</h4>
+                                    <p class="text-secondary">실제 수강생 리뷰 기반<br>95% 이상 만족을 기록했습니다.</p>
                                 </div>
-                                <div class="counter">
-                                        <span id="secondo" class="countup count color-2" cup-end="95"
-                                              cup-append="%">95</span>
-                                    <h4>만족도</h4>
-                                    <p>실제 수강생 리뷰 기준 <br class="d-none d-md-block d-lg-none d-xl-block">만족도 95% 이상
-                                    </p>
+                                <div class="flex-fill">
+                                    <div class="fw-bold display-5 text-warning countup" cup-end="1" cup-append="위">0</div>
+                                    <h4 class="mt-2 fw-bold">학습 만족도 1위</h4>
+                                    <p class="text-secondary">온라인 학습 플랫폼 중<br>최고의 만족도를 자랑합니다.</p>
                                 </div>
                             </div>
                         </div>
@@ -411,35 +405,43 @@
 <!-- ========================= process-section end ========================= -->
 
 <!-- ========================= subscribe-section start ========================= -->
-<section class="subscribe-section pt-100 pb-100"
-         style="background-image: url('${pageContext.request.contextPath}/resources/mainAssets/img/bg/common-bg.svg'); background-repeat: no-repeat; background-size: cover;">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-xl-6 col-lg-6">
-                <div class="section-title mb-30">
-                    <span class="text-white wow fadeInDown" data-wow-delay=".2s">지금 바로 체험해보세요!</span>
-                    <h2 class="text-white mb-40 wow fadeInUp" data-wow-delay=".4s">회원가입하고 오늘부터 무료 강의를 체험해보세요. 봄콩과
-                        함께라면 공부가
-                        즐거워집니다.</h2>
-                </div>
-            </div>
-            <div class="col-xl-6 col-lg-6">
-                <div class="subscribe-form wow fadeInRight" data-wow-delay=".4s">
-                    <a href="${pageContext.request.contextPath}/member/register"
-                       class="subscribe-join-btn w-100 text-white text-center d-inline-block">
-                        회원가입 하러 가기
-                    </a>
-                </div>
-            </div>
-
+<section class="bg-primary text-white py-5" style="background-image: url('${pageContext.request.contextPath}/resources/mainAssets/img/bg/common-bg.svg'); background-size: cover; background-repeat: no-repeat;">
+    <div class="p-5 mb-5 bg-primary bg-opacity-75 rounded-3 text-white"
+         style="background-image: url('${pageContext.request.contextPath}/resources/mainAssets/img/bg/common-bg.svg'); background-size: cover; background-repeat: no-repeat; background-position: center;">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">지금 바로 체험해보세요!</h1>
+            <p class="col-md-8 fs-4 text-white lh-base">
+                회원가입하고 오늘부터 무료 강의를 체험해보세요.<br>
+                <strong>봄콩</strong>과 함께라면 공부가 즐거워집니다.
+            </p>
+            <a href="${pageContext.request.contextPath}/join" class="btn btn-light btn-lg fw-bold">
+                회원가입 하러 가기
+            </a>
         </div>
     </div>
+
 </section>
+
 <!-- ========================= subscribe-section end ========================= -->
 
 <!-- ========================= scroll-top ========================= -->
 <a href="#" class="scroll-top">
     <i class="lni lni-chevron-up"></i>
 </a>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const counter = new counterUp({
+            duration: 2000,
+            append: '',
+            prepend: '',
+            selector: '.countup',
+            intvalues: true,
+            interval: 50
+        });
+        counter.start();
+    });
+</script>
+
 </body>
 </html>

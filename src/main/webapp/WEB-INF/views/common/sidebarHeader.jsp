@@ -75,7 +75,6 @@
         }
 
         .btn-toggle {
-            padding: .25rem .5rem;
             font-weight: 600;
             color: var(--bs-emphasis-color);
             background-color: transparent;
@@ -108,6 +107,11 @@
         .btn-toggle-nav a:hover {
             background-color: var(--bs-tertiary-bg);
         }
+
+        .sidebar .btn-toggle-nav li {
+            margin-bottom: 1rem;
+        }
+
     </style>
 </head>
 <body>
@@ -142,19 +146,25 @@
             </ul>
 
             <div class="d-flex align-items-center gap-4 flex-wrap justify-content-end user-tools">
-                <div class="greeting">
-                    <c:if test="${not empty sessionScope.memberId}">
-                        ${sessionScope.memberId} 님, 오늘도 즐거운 학습 되세요! 😊
-                    </c:if>
-                </div>
-
+                <c:if test="${sessionScope.memberGrade eq 0}">
+                    <a href="${cp}/admin/member/list" class="admin-link" title="관리자 페이지">
+                        <i class="bi bi-gear-fill" style="font-size: 1.4rem;"></i>
+                    </a>
+                </c:if>
+                <c:if test="${not empty sessionScope.memberId and sessionScope.memberGrade ne 0}">
+                    <div class="greeting">${sessionScope.memberDTO.memberName} 님, 오늘도 즐거운 학습 되세요! 😊</div>
+                </c:if>
                 <c:if test="${not empty sessionScope.memberId}">
                     <div class="cart">
                         <a href="/payment/cart?memberId=${sessionScope.memberId}"
                            class="text-decoration-none position-relative">
                             <i class="bi bi-cart" style="font-size: 1.4rem;"></i>
-                            <span id="cart-count-badge"
-                                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                            <c:if test="${not empty sessionScope.memberId}">
+                                <span id="cart-count-badge"
+                                      class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        ${cartCount}
+                                </span>
+                            </c:if>
                         </a>
                     </div>
                 </c:if>
@@ -171,22 +181,17 @@
                             <li><a class="dropdown-item" href="${cp}/login">로그인</a></li>
                         </c:if>
                         <c:if test="${not empty sessionScope.memberId}">
-                            <li><a class="dropdown-item" href="${cp}/mypage">마이페이지</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
+                            <c:if test="${sessionScope.memberGrade != 0}">
+                                <li><a class="dropdown-item" href="${cp}/mypage">마이페이지</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                            </c:if>
                             <li><a class="dropdown-item" href="${cp}/login?action=logout">로그아웃</a></li>
                         </c:if>
                     </ul>
                 </div>
-
-                <c:if test="${sessionScope.memberGrade eq 0}">
-                    <a href="${cp}/admin/member/list" class="admin-link" title="관리자 페이지">
-                        <i class="bi bi-gear-fill" style="font-size: 1.4rem;"></i>
-                    </a>
-                </c:if>
             </div>
-
         </div>
     </div>
 </header>
@@ -195,32 +200,35 @@
 <div class="flex-shrink-0 p-3 sidebar" id="sidebar">
     <ul class="list-unstyled ps-0">
         <li class="mb-3">
-            <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
+            <button class="btn btn-toggle d-inline-flex align-items-center collapsed mb-2" data-bs-toggle="collapse"
                     data-bs-target="#dashboard-collapse">
                 게시판
             </button>
             <div class="collapse" id="dashboard-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="${cp}/board/freeboard/list"
-                           class="d-inline-flex text-decoration-none rounded text-dark">자유게시판</a></li>
-                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/freeboard/list">자유게시판</a>
+                    <li><a class="d-inline-flex text-decoration-none rounded text-dark"
+                           href="${cp}/board/freeboard/list">자유게시판</a>
                     </li>
-                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/eduinfo/list">교육정보</a>
+                    <li><a class=" d-inline-flex text-decoration-none rounded text-dark"
+                           href="${cp}/board/eduinfo/list">교육정보</a>
                     </li>
-                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/uniinfo/list">대학정보</a>
+                    <li><a class=" d-inline-flex text-decoration-none rounded text-dark"
+                           href="${cp}/board/uniinfo/list">대학정보</a>
                     </li>
-                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/exactivity/list">대외활동</a>
+                    <li><a class=" d-inline-flex text-decoration-none rounded text-dark"
+                           href="${cp}/board/exactivity/list">대외활동</a>
                     </li>
-                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/reference/list">자료공유</a>
+                    <li><a class=" d-inline-flex text-decoration-none rounded text-dark"
+                           href="${cp}/board/reference/list">자료공유</a>
                     </li>
-                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/news">뉴스</a>
+                    <li><a class=" d-inline-flex text-decoration-none rounded text-dark" href="${cp}/board/news">뉴스</a>
                     </li>
                 </ul>
             </div>
         </li>
         <c:if test="${sessionScope.memberGrade eq 0}">
             <li class="mb-3">
-                <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
+                <button class="btn btn-toggle d-inline-flex align-items-center collapsed mb-2" data-bs-toggle="collapse"
                         data-bs-target="#admin-collapse">
                     관리 페이지
                 </button>
@@ -229,7 +237,9 @@
                         <li><a href="${cp}/admin/member/list"
                                class="d-inline-flex text-decoration-none rounded text-dark">회원 목록</a></li>
                         <li><a href="${cp}/admin/report/list/board"
-                               class="d-inline-flex text-decoration-none rounded text-dark">신고 내역 목록</a></li>
+                               class="d-inline-flex text-decoration-none rounded text-dark">게시글 신고 내역</a></li>
+                        <li><a href="${cp}/admin/report/list/review"
+                               class="d-inline-flex text-decoration-none rounded text-dark">강의평 신고 내역</a></li>
                         <li><a href="${cp}/admin/teacher/regist"
                                class="d-inline-flex text-decoration-none rounded text-dark">강의 등록</a></li>
                         <li><a href="${cp}/notice/regist" class="d-inline-flex text-decoration-none rounded text-dark">공지사항
@@ -240,23 +250,32 @@
                 </div>
             </li>
         </c:if>
-        <li class="mb-3">
-            <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
-                    data-bs-target="#mypage-collapse">
-                마이 페이지
-            </button>
-            <div class="collapse" id="mypage-collapse">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded text-dark">추천한 게시글</a></li>
-                    <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded text-dark">신고한 게시글</a></li>
-                    <li><a href="${cp}/qna/myQna" class="d-inline-flex text-decoration-none rounded text-dark">나의 문의</a>
-                    </li>
-                    <li><a href="${cp}/mypage/bookmark" class="d-inline-flex text-decoration-none rounded text-dark">북마크한 강좌</a></li>
-                    <li><a href="${cp}/mypage/order" class="d-inline-flex text-decoration-none rounded text-dark">강좌 주문
-                        내역</a></li>
-                </ul>
-            </div>
-        </li>
+        <c:if test="${not empty sessionScope.memberId and sessionScope.memberGrade ne 0}">
+            <li class="mb-3">
+                <button class="btn btn-toggle d-inline-flex align-items-center collapsed mb-2" data-bs-toggle="collapse"
+                        data-bs-target="#mypage-collapse">
+                    마이 페이지
+                </button>
+                <div class="collapse" id="mypage-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="${cp}/mypage/post" class="d-inline-flex text-decoration-none rounded text-dark">작성한
+                            게시글</a></li>
+                        <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded text-dark">추천한
+                            게시글</a></li>
+                        <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded text-dark">신고한
+                            게시글</a></li>
+                        <li><a href="${cp}/qna/myQna" class="d-inline-flex text-decoration-none rounded text-dark">나의
+                            문의</a>
+                        </li>
+                        <li><a href="${cp}/mypage/bookmark"
+                               class="d-inline-flex text-decoration-none rounded text-dark">북마크한 강좌</a></li>
+                        <li><a href="${cp}/mypage/order" class="d-inline-flex text-decoration-none rounded text-dark">강좌
+                            주문
+                            내역</a></li>
+                    </ul>
+                </div>
+            </li>
+        </c:if>
     </ul>
 </div>
 
@@ -278,7 +297,7 @@
             adminToggle.setAttribute('aria-expanded', 'true');
         }
 
-        if (path.includes('/board')) {
+        if (path.includes('/board/')) {
             const boardCollapse = document.querySelector('#dashboard-collapse');
             const boardToggle = document.querySelector('[data-bs-target="#dashboard-collapse"]');
             boardCollapse.classList.add('show');
@@ -298,20 +317,6 @@
     window.addEventListener('load', adjustSidebarPadding);
     window.addEventListener('resize', adjustSidebarPadding);
 
-    $(document).ready(function () {
-        if ("${sessionScope.memberId}" != null) {
-            $.ajax({
-                url: '/payment/cartCount',
-                type: 'GET',
-                success: function (count) {
-                    $('#cart-count-badge').text(count);
-                },
-                error: function () {
-                    console.warn("장바구니 수량 조회 실패");
-                }
-            });
-        }
-    });
 
     $(document).ready(function () {
         function adjustContentMargin() {

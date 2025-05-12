@@ -6,7 +6,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>좋아요 누른 게시글</title>
+    <title>내가 쓴 게시글</title>
 </head>
 <body>
 <%@ include file="../common/sidebarHeader.jsp" %>
@@ -32,31 +32,30 @@
                     <a class="link-body-emphasis fw-semibold text-decoration-none" href="/mypage">마이페이지</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    좋아요 누른 게시글
+                    내가 쓴 게시글
                 </li>
             </ol>
         </nav>
     </div>
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0">좋아요 누른 게시글</h3>
+            <h3 class="mb-0">내가 쓴 게시글</h3>
         </div>
         <%
             List<Map<String, String>> dateOptions = new ArrayList<>();
-            dateOptions.add(Map.of("value", "postLikeCreatedAt", "label", "좋아요 누른 날짜"));
             dateOptions.add(Map.of("value", "postCreatedAt", "label", "게시글 작성일자"));
+            dateOptions.add(Map.of("value", "postUpdatedAt", "label", "게시글 수정일자"));
             request.setAttribute("dateOptions", dateOptions);
 
             List<Map<String, String>> searchTypeOptions = new ArrayList<>();
             searchTypeOptions.add(Map.of("value", "postTitle", "label", "제목"));
             searchTypeOptions.add(Map.of("value", "postContent", "label", "내용"));
-            searchTypeOptions.add(Map.of("value", "postMemberId", "label", "작성자"));
             request.setAttribute("searchTypeOptions", searchTypeOptions);
-            request.setAttribute("searchAction", "/mypage/likes");
+            request.setAttribute("searchAction", "/mypage/post");
         %>
         <jsp:include page="../common/searchBox.jsp" />
 
-        <c:if test="${not empty likesList}">
+        <c:if test="${not empty postList}">
             <table class="table table-hover text-center align-middle">
                 <thead class="table-light">
                 <tr>
@@ -70,14 +69,6 @@
                         </a>
                     </th>
                     <th>
-                        <a href="javascript:void(0);" onclick="applySort('postMemberId')">
-                            작성자
-                            <c:if test="${searchDTO.sortColumn eq 'postMemberId'}">
-                                ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
-                            </c:if>
-                        </a>
-                    </th>
-                    <th>
                         <a href="javascript:void(0);" onclick="applySort('postCreatedAt')">
                             작성일
                             <c:if test="${searchDTO.sortColumn eq 'postCreatedAt'}">
@@ -85,34 +76,26 @@
                             </c:if>
                         </a>
                     </th>
-                    <th>좋아요 상태</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${likesList}" var="postDTO" varStatus="status">
+                <c:forEach items="${postList}" var="postDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
-                            <a href="/post/detail?postIdx=${postDTO.postLikeRefIdx}"
+                            <a href="/board/freeboard/view?idx=${postDTO.postIdx}"
                                class="text-decoration-none text-dark">
                                     ${postDTO.postTitle}
                             </a>
                         </td>
-                        <td>${postDTO.postMemberId}</td>
                         <td>${postDTO.postCreatedAt.toLocalDate()}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-danger"
-                                    onclick="cancelLike(${postDTO.postLikeRefIdx})">
-                                좋아요 취소
-                            </button>
-                        </td>
                     </tr>
                 </c:forEach>
                 </tbody>
             </table>
         </c:if>
 
-        <c:if test="${empty likesList}">
+        <c:if test="${empty postList}">
             <div class="alert alert-warning mt-4" role="alert">
                 게시글이 없습니다.
             </div>
@@ -124,23 +107,6 @@
     </div>
 </div>
 <script>
-    function cancelLike(postLikeRefIdx) {
-        if (!confirm("정말 좋아요를 취소하시겠습니까?")) return;
-
-        $.ajax({
-            url: "/mypage/likes/delete",
-            type: "POST",
-            data: {postLikeRefIdx: postLikeRefIdx},
-            success: function (response) {
-                alert(response);
-                location.reload();
-            },
-            error: function (xhr) {
-                alert(xhr.responseText || "좋아요 취소 중 오류가 발생했습니다.");
-            }
-        });
-    }
-
     <c:if test="${not empty message}">
     alert("${message}");
     </c:if>

@@ -54,7 +54,7 @@
                     <a class="link-body-emphasis fw-semibold text-decoration-none" href="/">게시판</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    뉴스
+                    뉴스 목록
                 </li>
             </ol>
         </nav>
@@ -68,9 +68,10 @@
         <%
             List<Map<String, String>> searchTypeOptions = new ArrayList<>();
             searchTypeOptions.add(Map.of("value", "title", "label", "제목"));
-            searchTypeOptions.add(Map.of("value", "description", "label", "설명"));
+            searchTypeOptions.add(Map.of("value", "description", "label", "기사 내용"));
             request.setAttribute("searchTypeOptions", searchTypeOptions);
             request.setAttribute("searchAction", "/board/news");
+            request.setAttribute("isTeacher", "Y");
         %>
         <jsp:include page="../../common/searchBox.jsp"/>
 
@@ -119,9 +120,14 @@
             </div>
         </c:if>
 
-        <c:if test="${empty newsList}">
-            <div class="alert alert-warning mt-4" role="alert">
-                뉴스 결과가 없습니다.
+<%--        <c:if test="${empty newsList}">--%>
+<%--            <div class="alert alert-warning mt-4" role="alert">--%>
+<%--                뉴스 결과가 없습니다.--%>
+<%--            </div>--%>
+<%--        </c:if>--%>
+        <c:if test="${not empty message}">
+            <div class="alert alert-info mt-4" role="alert">
+                    ${message}
             </div>
         </c:if>
 
@@ -131,10 +137,5 @@
     </div>
 </div>
 
-<script>
-    <c:if test="${not empty message}">
-    alert("${message}");
-    </c:if>
-</script>
 </body>
 </html>

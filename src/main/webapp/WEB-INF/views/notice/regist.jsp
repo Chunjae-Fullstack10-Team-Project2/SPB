@@ -15,7 +15,7 @@
     </symbol>
 </svg>
 
-<div class="container my-5">
+<div class="container my-5 pt-5">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
             <li class="breadcrumb-item">
@@ -38,11 +38,12 @@
 
 <div class="container my-5">
     <div class="card shadow rounded">
-        <div class="card-header bg-success text-white">
+        <div class="card-header bg-primary text-white">
             <h5 class="mb-0">공지사항 등록</h5>
         </div>
         <div class="card-body">
-            <form name="frmRegist" method="post" action="${pageContext.request.contextPath}/notice/regist" class="needs-validation" novalidate>
+            <form name="frmRegist" method="post" action="${pageContext.request.contextPath}/notice/regist" class="needs-validation" >
+
                 <div class="mb-3">
                     <label for="noticeTitle" class="form-label" >제목</label>
                     <input type="text" class="form-control" id="noticeTitle" name="noticeTitle"
@@ -58,6 +59,12 @@
                               required>${noticeDTO.noticeContent != null ? noticeDTO.noticeContent : ''}</textarea>
                 </div>
 
+                <c:if test="${not empty message}">
+                    <div class="alert alert-danger">
+                            ${message}
+                    </div>
+                </c:if>
+
                 <div class="mb-3 form-check">
                     <input type="hidden" name="noticeIsFixed" value="0">
                     <input type="checkbox" class="form-check-input" id="noticeIsFixed" name="noticeIsFixed" value="1">
@@ -68,7 +75,7 @@
                 <div class="d-flex justify-content-end gap-2">
                     <button type="button" class="btn btn-outline-secondary"
                             onclick="location.href='${pageContext.request.contextPath}/notice/list'">취소</button>
-                    <button type="submit" class="btn btn-success">등록</button>
+                    <button type="submit" class="btn btn-primary">등록</button>
                 </div>
             </form>
         </div>
@@ -76,9 +83,7 @@
 </div>
 
 <script>
-    <c:if test="${not empty message}">
-    alert("${message}");
-    </c:if>
+
 </script>
 </body>
 </html>

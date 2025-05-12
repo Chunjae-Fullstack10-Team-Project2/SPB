@@ -1478,7 +1478,7 @@ p {
     .box-style:hover .box-icon-style {
       color: #fff;
       border-color: transparent;
-      background: linear-gradient(#f9a683 0%, #6f58e8 100%); }
+      background: transparent; }
       .box-style:hover .box-icon-style::after {
         opacity: 1;
         visibility: visible; }
@@ -1516,8 +1516,10 @@ p {
       -o-transition: all 0.3s ease-out 0s;
       transition: all 0.3s ease-out 0s;
       z-index: -1;
+      inset: 0;
       border-radius: 50%;
-      border: 1px solid transparent; }
+      display: flex;
+    }
   .box-style .box-content-style h4 {
     font-size: 25px;
     font-weight: 600;

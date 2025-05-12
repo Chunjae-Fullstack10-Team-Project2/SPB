@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -97,11 +98,11 @@ public class NoticeController {
 
     @GetMapping("/regist")
     public String registForm(HttpSession session) {
-        // 세션에서 필요한 값 직접 가져오기
+        // 세션에서 필요한 값 가져오기 (memberId ,memberGrade)
         String memberId = (String) session.getAttribute("memberId");
         String memberGrade = (String) session.getAttribute("memberGrade");
 
-        // 값이 없거나 관리자가 아닌 경우 리다이렉트
+        // 관리자가 아닌 경우 리다이렉트
         if (memberId == null || memberGrade == null || !memberGrade.equals("0")) {
             return "redirect:/notice/list";
         }
@@ -109,7 +110,19 @@ public class NoticeController {
     }
 
     @PostMapping("/regist")
-    public String regist(@ModelAttribute NoticeDTO dto, HttpSession session) throws Exception {
+    public String regist(@ModelAttribute NoticeDTO dto, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
+        // 유효성 검사
+        if (dto.getNoticeTitle() == null || dto.getNoticeTitle().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "제목을 입력해주세요.");
+            redirectAttributes.addFlashAttribute("noticeDTO", dto);
+            return "redirect:/notice/regist";
+        }
+
+        if (dto.getNoticeContent() == null || dto.getNoticeContent().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "내용을 입력해주세요.");
+            redirectAttributes.addFlashAttribute("noticeDTO", dto);
+            return "redirect:/notice/regist";
+        }
         // 세션에서 회원 ID 직접 가져오기
         String memberId = (String) session.getAttribute("memberId");
 
@@ -128,7 +141,20 @@ public class NoticeController {
     }
 
     @PostMapping("/modify")
-    public String modify(@ModelAttribute NoticeDTO dto) throws Exception {
+    public String modify(@ModelAttribute NoticeDTO dto, RedirectAttributes redirectAttributes) throws Exception {
+        // 유효성 검사
+        if (dto.getNoticeTitle() == null || dto.getNoticeTitle().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "제목을 입력해주세요.");
+            redirectAttributes.addFlashAttribute("noticeDTO", dto);
+            return "redirect:/notice/regist";
+        }
+
+        if (dto.getNoticeContent() == null || dto.getNoticeContent().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "내용을 입력해주세요.");
+            redirectAttributes.addFlashAttribute("noticeDTO", dto);
+            return "redirect:/notice/regist";
+        }
+
         dto.setNoticeMemberId("system");
         noticeService.update(dto);
         return "redirect:/notice/view?noticeIdx=" + dto.getNoticeIdx();
