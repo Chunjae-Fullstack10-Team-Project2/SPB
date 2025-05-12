@@ -61,33 +61,60 @@ public class MyPageController {
     @PostMapping("")
     public String updateMyPage(@ModelAttribute MemberDTO memberDTO,
                                @RequestParam(value = "profileImgFile", required = false) MultipartFile profileImg,
-                               HttpSession session, Model model,
+                               HttpSession session,
+                               Model model,
                                RedirectAttributes redirectAttributes) {
+
         String memberId = (String) session.getAttribute("memberId");
-        memberDTO.setMemberId(memberId);
+        MemberDTO sessionDTO = (MemberDTO) session.getAttribute("memberDTO");
+
+        if (memberId == null || sessionDTO == null) {
+            return "redirect:/login";
+        }
+
+        MemberDTO safeDTO = new MemberDTO();
+        safeDTO.setMemberId(memberId);
+        safeDTO.setMemberName(memberDTO.getMemberName());
+        safeDTO.setMemberBirth(memberDTO.getMemberBirth());
+        safeDTO.setMemberZipCode(memberDTO.getMemberZipCode());
+        safeDTO.setMemberAddr1(memberDTO.getMemberAddr1());
+        safeDTO.setMemberAddr2(memberDTO.getMemberAddr2());
+
+        safeDTO.setMemberEmail(sessionDTO.getMemberEmail());
+        safeDTO.setMemberPhone(sessionDTO.getMemberPhone());
+
+        if ("14".equals(sessionDTO.getMemberGrade())) {
+            safeDTO.setMemberGrade(sessionDTO.getMemberGrade());
+        } else {
+            safeDTO.setMemberGrade(memberDTO.getMemberGrade());
+        }
+        
+        if ("14".equals(sessionDTO.getMemberGrade()) &&
+                !sessionDTO.getMemberGrade().equals(memberDTO.getMemberGrade())) {
+            redirectAttributes.addFlashAttribute("message", "승인 대기 중에는 학년을 변경할 수 없습니다.");
+            return "redirect:/mypage";
+        }
 
         try {
             if (profileImg != null && !profileImg.isEmpty()) {
-                // 기존 이미지 삭제
-                MemberDTO sessionDTO = (MemberDTO) session.getAttribute("memberDTO");
                 String oldFile = sessionDTO.getMemberProfileImg();
                 if (oldFile != null && !oldFile.isBlank()) {
                     fileUtil.deleteFile(oldFile);
                 }
 
-                // 새 이미지 저장
                 File savedFile = fileUtil.saveFile(profileImg);
-                String savedFileName = savedFile.getName();
-                memberDTO.setMemberProfileImg(savedFileName);
+                safeDTO.setMemberProfileImg(savedFile.getName());
+            } else {
+                safeDTO.setMemberProfileImg(sessionDTO.getMemberProfileImg());
             }
         } catch (Exception e) {
             model.addAttribute("message", "프로필 이미지 변경 중 오류 발생");
             return "mypage/mypage";
         }
 
-        boolean result = memberService.updateMember(memberDTO);
+        boolean result = memberService.updateMember(safeDTO);
         if (result) {
-            session.setAttribute("memberDTO", memberDTO);
+            session.setAttribute("memberDTO", safeDTO);
             redirectAttributes.addFlashAttribute("message", "회원 정보가 성공적으로 수정되었습니다.");
             return "redirect:/mypage";
         } else {
