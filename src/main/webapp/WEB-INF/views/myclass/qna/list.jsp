@@ -33,23 +33,39 @@
         %>
         <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/searchBoxOnlyPage.jsp" />
 
-        <c:if test="${not empty noticeList}">
+        <c:if test="${not empty qnaList}">
             <table class="table table-hover text-center align-middle">
                 <thead class="table-light">
                 <tr>
                     <th>번호</th>
                     <th>
-                        <a onclick="applySort('teacherNoticeTitle')">
+                        <a onclick="applySort('teacherQnaTitle')">
                             제목
-                            <c:if test="${pageDTO['sort_by'] eq 'teacherNoticeTitle'}">
+                            <c:if test="${pageDTO['sort_by'] eq 'teacherQnaTitle'}">
                                 ${pageDTO['sort_direction'] eq 'asc' ? '▲' : '▼'}
                             </c:if>
                         </a>
                     </th>
                     <th>
-                        <a onclick="applySort('teacherNoticeCreatedAt')">
+                        <a onclick="applySort('questionMemberName')">
+                            작성자
+                            <c:if test="${pageDTO['sort_by'] eq 'questionMemberName'}">
+                                ${pageDTO['sort_direction'] eq 'asc' ? '▲' : '▼'}
+                            </c:if>
+                        </a>
+                    </th>
+                    <th>
+                        <a onclick="applySort('teacherQnaCreatedAt')">
                             작성일
-                            <c:if test="${pageDTO['sort_by'] eq 'teacherNoticeCreatedAt'}">
+                            <c:if test="${pageDTO['sort_by'] eq 'teacherQnaCreatedAt'}">
+                                ${pageDTO['sort_direction'] eq 'asc' ? '▲' : '▼'}
+                            </c:if>
+                        </a>
+                    </th>
+                    <th>
+                        <a onclick="applySort('teacherQnaStatus')">
+                            문의 상태
+                            <c:if test="${pageDTO['sort_by'] eq 'teacherQnaStatus'}">
                                 ${pageDTO['sort_direction'] eq 'asc' ? '▲' : '▼'}
                             </c:if>
                         </a>
@@ -57,22 +73,31 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${noticeList}" var="notice" varStatus="status">
-                    <tr ${notice.teacherNoticeFixed == 1 ? "class='table-secondary'" : ""}>
+                <c:forEach items="${qnaList}" var="qna" varStatus="status">
+                    <tr>
                         <td>${pageDTO.total_count - ((pageDTO.page_no - 1) * pageDTO.page_size) - status.index}</td>
                         <td class="text-start">
-                            <a href="/myclass/notice/view?idx=${notice.teacherNoticeIdx}&${pageDTO.linkUrl}"
+                            <a href="/myclass/qna/view?idx=${qna.teacherQnaIdx}&${pageDTO.linkUrl}"
                                class="text-decoration-none text-dark">
-                                    ${notice.teacherNoticeTitle}
+                                    ${qna.teacherQnaTitle}
                             </a>
                         </td>
-                        <td>${notice.teacherNoticeCreatedAt.toLocalDate()}</td>
+                        <td>${qna.questionMemberName}</td>
+                        <td>${fn:substring(qna.teacherQnaCreatedAt, 0, 10)}</td>
+                        <td>
+                            <c:if test="${qna.teacherQnaStatus eq 0}">
+                                <span class="badge bg-secondary mb-1">미답변</span>
+                            </c:if>
+                            <c:if test="${qna.teacherQnaStatus eq 1}">
+                                <span class="badge bg-success mb-1">답변완료</span>
+                            </c:if>
+                        </td>
                     </tr>
                 </c:forEach>
                 </tbody>
             </table>
         </c:if>
-        <c:if test="${empty noticeList}">
+        <c:if test="${empty qnaList}">
             <div class="alert alert-warning mt-4" role="alert">
                 게시글이 없습니다.
             </div>
@@ -80,10 +105,6 @@
 
         <div class="mb-2 mb-md-0 text-center">
             <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/pagingOnlyPage.jsp" />
-        </div>
-
-        <div class="d-grid float-md-end">
-            <button class="btn btn-primary" type="button" id="btnRegist" onclick="location.href='/myclass/notice/regist?${pageDTO.linkUrl}'">등록</button>
         </div>
     </div>
 </div>

@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: MAIN
-  Date: 2025-05-11
-  Time: 오후 4:00
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -20,6 +13,10 @@
     </style>
 </head>
 <body>
+    <%
+        String uri = request.getRequestURI();
+        request.setAttribute("currentURI", uri);
+    %>
     <div class="search-box">
         <form name="frmSearch" method="get" action="${searchAction}" class="mb-1 p-4">
             <div class="row g-2 align-items-center mb-3">
@@ -64,7 +61,7 @@
             <div class="row g-2 align-items-center">
                 <div class="col-md-2">
                     <select name="page_size" class="form-select" onchange="submitSearch();">
-                        <option disabled ${empty param.page_size ? "selected" : ""}>선택</option>
+                        <option value="" disabled ${empty param.page_size ? "selected" : ""}>선택</option>
                         <option value="1" ${param.page_size == 1 ? "selected" : ""}>1개씩 보기</option>
                         <option value="5" ${param.page_size == 5 ? "selected" : ""}>5개씩 보기</option>
                         <option value="10" ${param.page_size == 10 ? "selected" : ""}>10개씩 보기</option>
@@ -73,6 +70,20 @@
                     </select>
                 </div>
             </div>
+            <c:if test="${fn:contains(currentURI, '/qna')}">
+                <div class="d-flex flex-wrap gap-3 justify-content-end">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="qna_status" id="status_0" value="0"
+                               ${param.qna_status == null or param.qna_status eq 0 ? "checked" : ""} onchange="submitSearch();"/>
+                        <label for="status_0">미답변</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="qna_status" id="status_1" value="1"
+                               ${param.qna_status eq 1 ? "checked" : ""} onchange="submitSearch();"/>
+                        <label for="status_1">답변완료</label>
+                    </div>
+                </div>
+            </c:if>
         </form>
     </div>
 
@@ -129,7 +140,7 @@
 
             const search_category = document.querySelector('select[name="search_category"]').value;
             const search_word = document.querySelector('input[name="search_word"]').value;
-            if (search_word) {
+            if (search_word && search_word.length > 0) {
                 params.set('search_category', search_category);
                 params.set('search_word', search_word);
             } else {
@@ -142,6 +153,13 @@
                 params.set('page_size', page_size);
             } else {
                 params.delete('page_size');
+            }
+
+            const qna_status = document.querySelector('input[name="qna_status"]:checked');
+            if (qna_status) {
+                params.set('qna_status', qna_status.value);
+            } else {
+                params.delete('qna_status');
             }
 
             location.href = url.toString();

@@ -25,4 +25,5 @@ public class TeacherQnaResponseDTO {
     private String answerMemberProfileImg;
     private LocalDateTime teacherQnaAnsweredAt;
     private String teacherQnaPwd;
+    private int teacherQnaStatus;
 }

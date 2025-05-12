@@ -89,20 +89,20 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${likesList}" var="bookmarkDTO" varStatus="status">
+                <c:forEach items="${likesList}" var="postDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
-                            <a href="/post/detail?postIdx=${bookmarkDTO.postLikeRefIdx}"
+                            <a href="/post/detail?postIdx=${postDTO.postLikeRefIdx}"
                                class="text-decoration-none text-dark">
-                                    ${bookmarkDTO.postTitle}
+                                    ${postDTO.postTitle}
                             </a>
                         </td>
-                        <td>${bookmarkDTO.postMemberId}</td>
-                        <td>${bookmarkDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>${postDTO.postMemberId}</td>
+                        <td>${postDTO.postCreatedAt.toLocalDate()}</td>
                         <td>
                             <button type="button" class="btn btn-sm btn-outline-danger"
-                                    onclick="cancelLike(${bookmarkDTO.postLikeRefIdx})">
+                                    onclick="cancelLike(${postDTO.postLikeRefIdx})">
                                 좋아요 취소
                             </button>
                         </td>

@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.BookmarkDTO;
 import net.spb.spb.dto.OrderDTO;
+import net.spb.spb.dto.post.PostDTO;
 import net.spb.spb.dto.post.PostLikeRequestDTO;
 import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.dto.member.MemberDTO;
@@ -419,5 +420,28 @@ public class MyPageController {
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("삭제에 실패했습니다.");
         }
+    }
+
+    @GetMapping("/post")
+    public String listMyPost(HttpSession session, Model model,
+                                 @ModelAttribute SearchDTO searchDTO,
+                                 @ModelAttribute PageRequestDTO pageRequestDTO) {
+        String postMemberId = (String) session.getAttribute("memberId");
+
+        if (searchDTO.getDateType() == null || searchDTO.getDateType().isEmpty()) {
+            searchDTO.setDateType("bookmarkCreatedAt");
+        }
+
+        List<PostDTO> postList = myPageService.listMyPost(searchDTO, pageRequestDTO, postMemberId);
+        PageResponseDTO<PostDTO> pageResponseDTO = PageResponseDTO.<PostDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .totalCount(myPageService.postTotalCount(searchDTO, postMemberId))
+                .dtoList(postList)
+                .build();
+
+        model.addAttribute("responseDTO", pageResponseDTO);
+        model.addAttribute("postList", postList);
+        model.addAttribute("searchDTO", searchDTO);
+        return "mypage/post";
     }
 }
