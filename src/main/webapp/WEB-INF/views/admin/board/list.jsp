@@ -95,25 +95,16 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:choose>
-                            <c:when test="${not empty posts}">
-                                <c:forEach var="post" items="${posts}">
-                                    <tr class="clickable-row" data-href="/board/freeboard/view?idx=${post.postIdx}">
-                                        <td>${post.postIdx}</td>
-                                        <td class="text-start">${post.postTitle}</td>
-                                        <td>${post.postMemberId}</td>
-                                        <td>${fn:substringBefore(post.postCreatedAt, 'T')}</td>
-                                        <td>${post.postReadCnt}</td>
-                                        <td>${post.postReportCnt}</td>
-                                    </tr>
-                                </c:forEach>
-                            </c:when>
-                            <c:otherwise>
-                                <tr>
-                                    <td colspan="6">등록된 게시글이 없습니다.</td>
+                            <c:forEach var="post" items="${posts}">
+                                <tr class="clickable-row" data-href="/board/freeboard/view?idx=${post.postIdx}">
+                                    <td>${post.postIdx}</td>
+                                    <td class="text-start">${post.postTitle}</td>
+                                    <td>${post.postMemberId}</td>
+                                    <td>${fn:substringBefore(post.postCreatedAt, 'T')}</td>
+                                    <td>${post.postReadCnt}</td>
+                                    <td>${post.postReportCnt}</td>
                                 </tr>
-                            </c:otherwise>
-                        </c:choose>
+                            </c:forEach>
                         </tbody>
                     </table>
                     <!-- 페이징 -->
@@ -121,8 +112,17 @@
                             ${paging}
                     </div>
                 </c:when>
+                <c:when test="${not empty search and empty posts}">
+                    <div class="alert alert-warning" role="alert">
+                        검색 결과가 없습니다.
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <div class="alert alert-warning" role="alert">
+                        신고된 게시글이 없습니다.
+                    </div>
+                </c:otherwise>
             </c:choose>
-
         </div>
     </div>
 </div>
