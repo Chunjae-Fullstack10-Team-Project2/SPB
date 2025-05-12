@@ -4,10 +4,12 @@ import net.spb.spb.domain.LectureVO;
 import net.spb.spb.domain.TeacherVO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+@Mapper
 public interface TeacherMapper {
     public TeacherVO selectTeacher(String teacherId);
     public List<LectureVO> selectTeacherLecture(String teacherId);

@@ -22,4 +22,5 @@ public class LectureDTO {
     private String lectureTeacherName;
     private int lectureChapterCount;
     private int lectureState;
+    private String lectureSubject;
 }
