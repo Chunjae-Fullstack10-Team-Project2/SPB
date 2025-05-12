@@ -1,4 +1,4 @@
-package net.spb.spb.controller.teacher;
+package net.spb.spb.controller.myclass;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.pagingsearch.TeacherNoticePageDTO;
 import net.spb.spb.dto.teacher.TeacherNoticeDTO;
-import net.spb.spb.dto.teacher.TeacherNoticeRequestDTO;
 import net.spb.spb.dto.teacher.TeacherNoticeResponseDTO;
 import net.spb.spb.service.teacher.TeacherNoticeService;
 import net.spb.spb.util.BreadcrumbUtil;

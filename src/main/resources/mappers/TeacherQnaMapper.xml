@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.teacher.TeacherQnaMapper">
+    <sql id="condition">
+        <where>
+            ${reqDTO.where_column} = #{reqDTO.where_value}
+            <if test="pageDTO.search_word != null and pageDTO.search_word != ''">
+                <if test="pageDTO.search_category == 'teacherQnaTitle'">
+                    and ttq.teacherQnaTitle like concat('%', #{pageDTO.search_word}, '%')
+                </if>
+                <if test="pageDTO.search_category == 'teacherQnaQContent'">
+                    and ttq.teacherQnaQContent like concat('%', #{pageDTO.search_word}, '%')
+                </if>
+                <if test="pageDTO.search_category == 'teacherQnaAContent'">
+                    and ttq.teacherQnaAContent like concat('%', #{pageDTO.search_word}, '%')
+                </if>
+                <if test="pageDTO.search_category == 'questionMemberName'">
+                    and ttq.questionMemberName like concat('%', #{pageDTO.search_word}, '%')
+                </if>
+                <if test="pageDTO.search_category == 'answerMemberName'">
+                    and ttq.answerMemberName like concat('%', #{pageDTO.search_word}, '%')
+                </if>
+            </if>
+            <if test="pageDTO.start_date != null and pageDTO.end_date != null and
+                      pageDTO.start_date != ''  and pageDTO.end_date != ''">
+                <if test="pageDTO.date_type == 'teacherQnaCreatedAt'">
+                    and ttq.teacherQnaCreatedAt between #{pageDTO.start_date} and #{pageDTO.end_date}
+                </if>
+                <if test="pageDTO.date_type == 'teacherQnaAnsweredAt'">
+                    and ttq.teacherQnaAnsweredAt between #{pageDTO.end_date} and #{pageDTO.end_date}
+                </if>
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectTeacherQnaListTotalCount" resultType="int">
+        select count(*)
+        from tbl_teacher_qna as ttq
+        inner join tbl_member as tmq on ttq.teacherQnaQMemberId = tmq.memberId
+        inner join tbl_member as tma on ttq.teacherQnaAMemberId = tma.memberId
+        <include refid="condition" />
+    </select>
+
+    <select id="selectTeacherQnaList" resultType="net.spb.spb.dto.teacher.TeacherQnaResponseDTO">
+        select
+            ttq.teacherQnaIdx as teacherQnaIdx,
+            ttq.teacherQnaTitle as teacherQnaTitle,
+            ttq.teacherQnaQContent as teacherQnaQContent,
+            ttq.teacherQnaCreatedAt as teacherQnaCreatedAt,
+            ttq.teacherQnaQMemberId as teacherQnaQMemberId,
+            tmq.memberName AS questionMemberName,
+            tmq.memberProfileImg AS questionMemberProfileImg,
+            ttq.teacherQnaAContent as teacherQnaAContent,
+            ttq.teacherQnaAnsweredAt as teacherQnaAnsweredAt,
+            ttq.teacherQnaAMemberId as teacherQnaAMemberId,
+            tma.memberName AS answerMemberName,
+            tma.memberProfileImg AS answerMemberProfileImg,
+            ttq.teacherQnaPwd as teacherQnaPwd
+        from tbl_teacher_qna as ttq
+        inner join tbl_member as tmq on ttq.teacherQnaQMemberId = tmq.memberId
+        inner join tbl_member as tma on ttq.teacherQnaAMemberId = tma.memberId
+        <include refid="condition" />
+        order by ${pageDTO.sort_by} ${pageDTO.sort_direction}
+        limit #{pageDTO.page_skip_count}, #{pageDTO.page_size}
+    </select>
+
+    <select id="selectTeacherQnaByIdx" resultType="net.spb.spb.dto.teacher.TeacherQnaResponseDTO">
+        select
+            ttq.teacherQnaIdx as teacherQnaIdx,
+            ttq.teacherQnaTitle as teacherQnaTitle,
+            ttq.teacherQnaQContent as teacherQnaQContent,
+            ttq.teacherQnaCreatedAt as teacherQnaCreatedAt,
+            ttq.teacherQnaQMemberId as teacherQnaQMemberId,
+            tmq.memberName AS questionMemberName,
+            tmq.memberProfileImg AS questionMemberProfileImg,
+            ttq.teacherQnaAContent as teacherQnaAContent,
+            ttq.teacherQnaAnsweredAt as teacherQnaAnsweredAt,
+            ttq.teacherQnaAMemberId as teacherQnaAMemberId,
+            tma.memberName AS answerMemberName,
+            tma.memberProfileImg AS answerMemberProfileImg,
+            ttq.teacherQnaPwd as teacherQnaPwd
+        from tbl_teacher_qna as ttq
+        inner join tbl_member as tmq on ttq.teacherQnaQMemberId = tmq.memberId
+        inner join tbl_member as tma on ttq.teacherQnaAMemberId = tma.memberId
+        where ttq.teacherQnaIdx = #{teacherQnaIdx}
+    </select>
+
+    <insert id="insertTeacherQuestion" useGeneratedKeys="true" keyColumn="teacherNoticeIdx" keyProperty="teacherNoticeIdx">
+        insert into tbl_teacher_qna (teacherQnaTitle, teacherQnaQContent, teacherQnaQMemberId, teacherQnaAMemberId, teacherQnaPwd)
+        values (#{teacherQnaTitle}, #{teacherQnaQContent}, #{teacherQnaQMemberId}, #{teacherQnaAMemberId}, #{teacherQnaPwd})
+    </insert>
+
+    <update id="updateTeacherAnswer">
+        update tbl_teacher_qna
+        set teacherQnaAContent = #{teacherQnaAContent}
+        where teacherQnaIdx = #{teacherQnaIdx}
+    </update>
+
+    <delete id="deleteTeacherQnaByIdx">
+        delete from tbl_teacher_qna
+        where teacherQnaIdx = #{teacherQnaIdx}
+    </delete>
+
+    <select id="selectTeacherQnaPwdByIdx">
+        select teacherQnaPwd
+        from tbl_teacher_qna
+        where teacherQnaIdx = #{teacherQnaIdx}
+    </select>
+</mapper>
