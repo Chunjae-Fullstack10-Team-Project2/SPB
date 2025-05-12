@@ -36,5 +36,5 @@ public interface MyPageMapper {
     boolean changePwd(@Param("memberPwd") String memberPwd, @Param("memberId") String memberId);
 
     boolean deleteReport(@Param("reportIdx") String reportIdx);
-
+    boolean cancelLike(@Param("postIdx") int postIdx);
 }
