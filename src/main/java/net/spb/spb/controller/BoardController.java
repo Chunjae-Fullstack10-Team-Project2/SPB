@@ -251,24 +251,29 @@ public class BoardController {
                            @ModelAttribute SearchDTO searchDTO,
                            @ModelAttribute PageRequestDTO pageRequestDTO) throws Exception {
 
-        String keyword = (searchDTO.getSearchWord() == null || searchDTO.getSearchWord().isBlank())
-                ? "네이버"
-                : searchDTO.getSearchWord();
+        String keyword = searchDTO.getSearchWord();
+
+        if (keyword == null || keyword.isBlank()) {
+            model.addAttribute("searchDTO", searchDTO);
+            model.addAttribute("newsList", List.of());
+            model.addAttribute("message", "검색어를 입력하세요. 결과는 최신순으로 최대 100개까지 조회 가능합니다.");
+            return "board/news/news";
+        }
 
         List<Map<String, Object>> fullList = naverNewsService.searchNewsList(keyword);
 
-        // 3. 내부 검색 필터링 (searchType 기준)
+        // 내부 검색 필터링
         String searchType = searchDTO.getSearchType();
         if (searchType != null && !searchType.isBlank()) {
             fullList = fullList.stream()
                     .filter(news -> {
                         Object field = news.get(searchType);
-                        return field != null && field.toString().toLowerCase().contains(searchDTO.getSearchWord().toLowerCase());
+                        return field != null && field.toString().toLowerCase().contains(keyword.toLowerCase());
                     })
                     .toList();
         }
 
-        // 4. 정렬 처리
+        // 정렬 처리
         String sortColumn = searchDTO.getSortColumn() != null ? searchDTO.getSortColumn() : "pubDate";
         String sortOrder = searchDTO.getSortOrder() != null ? searchDTO.getSortOrder() : "desc";
 
@@ -286,13 +291,12 @@ public class BoardController {
 
         fullList = fullList.stream().sorted(comparator).toList();
 
-        // 5. 페이징
+        // 페이징
         int total = fullList.size();
         int start = pageRequestDTO.getPageSkipCount();
         int end = Math.min(start + pageRequestDTO.getPageSize(), total);
         List<Map<String, Object>> pageList = (start >= total) ? List.of() : fullList.subList(start, end);
 
-        // 6. 결과 전달
         PageResponseDTO<Map<String, Object>> pageResponseDTO = PageResponseDTO.<Map<String, Object>>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .totalCount(total)
