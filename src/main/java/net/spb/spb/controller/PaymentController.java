@@ -215,6 +215,7 @@ public class PaymentController {
             PaymentDTO paymentDTO = paymentService.getPaymentInfo(orderIdx);
             model.addAttribute("paymentDTO", paymentDTO);
             log.info("paymentDTO === " + paymentDTO);
+            model.addAttribute("totalAmount", lectureDTO.stream().mapToInt(LectureDTO::getLectureAmount).sum());
         }catch (Exception e){
             System.out.println("🔥 예외 발생: " + e.getMessage());
             e.printStackTrace();
