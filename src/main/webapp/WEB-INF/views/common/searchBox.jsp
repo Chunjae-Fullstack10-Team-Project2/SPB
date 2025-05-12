@@ -56,7 +56,7 @@
         <div class="row g-2 align-items-center">
             <div class="col-md-2">
                 <select name="pageSize" class="form-select" onchange="submitSearch();">
-                    <option disabled ${empty pageDTO.pageSize ? 'selected' : ''}>선택</option>
+                    <option value="" disabled ${empty pageDTO.pageSize ? 'selected' : ''}>선택</option>
                     <option value="1" ${pageDTO.pageSize == 1 ? "selected" : ""}>1개씩 보기</option>
                     <option value="5" ${pageDTO.pageSize == 5 ? "selected" : ""}>5개씩 보기</option>
                     <option value="10" ${pageDTO.pageSize == 10 ? "selected" : ""}>10개씩 보기</option>
@@ -131,7 +131,7 @@
 
         const searchType = document.querySelector('select[name="searchType"]').value;
         const searchWord = document.querySelector('input[name="searchWord"]').value;
-        if (searchWord) {
+        if (searchWord && searchWord.length > 0) {
             params.set('searchType', searchType);
             params.set('searchWord', searchWord);
         } else {
