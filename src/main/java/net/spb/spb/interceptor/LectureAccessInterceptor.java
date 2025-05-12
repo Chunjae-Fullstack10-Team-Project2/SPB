@@ -46,7 +46,7 @@ public class LectureAccessInterceptor implements HandlerInterceptor {
         if (isAdmin || isLectureOwner || hasPurchased) {
             return true; // 통과
         } else {
-            response.sendRedirect(request.getContextPath() + "/lecture/main?lectureIdx=" + lectureIdx + "&denied=true");
+            response.sendRedirect(request.getContextPath() + "/lecture/lectureDetail?lectureIdx=" + lectureIdx + "&denied=true");
             return false;
         }
     }

@@ -123,7 +123,9 @@
         const url = new URL(location.href);
         const params = url.searchParams;
 
-        const datefilter = document.querySelector('input[name="datefilter"]').value;
+        const datefilterInput = document.querySelector('input[name="datefilter"]');
+        const datefilter = datefilterInput ? datefilterInput.value : '';
+
         if (datefilter) {
             const dates = datefilter.split(' - ');
             params.set('startDate', dates[0]);
@@ -156,7 +158,7 @@
         } else {
             params.delete('answered');
         }
-
+        console.log("url: "+url.toString());
         location.href = url.toString();
     }
 

@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 </head>
 <body class="bg-light">
@@ -39,7 +40,7 @@
                                 <fmt:formatNumber value="${lecture.lectureAmount}" type="number"/>원
                             </div>
                         </div>
-                        <a href="/lecture/main?lectureIdx=${lecture.lectureIdx}" class="btn btn-success btn-sm">
+                        <a href="/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}" class="btn btn-success btn-sm">
                             <i class="bi bi-play-circle me-1"></i>수강하러 가기
                         </a>
                     </div>

@@ -19,7 +19,10 @@
     <select id="getTeacherMain">
         select teacherId, teacherName, teacherProfileImg, teacherSubject
         from tbl_teacher
-        where teacherSubject = #{subject}
+        where 1=1
+          <if test="subject != null">
+        and teacherSubject = #{subject}
+          </if>
         and teacherState = '1'
         <if test="searchDTO.searchWord != null">
             AND teacherName like CONCAT('%', #{searchDTO.searchWord}, '%')
@@ -54,6 +57,7 @@
         where b.lectureTeacherId = #{teacherId}
           and a.bookmarkMemberId = #{memberId}
           and b.lectureState = '1'
+        and a.bookmarkState = '1'
     </select>
     <!--선생님 정보 총 개수 조회-->
     <select id="getTotalCount">

@@ -1,134 +1,51 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <title>장바구니</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>학습 플랫폼 - 장바구니</title>
+
+    <!-- Bootstrap + jQuery -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        body {
+            background-color: #f8f9fa;
             font-family: 'Malgun Gothic', sans-serif;
         }
 
-        body {
-            background-color: #fff;
-            color: #333;
-            line-height: 1.5;
-        }
-
-        .page-container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-
-        .content {
-            padding: 20px;
-        }
-
         .cart-title {
-            font-size: 18px;
+            font-size: 24px;
             font-weight: bold;
-            margin-bottom: 20px;
         }
 
-        .cart-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-        }
-
-        .cart-table td {
-            padding: 15px 10px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-            border-top: 1px solid #ddd;
-        }
-
-        .cart-table .title-cell {
-            text-align: center;
-        }
-
-        .cart-table .price-cell {
-            text-align: right;
-        }
-
-        .checkbox {
-            width: 16px;
-            height: 16px;
-        }
-
-        .btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            background-color: #ccc;
-            color: #333;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            background-color: #bbb;
-        }
-
-        .total-area {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-top: 15px;
-            border-top: 1px solid #ddd;
-        }
-
-        .total-label {
-            font-weight: bold;
-            margin-right: 20px;
+        .cart-thumbnail {
+            width: 130px;
+            height: 80px;
+            object-fit: cover;
         }
 
         .total-price {
+            font-size: 20px;
             font-weight: bold;
-            font-size: 18px;
         }
 
-        .button-group {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
+        .table td, .table th {
+            vertical-align: middle;
         }
 
-        @media (max-width: 768px) {
-            .cart-table {
-                font-size: 14px;
-            }
-
-            .cart-table th:nth-child(1),
-            .cart-table td:nth-child(1) {
-                width: 10%;
-            }
-
-            .button-group {
-                flex-wrap: wrap;
+        @media (max-width: 576px) {
+            .cart-thumbnail {
+                width: 100px;
+                height: 60px;
             }
 
             .btn {
                 font-size: 14px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .cart-table th:nth-child(1),
-            .cart-table td:nth-child(1) {
-                display: none;
-            }
-
-            .button-group {
-                justify-content: center;
             }
         }
     </style>
@@ -136,42 +53,49 @@
 <body>
 <%@ include file="../common/sidebarHeader.jsp" %>
 <div class="content">
-<div class="page-container">
-        <div class="cart-title">장바구니</div>
+<div class="container my-5">
+    <h2 class="cart-title mb-4">장바구니</h2>
 
-        <table class="cart-table">
-            전체선택&nbsp;<input type="checkbox" id="checkAll">
-            <tbody>
-            <c:forEach var="lecture" items="${cartList}">
-                <tr>
-                    <td>
-                        <input type="checkbox" class="checkbox" data-lecture-idx="${lecture.cartLectureIdx}" checked>
-                    </td>
-                    <td>
-                        <img src="/upload/${lecture.lectureThumbnailImg}" alt="강의 썸네일" width="130" height="80">
-                    </td>
-                    <td class="title-cell">${lecture.lectureTitle}</td>
-                    <td class="price-cell">₩${lecture.lectureAmount}</td>
-                    <td>
-                        <button type="button" class="btn" onclick="cartPaymentOne('${lecture.cartLectureIdx}')">수강하기</button>
-                    </td>
-                </tr>
-            </c:forEach>
-            </tbody>
-        </table>
+    <div class="mb-3 form-check">
+        <input class="form-check-input" type="checkbox" id="checkAll" checked>
+        <label class="form-check-label" for="checkAll">전체 선택</label>
+    </div>
 
-        <div class="total-area">
-            <div class="total-label">총 금액</div>
-            <div class="total-price"></div>
-        </div>
+    <table class="table table-hover align-middle bg-white rounded shadow-sm overflow-hidden">
+        <tbody>
+        <c:forEach var="lecture" items="${cartList}">
+            <tr id="cart-row-${lecture.cartLectureIdx}">
+                <td style="width: 5%;">
+                    <input type="checkbox" class="form-check-input checkbox" data-lecture-idx="${lecture.cartLectureIdx}" checked>
+                </td>
+                <td style="width: 15%;">
+                    <img src="/upload/${lecture.lectureThumbnailImg}" alt="썸네일" class="cart-thumbnail rounded">
+                </td>
+                <td>
+                    <div class="fw-bold">${lecture.lectureTitle}</div>
+                </td>
+                <td class="text-end" style="width: 20%;">
+                    <span class="text-primary fw-semibold"><fmt:formatNumber value="${lecture.lectureAmount}" type="number"/>원</span>
+                </td>
+                <td style="width: 15%;">
+                    <button type="button" class="btn btn-success btn-sm w-100" onclick="cartPaymentOne('${lecture.cartLectureIdx}')">수강하기</button>
+                </td>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
 
-        <div class="button-group">
-            <button type="button" class="btn" id="btnSelectDelete" onclick="cartDeleteSelected()">선택삭제</button>
-            <button type="button" class="btn" id="btnSelectLecture" onclick="cartPayment()">선택강좌수강</button>
-        </div>
+    <div class="d-flex justify-content-end align-items-center border-top pt-3 mt-4">
+        <span class="me-3 fw-semibold">총 금액:</span>
+        <span class="total-price text-danger"></span>
+    </div>
+
+    <div class="d-flex justify-content-end mt-4 gap-2">
+        <button type="button" class="btn btn-outline-danger" id="btnSelectDelete" onclick="cartDeleteSelected()">선택 삭제</button>
+        <button type="button" class="btn btn-primary" id="btnSelectLecture" onclick="cartPayment()">선택 강좌 수강</button>
     </div>
 </div>
-
+</div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const checkboxes = document.querySelectorAll('.checkbox');
