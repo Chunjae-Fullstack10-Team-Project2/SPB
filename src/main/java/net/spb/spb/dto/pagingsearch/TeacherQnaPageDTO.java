@@ -47,7 +47,7 @@ public class TeacherQnaPageDTO extends PageDTO {
         sb.append("&page_bock_size=" + super.getPage_block_size());
 
         if (this.teacherId != null && !this.teacherId.isEmpty()) {
-            sb.append("&teacher_id=" + this.teacherId);
+            sb.append("&teacherId=" + this.teacherId);
         }
 
         if (this.search_category != null && super.getSearch_word() != null) {

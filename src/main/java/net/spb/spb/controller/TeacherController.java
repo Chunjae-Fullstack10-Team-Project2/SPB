@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.TeacherDTO;
 import net.spb.spb.dto.pagingsearch.*;
+import net.spb.spb.dto.teacher.TeacherQnaDTO;
 import net.spb.spb.dto.teacher.TeacherQnaListRequestDTO;
 import net.spb.spb.dto.teacher.TeacherQnaResponseDTO;
 import net.spb.spb.service.PaymentServiceIf;
@@ -118,6 +119,38 @@ public class TeacherController {
         setBreadcrumb(model, Map.of(teacherDTO.getTeacherName() + " 선생님", "/teacher/personal"), Map.of("QnA", "/teacher/personal/qna"), Map.of("QnA 상세보기", "/teacher/personal/qna/view"));
 
         return "teacher/qna/view";
+    }
+
+    @GetMapping("/personal/qna/answer")
+    public String teacherQnaAnswerGET(@ModelAttribute TeacherQnaPageDTO pageDTO, @RequestParam("idx") int idx, Model model) {
+        String teacherId = pageDTO.getTeacherId();
+        TeacherDTO teacherDTO = teacherService.selectTeacher(teacherId);
+        TeacherQnaResponseDTO teacherQnaDTO = teacherQnaService.getTeacherQnaByIdx(idx);
+
+        model.addAttribute("pageDTO", pageDTO);
+        model.addAttribute("teacherQnaDTO", teacherQnaDTO);
+
+        setBreadcrumb(model, Map.of(teacherDTO.getTeacherName() + " 선생님", "/teacher/personal"), Map.of("QnA", "/teacher/personal/qna"), Map.of("QnA 답변하기", "/teacher/personal/qna/answer"));
+
+        return "teacher/qna/answer";
+    }
+
+    @PostMapping("/personal/qna/answer")
+    public String teacherQnaAnswerPOST(
+            @ModelAttribute TeacherQnaPageDTO pageDTO,
+            @ModelAttribute TeacherQnaDTO teacherQnaDTO,
+            Model model,
+            HttpServletRequest req
+    ) {
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        teacherQnaService.updateTeacherAnswer(memberId, teacherQnaDTO);
+
+        model.addAttribute("pageDTO", pageDTO);
+        model.addAttribute("teacherQnaDTO", teacherQnaDTO);
+
+        return "redirect:/teacher/personal/qna/view?idx=" + teacherQnaDTO.getTeacherQnaIdx() + "&" + pageDTO.getLinkUrl();
     }
 
     @PostMapping("/personal/qna/checkPwd")
