@@ -151,6 +151,8 @@ public class PaymentController {
 
                 paymentService.updateOrderInfo(paymentDTO); //주문테이블 업데이트
 
+                paymentService.updateBookmarkState(paymentDTO);
+
                 // ⬇️ 예: 강의 등록, 장바구니 비우기 등
                 paymentService.processAfterPayment(paymentDTO);
                 return ResponseEntity.ok(Map.of(

@@ -213,8 +213,16 @@
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log("Bootstrap Dropdown Initialization");
+        const dropdownElements = document.querySelectorAll('.dropdown-toggle');
+        dropdownElements.forEach(function (dropdownToggleEl) {
+            new bootstrap.Dropdown(dropdownToggleEl);
+        });
+
     // toggle
     function toggleDropdown(imgElement) {
         const dropdown = imgElement.nextElementSibling;

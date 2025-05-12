@@ -107,12 +107,14 @@
                                     <form method="post" action="/mypage/order/confirm" class="d-inline">
                                         <input type="hidden" name="orderIdx" value="${postDTO.orderIdx}"/>
                                         <input type="hidden" name="orderStatus" value="${postDTO.orderStatus}"/>
-                                        <button type="submit" class="btn btn-success btn-sm">구매 확정</button>
+                                        <button type="submit" class="btn btn-success btn-sm"
+                                                onclick="return confirm('정말로 구매를 확정하시겠습니까?')">구매 확정</button>
                                     </form>
                                     <form method="post" action="/mypage/order/refund" class="d-inline">
                                         <input type="hidden" name="orderIdx" value="${postDTO.orderIdx}"/>
                                         <input type="hidden" name="orderStatus" value="${postDTO.orderStatus}"/>
-                                        <button type="submit" class="btn btn-outline-danger btn-sm">환불 요청</button>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm"
+                                                onclick="return confirm('정말로 환불을 요청하시겠습니까?')">환불 요청</button>
                                     </form>
                                 </c:when>
 
@@ -120,7 +122,8 @@
                                     <form method="post" action="/mypage/order/cancel" class="d-inline">
                                         <input type="hidden" name="orderIdx" value="${postDTO.orderIdx}"/>
                                         <input type="hidden" name="orderStatus" value="${postDTO.orderStatus}"/>
-                                        <button type="submit" class="btn btn-warning btn-sm">주문 취소</button>
+                                        <button type="submit" class="btn btn-warning btn-sm"
+                                                onclick="return confirm('정말로 주문을 취소하시겠습니까?')">주문 취소</button>
                                     </form>
                                 </c:when>
 

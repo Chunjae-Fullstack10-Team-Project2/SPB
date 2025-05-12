@@ -98,11 +98,11 @@ public class NoticeController {
 
     @GetMapping("/regist")
     public String registForm(HttpSession session) {
-        // 세션에서 필요한 값 직접 가져오기
+        // 세션에서 필요한 값 가져오기 (memberId ,memberGrade)
         String memberId = (String) session.getAttribute("memberId");
         String memberGrade = (String) session.getAttribute("memberGrade");
 
-        // 값이 없거나 관리자가 아닌 경우 리다이렉트
+        // 관리자가 아닌 경우 리다이렉트
         if (memberId == null || memberGrade == null || !memberGrade.equals("0")) {
             return "redirect:/notice/list";
         }

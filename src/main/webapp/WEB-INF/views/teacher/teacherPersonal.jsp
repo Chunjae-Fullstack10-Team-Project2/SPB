@@ -105,8 +105,8 @@
             const icon = button.find('i');
 
             const url = isBookmarked
-                ? '/teacher/deleteBookmark?lectureIdx=' + lectureIdx
-                : '/teacher/addBookmark?lectureIdx=' + lectureIdx;
+                ? '/lecture/deleteBookmark?lectureIdx=' + lectureIdx
+                : '/lecture/addBookmark?lectureIdx=' + lectureIdx;
 
             $.ajax({
                 url: url,
@@ -115,10 +115,10 @@
                     button.data('bookmarked', !isBookmarked);
                     if (isBookmarked) {
                         icon.removeClass('bi-bookmark-fill text-primary').addClass('bi-bookmark');
-                        alert('북마크 해제됨');
+                        alert('북마크 해제하셨습니다.');
                     } else {
                         icon.removeClass('bi-bookmark').addClass('bi-bookmark-fill text-primary');
-                        alert('북마크 추가됨');
+                        alert('북마크 추가하셨습니다.');
                     }
                 },
                 error: function (xhr) {

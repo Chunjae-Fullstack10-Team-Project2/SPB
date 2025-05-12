@@ -61,7 +61,8 @@ public class MyPageController {
     @PostMapping("")
     public String updateMyPage(@ModelAttribute MemberDTO memberDTO,
                                @RequestParam(value = "profileImgFile", required = false) MultipartFile profileImg,
-                               HttpSession session, Model model) {
+                               HttpSession session, Model model,
+                               RedirectAttributes redirectAttributes) {
         String memberId = (String) session.getAttribute("memberId");
         memberDTO.setMemberId(memberId);
 
@@ -77,7 +78,6 @@ public class MyPageController {
                 // 새 이미지 저장
                 File savedFile = fileUtil.saveFile(profileImg);
                 String savedFileName = savedFile.getName();
-                System.out.println("업로드된 파일명: " + savedFileName);
                 memberDTO.setMemberProfileImg(savedFileName);
             }
         } catch (Exception e) {
@@ -88,6 +88,7 @@ public class MyPageController {
         boolean result = memberService.updateMember(memberDTO);
         if (result) {
             session.setAttribute("memberDTO", memberDTO);
+            redirectAttributes.addFlashAttribute("message", "회원 정보가 성공적으로 수정되었습니다.");
             return "redirect:/mypage";
         } else {
             model.addAttribute("message", "회원 정보 수정에 실패했습니다.");
@@ -394,7 +395,6 @@ public class MyPageController {
                 .totalCount(myPageService.bookmarkTotalCount(searchDTO, bookmarkMemberId))
                 .dtoList(bookmarkList)
                 .build();
-
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("bookmarkList", bookmarkList);
         model.addAttribute("searchDTO", searchDTO);

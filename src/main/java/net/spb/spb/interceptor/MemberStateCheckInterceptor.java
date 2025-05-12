@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpSession;
 import net.spb.spb.dto.member.MemberDTO;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.Objects;
+
 public class MemberStateCheckInterceptor implements HandlerInterceptor {
 
     @Override
@@ -15,24 +17,31 @@ public class MemberStateCheckInterceptor implements HandlerInterceptor {
 
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("memberId") == null) {
-            return true;
+            return true; // 비로그인 상태는 통과
         }
 
         MemberDTO memberDTO = (MemberDTO) session.getAttribute("memberDTO");
-        String memberState = memberDTO.getMemberState();
         String uri = request.getRequestURI();
+        String cp = request.getContextPath();
 
-        // 비밀번호 변경한 지 90일 경과
+        // memberDTO나 memberState가 null인 경우 -> 통과시키거나 기본 처리
+        if (memberDTO == null || memberDTO.getMemberState() == null) {
+            return true;
+        }
+
+        String memberState = memberDTO.getMemberState();
+
+        // 비밀번호 변경 90일 경과
         if (memberState.equals("3") &&
-                !(uri.startsWith(request.getContextPath() + "/main") || uri.startsWith(request.getContextPath() + "/mypage/changePwd"))) {
-            response.sendRedirect(request.getContextPath() + "/mypage/changePwd");
+                !(uri.startsWith(cp + "/main") || uri.startsWith(cp + "/mypage/changePwd"))) {
+            response.sendRedirect(cp + "/mypage/changePwd");
             return false;
         }
 
-        // 로그인 한 지 1년 경과된 휴면 계정
+        // 1년 경과된 휴면 계정
         if (memberState.equals("5") &&
-                !(uri.startsWith(request.getContextPath() + "/main") || uri.startsWith(request.getContextPath() + "/reactivate"))) {
-            response.sendRedirect(request.getContextPath() + "/reactivate");
+                !(uri.startsWith(cp + "/main") || uri.startsWith(cp + "/reactivate"))) {
+            response.sendRedirect(cp + "/reactivate");
             return false;
         }
 
