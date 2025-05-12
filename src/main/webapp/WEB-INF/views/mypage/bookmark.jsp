@@ -84,7 +84,7 @@
                             </c:if>
                         </a>
                     </th>
-                    <th>북마크 상태</th>
+                    <th>강좌 상태</th>
                     <th>장바구니 추가</th>
                 </tr>
                 </thead>
@@ -104,11 +104,11 @@
                             <c:if test="${postDTO.bookmarkState == 1}">
                                 <button type="button" class="btn btn-sm btn-outline-danger"
                                         onclick="cancelBookmark(${postDTO.bookmarkIdx})">
-                                    북마크 취소
+                                    삭제
                                 </button>
                             </c:if>
                             <c:if test="${postDTO.bookmarkState == 2}">
-                                <span class="badge bg-secondary">취소 완료</span>
+                                <span class="badge bg-secondary">결제 완료</span>
                             </c:if>
                         </td>
                         <td>
