@@ -197,6 +197,27 @@ public class MyPageController {
         return "mypage/report";
     }
 
+    @PostMapping("/report/delete")
+    @ResponseBody
+    public ResponseEntity<String> deleteReport(@RequestParam("reportIdx") String reportIdx, HttpSession session) {
+        String memberId = (String) session.getAttribute("memberId");
+
+        if (memberId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+
+        boolean success = myPageService.deleteReport(reportIdx);
+
+        if (success) {
+            return ResponseEntity
+                    .ok()
+                    .header("Content-Type", "text/plain; charset=UTF-8")
+                    .body("신고 내역이 삭제되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("삭제에 실패했습니다.");
+        }
+    }
+
     @GetMapping("/order")
     public String listLectureOrder(HttpSession session, Model model,
                                    @ModelAttribute SearchDTO searchDTO,

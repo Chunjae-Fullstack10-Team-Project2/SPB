@@ -247,10 +247,8 @@
             </button>
             <div class="collapse" id="mypage-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded text-dark">좋아요
-                        목록</a></li>
-                    <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded text-dark">게시글
-                        신고</a></li>
+                    <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded text-dark">추천한 게시글</a></li>
+                    <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded text-dark">신고한 게시글</a></li>
                     <li><a href="${cp}/qna/myQna" class="d-inline-flex text-decoration-none rounded text-dark">나의 문의</a>
                     </li>
                     <li><a href="${cp}/mypage/order" class="d-inline-flex text-decoration-none rounded text-dark">강좌 주문

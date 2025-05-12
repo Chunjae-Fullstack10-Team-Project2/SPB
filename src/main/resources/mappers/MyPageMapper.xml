@@ -125,7 +125,8 @@
             </choose>
         </if>
 
-        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+        <if test="searchDTO.startDate != null and searchDTO.startDate != '' and
+           searchDTO.endDate != null and searchDTO.endDate != ''">
             <choose>
                 <when test="searchDTO.dateType == 'reportCreatedAt'">
                     AND reportCreatedAt BETWEEN #{searchDTO.startDate} AND #{searchDTO.endDate}
@@ -180,6 +181,11 @@
             </choose>
         </if>
     </select>
+    <update id="deleteReport">
+        update tbl_report
+        set reportState = '2'
+        where reportIdx = #{reportIdx}
+    </update>
 
 
     <!-- 주문 목록  -->

@@ -67,4 +67,8 @@ public class MyPageService {
     public boolean changePwd(String memberPwd, String memberId) {
         return myPageMapper.changePwd(memberPwd, memberId);
     }
+
+    public boolean deleteReport(String reportIdx) {
+        return myPageMapper.deleteReport(reportIdx);
+    }
 }
