@@ -597,6 +597,15 @@ public class AdminController {
     @ResponseBody
     public Map<String, Object> boardReportDelete(@RequestParam("postIdx") int postIdx) {
         Map<String, Object> result = new HashMap<>();
+
+        PostDTO postDTO = adminService.selectPostByIdx(postIdx);
+
+        if (postDTO.getPostState() == 3) {
+            result.put("success", false);
+            result.put("message", "이미 삭제된 게시글입니다.");
+            return result;
+        }
+
         int rtnResult = adminService.deletePostByAdmin(postIdx);
         if (rtnResult > 0) {
             result.put("success", true);

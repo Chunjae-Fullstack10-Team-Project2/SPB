@@ -62,7 +62,7 @@
           </div>
 
           <div class="d-flex justify-content-end gap-2">
-            <input type="reset" class="btn btn-outline-secondary" value="취소">
+            <a href="/admin/lecture/list" class="btn btn-outline-secondary">취소</a>
             <input type="submit" class="btn btn-primary" value="등록">
           </div>
         </form>
@@ -84,6 +84,7 @@
 
   document.getElementById('lectureAmount').addEventListener('input', function (event) {
     const value = event.target.value;
+
     event.target.value = value.replace(/[^0-9]/g, '');
   });
 
