@@ -23,7 +23,7 @@ public class TeacherQnaPageDTO extends PageDTO {
     private int qan_state; // 0: 미완료, 1: 답변완료
 
     @Builder.Default
-    private String sort_by = "";
+    private String sort_by = "teacherQnaIdx";
     @Builder.Default
     private String sort_direction = "desc";
 
@@ -31,7 +31,7 @@ public class TeacherQnaPageDTO extends PageDTO {
     private static final List<String> SORT_DIRECTIONS = List.of("asc", "desc");
 
     public String getSort_by() {
-        return SORT_COLUMNS.contains(this.sort_by) ? this.sort_by : "lectureReviewIdx";
+        return SORT_COLUMNS.contains(this.sort_by) ? this.sort_by : "teacherQnaIdx";
     }
 
     public String getSort_direction() {
