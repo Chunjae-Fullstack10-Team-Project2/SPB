@@ -22,8 +22,8 @@ public class TeacherQnaPageDTO extends PageDTO {
     private LocalDate start_date;
     private LocalDate end_date;
 
-    private String qna_status; // 0: 미완료, 1: 답변완료
-
+    @Builder.Default
+    private String qna_status = "0"; // 0: 미완료, 1: 답변완료
     @Builder.Default
     private String sort_by = "teacherQnaIdx";
     @Builder.Default

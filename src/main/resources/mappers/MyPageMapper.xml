@@ -186,19 +186,10 @@
             </choose>
         </if>
     </select>
-<<<<<<< HEAD
-    <update id="deleteReport">
-        update tbl_report
-        set reportState = '2'
-        where reportIdx = #{reportIdx}
-    </update>
-=======
     <delete id="deleteReport">
         delete from tbl_report
         where reportIdx = #{reportIdx}
     </delete>
->>>>>>> develop
-
 
     <!-- 주문 목록  -->
     <select id="listMyOrder">
