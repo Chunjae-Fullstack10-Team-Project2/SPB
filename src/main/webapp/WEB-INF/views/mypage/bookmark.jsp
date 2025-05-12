@@ -113,7 +113,7 @@
                         </td>
                         <td>
                             <button type="button" class="btn btn-sm btn-outline-primary"
-                                    onclick="addCart(${bookmarkDTO.bookmarkLectureIdx})">
+                                    onclick="addCart('${postDTO.bookmarkLectureIdx}')">
                                 장바구니
                             </button>
                         </td>
@@ -182,6 +182,7 @@
             },
             error: function (xhr) {
                 alert("추가 실패: " + xhr.responseText);
+                console.log(xhr.responseText);
             }
         });
     }

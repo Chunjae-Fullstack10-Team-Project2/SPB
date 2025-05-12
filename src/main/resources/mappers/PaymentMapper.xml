@@ -148,5 +148,5 @@
         set bookmarkState = '2'
         where bookmarkMemberId = #{dto.paymentMemberId}
         and bookmarkLectureIdx in (select orderLectureIdx from tbl_order_lecture where orderIdx = #{dto.paymentOrderIdx})
-    </update>
+    </update> 
 </mapper>    
