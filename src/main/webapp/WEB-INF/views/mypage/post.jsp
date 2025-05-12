@@ -7,6 +7,12 @@
 <html>
 <head>
     <title>내가 쓴 게시글</title>
+    <style>
+        .text-muted-deleted {
+            color: lightgray !important;
+            text-decoration: line-through;
+        }
+    </style>
 </head>
 <body>
 <%@ include file="../common/sidebarHeader.jsp" %>
@@ -53,7 +59,7 @@
             request.setAttribute("searchTypeOptions", searchTypeOptions);
             request.setAttribute("searchAction", "/mypage/post");
         %>
-        <jsp:include page="../common/searchBox.jsp" />
+        <jsp:include page="../common/searchBox.jsp"/>
 
         <c:if test="${not empty postList}">
             <table class="table table-hover text-center align-middle">
@@ -83,10 +89,19 @@
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
-                            <a href="/board/freeboard/view?idx=${postDTO.postIdx}"
-                               class="text-decoration-none text-dark">
-                                    ${postDTO.postTitle}
-                            </a>
+                            <c:choose>
+                                <c:when test="${postDTO.reportState == 2}">
+                                    <span class="text-muted-deleted">
+                                        ${postDTO.postTitle} (관리자에 의해 삭제됨)
+                                    </span>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="/board/freeboard/view?idx=${postDTO.postIdx}"
+                                       class="text-dark text-decoration-none">
+                                            ${postDTO.postTitle}
+                                    </a>
+                                </c:otherwise>
+                            </c:choose>
                         </td>
                         <td>${postDTO.postCreatedAt.toLocalDate()}</td>
                     </tr>
