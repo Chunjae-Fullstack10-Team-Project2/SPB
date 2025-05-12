@@ -9,7 +9,7 @@
         where cartMemberId = #{memberId}
         order by cartIdx asc
     </select>
-    <!--강의 존재 여부 조회-->
+    <!--장바구니 내 강의 존재 여부 조회-->
     <select id="cartCount">
         select count(*)
         from tbl_cart
@@ -141,4 +141,12 @@
         from tbl_cart
         where cartMemberId = #{memberId}
     </select>
+
+    <!--결제 후 북마크 상태 변경-->
+    <update id="updateBookmarkState">
+        update tbl_bookmark
+        set bookmarkState = '2'
+        where bookmarkMemberId = #{dto.paymentMemberId}
+        and bookmarkLectureIdx in (select orderLectureIdx from tbl_order_lecture where orderIdx = #{dto.paymentOrderIdx})
+    </update>
 </mapper>    
