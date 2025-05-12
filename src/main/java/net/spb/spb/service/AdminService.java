@@ -2,16 +2,16 @@ package net.spb.spb.service;
 
 import net.spb.spb.domain.ChapterVO;
 import net.spb.spb.domain.LectureVO;
+import net.spb.spb.domain.ReportVO;
 import net.spb.spb.domain.TeacherVO;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.TeacherDTO;
 import net.spb.spb.dto.member.MemberDTO;
-import net.spb.spb.dto.pagingsearch.ChapterPageDTO;
-import net.spb.spb.dto.pagingsearch.LecturePageDTO;
-import net.spb.spb.dto.pagingsearch.PageRequestDTO;
-import net.spb.spb.dto.pagingsearch.SearchDTO;
+import net.spb.spb.dto.pagingsearch.*;
+import net.spb.spb.dto.post.PostDTO;
+import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.mapper.AdminMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,5 +121,25 @@ public class AdminService {
 
     public int updateChapter(ChapterDTO chapterDTO) {
         return adminMapper.updateChapter(modelMapper.map(chapterDTO, ChapterVO.class));
+    }
+
+    public List<PostDTO> selectReportedPosts(PostPageDTO postPageDTO) {
+        return adminMapper.selectReportedPosts(postPageDTO);
+    }
+
+    public int selectReportedPostsCount(PostPageDTO postPageDTO) {
+        return adminMapper.selectReportedPostsCount(postPageDTO);
+    }
+
+    public PostDTO selectPostByIdx(int postIdx) {
+        return adminMapper.selectPostByIdx(postIdx);
+    }
+
+    public int deletePostByAdmin(int postIdx) {
+        return adminMapper.deletePostByAdmin(postIdx);
+    }
+
+    public int updateReportState(PostReportDTO reportDTO) {
+        return adminMapper.updateReportState(modelMapper.map(reportDTO, ReportVO.class));
     }
 }

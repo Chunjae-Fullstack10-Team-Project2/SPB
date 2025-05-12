@@ -16,6 +16,7 @@
             </if>
         </where>
     </select>
+
     <select id="getPosts" parameterType="net.spb.spb.dto.pagingsearch.PostPageDTO" resultType="net.spb.spb.dto.post.PostDTO">
         select tp.postIdx, tp.postTitle, tp.postContent, tp.postMemberId, tp.postCategory, tp.postReadCnt, tp.postCreatedAt, tp.postUpdatedAt, tp.postState, count(tpl.postLikeIdx) as postLikeCnt
         from tbl_post tp
@@ -34,9 +35,10 @@
             </if>
         </where>
         group by tp.postIdx
-        order by tp.postIdx desc
+        order by tp.${sort_by} ${sort_direction}
         limit #{page_skip_count}, #{page_size}
     </select>
+
     <select id="getPostByIdx" parameterType="java.lang.Integer" resultType="net.spb.spb.dto.post.PostDTO">
         select p.postIdx, p.postTitle, p.postContent, p.postMemberId, p.postCategory, p.postReadCnt, p.postCreatedAt, p.postUpdatedAt, p.postState, m.memberProfileImg
         from tbl_post p
@@ -45,6 +47,7 @@
           and p.postState = 1
           and p.postIdx = #{postIdx}
     </select>
+
     <select id="getPostByIdxWithLike" parameterType="HashMap" resultType="net.spb.spb.dto.post.PostDTO">
         select tp.postIdx, tp.postTitle, tp.postContent, tp.postMemberId, tp.postCategory, tp.postReadCnt, tp.postCreatedAt, tp.postUpdatedAt, tp.postState, tm.memberProfileImg
              , count(tpl.postLikeIdx) as postLikeCnt, max(case when tpl.postLikeMemberId = #{memberId} then 1 else 0 end) as isLike
@@ -57,9 +60,11 @@
           and tp.postIdx = #{postIdx}
         GROUP BY tpl.postLikeRefIdx
     </select>
+
     <insert id="insertPost" parameterType="net.spb.spb.domain.PostVO" useGeneratedKeys="true" keyProperty="postIdx">
         insert into tbl_post (postTitle, postContent, postMemberId, postCategory) VALUES (#{postTitle}, #{postContent}, #{postMemberId}, #{postCategory})
     </insert>
+
     <update id="modifyPost" parameterType="net.spb.spb.domain.PostVO">
         update tbl_post
         set
@@ -68,16 +73,19 @@
             postUpdatedAt = #{postUpdatedAt}
         where postIdx = #{postIdx}
     </update>
+
     <update id="deletePost" parameterType="java.lang.Integer">
         update tbl_post
         set postState = 2
         where postIdx = #{postIdx}
     </update>
+
     <update id="setReadCnt" parameterType="java.lang.Integer">
         update tbl_post
         set postReadCnt = postReadCnt + 1
         where postIdx = #{postIdx}
     </update>
+
     <insert id="insertPostReport" parameterType="net.spb.spb.domain.ReportVO">
         insert into tbl_report(reportRefType, reportRefIdx, reportMemberId) select 'POST', #{reportRefIdx}, #{reportMemberId}
         from dual

@@ -6,7 +6,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>좋아요 누른 게시글</title>
+    <title>찜한 강의</title>
 </head>
 <body>
 <%@ include file="../common/sidebarHeader.jsp" %>
@@ -32,79 +32,83 @@
                     <a class="link-body-emphasis fw-semibold text-decoration-none" href="/mypage">마이페이지</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    좋아요 누른 게시글
+                    북마크한 강좌
                 </li>
             </ol>
         </nav>
     </div>
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0">좋아요 누른 게시글</h3>
+            <h3 class="mb-0">북마크한 강좌</h3>
         </div>
         <%
             List<Map<String, String>> dateOptions = new ArrayList<>();
-            dateOptions.add(Map.of("value", "postLikeCreatedAt", "label", "좋아요 누른 날짜"));
-            dateOptions.add(Map.of("value", "postCreatedAt", "label", "게시글 작성일자"));
+            dateOptions.add(Map.of("value", "lectureCreatedAt", "label", "강좌 생성일"));
+            dateOptions.add(Map.of("value", "bookmarkCreatedAt", "label", "북마크한 날짜"));
             request.setAttribute("dateOptions", dateOptions);
 
             List<Map<String, String>> searchTypeOptions = new ArrayList<>();
-            searchTypeOptions.add(Map.of("value", "postTitle", "label", "제목"));
-            searchTypeOptions.add(Map.of("value", "postContent", "label", "내용"));
-            searchTypeOptions.add(Map.of("value", "postMemberId", "label", "작성자"));
+            searchTypeOptions.add(Map.of("value", "lectureTitle", "label", "강좌 제목"));
+            searchTypeOptions.add(Map.of("value", "teacherName", "label", "선생님"));
             request.setAttribute("searchTypeOptions", searchTypeOptions);
-            request.setAttribute("searchAction", "/mypage/likes");
+            request.setAttribute("searchAction", "/mypage/bookmark");
         %>
-        <jsp:include page="../common/searchBox.jsp" />
+        <jsp:include page="../common/searchBox.jsp"/>
 
-        <c:if test="${not empty likesList}">
+        <c:if test="${not empty bookmarkList}">
             <table class="table table-hover text-center align-middle">
                 <thead class="table-light">
                 <tr>
                     <th>번호</th>
                     <th>
-                        <a href="javascript:void(0);" onclick="applySort('postTitle')">
+                        <a href="javascript:void(0);" onclick="applySort('lectureTitle')">
                             제목
-                            <c:if test="${searchDTO.sortColumn eq 'postTitle'}">
+                            <c:if test="${searchDTO.sortColumn eq 'lectureTitle'}">
                                 ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
                             </c:if>
                         </a>
                     </th>
                     <th>
-                        <a href="javascript:void(0);" onclick="applySort('postMemberId')">
-                            작성자
-                            <c:if test="${searchDTO.sortColumn eq 'postMemberId'}">
+                        <a href="javascript:void(0);" onclick="applySort('teacherName')">
+                            선생님
+                            <c:if test="${searchDTO.sortColumn eq 'teacherName'}">
                                 ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
                             </c:if>
                         </a>
                     </th>
                     <th>
-                        <a href="javascript:void(0);" onclick="applySort('postCreatedAt')">
-                            작성일
-                            <c:if test="${searchDTO.sortColumn eq 'postCreatedAt'}">
+                        <a href="javascript:void(0);" onclick="applySort('bookmarkCreatedAt')">
+                            북마크 날짜
+                            <c:if test="${searchDTO.sortColumn eq 'bookmarkCreatedAt'}">
                                 ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
                             </c:if>
                         </a>
                     </th>
-                    <th>좋아요 상태</th>
+                    <th>북마크 상태</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${likesList}" var="postDTO" varStatus="status">
+                <c:forEach items="${bookmarkList}" var="postDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
-                            <a href="/post/detail?postIdx=${postDTO.postLikeRefIdx}"
+                            <a href="#"
                                class="text-decoration-none text-dark">
-                                    ${postDTO.postTitle}
+                                    ${postDTO.lectureTitle}
                             </a>
                         </td>
-                        <td>${postDTO.postMemberId}</td>
-                        <td>${postDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>${postDTO.teacherName}</td>
+                        <td><fmt:formatDate value="${postDTO.bookmarkCreatedAt}" pattern="yyyy-MM-dd" /></td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-outline-danger"
-                                    onclick="cancelLike(${postDTO.postLikeRefIdx})">
-                                좋아요 취소
-                            </button>
+                            <c:if test="${postDTO.bookmarkState == 1}">
+                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                        onclick="cancelBookmark(${postDTO.bookmarkIdx})">
+                                    북마크 취소
+                                </button>
+                            </c:if>
+                            <c:if test="${postDTO.bookmarkState == 2}">
+                                <span class="badge bg-secondary">취소 완료</span>
+                            </c:if>
                         </td>
                     </tr>
                 </c:forEach>
@@ -112,9 +116,9 @@
             </table>
         </c:if>
 
-        <c:if test="${empty likesList}">
+        <c:if test="${empty bookmarkList}">
             <div class="alert alert-warning mt-4" role="alert">
-                게시글이 없습니다.
+                북마크한 강좌가 없습니다.
             </div>
         </c:if>
 
@@ -124,19 +128,19 @@
     </div>
 </div>
 <script>
-    function cancelLike(postLikeRefIdx) {
-        if (!confirm("정말 좋아요를 취소하시겠습니까?")) return;
+    function cancelBookmark(bookmarkIdx) {
+        if (!confirm("정말 북마크를 취소하시겠습니까?")) return;
 
         $.ajax({
-            url: "/mypage/likes/delete",
+            url: "/mypage/bookmark/delete",
             type: "POST",
-            data: {postLikeRefIdx: postLikeRefIdx},
+            data: {bookmarkIdx: bookmarkIdx},
             success: function (response) {
                 alert(response);
                 location.reload();
             },
             error: function (xhr) {
-                alert(xhr.responseText || "좋아요 취소 중 오류가 발생했습니다.");
+                alert(xhr.responseText || "북마크 취소 중 오류가 발생했습니다.");
             }
         });
     }

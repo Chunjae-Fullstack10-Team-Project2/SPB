@@ -85,11 +85,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${orderList}" var="boardReportDTO" varStatus="status">
+                <c:forEach items="${orderList}" var="postDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
-                            <c:forEach items="${boardReportDTO.orderLectureList}" var="lectureTitle" varStatus="loop">
+                            <c:forEach items="${postDTO.orderLectureList}" var="lectureTitle" varStatus="loop">
                                 <div class="mb-1">
                                     <i class="bi bi-play-circle text-primary me-1"><a href="#"
                                                                                       class="text-decoration-none text-dark"></a></i>
@@ -98,37 +98,37 @@
                             </c:forEach>
                         </td>
                         <td><fmt:setLocale value="ko_KR"/>
-                            <fmt:formatNumber value="${boardReportDTO.orderAmount}" type="currency"/>
+                            <fmt:formatNumber value="${postDTO.orderAmount}" type="currency"/>
                         </td>
-                        <td>${boardReportDTO.orderCreatedAt.toLocalDate()}</td>
+                        <td>${postDTO.orderCreatedAt.toLocalDate()}</td>
                         <td>
                             <c:choose>
-                                <c:when test="${boardReportDTO.orderStatus eq 's'}">
+                                <c:when test="${postDTO.orderStatus eq 's'}">
                                     <form method="post" action="/mypage/order/confirm" class="d-inline">
-                                        <input type="hidden" name="orderIdx" value="${boardReportDTO.orderIdx}"/>
-                                        <input type="hidden" name="orderStatus" value="${boardReportDTO.orderStatus}"/>
+                                        <input type="hidden" name="orderIdx" value="${postDTO.orderIdx}"/>
+                                        <input type="hidden" name="orderStatus" value="${postDTO.orderStatus}"/>
                                         <button type="submit" class="btn btn-success btn-sm">구매 확정</button>
                                     </form>
                                     <form method="post" action="/mypage/order/refund" class="d-inline">
-                                        <input type="hidden" name="orderIdx" value="${boardReportDTO.orderIdx}"/>
-                                        <input type="hidden" name="orderStatus" value="${boardReportDTO.orderStatus}"/>
+                                        <input type="hidden" name="orderIdx" value="${postDTO.orderIdx}"/>
+                                        <input type="hidden" name="orderStatus" value="${postDTO.orderStatus}"/>
                                         <button type="submit" class="btn btn-outline-danger btn-sm">환불 요청</button>
                                     </form>
                                 </c:when>
 
-                                <c:when test="${boardReportDTO.orderStatus eq 'p'}">
+                                <c:when test="${postDTO.orderStatus eq 'p'}">
                                     <form method="post" action="/mypage/order/cancel" class="d-inline">
-                                        <input type="hidden" name="orderIdx" value="${boardReportDTO.orderIdx}"/>
-                                        <input type="hidden" name="orderStatus" value="${boardReportDTO.orderStatus}"/>
+                                        <input type="hidden" name="orderIdx" value="${postDTO.orderIdx}"/>
+                                        <input type="hidden" name="orderStatus" value="${postDTO.orderStatus}"/>
                                         <button type="submit" class="btn btn-warning btn-sm">주문 취소</button>
                                     </form>
                                 </c:when>
 
-                                <c:when test="${boardReportDTO.orderStatus eq 'r'}">
+                                <c:when test="${postDTO.orderStatus eq 'r'}">
                                     <span class="badge bg-secondary">환불 완료</span>
                                 </c:when>
 
-                                <c:when test="${boardReportDTO.orderStatus eq 'f'}">
+                                <c:when test="${postDTO.orderStatus eq 'f'}">
                                     <span class="badge bg-success">구매 확정</span>
                                 </c:when>
                             </c:choose>

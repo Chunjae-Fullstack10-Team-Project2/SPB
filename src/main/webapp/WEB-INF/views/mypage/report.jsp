@@ -6,7 +6,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>좋아요 누른 게시글</title>
+    <title>신고한 게시글</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -68,40 +68,59 @@
             <table class="table table-hover text-center align-middle">
                 <thead class="table-light">
                 <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>작성일</th>
+                    <td>번호</td>
+                    <th>
+                        <a href="javascript:void(0);" onclick="applySort('postTitle')">
+                            제목
+                            <c:if test="${searchDTO.sortColumn eq 'postTitle'}">
+                                ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
+                            </c:if>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="javascript:void(0);" onclick="applySort('postMemberId')">
+                            작성자
+                            <c:if test="${searchDTO.sortColumn eq 'postMemberId'}">
+                                ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
+                            </c:if>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="javascript:void(0);" onclick="applySort('postCreatedAt')">
+                            작성일
+                            <c:if test="${searchDTO.sortColumn eq 'postCreatedAt'}">
+                                ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
+                            </c:if>
+                        </a>
+                    </th>
+                    <th>신고 상태</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${reportList}" var="boardReportDTO" varStatus="status">
+                <c:forEach items="${reportList}" var="postDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
-                        <th>
-                            <a href="javascript:void(0);" onclick="applySort('postTitle')">
-                                제목
-                                <c:if test="${searchDTO.sortColumn eq 'postTitle'}">
-                                    ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
-                                </c:if>
+                        <td class="text-start">
+                            <a href="/post/detail?postIdx=${postDTO.postIdx}"
+                               class="text-decoration-none text-dark">
+                                    ${postDTO.postTitle}
                             </a>
-                        </th>
-                        <th>
-                            <a href="javascript:void(0);" onclick="applySort('postMemberId')">
-                                작성자
-                                <c:if test="${searchDTO.sortColumn eq 'postMemberId'}">
-                                    ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
-                                </c:if>
-                            </a>
-                        </th>
-                        <th>
-                            <a href="javascript:void(0);" onclick="applySort('postCreatedAt')">
-                                작성일
-                                <c:if test="${searchDTO.sortColumn eq 'postCreatedAt'}">
-                                    ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
-                                </c:if>
-                            </a>
-                        </th>
+                        </td>
+                        <td>${postDTO.postMemberId}</td>
+                        <td>${postDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${postDTO.reportState == 1}">
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                            onclick="deleteReport(${postDTO.reportIdx})">
+                                        삭제
+                                    </button>
+                                </c:when>
+                                <c:when test="${postDTO.reportState == 2}">
+                                    <span class="badge bg-secondary">취소 완료</span>
+                                </c:when>
+                            </c:choose>
+                        </td>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -120,6 +139,23 @@
     </div>
 </div>
 <script>
+    function deleteReport(reportIdx) {
+        if (!confirm("정말 삭제하시겠습니까?")) return;
+
+        $.ajax({
+            url: "/mypage/report/delete",
+            type: "POST",
+            data: {reportIdx: reportIdx},
+            success: function (response) {
+                alert(response);
+                location.reload();
+            },
+            error: function (xhr) {
+                alert(xhr.responseText || "삭제 중 오류가 발생했습니다.");
+            },
+        });
+    }
+
     $(function () {
         $('input[name="datefilter"]')
             .daterangepicker({

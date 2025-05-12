@@ -42,7 +42,7 @@
             <h5 class="mb-0">공지사항 수정</h5>
         </div>
         <div class="card-body">
-            <form method="post" action="${pageContext.request.contextPath}/notice/modify" class="needs-validation" onsubmit="return validateForm()" novalidate>
+            <form method="post" action="${pageContext.request.contextPath}/notice/modify" class="needs-validation" onsubmit="return validateForm()" >
                 <input type="hidden" name="noticeIdx" value="${dto.noticeIdx}" />
 
                 <div class="mb-3">
@@ -98,7 +98,7 @@
         return true;
     }
 
-    // 메시지 처리
+
     <% if(request.getAttribute("message") != null) { %>
     alert("<%= request.getAttribute("message") %>");
     <% } %>

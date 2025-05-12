@@ -42,7 +42,13 @@
             <h5 class="mb-0">공지사항 등록</h5>
         </div>
         <div class="card-body">
-            <form name="frmRegist" method="post" action="${pageContext.request.contextPath}/notice/regist" class="needs-validation" novalidate>
+            <form name="frmRegist" method="post" action="${pageContext.request.contextPath}/notice/regist" class="needs-validation" >
+                <c:if test="${not empty message}">
+                    <div class="alert alert-danger">
+                            ${message}
+                    </div>
+                </c:if>
+
                 <div class="mb-3">
                     <label for="noticeTitle" class="form-label" >제목</label>
                     <input type="text" class="form-control" id="noticeTitle" name="noticeTitle"
@@ -76,9 +82,7 @@
 </div>
 
 <script>
-    <c:if test="${not empty message}">
-    alert("${message}");
-    </c:if>
+
 </script>
 </body>
 </html>

@@ -59,12 +59,12 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach items="${reviewReportList}" var="boardReportDTO" varStatus="status">
+        <c:forEach items="${reviewReportList}" var="postDTO" varStatus="status">
             <tr>
-                <td>${boardReportDTO.reportIdx}</td>
-                <td class="text-start">${boardReportDTO.lectureReviewContent}</td>
-                <td>${boardReportDTO.lectureReviewMemberId}</td>
-                <td>${boardReportDTO.lectureReviewCreatedAt.toLocalDate()}</td>
+                <td>${postDTO.reportIdx}</td>
+                <td class="text-start">${postDTO.lectureReviewContent}</td>
+                <td>${postDTO.lectureReviewMemberId}</td>
+                <td>${postDTO.lectureReviewCreatedAt.toLocalDate()}</td>
             </tr>
         </c:forEach>
         </tbody>

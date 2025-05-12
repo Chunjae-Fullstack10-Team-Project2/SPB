@@ -203,17 +203,17 @@
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     <li><a href="${cp}/board/freeboard/list"
                            class="d-inline-flex text-decoration-none rounded text-dark">자유게시판</a></li>
-                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/freeboard/list">자유게시판</a>
+                    <li><a class= "d-inline-flex text-decoration-none rounded text-dark" href="${cp}/board/freeboard/list">자유게시판</a>
                     </li>
-                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/eduinfo/list">교육정보</a>
+                    <li><a class=" d-inline-flex text-decoration-none rounded text-dark" href="${cp}/board/eduinfo/list">교육정보</a>
                     </li>
-                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/uniinfo/list">대학정보</a>
+                    <li><a class=" d-inline-flex text-decoration-none rounded text-dark" href="${cp}/board/uniinfo/list">대학정보</a>
                     </li>
-                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/exactivity/list">대외활동</a>
+                    <li><a class=" d-inline-flex text-decoration-none rounded text-dark" href="${cp}/board/exactivity/list">대외활동</a>
                     </li>
-                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/reference/list">자료공유</a>
+                    <li><a class=" d-inline-flex text-decoration-none rounded text-dark" href="${cp}/board/reference/list">자료공유</a>
                     </li>
-                    <li><a class="class=" d-inline-flex text-decoration-none rounded text-dark"" href="${cp}/board/news">뉴스</a>
+                    <li><a class=" d-inline-flex text-decoration-none rounded text-dark" href="${cp}/board/news">뉴스</a>
                     </li>
                 </ul>
             </div>
@@ -247,12 +247,12 @@
             </button>
             <div class="collapse" id="mypage-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded text-dark">좋아요
-                        목록</a></li>
-                    <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded text-dark">게시글
-                        신고</a></li>
+                    <li><a href="${cp}/mypage/post" class="d-inline-flex text-decoration-none rounded text-dark">작성한 게시글</a></li>
+                    <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded text-dark">추천한 게시글</a></li>
+                    <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded text-dark">신고한 게시글</a></li>
                     <li><a href="${cp}/qna/myQna" class="d-inline-flex text-decoration-none rounded text-dark">나의 문의</a>
                     </li>
+                    <li><a href="${cp}/mypage/bookmark" class="d-inline-flex text-decoration-none rounded text-dark">북마크한 강좌</a></li>
                     <li><a href="${cp}/mypage/order" class="d-inline-flex text-decoration-none rounded text-dark">강좌 주문
                         내역</a></li>
                 </ul>

@@ -1,4 +1,4 @@
-package net.spb.spb.controller.student;
+package net.spb.spb.controller.mystudy;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -26,7 +26,7 @@ public class PlanController {
     private final PlanServiceIf planService;
     private final StudentLectureServiceIf studentLectureService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public String list(Model model, HttpServletRequest req) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
