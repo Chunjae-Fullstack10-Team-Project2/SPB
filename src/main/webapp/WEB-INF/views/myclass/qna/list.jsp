@@ -8,6 +8,7 @@
 <head>
     <title>QnA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
 <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
@@ -29,7 +30,7 @@
 
             request.setAttribute("dateSelect", dateSelect);
             request.setAttribute("searchSelect", searchSelect);
-            request.setAttribute("searchAction", "/myclass/notice/");
+            request.setAttribute("searchAction", "/myclass/notice");
         %>
         <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/searchBoxOnlyPage.jsp" />
 
@@ -77,6 +78,9 @@
                     <tr>
                         <td>${pageDTO.total_count - ((pageDTO.page_no - 1) * pageDTO.page_size) - status.index}</td>
                         <td class="text-start">
+                            <c:if test="${not empty qna.teacherQnaPwd}">
+                                <i class="bi bi-lock-fill"></i>
+                            </c:if>
                             <a href="/myclass/qna/view?idx=${qna.teacherQnaIdx}&${pageDTO.linkUrl}"
                                class="text-decoration-none text-dark">
                                     ${qna.teacherQnaTitle}

@@ -128,6 +128,13 @@
             const url = new URL(location.href);
             const params = url.searchParams;
 
+            const date_type = document.querySelector('select[name="date_type"]').value;
+            if (date_type) {
+                params.set('date_type', date_type);
+            } else {
+                params.delete('date_type');
+            }
+
             const date_value = document.querySelector('input[name="date_value"]').value;
             if (date_value) {
                 const dates = date_value.split(' - ');
