@@ -93,6 +93,10 @@
             </choose>
         </if>
     </select>
+    <delete id="cancelLike">
+        delete from tbl_post_like
+        where postLikeRefIdx = #{postIdx}
+    </delete>
 
 
     <!-- 신고한 자유게시판 게시글 목록  -->

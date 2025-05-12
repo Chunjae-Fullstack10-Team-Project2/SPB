@@ -71,4 +71,8 @@ public class MyPageService {
     public boolean deleteReport(String reportIdx) {
         return myPageMapper.deleteReport(reportIdx);
     }
+
+    public boolean cancelLike(int postIdx) {
+        return myPageMapper.cancelLike(postIdx);
+    }
 }
