@@ -34,7 +34,7 @@
             </if>
         </where>
         group by tp.postIdx
-        order by tp.postIdx desc
+        order by tp.${sort_by} ${sort_direction}
         limit #{page_skip_count}, #{page_size}
     </select>
     <select id="getPostByIdx" parameterType="java.lang.Integer" resultType="net.spb.spb.dto.post.PostDTO">

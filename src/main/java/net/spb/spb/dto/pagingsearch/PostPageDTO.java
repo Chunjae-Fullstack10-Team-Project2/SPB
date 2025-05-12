@@ -19,15 +19,32 @@ public class PostPageDTO extends PageDTO {
     @Builder.Default
     private String search_type="";
 
-    private LocalDate search_date1;
-    private LocalDate search_date2;
+    private String search_date1;
+    private String search_date2;
 
-    public void setSearch_type() {
-        switch (search_type) {
-            case "title": this.search_type = "postTitle"; break;
-            case "content": this.search_type = "postContent"; break;
-            case "author": this.search_type = "postMemberId"; break;
-            default: this.search_type = "";break;
+    public void normalizeSearchType() {
+        if (this.search_type == null || this.search_type.isBlank()) {
+            this.search_type = null;
+            return;
+        }
+
+        switch (this.search_type) {
+            case "title":
+                this.search_type = "postTitle";
+                break;
+            case "content":
+                this.search_type = "postContent";
+                break;
+            case "author":
+                this.search_type = "postMemberId";
+                break;
+            default:
+                this.search_type = null;
         }
     }
+
+    @Builder.Default
+    public String sort_by = "postIdx";
+    @Builder.Default
+    public String sort_direction = "desc";
 }
