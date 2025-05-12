@@ -271,7 +271,9 @@
     </div>
 </div>
 <script>
-
+    <c:if test="${not empty message}">
+    alert("${message}");
+    </c:if>
 
     document.getElementById('profileImgInput').addEventListener('change', function () {
         const file = this.files[0];

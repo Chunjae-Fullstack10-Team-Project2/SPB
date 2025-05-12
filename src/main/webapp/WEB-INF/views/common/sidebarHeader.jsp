@@ -75,7 +75,6 @@
         }
 
         .btn-toggle {
-            padding: .25rem .5rem;
             font-weight: 600;
             color: var(--bs-emphasis-color);
             background-color: transparent;
@@ -108,6 +107,11 @@
         .btn-toggle-nav a:hover {
             background-color: var(--bs-tertiary-bg);
         }
+
+        .sidebar .btn-toggle-nav li {
+            margin-bottom: 1rem;
+        }
+
     </style>
 </head>
 <body>
@@ -194,7 +198,7 @@
 <div class="flex-shrink-0 p-3 sidebar" id="sidebar">
     <ul class="list-unstyled ps-0">
         <li class="mb-3">
-            <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
+            <button class="btn btn-toggle d-inline-flex align-items-center collapsed mb-2" data-bs-toggle="collapse"
                     data-bs-target="#dashboard-collapse">
                 게시판
             </button>
@@ -222,7 +226,7 @@
         </li>
         <c:if test="${sessionScope.memberGrade eq 0}">
             <li class="mb-3">
-                <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
+                <button class="btn btn-toggle d-inline-flex align-items-center collapsed mb-2" data-bs-toggle="collapse"
                         data-bs-target="#admin-collapse">
                     관리 페이지
                 </button>
@@ -246,7 +250,7 @@
         </c:if>
         <c:if test="${not empty sessionScope.memberId and sessionScope.memberGrade ne 0}">
             <li class="mb-3">
-                <button class="btn btn-toggle d-inline-flex align-items-center collapsed" data-bs-toggle="collapse"
+                <button class="btn btn-toggle d-inline-flex align-items-center collapsed mb-2" data-bs-toggle="collapse"
                         data-bs-target="#mypage-collapse">
                     마이 페이지
                 </button>
