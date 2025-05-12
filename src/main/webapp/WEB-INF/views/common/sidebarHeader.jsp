@@ -181,10 +181,12 @@
                             <li><a class="dropdown-item" href="${cp}/login">로그인</a></li>
                         </c:if>
                         <c:if test="${not empty sessionScope.memberId}">
-                            <li><a class="dropdown-item" href="${cp}/mypage">마이페이지</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
+                            <c:if test="${sessionScope.memberGrade != 0}">
+                                <li><a class="dropdown-item" href="${cp}/mypage">마이페이지</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                            </c:if>
                             <li><a class="dropdown-item" href="${cp}/login?action=logout">로그아웃</a></li>
                         </c:if>
                     </ul>
@@ -314,7 +316,6 @@
 
     window.addEventListener('load', adjustSidebarPadding);
     window.addEventListener('resize', adjustSidebarPadding);
-
 
 
     $(document).ready(function () {
