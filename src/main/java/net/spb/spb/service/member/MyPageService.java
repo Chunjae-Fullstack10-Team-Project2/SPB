@@ -3,6 +3,7 @@ package net.spb.spb.service.member;
 import lombok.RequiredArgsConstructor;
 import net.spb.spb.dto.BookmarkDTO;
 import net.spb.spb.dto.OrderDTO;
+import net.spb.spb.dto.post.PostDTO;
 import net.spb.spb.dto.post.PostLikeRequestDTO;
 import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
@@ -86,5 +87,13 @@ public class MyPageService {
 
     public boolean cancelBookmark(int bookmarkIdx) {
         return myPageMapper.cancelBookmark(bookmarkIdx);
+    }
+
+    public List<PostDTO> listMyPost(SearchDTO searchDTO, PageRequestDTO pageRequestDTO, String postMemberId) {
+        return myPageMapper.listMyPost(searchDTO, pageRequestDTO, postMemberId);
+    }
+
+    public int postTotalCount(SearchDTO searchDTO, String postMemberId) {
+        return myPageMapper.postTotalCount(searchDTO, postMemberId);
     }
 }

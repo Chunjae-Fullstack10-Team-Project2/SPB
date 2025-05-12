@@ -2,6 +2,7 @@ package net.spb.spb.mapper;
 
 import net.spb.spb.dto.BookmarkDTO;
 import net.spb.spb.dto.OrderDTO;
+import net.spb.spb.dto.post.PostDTO;
 import net.spb.spb.dto.post.PostLikeRequestDTO;
 import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
@@ -46,4 +47,9 @@ public interface MyPageMapper {
     int bookmarkTotalCount(@Param("searchDTO") SearchDTO searchDTO, @Param("bookmarkMemberId") String bookmarkMemberId);
 
     boolean cancelBookmark(@Param("bookmarkIdx") int bookmarkIdx);
+
+    List<PostDTO> listMyPost(@Param("searchDTO") SearchDTO searchDTO, @Param("pageDTO") PageRequestDTO pageDTO,
+                             @Param("postMemberId") String postMemberId);
+
+    int postTotalCount(@Param("searchDTO") SearchDTO searchDTO, @Param("postMemberId") String postMemberId);
 }
