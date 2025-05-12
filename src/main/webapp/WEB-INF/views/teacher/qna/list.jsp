@@ -81,7 +81,7 @@
                                 <c:if test="${not empty qna.teacherQnaPwd}">
                                     <i class="bi bi-lock-fill"></i>
                                 </c:if>
-                                <a onclick="handleModal(${qna.teacherQnaIdx}, '${qna.teacherQnaPwd ne 0 ? 'Y' : 'N'}')"
+                                <a onclick="handleModal(${qna.teacherQnaIdx}, '${qna.teacherQnaPwd != null ? 'Y' : 'N'}', ${sessionScope.memberGrade})"
                                    class="text-decoration-none text-dark">
                                         ${qna.teacherQnaTitle}
                                 </a>
@@ -134,18 +134,14 @@
     </div>
 
     <script>
-        function handleModal(idx, hasPwd) {
-            if (hasPwd === 'Y') {
+        function handleModal(idx, hasPwd, admin) {
+            if (admin === 0 || admin === 13 || hasPwd !== 'Y') {
+                location.href="/teacher/personal/qna/view?idx=" + idx + "&" + "${pageDTO.linkUrl}";
+            } else {
                 $('#selectedQnaIdx').val(idx);
                 $('#qnaQPwdConfirm').val('');
                 $('#pwdError').hide();
                 $('#pwdModal').modal('show');
-            } else {
-                const url = new URL(location.href);
-                const params = url.searchParams;
-                params.set('idx', idx);
-
-                location.href = url.toString();
             }
         }
 
@@ -160,11 +156,7 @@
                 $('#pwdError').hide();
                 $('#pwdModal').modal('hide');
 
-                const url = new URL(location.href);
-                const params = url.searchParams;
-                params.set('idx', idx);
-
-                location.href = url.toString();
+                location.href="/teacher/personal/qna/view?idx=" + idx + "&" + "${pageDTO.linkUrl}";
             }).fail(function () {
                 $('#pwdError').show();
             });

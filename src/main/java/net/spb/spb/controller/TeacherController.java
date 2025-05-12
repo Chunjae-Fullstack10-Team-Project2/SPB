@@ -153,6 +153,23 @@ public class TeacherController {
         return "redirect:/teacher/personal/qna/view?idx=" + teacherQnaDTO.getTeacherQnaIdx() + "&" + pageDTO.getLinkUrl();
     }
 
+    @GetMapping("/personal/qna/delete")
+    public String teacherQnaDelete(
+            @ModelAttribute TeacherQnaPageDTO pageDTO,
+            @RequestParam("idx") int idx,
+            Model model,
+            HttpServletRequest req
+    ) {
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        teacherQnaService.deleteTeacherQuestionByIdx(memberId, idx);
+
+        model.addAttribute("pageDTO", pageDTO);
+
+        return "redirect:/teacher/personal/qna?" + pageDTO.getLinkUrl();
+    }
+
     @PostMapping("/personal/qna/checkPwd")
     @ResponseBody
     public ResponseEntity<String> checkPwd(@RequestParam("idx") int idx, @RequestParam("pwd") String pwd) {
