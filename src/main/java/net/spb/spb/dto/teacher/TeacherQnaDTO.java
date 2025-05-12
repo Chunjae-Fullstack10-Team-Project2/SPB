@@ -21,4 +21,5 @@ public class TeacherQnaDTO {
     private String teacherQnaAMemberId;
     private LocalDateTime teacherQnaAnsweredAt;
     private String teacherQnaPwd;
+    private int teacherQnaStatus;
 }

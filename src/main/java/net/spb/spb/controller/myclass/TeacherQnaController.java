@@ -49,7 +49,7 @@ public class TeacherQnaController {
         List<TeacherQnaResponseDTO> qnas = teacherQnaService.getTeacherQnaList(reqDTO, pageDTO);
 
         model.addAttribute("pageDTO", pageDTO);
-        model.addAttribute("qanList", qnas);
+        model.addAttribute("qnaList", qnas);
 
         setBreadcrumb(model, Map.of("QnA", "/myclass/qna"));
 

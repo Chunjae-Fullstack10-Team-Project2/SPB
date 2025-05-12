@@ -24,6 +24,7 @@ public class TeacherQnaService implements TeacherQnaServiceIf {
     @Override
     public List<TeacherQnaResponseDTO> getTeacherQnaList(TeacherQnaListRequestDTO reqDTO, TeacherQnaPageDTO pageDTO) {
         pageDTO.setTotal_count(teacherQnaMapper.selectTeacherQnaListTotalCount(reqDTO, pageDTO));
+        
         return teacherQnaMapper.selectTeacherQnaList(reqDTO, pageDTO);
     }
 
