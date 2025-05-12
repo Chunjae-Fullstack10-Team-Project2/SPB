@@ -6,14 +6,6 @@
     <title>공지사항 상세보기</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        /* 버튼 높이 통일 */
-        .btn-custom {
-            height: 38px ;
-            padding-top: 5px ;
-            padding-bottom: 5px ;
-        }
-    </style>
 </head>
 <body>
 
@@ -27,7 +19,7 @@
 
 <div class="container my-5 pt-5">
     <nav aria-label="breadcrumb">
-        <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
+        <ol class="breadcrumb p-3 bg-body-tertiary rounded-3">
             <li class="breadcrumb-item">
                 <a class="link-body-emphasis" href="/">
                     <svg class="bi" width="16" height="16" aria-hidden="true">
@@ -44,59 +36,54 @@
             </li>
         </ol>
     </nav>
-</div>
 
-<div class="container my-5">
-    <div class="card shadow rounded">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">${dto.noticeTitle}</h5>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>${dto.noticeTitle}</h4>
         </div>
         <div class="card-body">
             <input type="hidden" id="idx" value="${dto.noticeIdx}">
 
-            <div class="mb-3">
-                <label for="noticeMemberId" class="form-label">작성자</label>
-                <input type="text" class="form-control" id="noticeMemberId" name="noticeMemberId"
-                       value="${dto.noticeMemberId}" readonly>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">작성자</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" value="${dto.noticeMemberId}" readonly>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label for="createdAt" class="form-label">등록일</label>
-                <input type="text" class="form-control" id="createdAt" name="createdAt"
-                       value="${createdAtStr}" readonly>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">등록일</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" value="${createdAtStr}" readonly>
+                </div>
             </div>
 
             <c:if test="${not empty updatedAtStr}">
-                <div class="mb-3">
-                    <label for="updatedAt" class="form-label">수정일</label>
-                    <input type="text" class="form-control" id="updatedAt" name="updatedAt"
-                           value="${updatedAtStr}" readonly>
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label">수정일</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" value="${updatedAtStr}" readonly>
+                    </div>
                 </div>
             </c:if>
 
             <div class="mb-3">
-                <label for="noticeContent" class="form-label">내용</label>
-                <textarea class="form-control" name="noticeContent" id="noticeContent" rows="10" readonly>${dto.noticeContent}</textarea>
+                <label class="form-label">내용</label>
+                <textarea class="form-control" rows="10" readonly>${dto.noticeContent}</textarea>
             </div>
         </div>
     </div>
 
-    <div class="d-flex justify-content-end gap-2 mt-3">
-        <a href="/notice/list" class="btn btn-outline-secondary btn-custom">
-            <i class="bi bi-arrow-left me-1"></i> 목록으로
-        </a>
-        <c:if test="${not empty sessionScope.memberId and not empty sessionScope.memberGrade and sessionScope.memberGrade == '0'}">
-            <button type="button" id="btnModify" class="btn btn-primary btn-custom">
-                <i class="bi bi-pencil-square me-1"></i> 수정
-            </button>
-        </c:if>
 
-        <c:if test="${not empty sessionScope.memberGrade and sessionScope.memberGrade == '0'}">
+    <div class="mt-3">
+        <a href="/notice/list" class="btn btn-secondary">목록으로</a>
+
+        <c:if test="${not empty sessionScope.memberId and sessionScope.memberGrade == '0'}">
+            <a href="/notice/modify?noticeIdx=${dto.noticeIdx}" class="btn btn-primary">수정하기</a>
+
             <form id="frmDelete" method="post" action="/notice/delete" style="display: inline;">
                 <input type="hidden" name="noticeIdx" value="${dto.noticeIdx}"/>
-                <button type="submit" id="btnDelete" class="btn btn-danger btn-custom">
-                    <i class="bi bi-trash me-1"></i> 삭제
-                </button>
+                <button type="submit" id="btnDelete" class="btn btn-danger">삭제하기</button>
             </form>
         </c:if>
     </div>
@@ -111,13 +98,11 @@
     document.getElementById("btnDelete").addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-
         if (window.confirm('공지사항을 삭제하시겠습니까?')) {
             document.getElementById("frmDelete").submit();
         }
     });
 </script>
-
 
 </body>
 </html>

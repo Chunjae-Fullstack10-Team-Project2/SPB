@@ -105,30 +105,27 @@
             </c:if>
         </div>
 
-        <div class="card mb-4">
-            <div class="card-body">
-                <form method="get" action="${pageContext.request.contextPath}/notice/list" class="row g-3">
-                    <div class="col-md-3">
-                        <select name="searchType" class="form-select">
-                            <option value="title" ${searchType == 'title' ? 'selected' : ''}>제목</option>
-                            <option value="content" ${searchType == 'content' ? 'selected' : ''}>내용</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" name="keyword" value="${keyword}" placeholder="검색어 입력" class="form-control" />
-                        <input type="hidden" name="size" value="${size}" />
-                    </div>
-                    <div class="col-md-3 d-flex">
-                        <button type="submit" class="btn btn-primary me-2">
-                            <i class="bi bi-search"></i> 검색
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="location.href='${pageContext.request.contextPath}/notice/list?size=${size}'">
-                            <i class="bi bi-arrow-counterclockwise"></i> 초기화
-                        </button>
-                    </div>
-                </form>
+        <form method="get" action="${pageContext.request.contextPath}/notice/list" class="mb-1 p-4">
+            <input type="hidden" name="size" value="${size}" />
+
+            <div class="row g-2 align-items-center mb-3">
+                <div class="col-md-2">
+                    <select name="searchType" class="form-select">
+                        <option value="title" ${searchType == 'title' ? 'selected' : ''}>제목</option>
+                        <option value="content" ${searchType == 'content' ? 'selected' : ''}>내용</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <input type="text" name="keyword" value="${keyword}" placeholder="검색어 입력" class="form-control" />
+                </div>
+
+                <div class="col-md-3 d-flex gap-1">
+                    <button type="submit" class="btn btn-primary flex-fill">검색</button>
+                    <button type="button" class="btn btn-link text-decoration-none" onclick="location.href='${pageContext.request.contextPath}/notice/list?size=${size}'">초기화</button>
+                </div>
             </div>
-        </div>
+        </form>
 
         <div class="d-flex justify-content-end mb-3">
             <form method="get" action="${pageContext.request.contextPath}/notice/list" class="d-flex align-items-center">
