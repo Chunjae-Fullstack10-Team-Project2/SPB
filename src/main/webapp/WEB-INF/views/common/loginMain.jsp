@@ -23,6 +23,7 @@
             position: relative;
             z-index: 2;
         }
+
     </style>
 </head>
 <body>
@@ -81,7 +82,7 @@
         </div>
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="/resources/img/spb_logo.png" class="d-block w-100" alt="추천 강의 1">
+                <img src="/resources/img/spb_illustration3.png" class="d-block w-100" style="position: relative; bottom: 300px; left: 10px;" alt="추천 강의 1">
                 <div class="overlay"></div>
                 <div class="container">
                     <div class="carousel-caption text-start">
@@ -92,7 +93,7 @@
                 </div>
             </div>
             <div class="carousel-item">
-                <img src="/resources/img/spb_logo.png" class="d-block w-100" alt="추천 강의 2">
+                <img src="/resources/img/spb_illustration1.png" class="d-block w-100" alt="추천 강의 2">
                 <div class="overlay"></div>
                 <div class="container">
                     <div class="carousel-caption">
@@ -134,7 +135,7 @@
         <!-- Three columns of text below the carousel -->
         <div class="row">
             <div class="col-lg-4">
-                <img src="/resources/img/spb_logo.png" class="rounded-circle" width="140" height="140" alt="강사진">
+                <img src="/resources/img/spb_teachers.png" class="rounded-circle" width="140" height="140" alt="강사진">
                 <h2 class="fw-bold">우수 강사진</h2>
                 <p>현직 교사, 교육 전문가들이 직접 강의합니다.</p>
                 <p><a class="btn btn-secondary" href="#">더 알아보기 &raquo;</a></p>
@@ -142,14 +143,14 @@
             <div class="col-lg-4">
                 <img src="/resources/img/spb_logo.png" class="rounded-circle" width="140" height="140" alt="콘텐츠">
                 <h2 class="fw-bold">다양한 콘텐츠</h2>
-                <p>기초부터 심화까지! 초·중·고 전과목 학습자료 제공.</p>
+                <p>기초부터 심화까지! 초·중·고 전과목 학습자료를 제공합니다.</p>
                 <p><a class="btn btn-secondary" href="#">콘텐츠 보기 &raquo;</a></p>
             </div>
             <div class="col-lg-4">
                 <img src="/resources/img/spb_logo.png" class="rounded-circle" width="140" height="140" alt="AI 진단">
-                <h2 class="fw-bold">AI 학습 진단</h2>
-                <p>맞춤 진단으로 나에게 꼭 맞는 강의를 추천해드립니다.</p>
-                <p><a class="btn btn-secondary" href="#">AI 진단 시작 &raquo;</a></p>
+                <h2 class="fw-bold">자기주도적 학습</h2>
+                <p>나의 학습과 강의를 바탕으로 자기주도학습을 시작하세요.</p>
+                <p><a class="btn btn-secondary" href="#">나의 학습방 &raquo;</a></p>
             </div>
         </div>
 
