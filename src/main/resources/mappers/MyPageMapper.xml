@@ -186,11 +186,10 @@
             </choose>
         </if>
     </select>
-    <update id="deleteReport">
-        update tbl_report
-        set reportState = '2'
+    <delete id="deleteReport">
+        delete from tbl_report
         where reportIdx = #{reportIdx}
-    </update>
+    </delete>
 
 
     <!-- 주문 목록  -->
@@ -495,11 +494,11 @@
             </choose>
         </if>
     </select>
-    <update id="cancelBookmark">
-        update tbl_bookmark
-        set bookmarkState = '2'
+    <delete id="cancelBookmark">
+        delete
+        from tbl_bookmark
         where bookmarkIdx = #{bookmarkIdx}
-    </update>
+    </delete>
 
 
     <!--  게시글   -->
