@@ -143,7 +143,7 @@
         if (!confirm("정말 삭제하시겠습니까?")) return;
 
         $.ajax({
-            url: "/mypage/bookmark/delete",
+            url: "/mypage/report/delete",
             type: "POST",
             data: {reportIdx: reportIdx},
             success: function (response) {
