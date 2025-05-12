@@ -64,17 +64,21 @@
                     <option value="100" ${pageDTO.pageSize == 100 ? "selected" : ""}>100개씩 보기</option>
                 </select>
             </div>
-            <c:if test="${fn:contains(currentURI, '/qna/')}">
-                <div class="col-md-2">
-                    <select name="answered" id="answered" class="form-select" onchange="this.form.submit()">
-                        <option value="">답변 여부</option>
-                        <option value="1" ${searchDTO.answered == 1 ? 'selected' : ''}>답변</option>
-                        <option value="2" ${searchDTO.answered == 2 ? 'selected' : ''}>미답변</option>
-                    </select>
-                </div>
-            </c:if>
-
         </div>
+        <c:if test="${fn:contains(currentURI, '/qna')}">
+            <div class="d-flex flex-wrap gap-3 justify-content-end">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="answered" id="status_1" value="1"
+                        ${param.answered eq null or param.answered eq 1 ? "checked" : ""} onchange="submitSearch();"/>
+                    <label for="status_1">미답변</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="answered" id="status_2" value="2"
+                        ${param.answered eq 2 ? "checked" : ""} onchange="submitSearch();"/>
+                    <label for="status_2">답변완료</label>
+                </div>
+            </div>
+        </c:if>
     </form>
 </div>
 
@@ -146,9 +150,9 @@
             params.delete('pageSize');
         }
 
-        const answered = document.querySelector('select[name="answered"]').value;
+        const answered = document.querySelector('input[name="answered"]:checked');
         if (answered) {
-            params.set('answered', answered);
+            params.set('answered', answered.value);
         } else {
             params.delete('answered');
         }
