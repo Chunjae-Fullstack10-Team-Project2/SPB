@@ -97,26 +97,26 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${reportList}" var="boardReportDTO" varStatus="status">
+                <c:forEach items="${reportList}" var="bookmarkDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
-                            <a href="/post/detail?postIdx=${boardReportDTO.postIdx}"
+                            <a href="/post/detail?postIdx=${bookmarkDTO.postIdx}"
                                class="text-decoration-none text-dark">
-                                    ${boardReportDTO.postTitle}
+                                    ${bookmarkDTO.postTitle}
                             </a>
                         </td>
-                        <td>${boardReportDTO.postMemberId}</td>
-                        <td>${boardReportDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>${bookmarkDTO.postMemberId}</td>
+                        <td>${bookmarkDTO.postCreatedAt.toLocalDate()}</td>
                         <td>
                             <c:choose>
-                                <c:when test="${boardReportDTO.reportState == 1}">
+                                <c:when test="${bookmarkDTO.reportState == 1}">
                                     <button type="button" class="btn btn-sm btn-danger"
-                                            onclick="deleteReport(${boardReportDTO.reportIdx})">
+                                            onclick="deleteReport(${bookmarkDTO.reportIdx})">
                                         삭제
                                     </button>
                                 </c:when>
-                                <c:when test="${boardReportDTO.reportState == 2}">
+                                <c:when test="${bookmarkDTO.reportState == 2}">
                                     <span class="badge bg-secondary">취소 완료</span>
                                 </c:when>
                             </c:choose>
@@ -143,7 +143,7 @@
         if (!confirm("정말 삭제하시겠습니까?")) return;
 
         $.ajax({
-            url: "/mypage/report/delete",
+            url: "/mypage/bookmark/delete",
             type: "POST",
             data: {reportIdx: reportIdx},
             success: function (response) {
