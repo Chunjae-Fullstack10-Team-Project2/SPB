@@ -65,10 +65,8 @@ public class BoardServiceImpl implements BoardServiceIf {
     @Override
     public PostDTO getPostByIdx(HashMap<String, Object> param) {
         PostDTO dto = boardMapper.getPostByIdxWithLike(param);
-        List<PostCommentVO> postCommentVOs = commentMapper.selectComments((int)param.get("postIdx"));
+        dto.setPostComments(commentMapper.selectComments((int)param.get("postIdx")));
         List<FileVO> postFileVOs = boardFileMapper.selectFile((int)param.get("postIdx"));
-        dto.setPostComments(
-                postCommentVOs.stream().map(vo -> modelMapper.map(vo, PostCommentDTO.class)).collect(Collectors.toList()));
         List<String> imageExts = List.of("jpg", "jpeg", "png", "gif", "webp");
         dto.setPostFiles(postFileVOs.stream().map(vo -> {
             FileDTO file = modelMapper.map(vo, FileDTO.class);
