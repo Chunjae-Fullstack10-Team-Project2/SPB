@@ -13,5 +13,5 @@ public interface TeacherQnaServiceIf {
     public int createTeacherQuestion(TeacherQnaDTO teacherQnaDTO);
     public int updateTeacherAnswer(String memberId, TeacherQnaDTO teacherQnaDTO);
     public int deleteTeacherQuestionByIdx(String memberId, int idx);
-    // public String getTeacherQnaPwdByIdx(int idx);
+    public String getTeacherQnaPwdByIdx(int idx);
 }

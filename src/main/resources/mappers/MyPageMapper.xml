@@ -191,7 +191,6 @@
         where reportIdx = #{reportIdx}
     </delete>
 
-
     <!-- 주문 목록  -->
     <select id="listMyOrder">
         SELECT

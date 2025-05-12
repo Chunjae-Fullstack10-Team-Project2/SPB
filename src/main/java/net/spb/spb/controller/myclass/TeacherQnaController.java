@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,8 +38,8 @@ public class TeacherQnaController {
     }
 
     @GetMapping("")
-    public String list(@ModelAttribute TeacherQnaPageDTO pageDTO, Model model, HttpServletRequest request) {
-        HttpSession session = request.getSession();
+    public String list(@ModelAttribute TeacherQnaPageDTO pageDTO, Model model, HttpServletRequest req) {
+        HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
         TeacherQnaListRequestDTO reqDTO = TeacherQnaListRequestDTO.builder()
