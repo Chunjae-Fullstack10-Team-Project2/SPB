@@ -65,6 +65,8 @@
             width: 20px;
             height: 20px;
             background-color: #DDEB9D;
+            border :  4px #DDEB9D;
+            border-radius: 100%;
         }
     </style>
 </head>
@@ -105,30 +107,27 @@
             </c:if>
         </div>
 
-        <div class="card mb-4">
-            <div class="card-body">
-                <form method="get" action="${pageContext.request.contextPath}/notice/list" class="row g-3">
-                    <div class="col-md-3">
-                        <select name="searchType" class="form-select">
-                            <option value="title" ${searchType == 'title' ? 'selected' : ''}>제목</option>
-                            <option value="content" ${searchType == 'content' ? 'selected' : ''}>내용</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" name="keyword" value="${keyword}" placeholder="검색어 입력" class="form-control" />
-                        <input type="hidden" name="size" value="${size}" />
-                    </div>
-                    <div class="col-md-3 d-flex">
-                        <button type="submit" class="btn btn-primary me-2">
-                            <i class="bi bi-search"></i> 검색
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="location.href='${pageContext.request.contextPath}/notice/list?size=${size}'">
-                            <i class="bi bi-arrow-counterclockwise"></i> 초기화
-                        </button>
-                    </div>
-                </form>
+        <form method="get" action="${pageContext.request.contextPath}/notice/list" class="mb-1 p-4">
+            <input type="hidden" name="size" value="${size}" />
+
+            <div class="row g-2 align-items-center mb-3">
+                <div class="col-md-2">
+                    <select name="searchType" class="form-select">
+                        <option value="title" ${searchType == 'title' ? 'selected' : ''}>제목</option>
+                        <option value="content" ${searchType == 'content' ? 'selected' : ''}>내용</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <input type="text" name="keyword" value="${keyword}" placeholder="검색어 입력" class="form-control" />
+                </div>
+
+                <div class="col-md-3 d-flex gap-1">
+                    <button type="submit" class="btn btn-primary flex-fill">검색</button>
+                    <button type="button" class="btn btn-link text-decoration-none" onclick="location.href='${pageContext.request.contextPath}/notice/list?size=${size}'">초기화</button>
+                </div>
             </div>
-        </div>
+        </form>
 
         <div class="d-flex justify-content-end mb-3">
             <form method="get" action="${pageContext.request.contextPath}/notice/list" class="d-flex align-items-center">
@@ -215,15 +214,7 @@
 
 
 <script>
-
-    document.addEventListener('DOMContentLoaded', function () {
-        console.log("Bootstrap Dropdown Initialization");
-        const dropdownElements = document.querySelectorAll('.dropdown-toggle');
-        dropdownElements.forEach(function (dropdownToggleEl) {
-            new bootstrap.Dropdown(dropdownToggleEl);
-        });
-
-    // toggle
+    // 전역 범위에 toggleDropdown 함수 정의
     function toggleDropdown(imgElement) {
         const dropdown = imgElement.nextElementSibling;
         document.querySelectorAll('.dropdown-menu').forEach(menu => {
@@ -234,27 +225,34 @@
         dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
     }
 
-    document.addEventListener('click', function(event) {
-        const isDropdownButton = event.target.closest('.bar-img');
-        const isDropdownMenu = event.target.closest('.dropdown-menu');
-        const isWriteButton = event.target.closest('.btn-primary');
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log("Bootstrap Dropdown Initialization");
+        const dropdownElements = document.querySelectorAll('.dropdown-toggle');
+        dropdownElements.forEach(function (dropdownToggleEl) {
+            new bootstrap.Dropdown(dropdownToggleEl);
+        });
 
-        if (!isDropdownButton && !isDropdownMenu && !isWriteButton) {
-            document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                menu.style.display = 'none';
-            });
-        }
+        document.addEventListener('click', function(event) {
+            const isDropdownButton = event.target.closest('.bar-img');
+            const isDropdownMenu = event.target.closest('.dropdown-menu');
+            const isWriteButton = event.target.closest('.btn-primary');
 
-        if (event.target.id === 'btnDelete') {
-            event.preventDefault();
-            event.stopPropagation();
-
-            if (window.confirm('정말 삭제하시겠습니까?')) {
-                event.target.closest("form").submit();
+            if (!isDropdownButton && !isDropdownMenu && !isWriteButton) {
+                document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                    menu.style.display = 'none';
+                });
             }
-        }
-    });
 
+            if (event.target.id === 'btnDelete') {
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (window.confirm('정말 삭제하시겠습니까?')) {
+                    event.target.closest("form").submit();
+                }
+            }
+        });
+    });
 </script>
 </body>
 </html>
