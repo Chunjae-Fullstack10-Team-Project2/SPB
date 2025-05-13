@@ -65,6 +65,7 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function selectTeacher(id, name) {
         window.opener.selectTeacher(id, name); // 부모창 함수 호출

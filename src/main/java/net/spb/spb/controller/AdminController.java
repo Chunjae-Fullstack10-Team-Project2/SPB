@@ -668,15 +668,6 @@ public class AdminController {
         return result;
     }
 
-    // 브레드크럼
-    private void setBreadcrumb(Model model, Map<String, String>... pagePairs) {
-        LinkedHashMap<String, String> pages = new LinkedHashMap<>();
-        for (Map<String, String> page : pagePairs) {
-            pages.putAll(page);
-        }
-        BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
-    }
-
     @GetMapping("/qna/list")
     public String qna(@ModelAttribute SearchDTO searchDTO,
                       @ModelAttribute PageRequestDTO pageRequestDTO,
@@ -692,7 +683,18 @@ public class AdminController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("notAnsweredQnaList", notAnsweredQnaList);
         model.addAttribute("searchDTO", searchDTO);
+        setBreadcrumb(model, Map.of("미답변 문의", ""));
         return "/admin/qna/list";
     }
+
+    // 브레드크럼
+    private void setBreadcrumb(Model model, Map<String, String>... pagePairs) {
+        LinkedHashMap<String, String> pages = new LinkedHashMap<>();
+        for (Map<String, String> page : pagePairs) {
+            pages.putAll(page);
+        }
+        BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
+    }
+
 }
 

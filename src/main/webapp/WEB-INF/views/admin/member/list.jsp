@@ -12,7 +12,6 @@
 <html>
 <head>
     <title>봄콩이 회원 목록</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .table td {
             font-size: 13px;
