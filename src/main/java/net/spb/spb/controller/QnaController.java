@@ -62,6 +62,11 @@ public class QnaController {
 
     @PostMapping("/regist")
     public String regist(@Valid @ModelAttribute QnaDTO qnaDTO, BindingResult bindingResult, HttpSession session, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", "오류가 발생했습니다. 다시 시도해주세요.");
+            return "qna/regist";
+        }
+
         String pwd = qnaDTO.getQnaQPwd();
         if (pwd != null && pwd.trim().isEmpty()) {
             qnaDTO.setQnaQPwd(null);
@@ -125,19 +130,24 @@ public class QnaController {
     }
 
     @GetMapping("/regist/answer")
-    public String answer(@RequestParam("qnaIdx") String qnaIdx, @ModelAttribute QnaDTO qnaDTO, HttpSession session, Model model) {
+    public String answer(@RequestParam("qnaIdx") String qnaIdx, HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
         if (memberId == null) {
             return "redirect:/login";
         }
-
-        qnaDTO.setQnaAMemberId(memberId);
 
         int memberGrade = Integer.parseInt(session.getAttribute("memberGrade").toString());
         if (memberGrade != 0) {
             return "redirect:/qna/view?qnaIdx=" + qnaIdx + "&message=unauthorized";
         }
 
+        QnaDTO qnaDTO = qnaService.view(qnaIdx);
+        if (qnaDTO == null) {
+            model.addAttribute("message", "해당 질문을 찾을 수 없습니다.");
+            return "redirect:/qna/list";
+        }
+
+        qnaDTO.setQnaAMemberId(memberId);
         model.addAttribute("qnaDTO", qnaDTO);
         return "qna/answerRegist";
     }

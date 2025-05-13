@@ -5,6 +5,8 @@
     <title>문의사항 등록</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="${pageContext.request.contextPath}/resources/js/textCounter.js"></script>
+
 </head>
 <body>
 <%@ include file="../common/header.jsp" %>
@@ -52,8 +54,17 @@
 
                     <div class="mb-3">
                         <label for="faqAnswer" class="form-label">답변</label>
-                        <textarea class="form-control" id="faqAnswer" name="faqAnswer" rows="10"
-                                  placeholder="답변을 입력해주세요." style="resize: none;" required></textarea>
+                        <textarea class="form-control char-limit"
+                                  id="faqAnswer"
+                                  name="faqAnswer"
+                                  rows="10"
+                                  data-maxlength="19000"
+                                  data-target="#faqAnswerCount"
+                                  placeholder="답변을 입력해주세요."
+                                  style="resize: none;" required>></textarea>
+                    </div>
+                    <div class="text-end small text-muted mt-1 mb-3">
+                        <span id="faqAnswerCount">0</span> / 19,000
                     </div>
 
                     <div class="d-flex justify-content-end gap-2">

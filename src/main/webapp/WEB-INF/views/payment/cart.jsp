@@ -66,27 +66,34 @@
 
                 <table class="table table-hover align-middle bg-white rounded shadow-sm overflow-hidden">
                     <tbody>
-                    <c:forEach var="lecture" items="${cartList}">
-                        <tr id="cart-row-${lecture.cartLectureIdx}">
-                            <td style="width: 5%;">
-                                <input type="checkbox" class="form-check-input checkbox" data-lecture-idx="${lecture.cartLectureIdx}" checked>
-                            </td>
-                            <td style="width: 15%;">
-                                <img src="/upload/${lecture.lectureThumbnailImg}" alt="썸네일" class="cart-thumbnail rounded">
-                            </td>
-                            <td>
-                                <div class="fw-bold">${lecture.lectureTitle}</div>
-                            </td>
-                            <td class="text-end price-cell" style="width: 20%;">
-                            <span class="text-primary fw-semibold">
-                                <fmt:formatNumber value="${lecture.lectureAmount}" type="number"/>원
-                            </span>
-                            </td>
-                            <td style="width: 15%;">
-                                <button type="button" class="btn btn-success btn-sm w-100" onclick="cartPaymentOne('${lecture.cartLectureIdx}')">수강하기</button>
-                            </td>
-                        </tr>
-                    </c:forEach>
+                    <c:if test="${empty cartList}">
+                        <div class="alert alert-warning mt-4" role="alert">
+                            장바구니가 비었습니다.
+                        </div>
+                    </c:if>
+                    <c:if test="${not empty cartList}">
+                        <c:forEach var="lecture" items="${cartList}">
+                            <tr id="cart-row-${lecture.cartLectureIdx}">
+                                <td style="width: 5%;">
+                                    <input type="checkbox" class="form-check-input checkbox" data-lecture-idx="${lecture.cartLectureIdx}" checked>
+                                </td>
+                                <td style="width: 15%;">
+                                    <img src="/upload/${lecture.lectureThumbnailImg}" alt="썸네일" class="cart-thumbnail rounded">
+                                </td>
+                                <td>
+                                    <div class="fw-bold">${lecture.lectureTitle}</div>
+                                </td>
+                                <td class="text-end price-cell" style="width: 20%;">
+                                <span class="text-primary fw-semibold">
+                                    <fmt:formatNumber value="${lecture.lectureAmount}" type="number"/>원
+                                </span>
+                                </td>
+                                <td style="width: 15%;">
+                                    <button type="button" class="btn btn-success btn-sm w-100" onclick="cartPaymentOne('${lecture.cartLectureIdx}')">수강하기</button>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </c:if>
                     </tbody>
                 </table>
 

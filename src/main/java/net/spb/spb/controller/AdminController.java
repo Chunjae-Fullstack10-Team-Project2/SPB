@@ -14,8 +14,10 @@ import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.dto.pagingsearch.*;
 import net.spb.spb.dto.post.PostDTO;
 import net.spb.spb.dto.post.PostReportDTO;
+import net.spb.spb.dto.qna.QnaDTO;
 import net.spb.spb.service.AdminService;
 import net.spb.spb.service.ReportService;
+import net.spb.spb.service.qna.QnaService;
 import net.spb.spb.service.teacher.TeacherServiceIf;
 import net.spb.spb.service.member.MemberServiceIf;
 import net.spb.spb.util.*;
@@ -48,6 +50,7 @@ public class AdminController {
     private final ReportService reportService;
     private final AdminService adminService;
     private final TeacherServiceIf teacherService;
+    private final QnaService qnaService;
     private final FileUtil fileUtil;
 
     private static final long MAX_FILE_SIZE = 500 * 1024 * 1024;
@@ -146,7 +149,10 @@ public class AdminController {
     }
 
     @GetMapping("/teacher/regist")
-    public String teacherRegist(@RequestParam(name = "memberId", defaultValue = "") String memberId, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String teacherRegist(@RequestParam(name = "memberId", defaultValue = "") String memberId,
+                                Model model,
+                                RedirectAttributes redirectAttributes,
+                                HttpSession session) {
 
         if (memberId.isBlank()) {
             redirectAttributes.addFlashAttribute("errorMessage", "회원 ID가 누락되었습니다.");
@@ -278,7 +284,28 @@ public class AdminController {
     }
 
     @PostMapping("/lecture/regist")
-    public void lectureRegistPOST(@RequestParam(name = "file1") MultipartFile file, @ModelAttribute LectureDTO lectureDTO) {
+    public String lectureRegistPOST(@RequestParam(name = "file1") MultipartFile file,
+                                  @Valid @ModelAttribute LectureDTO lectureDTO,
+                                  BindingResult bindingResult,
+                                  RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors() || lectureDTO.getLectureAmount() < 0 || lectureDTO.getLectureTeacherId().isBlank() || !adminService.existsByTeacherId(lectureDTO.getLectureTeacherId())) {
+            List<String> errorMessages = bindingResult.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)
+                    .collect(Collectors.toList());
+            redirectAttributes.addFlashAttribute("errorMessage", "모든 필드 값을 입력해주세요.");
+            redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
+            log.error(errorMessages);
+            return "redirect:/admin/lecture/regist";
+        }
+
+        if (file != null && !file.isEmpty() && file.getSize() > (10 * 1024 * 1024)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "파일은 10MB 이하만 업로드할 수 있습니다.");
+            redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
+            log.error("파일 크기 제한");
+            return "redirect:/admin/lecture/regist";
+        }
+
         try {
             if (file != null && !file.isEmpty()) {
                 File savedFile = fileUtil.saveFile(file);
@@ -288,6 +315,7 @@ public class AdminController {
             log.info(e.getMessage());
         }
         adminService.insertLecture(lectureDTO);
+        return "redirect:/admin/lecture/list";
     }
 
 
@@ -302,7 +330,29 @@ public class AdminController {
     }
 
     @PostMapping("/lecture/modify")
-    public void lectureModifyPOST(@RequestParam(name = "file1") MultipartFile file, @ModelAttribute LectureDTO lectureDTO) {
+    public String lectureModifyPOST(@RequestParam(name = "file1") MultipartFile file,
+                                  @RequestParam("lectureIdx") int lectureIdx,
+                                  @Valid @ModelAttribute LectureDTO lectureDTO,
+                                  BindingResult bindingResult,
+                                  RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors() || lectureDTO.getLectureAmount() < 0 || lectureDTO.getLectureTeacherId().isBlank() || !adminService.existsByTeacherId(lectureDTO.getLectureTeacherId())) {
+            List<String> errorMessages = bindingResult.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)
+                    .collect(Collectors.toList());
+            redirectAttributes.addFlashAttribute("errorMessage", "모든 필드 값을 입력해주세요.");
+            redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
+            log.error(errorMessages);
+            return "redirect:/admin/lecture/modify?lectureIdx="+lectureIdx;
+        }
+
+        if (file != null && !file.isEmpty() && file.getSize() > (10 * 1024 * 1024)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "파일은 10MB 이하만 업로드할 수 있습니다.");
+            redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
+            log.error("파일 크기 제한");
+            return "redirect:/admin/lecture/modify?lectureIdx="+lectureIdx;
+        }
+
         try {
             if (file != null && !file.isEmpty()) {
                 File savedFile = fileUtil.saveFile(file);
@@ -312,6 +362,7 @@ public class AdminController {
             log.info(e.getMessage());
         }
         adminService.updateLecture(lectureDTO);
+        return "redirect:/admin/lecture/list";
     }
 
     @PostMapping("/lecture/delete")
@@ -624,6 +675,24 @@ public class AdminController {
             pages.putAll(page);
         }
         BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
+    }
+
+    @GetMapping("/qna/list")
+    public String qna(@ModelAttribute SearchDTO searchDTO,
+                      @ModelAttribute PageRequestDTO pageRequestDTO,
+                      Model model) {
+
+        List<QnaDTO> notAnsweredQnaList = qnaService.notAnsweredQna(searchDTO, pageRequestDTO);
+        PageResponseDTO<QnaDTO> pageResponseDTO = PageResponseDTO.<QnaDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .totalCount(qnaService.notAnsweredQnaTotalCount(searchDTO))
+                .dtoList(notAnsweredQnaList)
+                .build();
+
+        model.addAttribute("responseDTO", pageResponseDTO);
+        model.addAttribute("notAnsweredQnaList", notAnsweredQnaList);
+        model.addAttribute("searchDTO", searchDTO);
+        return "/admin/qna/list";
     }
 }
 

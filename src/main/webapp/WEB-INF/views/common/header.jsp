@@ -77,6 +77,38 @@
                         <li><a class="dropdown-item" href="${cp}/board/news">뉴스</a></li>
                     </ul>
                 </li>
+                <c:if test="${sessionScope.memberGrade eq 13}">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-2 link-body-emphasis" href="#" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            나의강의실
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="${cp}/myclass/lecture">내 강의 목록</a></li>
+                            <li><a class="dropdown-item" href="${cp}/myclass/notice">공지사항</a></li>
+                            <li><a class="dropdown-item" href="${cp}/myclass/qna">Q&A</a></li>
+                            <li><a class="dropdown-item" href="${cp}/myclass/grade">성적 관리</a></li>
+                            <li><a class="dropdown-item" href="${cp}/myclass/review">수강후기</a></li>
+                        </ul>
+                    </li>
+                </c:if>
+                <c:if test="${sessionScope.memberId ne null and sessionScope.memberGrade ne 13 and sessionScope.memberGrade ne 0}">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-2 link-body-emphasis" href="#" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            나의학습방
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="${cp}/mystudy/lecture">내 강의 목록</a></li>
+                            <li><a class="dropdown-item" href="${cp}/mystudy/qna">Q&A</a></li>
+                            <li><a class="dropdown-item" href="${cp}/mystudy/grade">나의성적</a></li>
+                            <li><a class="dropdown-item" href="${cp}/mystudy/review">수강후기</a></li>
+                            <li><a class="dropdown-item" href="${cp}/mystudy/plan">학습계획표</a></li>
+                        </ul>
+                    </li>
+                </c:if>
+                <li><a href="${cp}/teacher" class="nav-link px-2 link-body-emphasis">선생님</a></li>
+                <li><a href="${cp}/lecture/main" class="nav-link px-2 link-body-emphasis">강좌</a></li>
                 <li><a href="${cp}/qna/list" class="nav-link px-2 link-body-emphasis">1:1 문의</a></li>
                 <li><a href="${cp}/faq/list" class="nav-link px-2 link-body-emphasis">자주 묻는 질문</a></li>
                 <li><a href="${cp}/notice/list" class="nav-link px-2 link-body-emphasis">공지사항</a></li>

@@ -23,6 +23,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -60,16 +62,53 @@ public class MyPageController {
 
     @PostMapping("")
     public String updateMyPage(@ModelAttribute MemberDTO memberDTO,
+                               BindingResult bindingResult,
                                @RequestParam(value = "profileImgFile", required = false) MultipartFile profileImg,
                                HttpSession session,
                                Model model,
                                RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", "오류가 발생했습니다. 다시 시도해주세요.");
+            return "mypage/mypage";
+        }
 
         String memberId = (String) session.getAttribute("memberId");
         MemberDTO sessionDTO = (MemberDTO) session.getAttribute("memberDTO");
 
         if (memberId == null || sessionDTO == null) {
             return "redirect:/login";
+        }
+
+        if (!memberDTO.getMemberName().matches("^[a-zA-Z가-힣]{1,30}$")) {
+            redirectAttributes.addFlashAttribute("errorMessage", "이름은 한글 또는 영어로 최대 30자까지 입력 가능합니다.");
+            return "redirect:/mypage";
+        }
+
+        if (!memberDTO.getMemberBirth().matches("^\\d{8}$")) {
+            redirectAttributes.addFlashAttribute("errorMessage", "생년월일은 YYYYMMDD 형식으로 입력해주세요.");
+            return "redirect:/mypage";
+        }
+
+        if (!memberDTO.getMemberZipCode().matches("^\\d{5}$")) {
+            redirectAttributes.addFlashAttribute("errorMessage", "우편번호는 숫자 5자리여야 합니다.");
+            return "redirect:/mypage";
+        }
+
+        if (memberDTO.getMemberAddr1() != null && memberDTO.getMemberAddr1().length() > 100) {
+            redirectAttributes.addFlashAttribute("errorMessage", "주소는 100자 이하여야 합니다.");
+            return "redirect:/mypage";
+        }
+
+        if (memberDTO.getMemberAddr2() != null && memberDTO.getMemberAddr2().length() > 100) {
+            redirectAttributes.addFlashAttribute("errorMessage", "상세주소는 100자 이하여야 합니다.");
+            return "redirect:/mypage";
+        }
+
+        if ("14".equals(sessionDTO.getMemberGrade()) &&
+                !sessionDTO.getMemberGrade().equals(memberDTO.getMemberGrade())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "승인 대기 중에는 학년을 변경할 수 없습니다.");
+            return "redirect:/mypage";
         }
 
         MemberDTO safeDTO = new MemberDTO();
@@ -79,21 +118,9 @@ public class MyPageController {
         safeDTO.setMemberZipCode(memberDTO.getMemberZipCode());
         safeDTO.setMemberAddr1(memberDTO.getMemberAddr1());
         safeDTO.setMemberAddr2(memberDTO.getMemberAddr2());
-
         safeDTO.setMemberEmail(sessionDTO.getMemberEmail());
         safeDTO.setMemberPhone(sessionDTO.getMemberPhone());
-
-        if ("14".equals(sessionDTO.getMemberGrade())) {
-            safeDTO.setMemberGrade(sessionDTO.getMemberGrade());
-        } else {
-            safeDTO.setMemberGrade(memberDTO.getMemberGrade());
-        }
-        
-        if ("14".equals(sessionDTO.getMemberGrade()) &&
-                !sessionDTO.getMemberGrade().equals(memberDTO.getMemberGrade())) {
-            redirectAttributes.addFlashAttribute("message", "승인 대기 중에는 학년을 변경할 수 없습니다.");
-            return "redirect:/mypage";
-        }
+        safeDTO.setMemberGrade(sessionDTO.getMemberGrade().equals("14") ? "14" : memberDTO.getMemberGrade());
 
         try {
             if (profileImg != null && !profileImg.isEmpty()) {
@@ -101,7 +128,6 @@ public class MyPageController {
                 if (oldFile != null && !oldFile.isBlank()) {
                     fileUtil.deleteFile(oldFile);
                 }
-
                 File savedFile = fileUtil.saveFile(profileImg);
                 safeDTO.setMemberProfileImg(savedFile.getName());
             } else {
@@ -118,8 +144,8 @@ public class MyPageController {
             redirectAttributes.addFlashAttribute("message", "회원 정보가 성공적으로 수정되었습니다.");
             return "redirect:/mypage";
         } else {
-            model.addAttribute("message", "회원 정보 수정에 실패했습니다.");
-            return "mypage/mypage";
+            redirectAttributes.addFlashAttribute("message", "회원 정보 수정에 실패했습니다.");
+            return "redirect:/mypage";
         }
     }
 
@@ -452,8 +478,8 @@ public class MyPageController {
 
     @GetMapping("/post")
     public String listMyPost(HttpSession session, Model model,
-                                 @ModelAttribute SearchDTO searchDTO,
-                                 @ModelAttribute PageRequestDTO pageRequestDTO) {
+                             @ModelAttribute SearchDTO searchDTO,
+                             @ModelAttribute PageRequestDTO pageRequestDTO) {
         String postMemberId = (String) session.getAttribute("memberId");
 
         if (searchDTO.getDateType() == null || searchDTO.getDateType().isEmpty()) {
