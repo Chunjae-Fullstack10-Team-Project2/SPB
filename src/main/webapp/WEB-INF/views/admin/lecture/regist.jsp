@@ -24,6 +24,19 @@
       </div>
       <div class="card-body">
         <form name="frmRegist" method="post" id="frmRegist" class="needs-validation"  enctype="multipart/form-data">
+          <c:if test="${not empty errorMessages}">
+            <c:forEach items="${errorMessages}" var="errorMessage">
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  ${errorMessage}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            </c:forEach>
+          </c:if>
+          <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger">
+                ${errorMessage}
+            </div>
+          </c:if>
           <div class="mb-3">
             <label for="lectureTitle" class="form-label">강좌명</label>
             <input type="text" class="form-control" id="lectureTitle" name="lectureTitle"
@@ -69,7 +82,6 @@
       </div>
     </div>
   </div>
-
 </div>
 <script>
   function openTeacherSearch() {
@@ -79,12 +91,10 @@
   function selectTeacher(id, name) {
     document.getElementById('lectureTeacherId').value = id;
     document.getElementById('lectureTeacherName').value = name+"("+id+")";
-
   }
 
   document.getElementById('lectureAmount').addEventListener('input', function (event) {
     const value = event.target.value;
-
     event.target.value = value.replace(/[^0-9]/g, '');
   });
 
