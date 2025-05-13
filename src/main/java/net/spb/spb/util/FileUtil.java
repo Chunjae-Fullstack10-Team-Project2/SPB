@@ -1,5 +1,7 @@
 package net.spb.spb.util;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import net.spb.spb.dto.FileDTO;
 import net.spb.spb.service.FileService;
@@ -10,7 +12,11 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.UUID;
 
 @Component
@@ -71,6 +77,21 @@ public class FileUtil {
         if (isDeleted) {
             fileService.deleteFileByFileName(fileName);
         }
+    }
+
+    public void downloadFile(String sFileName, String oFileName, HttpServletResponse response) throws Exception {
+        File file = new File(uploadDir + sFileName);
+
+        InputStream inputStream = new FileInputStream(file);
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + new String(oFileName.getBytes("UTF-8"), "ISO-8859-1") + "\"");
+
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            response.getOutputStream().write(buffer, 0, bytesRead);
+        }
+        response.getOutputStream().flush();
     }
 
     public static String getIconClass(String ext) {

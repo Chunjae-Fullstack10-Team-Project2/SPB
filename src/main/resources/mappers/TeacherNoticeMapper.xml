@@ -10,7 +10,7 @@
             <if test="pageDTO.search_category == 'teacherNoticeContent'">
                 and ttn.teacherNoticeContent like concat('%', #{pageDTO.search_word}, '%')
             </if>
-            <if test="pageDTO.search_category == 'content'">
+            <if test="pageDTO.search_category == 'title-content'">
                 and ttn.teacherNoticeTitle like concat('%', #{pageDTO.search_word}, '%')
                 or ttn.teacherNoticeContent like concat('%', #{pageDTO.search_word}, '%')
             </if>

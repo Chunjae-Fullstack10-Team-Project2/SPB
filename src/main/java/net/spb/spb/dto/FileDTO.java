@@ -1,13 +1,12 @@
 package net.spb.spb.dto;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-@Getter
-@Setter
-@ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 public final class FileDTO {
     private int fileIdx;
     private String fileName;

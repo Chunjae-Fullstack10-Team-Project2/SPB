@@ -14,8 +14,10 @@ import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.dto.pagingsearch.*;
 import net.spb.spb.dto.post.PostDTO;
 import net.spb.spb.dto.post.PostReportDTO;
+import net.spb.spb.dto.qna.QnaDTO;
 import net.spb.spb.service.AdminService;
 import net.spb.spb.service.ReportService;
+import net.spb.spb.service.qna.QnaService;
 import net.spb.spb.service.teacher.TeacherServiceIf;
 import net.spb.spb.service.member.MemberServiceIf;
 import net.spb.spb.util.*;
@@ -48,6 +50,7 @@ public class AdminController {
     private final ReportService reportService;
     private final AdminService adminService;
     private final TeacherServiceIf teacherService;
+    private final QnaService qnaService;
     private final FileUtil fileUtil;
 
     private static final long MAX_FILE_SIZE = 500 * 1024 * 1024;
@@ -674,5 +677,22 @@ public class AdminController {
         BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
     }
 
+    @GetMapping("/qna/list")
+    public String qna(@ModelAttribute SearchDTO searchDTO,
+                      @ModelAttribute PageRequestDTO pageRequestDTO,
+                      Model model) {
+
+        List<QnaDTO> notAnsweredQnaList = qnaService.notAnsweredQna(searchDTO, pageRequestDTO);
+        PageResponseDTO<QnaDTO> pageResponseDTO = PageResponseDTO.<QnaDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .totalCount(qnaService.notAnsweredQnaTotalCount(searchDTO))
+                .dtoList(notAnsweredQnaList)
+                .build();
+
+        model.addAttribute("responseDTO", pageResponseDTO);
+        model.addAttribute("notAnsweredQnaList", notAnsweredQnaList);
+        model.addAttribute("searchDTO", searchDTO);
+        return "/admin/qna/list";
+    }
 }
 

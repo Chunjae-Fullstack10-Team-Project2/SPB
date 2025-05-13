@@ -124,7 +124,9 @@
     </update>
 
     <update id="delete" parameterType="String">
-        update tbl_qna set qnaState = 2 where qnaIdx = #{qnaIdx}
+        update tbl_qna
+        set qnaState = 2
+        where qnaIdx = #{qnaIdx}
     </update>
 
     <select id="myQna" resultType="net.spb.spb.domain.QnaVO">
@@ -200,5 +202,69 @@
         select qnaQPwd
         from tbl_qna
         where qnaIdx = #{qnaIdx}
+    </select>
+
+    <!--  관리자 페이지에서 볼 수 있는 미답변 qna   -->
+    <select id="notAnsweredQna" resultType="net.spb.spb.domain.QnaVO">
+        select qnaIdx, qnaQMemberId, qnaAMemberId, qnaQContent, qnaTitle, qnaAContent, qnaState, qnaCreatedAt,
+        qnaAnsweredAt, qnaQPwd
+        from tbl_qna
+        where qnaState = 1 and qnaAContent is null
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'qnaTitle'">
+                    AND qnaTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'qnaQContent'">
+                    AND qnaQContent LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'qnaQMemberId'">
+                    AND qnaQMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'qnaAContent'">
+                    AND qnaAContent LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'qnaAMemberId'">
+                    AND qnaAMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            AND qnaCreatedAt between #{searchDTO.startDate} AND #{searchDTO.endDate}
+        </if>
+        order by qnaCreatedAt desc
+        limit #{pageDTO.pageSkipCount}, #{pageDTO.pageSize}
+    </select>
+
+
+    <select id="notAnsweredQnaTotalCount" parameterType="net.spb.spb.dto.pagingsearch.SearchDTO" resultType="int">
+        select count(qnaIdx)
+        from tbl_qna
+        where qnaState = 1 and qnaAContent is null
+        <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
+            <choose>
+                <when test="searchDTO.searchType == 'qnaTitle'">
+                    AND qnaTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'qnaQContent'">
+                    AND qnaQContent LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'qnaQMemberId'">
+                    AND qnaQMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'qnaAContent'">
+                    AND qnaAContent LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'qnaAMemberId'">
+                    AND qnaAMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+
+        <if test="searchDTO.startDate != null and searchDTO.endDate != null">
+            AND qnaCreatedAt between #{searchDTO.startDate} AND #{searchDTO.endDate}
+        </if>
+
     </select>
 </mapper>
