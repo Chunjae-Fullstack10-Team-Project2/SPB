@@ -41,7 +41,7 @@
         set teacherSubject = #{teacherSubject},
             teacherIntro = #{teacherIntro},
             teacherProfileImg = #{teacherProfileImg}
-        where teacherIdx = #{teacherIdx}
+        where teacherId = #{teacherId}
     </update>
 
     <!-- Lecture -->
@@ -132,11 +132,40 @@
         where lectureIdx = #{lectureIdx}
     </update>
 
+    <select id="existsByLectureId" parameterType="java.lang.Integer">
+        select count(lectureIdx) from tbl_lecture where lectureIdx = #{lectureIdx}
+    </select>
+
     <!-- Chapter -->
     <insert id="insertChapter" parameterType="net.spb.spb.domain.ChapterVO">
         insert into tbl_lecture_chapter (chapterLectureIdx, chapterName, chapterVideo, chapterRuntime)
         values (#{chapterLectureIdx}, #{chapterName}, #{chapterVideo}, #{chapterRuntime})
     </insert>
+
+    <select id="selectChapterCount" resultType="java.lang.Integer" parameterType="net.spb.spb.dto.pagingsearch.ChapterPageDTO">
+        select count(c.chapterIdx)
+        from tbl_lecture_chapter c
+        inner join tbl_lecture l on c.chapterLectureIdx = l.lectureIdx
+        inner join tbl_teacher t on t.teacherId = l.lectureTeacherId
+        <where>
+            <if test="lectureIdx != null and lectureIdx > 0">
+                c.chapterLectureIdx = #{lectureIdx}
+            </if>
+            <if test="search_type != null and search_type != '' and search_word != null and search_word != ''">
+                <choose>
+                    <when test="search_type == 'chapterName'">
+                        AND c.chapterName LIKE CONCAT('%', #{search_word}, '%')
+                    </when>
+                    <when test="search_type == 'lectureTitle'">
+                        AND l.lectureTitle LIKE CONCAT('%', #{search_word}, '%')
+                    </when>
+                    <when test="search_type == 'teacherName'">
+                        AND t.teacherName LIKE CONCAT('%', #{search_word}, '%')
+                    </when>
+                </choose>
+            </if>
+        </where>
+    </select>
 
     <select id="selectChapterList" resultType="net.spb.spb.dto.ChapterDTO" parameterType="net.spb.spb.dto.pagingsearch.ChapterPageDTO">
         select c.chapterIdx,
@@ -145,14 +174,31 @@
                c.chapterVideo,
                c.chapterRuntime,
                c.chapterState,
-               l.lectureTitle
+               l.lectureTitle,
+               t.teacherId
         from tbl_lecture_chapter c
         inner join tbl_lecture l on c.chapterLectureIdx = l.lectureIdx
+        inner join tbl_teacher t on t.teacherId = l.lectureTeacherId
         <where>
             <if test="lectureIdx != null and lectureIdx > 0">
                 c.chapterLectureIdx = #{lectureIdx}
             </if>
+            <if test="search_type != null and search_type != '' and search_word != null and search_word != ''">
+                <choose>
+                    <when test="search_type == 'chapterName'">
+                        AND c.chapterName LIKE CONCAT('%', #{search_word}, '%')
+                    </when>
+                    <when test="search_type == 'lectureTitle'">
+                        AND l.lectureTitle LIKE CONCAT('%', #{search_word}, '%')
+                    </when>
+                    <when test="search_type == 'teacherName'">
+                        AND t.teacherName LIKE CONCAT('%', #{search_word}, '%')
+                    </when>
+                </choose>
+            </if>
         </where>
+        order by ${sort_by} ${sort_direction}
+        limit #{page_skip_count}, #{page_size}
     </select>
 
     <select id="selectChapter" parameterType="java.lang.Integer" resultType="net.spb.spb.dto.ChapterDTO">
