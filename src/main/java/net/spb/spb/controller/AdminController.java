@@ -119,6 +119,7 @@ public class AdminController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("boardReportList", boardReportList);
         model.addAttribute("searchDTO", searchDTO);
+        setBreadcrumb(model, Map.of("자유게시판 신고 목록", ""));
         return "admin/report/boardReportTable";
     }
 
@@ -136,6 +137,7 @@ public class AdminController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("reviewReportList", reviewReportList);
         model.addAttribute("searchDTO", searchDTO);
+        setBreadcrumb(model, Map.of("강의평 신고 목록", ""));
         return "admin/report/reviewReportTable";
     }
 
@@ -499,6 +501,7 @@ public class AdminController {
         model.addAttribute("searchDTO", searchDTO);
         model.addAttribute("responseDTO", pageResponseDTO);
 
+        setBreadcrumb(model, Map.of("매출 대시보드", ""));
         return "/admin/sales/dashboard";
     }
 

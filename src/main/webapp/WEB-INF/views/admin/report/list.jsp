@@ -19,24 +19,25 @@
         </symbol>
     </svg>
     <div class="container my-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
-                <li class="breadcrumb-item">
-                    <a class="link-body-emphasis" href="/">
-                        <svg class="bi" width="16" height="16" aria-hidden="true">
-                            <use xlink:href="#house-door-fill"></use>
-                        </svg>
-                        <span class="visually-hidden">Home</span>
-                    </a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="link-body-emphasis fw-semibold text-decoration-none" href="/admin/member/list">관리자 페이지</a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    신고 목록
-                </li>
-            </ol>
-        </nav>
+        <%@ include file="../../common/breadcrumb.jsp" %>
+<%--        <nav aria-label="breadcrumb">--%>
+<%--            <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">--%>
+<%--                <li class="breadcrumb-item">--%>
+<%--                    <a class="link-body-emphasis" href="/">--%>
+<%--                        <svg class="bi" width="16" height="16" aria-hidden="true">--%>
+<%--                            <use xlink:href="#house-door-fill"></use>--%>
+<%--                        </svg>--%>
+<%--                        <span class="visually-hidden">Home</span>--%>
+<%--                    </a>--%>
+<%--                </li>--%>
+<%--                <li class="breadcrumb-item">--%>
+<%--                    <a class="link-body-emphasis fw-semibold text-decoration-none" href="/admin/member/list">관리자 페이지</a>--%>
+<%--                </li>--%>
+<%--                <li class="breadcrumb-item active" aria-current="page">--%>
+<%--                    신고 목록--%>
+<%--                </li>--%>
+<%--            </ol>--%>
+<%--        </nav>--%>
     </div>
     <div class="container my-5" style="height: 100%; min-height: 100vh;">
         <div class="container mb-4">
@@ -62,6 +63,29 @@
             <c:if test="${not empty reviewReportList}">
                 <c:import url="${pageContext.request.contextPath}/WEB-INF/views/admin/report/reviewReportTable.jsp"/>
             </c:if>
+        </div>
+    </div>
+    <!-- 게시글 상세 모달 -->
+    <div class="modal fade" id="postDetailModal" tabindex="-1" aria-labelledby="postDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="postDetailModalLabel">게시글 상세 보기</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+                </div>
+                <div class="modal-body">
+                    <h5 id="modalPostTitle" class="fw-bold mb-2"></h5>
+                    <div class="text-muted small mb-3">
+                        <span id="modalPostAuthor"></span> |
+                        <span id="modalPostDate"></span> |
+                        조회수: <span id="modalPostViews"></span>
+                    </div>
+                    <div id="modalPostContent" class="border-top pt-3"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="btnAdminDelete" data-id="">관리자 삭제</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
