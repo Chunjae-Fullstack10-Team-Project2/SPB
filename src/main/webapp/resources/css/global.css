@@ -20,6 +20,10 @@ a {
     color: black;
 }
 
+a:hover {
+    text-decoration: underline;
+}
+
 th > a {
     text-decoration: none;
     color: black;
