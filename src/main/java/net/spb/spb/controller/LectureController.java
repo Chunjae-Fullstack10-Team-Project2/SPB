@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Controller
@@ -38,7 +39,10 @@ public class LectureController {
             @RequestParam(value="subject", required = false) String subject,
             Model model,
             @ModelAttribute SearchDTO searchDTO,
-            @ModelAttribute PageRequestDTO pageRequestDTO) {
+            @ModelAttribute PageRequestDTO pageRequestDTO,
+            HttpSession session
+    ) {
+        String memberId = (String) session.getAttribute("memberId");
         List<LectureDTO> lectureList;
         log.info("subject: "+subject);
         if(subject == null || subject.isBlank()) {
@@ -50,6 +54,12 @@ public class LectureController {
         model.addAttribute("lectureDTO", lectureList);
         List<String> subjectList = teacherService.getAllSubject();
         model.addAttribute("subjectList", subjectList);
+
+        List<Integer> lectureIdxList = lectureList.stream().map(LectureDTO::getLectureIdx)
+                .collect(Collectors.toList());
+        log.info("lectureIdxList:{}", lectureIdxList);
+        List<Integer> bookmarked = lectureService.selectBookmark(lectureIdxList, memberId);
+        model.addAttribute("bookmarked", bookmarked);
 
         PageResponseDTO<LectureDTO> pageResponseDTO = PageResponseDTO.<LectureDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)

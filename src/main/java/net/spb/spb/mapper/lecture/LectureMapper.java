@@ -28,4 +28,5 @@ public interface LectureMapper {
     public List<LectureDTO> getLectureMain(@Param("subject") String subject, @Param("searchDTO") SearchDTO searchDTO, @Param("pageRequestDTO") PageRequestDTO pageRequestDTO);
     public List<LectureReviewDTO> selectLectureReview(@Param("lectureIdx") int lectureIdx, @Param("pageRequestDTO") PageRequestDTO pageRequestDTO);
     public int insertReport(@Param("dto") PostReportDTO dto);
+    public List<Integer> selectBookmark(@Param("lectureIdxList") List<Integer> lectureIdxList, @Param("memberId") String memberId);
 }

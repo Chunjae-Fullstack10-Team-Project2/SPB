@@ -91,4 +91,9 @@ public class LectureServiceImpl implements LectureServiceIf {
     public int insertReport(PostReportDTO postReportDTO) {
         return lectureMapper.insertReport(postReportDTO);
     }
+
+    @Override
+    public List<Integer> selectBookmark(List<Integer> lectureIdxList, String memberId) {
+        return lectureMapper.selectBookmark(lectureIdxList, memberId);
+    }
 }

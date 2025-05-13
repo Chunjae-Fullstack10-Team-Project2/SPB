@@ -53,6 +53,7 @@
         tl.lectureDescription,
         tl.lectureThumbnailImg,
         tl.lectureAmount,
+        tl.lectureTeacherId,
         tm.memberName AS lectureTeacherName,
         tt.teacherSubject AS lectureSubject
         FROM tbl_lecture tl
@@ -69,6 +70,7 @@
         l.lectureDescription,
         l.lectureThumbnailImg,
         l.lectureAmount,
+        l.lectureTeacherId,
         m.memberName AS lectureTeacherName,
         t.teacherSubject as lectureSubject
         FROM tbl_lecture l
@@ -122,4 +124,13 @@
         where reportRefType = 'LECTURE_REVIEW' and reportRefIdx = #{dto.lectureReviewRefIdx} and reportMemberId = #{dto.lectureReviewMemberId}
         )
     </insert>
+    <select id="selectBookmark">
+        select bookmarkLectureIdx
+        from tbl_bookmark
+        where bookmarkLectureIdx in
+              <foreach collection="lectureIdxList" item="idx" open="(" separator="," close=")">
+                 #{idx}
+              </foreach>
+        and bookmarkMemberId = #{memberId}
+    </select>
 </mapper>    

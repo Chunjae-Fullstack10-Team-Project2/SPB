@@ -23,4 +23,5 @@ public interface LectureServiceIf {
     public List<LectureDTO> getLectureMain(String subject, SearchDTO searchDTO, PageRequestDTO pageRequestDTO);
     public List<LectureReviewDTO> selectLectureReview(int lectureIdx, PageRequestDTO pageRequestDTO);
     public int insertReport(PostReportDTO postReportDTO);
+    public List<Integer> selectBookmark(List<Integer> lectureIdxList, String memberId);
 }
