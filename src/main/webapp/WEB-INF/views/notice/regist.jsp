@@ -55,7 +55,7 @@
                 <div class="mb-3">
                     <label for="noticeContent" class="form-label">내용</label>
                     <textarea class="form-control" id="noticeContent" name="noticeContent" rows="10"
-                              placeholder="공지사항 내용을 입력해주세요." style="resize: none;"
+                              placeholder="공지사항 내용을 입력해주세요." style="resize: none;" maxlength="19000"
                               required>${noticeDTO.noticeContent != null ? noticeDTO.noticeContent : ''}</textarea>
                 </div>
 
@@ -66,10 +66,9 @@
                 </c:if>
 
                 <div class="mb-3 form-check">
-                    <input type="hidden" name="noticeIsFixed" value="0">
-                    <input type="checkbox" class="form-check-input" id="noticeIsFixed" name="noticeIsFixed" value="1">
-
-                    <label class="form-check-label" for="noticeIsFixed">고정 공지</label>
+                    <input type="hidden" name="_noticeIsFixed" value="on"/>
+                    <input type="checkbox" class="form-check-input" id="noticeIsFixedCheckbox" name="noticeIsFixed">
+                    <label class="form-check-label" for="noticeIsFixedCheckbox">고정 공지</label>
                 </div>
 
                 <div class="d-flex justify-content-end gap-2">

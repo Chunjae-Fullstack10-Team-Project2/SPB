@@ -3,8 +3,18 @@ package net.spb.spb.util;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-
 public class NoticePaging {
+
+    // 페이징 유효성검사
+    public static int validatePageNumber(int page, int totalPage) {
+        if (page <= 0) {
+            return 1;
+        }
+        if (page > totalPage && totalPage > 0) {
+            return totalPage;
+        }
+        return page;
+    }
 
     public static int getOffset(int page, int size) {
         return (page - 1) * size;
@@ -15,13 +25,14 @@ public class NoticePaging {
     }
 
     public static String getPagination(int currentPage, int totalPage, String basePath,
-                                       String keyword, String searchType, int size) {
+                                       String keyword, String searchType, int size,
+                                       String startDate, String endDate) {
         StringBuilder pagination = new StringBuilder();
         int pageBlock = 5;
         int startPage = ((currentPage - 1) / pageBlock) * pageBlock + 1;
         int endPage = Math.min(startPage + pageBlock - 1, totalPage);
 
-        String queryParams = getQueryParams(keyword, searchType, size);
+        String queryParams = getQueryParams(keyword, searchType, size, startDate, endDate);
 
         pagination.append("<nav aria-label=\"Page navigation\">");
         pagination.append("<ul class=\"pagination justify-content-center\">");
@@ -59,10 +70,17 @@ public class NoticePaging {
         return pagination.toString();
     }
 
-    private static String getQueryParams(String keyword, String searchType, int size) {
+    private static String getQueryParams(String keyword, String searchType, int size,
+                                         String startDate, String endDate) {
         StringBuilder params = new StringBuilder();
 
         params.append("&size=").append(size);
+
+        // 날짜 범위 파라미터 추가
+        if (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()) {
+            params.append("&startDate=").append(startDate);
+            params.append("&endDate=").append(endDate);
+        }
 
         if (keyword != null && !keyword.trim().isEmpty()) {
             params.append("&keyword=").append(URLEncoder.encode(keyword, StandardCharsets.UTF_8));
@@ -75,6 +93,15 @@ public class NoticePaging {
         return params.toString();
     }
 
+
+    private static String getQueryParams(String keyword, String searchType, int size) {
+        return getQueryParams(keyword, searchType, size, null, null);
+    }
+
+    public static String getPagination(int currentPage, int totalPage, String basePath,
+                                       String keyword, String searchType, int size) {
+        return getPagination(currentPage, totalPage, basePath, keyword, searchType, size, null, null);
+    }
 
     public static int getStartNum(int totalCount, int currentPage, int size) {
         return totalCount - ((currentPage - 1) * size);

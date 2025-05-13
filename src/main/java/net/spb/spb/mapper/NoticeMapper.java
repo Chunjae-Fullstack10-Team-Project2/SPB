@@ -4,6 +4,7 @@ import net.spb.spb.domain.NoticeVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Mapper
@@ -37,5 +38,23 @@ public interface NoticeMapper {
 
     List<NoticeVO> getFixedNotices();
 
+    // 날짜 범위로 검색
+    int getCountByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    List<NoticeVO> getListByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate,
+                                      @Param("offset") int offset, @Param("size") int size);
 
+    // 날짜 범위와 제목으로 검색
+    int getCountByDateRangeAndTitle(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate,
+                                    @Param("keyword") String keyword);
+    List<NoticeVO> getListByDateRangeAndTitle(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate,
+                                              @Param("keyword") String keyword, @Param("offset") int offset, @Param("size") int size);
+
+    // 날짜 범위와 내용으로 검색
+    int getCountByDateRangeAndContent(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate,
+                                      @Param("keyword") String keyword);
+    List<NoticeVO> getListByDateRangeAndContent(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate,
+                                                @Param("keyword") String keyword, @Param("offset") int offset, @Param("size") int size);
 }
+
+
+
