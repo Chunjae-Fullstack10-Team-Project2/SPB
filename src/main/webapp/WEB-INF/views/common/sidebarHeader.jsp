@@ -399,6 +399,20 @@
             boardCollapse.classList.add('show');
             boardToggle.setAttribute('aria-expanded', 'true');
         }
+
+        if (path.includes('/myclass/')) {
+            const boardCollapse = document.querySelector('#myclass-collapse');
+            const boardToggle = document.querySelector('[data-bs-target="#myclass-collapse"]');
+            boardCollapse.classList.add('show');
+            boardToggle.setAttribute('aria-expanded', 'true');
+        }
+
+        if (path.includes('/mystudy/')) {
+            const boardCollapse = document.querySelector('#mystudy-collapse');
+            const boardToggle = document.querySelector('[data-bs-target="#mystudy-collapse"]');
+            boardCollapse.classList.add('show');
+            boardToggle.setAttribute('aria-expanded', 'true');
+        }
     });
 
     function adjustSidebarPadding() {
