@@ -27,7 +27,7 @@
 
     </style>
 </head>
-<body>
+<body class="bg-light-subtle">
 <%@ include file="../common/header.jsp" %>
 
 <div class="content-nonside">
