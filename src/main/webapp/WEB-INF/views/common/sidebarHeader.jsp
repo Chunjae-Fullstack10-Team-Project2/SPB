@@ -52,6 +52,7 @@
             width: 280px;
             height: 100vh;
             z-index: 10;
+            background-color: white;
         }
 
         body {
@@ -180,7 +181,7 @@
             <div class="d-flex align-items-center gap-4 flex-wrap justify-content-end user-tools">
                 <c:if test="${sessionScope.memberGrade eq 0}">
                     <a href="${cp}/admin/" class="admin-link" title="관리자 페이지">
-                        <i class="bi bi-gear-fill" style="font-size: 1.4rem;"></i>
+                        <i class="bi bi-gear-fill text-dark" style="font-size: 1.4rem;"></i>
                     </a>
                 </c:if>
                 <c:if test="${not empty sessionScope.memberId and sessionScope.memberGrade ne 0}">
@@ -190,7 +191,7 @@
                     <div class="cart">
                         <a href="/payment/cart?memberId=${sessionScope.memberId}"
                            class="text-decoration-none position-relative">
-                            <i class="bi bi-cart" style="font-size: 1.4rem;"></i>
+                            <i class="bi bi-cart text-dark" style="font-size: 1.4rem;"></i>
                             <c:if test="${not empty sessionScope.memberId}">
                                 <span id="cart-count-badge"
                                       class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -339,7 +340,9 @@
                         <li><a href="${cp}/admin/chapter/list"
                                class="d-inline-flex text-decoration-none rounded text-dark">강의 관리</a></li>
                         <li><a href="${cp}/admin/report/list/board"
-                               class="d-inline-flex text-decoration-none rounded text-dark">신고 관리</a></li>
+                               class="d-inline-flex text-decoration-none rounded text-dark">게시글 신고 관리</a></li>
+                        <li><a href="${cp}/admin/report/list/review"
+                               class="d-inline-flex text-decoration-none rounded text-dark">강의평 신고 관리</a></li>
                         <li><a href="${cp}/admin/board/manage"
                                class="d-inline-flex text-decoration-none rounded text-dark">자유게시판 관리</a></li>
                         <li><a href="${cp}/admin/qna/list"
