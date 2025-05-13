@@ -12,10 +12,14 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 public class AnswerDTO {
+
     @NotNull
+    @Size(max = 20, message = "답변자 ID는 20자 이하여야 합니다.")
     private String qnaAMemberId;
+
     @NotNull
     @Size(max = 19000, message = "답변 내용은 19,000자 이하여야 합니다.")
     private String qnaAContent;
+
     private Date qnaAnsweredAt;
 }
