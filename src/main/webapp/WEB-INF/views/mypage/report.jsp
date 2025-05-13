@@ -97,26 +97,26 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${reportList}" var="reportDTO">
+                <c:forEach items="${reportList}" var="orderDTO">
                     <tr>
-                        <td>${reportDTO.reportIdx}</td>
+                        <td>${orderDTO.reportIdx}</td>
                         <td class="text-start">
-                            <a href="/board/freeboard/view?idx=${reportDTO.reportRefIdx}"
+                            <a href="/board/freeboard/view?idx=${orderDTO.reportRefIdx}"
                                class="text-decoration-none text-dark">
-                                    ${reportDTO.postTitle}
+                                    ${orderDTO.postTitle}
                             </a>
                         </td>
-                        <td>${reportDTO.postMemberId}</td>
-                        <td>${reportDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>${orderDTO.postMemberId}</td>
+                        <td>${orderDTO.postCreatedAt.toLocalDate()}</td>
                         <td>
                             <c:choose>
-                                <c:when test="${reportDTO.reportState == 1}">
+                                <c:when test="${orderDTO.reportState == 1}">
                                     <button type="button" class="btn btn-sm btn-danger"
-                                            onclick="deleteReport(${reportDTO.reportIdx})">
+                                            onclick="deleteReport(${orderDTO.reportIdx})">
                                         삭제
                                     </button>
                                 </c:when>
-                                <c:when test="${reportDTO.reportState == 2}">
+                                <c:when test="${orderDTO.reportState == 2}">
                                     <span class="badge bg-secondary">관리자에 의해 삭제됨</span>
                                 </c:when>
                             </c:choose>
