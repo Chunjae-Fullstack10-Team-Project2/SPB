@@ -13,9 +13,11 @@ public class QnaDTO {
 
     private String qnaIdx;
 
+    @NotBlank(message = "제목은 필수 입력값입니다.")
     @Size(max = 100, message = "제목은 100자 이하여야 합니다.")
     private String qnaTitle;
 
+    @NotBlank(message = "내용은 필수 입력값입니다.")
     @Size(max = 20, message = "작성자 ID는 20자 이하여야 합니다.")
     private String qnaQMemberId;
 
