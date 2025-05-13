@@ -24,12 +24,30 @@
         <h5 class="mb-0">강좌 수정</h5>
       </div>
       <div class="card-body">
-        <form name="frmRegist" method="post" class="needs-validation"  enctype="multipart/form-data">
+        <form name="frmRegist" method="post" action="/admin/lecture/modify"
+              class="needs-validation" novalidate enctype="multipart/form-data">
+          <c:if test="${not empty errorMessages}">
+            <c:forEach items="${errorMessages}" var="errorMessage">
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  ${errorMessage}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            </c:forEach>
+          </c:if>
+          <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger">
+                ${errorMessage}
+            </div>
+          </c:if>
+
+          <input type="hidden" name="lectureIdx" value="${lectureDTO.lectureIdx}"/>
+
           <div class="mb-3">
             <label for="lectureTitle" class="form-label">강좌명</label>
             <input type="text" class="form-control" id="lectureTitle" name="lectureTitle"
                    placeholder="강좌명을 입력하세요." required
                    value="${lectureDTO.lectureTitle != null ? lectureDTO.lectureTitle : ''}">
+            <div class="invalid-feedback">강좌명을 입력해주세요.</div>
           </div>
 
           <div class="mb-3">
@@ -41,18 +59,21 @@
                      value="${lectureDTO.lectureTeacherName}" placeholder="담당 선생님을 입력하세요." required disabled>
               <button type="button" class="btn btn-outline-primary" onclick="openTeacherSearch()">선생님 검색</button>
             </div>
+            <div class="invalid-feedback">선생님을 입력해주세요.</div>
           </div>
 
           <div class="mb-3">
             <label for="lectureTeacherId" class="form-label">강좌 가격</label>
             <input type="text" class="form-control" id="lectureAmount" name="lectureAmount"
-                   placeholder="강좌 가격을 입력하세요."
+                   placeholder="강좌 가격을 입력하세요. (최대 5,000,000원)"
                    value="${lectureDTO.lectureAmount}" required maxlength="10">
+            <div class="invalid-feedback">강좌 가격을 입력해주세요.</div>
           </div>
 
           <div class="mb-3">
             <label for="file1" class="form-label">강좌 썸네일 이미지</label>
-            <input type="file" class="form-control" id="file1" name="file1" accept="image/*" required>
+            <input type="file" class="form-control" id="file1" name="file1" accept="image/*">
+            <input type="hidden" name="lectureThumbnailImg" value="${lectureDTO.lectureThumbnailImg}"/>
           </div>
 
           <div class="mb-3">
@@ -60,11 +81,12 @@
             <textarea class="form-control" id="lectureDescription" name="lectureDescription" rows="10"
                       placeholder="강좌 설명을 입력하세요." style="resize: none;"
                       required>${lectureDTO.lectureDescription != null ? lectureDTO.lectureDescription : ''}</textarea>
+            <div class="invalid-feedback">강좌 설명을 입력해주세요.</div>
           </div>
 
           <div class="d-flex justify-content-end gap-2">
             <a href="/admin/lecture/list" class="btn btn-outline-secondary">취소</a>
-            <a href="/admin/lecture/list" class="btn btn-primary">등록</a>
+            <button type="submit" class="btn btn-primary" id="btnSubmit">등록</button>
           </div>
         </form>
       </div>
@@ -81,13 +103,38 @@
     document.getElementById('lectureTeacherId').value = id;
     document.getElementById('lectureTeacherName').value = name+"("+id+")";
   }
-
-  document.getElementById('lectureAmount').addEventListener('input', function (event) {
-    const value = event.target.value;
-
-    event.target.value = value.replace(/[^0-9]/g, '');
+  const amountInput = document.getElementById('lectureAmount');
+  amountInput.addEventListener('input', function (e) {
+    const value = e.target.value.replace(/,/g, '');
+    if (!isNaN(value)) {
+      const formatted = Number(value).toLocaleString('ko-KR');
+      e.target.value = formatted;
+    } else {
+      e.target.value = value.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
   });
 
+  document.getElementById('btnSubmit').addEventListener('click', function (e) {
+    e.preventDefault();
+    const form = document.forms['frmRegist'];
+
+    const rawAmount = amountInput.value.replace(/,/g, '');
+    amountInput.value = rawAmount;
+    if (isNaN(rawAmount) || Number(rawAmount) > 5000000) {
+      alert("강좌 가격은 숫자만 입력하며, 최대 5,000,000원까지 가능합니다.");
+      amountInput.focus();
+      amountInput.classList.add('is-invalid');
+      amountInput.nextElementSibling.innerText = '강좌 가격은 5,000,000원 이하로 입력해주세요.';
+      form.classList.add('was-validated');
+      return false;
+    }
+
+    if (form.checkValidity()) {
+      form.submit();
+    } else {
+      form.classList.add('was-validated');
+    }
+  });
 </script>
 </body>
 </html>
