@@ -108,7 +108,7 @@
                                 </button>
                             </c:if>
                             <c:if test="${postDTO.bookmarkState == 2}">
-                                <span class="badge bg-secondary">취소 완료</span>
+                                <span class="badge bg-success">구매 완료</span>
                             </c:if>
                         </td>
                         <td>

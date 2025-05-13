@@ -32,7 +32,10 @@ public class MemberDTO {
     @Size(max = 100, message = "상세주소는 100자 이하여야 합니다.")
     private String memberAddr2;
 
-    @Size(max = 100, message = "우편번호는 100자 이하여야 합니다.")
+    @Pattern(
+            regexp = "^\\d{5}$",
+            message = "우편번호는 5자 이하여야 합니다."
+    )
     private String memberZipCode;
 
     @Pattern(
