@@ -217,7 +217,7 @@
 
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="memberZipCode" name="memberZipCode"
-                       value="${memberDTO.memberZipCode}" placeholder="우편번호" required>
+                       value="${memberDTO.memberZipCode}" placeholder="우편번호" maxlength="5" required>
                 <label for="memberZipCode">우편번호</label>
             </div>
             <div class="d-grid gap-2 mb-3">
@@ -227,14 +227,14 @@
 
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="memberAddr1" name="memberAddr1"
-                       value="${memberDTO.memberAddr1}"
+                       value="${memberDTO.memberAddr1}" maxlength="100"
                        placeholder="주소" required>
                 <label for="memberAddr1">주소</label>
             </div>
 
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="memberAddr2" name="memberAddr2"
-                       value="${memberDTO.memberAddr2}"
+                       value="${memberDTO.memberAddr2}" maxlength="100"
                        placeholder="상세주소">
                 <label for="memberAddr2">상세주소</label>
             </div>
@@ -277,6 +277,10 @@
     </div>
 </div>
 <script>
+    <c:if test="${not empty errorMessage}">
+    alert("${errorMessage}");
+    </c:if>
+
     <c:if test="${not empty message}">
     alert("${message}");
     </c:if>
