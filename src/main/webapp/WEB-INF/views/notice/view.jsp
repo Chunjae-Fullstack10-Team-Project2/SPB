@@ -7,8 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
-<body>
-
+<body class="bg-light-subtle">
 <%@ include file="../common/header.jsp" %>
 
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -83,7 +82,7 @@
 
             <form id="frmDelete" method="post" action="/notice/delete" style="display: inline;">
                 <input type="hidden" name="noticeIdx" value="${dto.noticeIdx}"/>
-                <button type="submit" id="btnDelete" class="btn btn-danger">삭제하기</button>
+                <button type="submit" id="btnDelete" class="btn btn-danger" onclick="return confirm('정말 삭제하시겠습니까?')">삭제하기</button>
             </form>
         </c:if>
     </div>
@@ -95,13 +94,7 @@
         window.location.href = "${pageContext.request.contextPath}/notice/modify?noticeIdx=" + idx;
     });
 
-    document.getElementById("btnDelete").addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (window.confirm('공지사항을 삭제하시겠습니까?')) {
-            document.getElementById("frmDelete").submit();
-        }
-    });
+
 </script>
 
 </body>
