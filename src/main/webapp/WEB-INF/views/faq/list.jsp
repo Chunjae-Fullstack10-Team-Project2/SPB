@@ -88,8 +88,17 @@
                                     </div>
                                 </div>
                                 <div class="faq-edit d-none" data-id="${faqDTO.faqIdx}">
-                                <textarea class="form-control mb-2 faq-answer-edit"
-                                          rows="4">${faqDTO.faqAnswer}</textarea>
+                                    <textarea class="form-control mb-2 faq-answer-edit char-limit"
+                                              data-maxlength="19000"
+                                              data-target="#faqAnswerCount2_${faqDTO.faqIdx}"
+                                              rows="4"
+                                              style="resize: none;"
+                                              required>${faqDTO.faqAnswer}</textarea>
+
+                                    <div class="text-end small text-muted mt-1 mb-3">
+                                        <span id="faqAnswerCount2_${faqDTO.faqIdx}">0</span> / 19000
+                                    </div>
+
                                     <div class="d-flex justify-content-end gap-2">
                                         <button class="btn btn-sm btn-primary btn-save">저장</button>
                                         <button class="btn btn-sm btn-secondary btn-cancel">취소</button>
@@ -114,6 +123,33 @@
     </div>
 </div>
 <script>
+    function bindTextCounter(textarea) {
+        const maxLength = parseInt(textarea.dataset.maxlength || "1000", 10);
+        const counterSelector = textarea.dataset.target;
+        const counterEl = counterSelector ? document.querySelector(counterSelector) : null;
+
+        textarea.removeEventListener('input', textarea._textCounterListener);
+
+        const listener = function () {
+            let text = textarea.value;
+            if (text.length > maxLength) {
+                textarea.value = text.substring(0, maxLength);
+            }
+            if (counterEl) {
+                counterEl.textContent = textarea.value.length;
+            }
+        };
+
+        // 바인딩하고 핸들러 저장
+        textarea.addEventListener('input', listener);
+        textarea._textCounterListener = listener;
+
+        // 최초 상태 반영
+        if (counterEl) {
+            counterEl.textContent = textarea.value.length;
+        }
+    }
+
     $(document).on('click', '.btn-edit', function () {
         const container = $(this).closest('.accordion-body');
         const header = container.closest('.accordion-item').find('.accordion-button');
@@ -121,9 +157,13 @@
         container.find('.faq-view').addClass('d-none');
         container.find('.faq-edit').removeClass('d-none');
 
-        // 헤더에 위치한 질문의 인풋 타입을 텍스트로 교체
         header.find('.faq-question-view').addClass('d-none');
         header.find('.faq-question-edit').removeClass('d-none');
+
+        container.find('textarea.char-limit').each(function () {
+            bindTextCounter(this);
+            this.dispatchEvent(new Event('input'));
+        });
     });
 
     $(document).on('click', '.btn-cancel', function () {
