@@ -8,7 +8,7 @@
     <script src="${pageContext.request.contextPath}/resources/js/textCounter.js"></script>
 
 </head>
-<body>
+<body class="bg-light-subtle">
 <%@ include file="../common/header.jsp" %>
 <div class="content-nonside">
 

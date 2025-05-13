@@ -15,7 +15,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
 </head>
-<body>
+<body class="bg-light-subtle">
 <%@ include file="../common/header.jsp" %>
 <div class="content-nonside">
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">

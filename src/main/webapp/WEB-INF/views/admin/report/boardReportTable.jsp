@@ -45,7 +45,7 @@
         </nav>
     </div>
 
-    <div class="container my-5">
+    <div class="container my-5" style="height: 100%; min-height: 100vh;">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">게시글 신고 목록</h3>
         </div>

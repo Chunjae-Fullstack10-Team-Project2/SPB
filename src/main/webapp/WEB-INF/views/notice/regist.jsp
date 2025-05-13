@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light-subtle">
 <%@ include file="../common/header.jsp" %>
 
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
