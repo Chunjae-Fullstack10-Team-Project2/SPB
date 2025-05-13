@@ -19,67 +19,25 @@ public class CommentServiceImpl implements CommentServiceIf {
     private final CommentMapper commentMapper;
     private final ModelMapper modelMapper;
 
-    /**
-     * @param dto
-     * @return
-     */
     @Override
     public int insertComment(PostCommentDTO dto) {
         PostCommentVO vo = modelMapper.map(dto, PostCommentVO.class);
-        int rtnResult = commentMapper.insertComment(vo);
-        log.info("=============================");
-        log.info("CommentServiceImpl  >>  insertComment");
-        log.info("vo: " + vo);
-        log.info("dto: " + dto);
-        log.info("rtnResult: " + rtnResult);
-        log.info("=============================");
-        return rtnResult;
+        commentMapper.insertComment(vo);
+        return vo.getPostCommentIdx();
     }
 
-    /**
-     * @param dto
-     * @return
-     */
     @Override
     public int modifyComment(PostCommentDTO dto) {
-        PostCommentVO vo = modelMapper.map(dto, PostCommentVO.class);
-        int rtnResult = commentMapper.updateComment(vo);
-        log.info("=============================");
-        log.info("CommentServiceImpl  >>  updateComment");
-        log.info("vo: " + vo);
-        log.info("dto: " + dto);
-        log.info("rtnResult: " + rtnResult);
-        log.info("=============================");
-        return rtnResult;
+        return commentMapper.updateComment(modelMapper.map(dto, PostCommentVO.class));
     }
 
-    /**
-     * @param postCommentIdx
-     * @return
-     */
     @Override
     public int deleteComment(int postCommentIdx) {
-        int rtnResult = commentMapper.deleteComment(postCommentIdx);
-        log.info("=============================");
-        log.info("CommentServiceImpl  >>  deleteComment");
-        log.info("rtnResult: " + rtnResult);
-        log.info("=============================");
-        return rtnResult;
+        return commentMapper.deleteComment(postCommentIdx);
     }
 
-    /**
-     * @param postCommentRefPostIdx
-     * @return
-     */
     @Override
     public List<PostCommentDTO> selectComments(int postCommentRefPostIdx) {
-        List<PostCommentVO> vos = commentMapper.selectComments(postCommentRefPostIdx);
-        List<PostCommentDTO> dtos = vos.stream().map(vo -> modelMapper.map(vo, PostCommentDTO.class)).collect(Collectors.toList());
-
-        log.info("=============================");
-        log.info("CommentServiceImpl  >>  selectComments");
-        log.info("dtos: " + dtos);
-        log.info("=============================");
-        return dtos;
+        return commentMapper.selectComments(postCommentRefPostIdx);
     }
 }
