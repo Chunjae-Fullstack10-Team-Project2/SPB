@@ -173,7 +173,6 @@
                 </c:if>
                 <li><a href="${cp}/teacher" class="nav-link px-2 link-body-emphasis">선생님</a></li>
                 <li><a href="${cp}/lecture/main" class="nav-link px-2 link-body-emphasis">강좌</a></li>
-                <li><a href="${cp}/qna/list" class="nav-link px-2 link-body-emphasis">1:1 문의</a></li>
                 <li><a href="${cp}/faq/list" class="nav-link px-2 link-body-emphasis">자주 묻는 질문</a></li>
                 <li><a href="${cp}/notice/list" class="nav-link px-2 link-body-emphasis">공지사항</a></li>
             </ul>
@@ -215,6 +214,7 @@
                         </c:if>
                         <c:if test="${not empty sessionScope.memberId}">
                             <c:if test="${sessionScope.memberGrade != 0}">
+                                <li><a class="dropdown-item" href="${cp}/qna/list">1:1 문의</a></li>
                                 <li><a class="dropdown-item" href="${cp}/mypage">마이페이지</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
