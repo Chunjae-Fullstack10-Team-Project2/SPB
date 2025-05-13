@@ -119,7 +119,7 @@ public class AdminController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("boardReportList", boardReportList);
         model.addAttribute("searchDTO", searchDTO);
-        return "admin/report/list";
+        return "admin/report/boardReportTable";
     }
 
     @GetMapping("/report/list/review")
@@ -136,7 +136,7 @@ public class AdminController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("reviewReportList", reviewReportList);
         model.addAttribute("searchDTO", searchDTO);
-        return "admin/report/list";
+        return "admin/report/reviewReportTable";
     }
 
     @GetMapping("/teacher/list")

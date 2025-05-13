@@ -17,6 +17,11 @@
         FROM tbl_report AS r
         JOIN tbl_post AS p ON r.reportRefIdx = p.postIdx
         WHERE 1=1
+<choose>
+    <when test="searchDTO.reportState != null and searchDTO.reportState != ''">
+        AND reportState = #{searchDTO.reportState}
+    </when>
+</choose>
 
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
@@ -63,6 +68,12 @@
         from tbl_report AS r
         JOIN tbl_post AS p on r.reportRefIdx = p.postIdx
         where 1=1
+<choose>
+    <when test="searchDTO.reportState != null and searchDTO.reportState != ''">
+        AND reportState = #{searchDTO.reportState}
+    </when>
+</choose>
+
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
                 <when test="searchDTO.searchType == 'postTitle'">
@@ -108,6 +119,12 @@
         FROM tbl_report AS r
         JOIN tbl_lecture_review as l ON r.reportRefIdx = l.lectureReviewIdx
         WHERE 1=1
+<choose>
+    <when test="searchDTO.reportState != null and searchDTO.reportState != ''">
+        AND reportState = #{searchDTO.reportState}
+    </when>
+</choose>
+
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
                 <when test="searchDTO.searchType == 'lectureReviewMemberId'">
@@ -148,6 +165,12 @@
         FROM tbl_report AS r
         JOIN tbl_lecture_review as l ON r.reportRefIdx = l.lectureReviewIdx
         where 1=1
+<choose>
+    <when test="searchDTO.reportState != null and searchDTO.reportState != ''">
+        AND reportState = #{searchDTO.reportState}
+    </when>
+</choose>
+
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
                 <when test="searchDTO.searchType == 'lectureReviewMemberId'">
