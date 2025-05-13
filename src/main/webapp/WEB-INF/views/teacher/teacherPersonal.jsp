@@ -52,7 +52,7 @@
                             <img src="/upload/${lecture.lectureThumbnailImg}" alt="썸네일" class="img-fluid rounded" width="130" height="80">
                         </td>
                         <td class="text-start">
-                            <a href="/lecture/main?lectureIdx=${lecture.lectureIdx}" class="text-decoration-none text-dark fw-semibold">${lecture.lectureTitle}</a>
+                            <a href="/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}" class="text-decoration-none text-dark fw-semibold">${lecture.lectureTitle}</a>
                         </td>
                         <td>
                             <fmt:formatNumber value="${lecture.lectureAmount}" type="number" groupingUsed="true"/>원

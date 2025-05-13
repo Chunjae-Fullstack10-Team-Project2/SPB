@@ -4,8 +4,10 @@ import lombok.*;
 import net.spb.spb.dto.FileDTO;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import jakarta.validation.constraints.*;
+import net.spb.spb.util.ReportRefType;
 
 @Getter
 @Setter
@@ -33,4 +35,13 @@ public class PostDTO {
     private boolean isLike;
     private String memberProfileImg;
     private int postReportCnt;
+    private String memberName;
+
+    private String reportIdx;
+    private String reportRefIdx;
+    private String reportMemberId;
+    private Date reportCreatedAt;
+    private Integer reportState;
+    private ReportRefType reportRefType;
+    private String reportCount;
 }

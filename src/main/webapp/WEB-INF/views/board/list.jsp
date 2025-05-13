@@ -26,8 +26,8 @@
         <%@ include file="../common/breadcrumb.jsp" %>
         <div class="container my-5">
             <h2 class="mb-4">${category.displayName} 🌱</h2>
-            <form name="frmSearch" method="get" action="${searchAction}" class="mb-1 p-4">
-                <!-- form 내부에 추가 -->
+            <div id="searchAlertArea"></div>
+            <form name="frmSearch" id="frmSearch" method="get" action="${searchAction}" class="mb-1 p-4">
                 <input type="hidden" name="search_date1" id="search_date1" value="${search.search_date1}" />
                 <input type="hidden" name="search_date2" id="search_date2" value="${search.search_date2}" />
 
@@ -41,7 +41,7 @@
 
                 <div class="row g-2 align-items-center mb-3">
                     <div class="col-md-2">
-                        <select name="search_type" class="form-select">
+                        <select name="search_type" class="form-select" id="search_type">
                             <option value="">선택</option>
                             <option value="title" ${search.search_type eq "postTitle" ? "selected":""}>제목</option>
                             <option value="content" ${search.search_type eq "postContent" ? "selected":""}>내용</option>
@@ -50,7 +50,7 @@
                     </div>
 
                     <div class="col-md-3">
-                        <input type="text" name="search_word" class="form-control" placeholder="검색어 입력"
+                        <input type="text" name="search_word" class="form-control" id="search_word" placeholder="검색어 입력"
                                value="${search.search_word != null ? search.search_word : ''}" />
                     </div>
 
@@ -124,15 +124,32 @@
                     </div>
 
                 </c:when>
+                <c:when test="${empty posts and not empty search.search_date1 or not empty search.search_word}">
+                    <div class="alert alert-warning" role="alert">
+                        검색된 게시글이 없습니다.
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <div class="alert alert-warning" role="alert">
+                        등록된 게시글이 없습니다.
+                    </div>
+                </c:otherwise>
             </c:choose>
 
             <!-- 글 작성 버튼 -->
-            <c:if test="${not empty sessionScope.memberId}">
+            <c:if test="${category=='freeboard' and not empty sessionScope.memberId}">
             <div class="d-flex justify-content-end mb-4">
                 <button type="button" class="btn btn-outline-dark btn-sm" id="btnRegist">
                     <i class="bi bi-pencil-square"></i> 글 작성
                 </button>
             </div>
+            </c:if>
+            <c:if test="${sessionScope.memberGrade==0}">
+                <div class="d-flex justify-content-end mb-4">
+                    <button type="button" class="btn btn-outline-dark btn-sm" id="btnRegist">
+                        <i class="bi bi-pencil-square"></i> 글 작성
+                    </button>
+                </div>
             </c:if>
         </div>
     </div>
@@ -157,6 +174,9 @@
 
         const rows = document.querySelectorAll('.clickable-row');
         rows.forEach(row => {
+            row.addEventListener('mouseover', function() {
+                row.style.cursor = "pointer";
+            })
             row.addEventListener('click', function () {
                 const url = this.dataset.href;
                 if (url) window.location.href = url;
@@ -200,7 +220,6 @@
             $('form[name="frmSearch"]').submit();
         });
 
-
         $('#btnSearchInit').click(function () {
             $('input[name="search_word"]').val('');
             $('select[name="search_type"]').val('');
@@ -217,7 +236,6 @@
 
             window.location.href = url.toString();
         });
-
     });
 </script>
 </body>

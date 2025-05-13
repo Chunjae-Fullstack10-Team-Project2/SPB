@@ -16,7 +16,7 @@ public class QnaServiceImpl implements QnaService {
     private final ModelMapper modelMapper;
     private final QnaMapper qnaMapper;
 
-    @Autowired
+    @Autowired(required = false)
     public QnaServiceImpl(ModelMapper modelMapper, QnaMapper qnaMapper) {
         this.modelMapper = modelMapper;
         this.qnaMapper = qnaMapper;
@@ -66,7 +66,24 @@ public class QnaServiceImpl implements QnaService {
     }
 
     @Override
+    public int myQnaTotalCount(SearchDTO searchDTO, String qnaQMemberId) {
+        return qnaMapper.myQnaTotalCount(searchDTO, qnaQMemberId);
+    }
+
+    @Override
     public String getPwdByQnaIdx(String qnaIdx) {
         return qnaMapper.getPwdByQnaIdx(qnaIdx);
     }
+
+    @Override
+    public List<QnaDTO> notAnsweredQna(SearchDTO searchDTO, PageRequestDTO pageRequestDTO) {
+        return qnaMapper.notAnsweredQna(searchDTO, pageRequestDTO);
+    }
+
+    @Override
+    public int notAnsweredQnaTotalCount(SearchDTO searchDTO) {
+        return qnaMapper.notAnsweredQnaTotalCount(searchDTO);
+    }
+
+
 }

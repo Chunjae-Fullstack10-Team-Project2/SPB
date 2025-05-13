@@ -511,8 +511,9 @@
         postReadCnt,
         postCreatedAt,
         postUpdatedAt,
-        postState
-        from tbl_post
+        postState,
+        reportState
+        from tbl_post as p join tbl_report as r on p.postIdx = r.reportRefIdx
         where postMemberId = #{postMemberId}
 
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">

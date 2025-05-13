@@ -23,5 +23,11 @@ public interface QnaService {
 
     List<QnaDTO> myQna(SearchDTO searchDTO, PageRequestDTO pageRequestDTO, String qnaQMemberId);
 
+    int myQnaTotalCount(SearchDTO searchDTO, String qnaQMemberId);
+
     String getPwdByQnaIdx(String qnaIdx);
+
+    List<QnaDTO> notAnsweredQna(SearchDTO searchDTO, PageRequestDTO pageRequestDTO);
+    int notAnsweredQnaTotalCount(SearchDTO searchDTO);
+
 }

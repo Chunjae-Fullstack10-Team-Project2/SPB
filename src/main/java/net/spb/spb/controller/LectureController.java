@@ -5,6 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
+import net.spb.spb.dto.TeacherDTO;
+import net.spb.spb.dto.pagingsearch.PageRequestDTO;
+import net.spb.spb.dto.pagingsearch.PageResponseDTO;
+import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.service.lecture.LectureServiceIf;
 import net.spb.spb.service.PaymentServiceIf;
 import net.spb.spb.service.teacher.TeacherServiceIf;
@@ -26,6 +30,33 @@ public class LectureController {
 
     @GetMapping("/main")
     public String lectureMain(
+            @RequestParam(value="subject", required = false) String subject,
+            Model model,
+            @ModelAttribute SearchDTO searchDTO,
+            @ModelAttribute PageRequestDTO pageRequestDTO) {
+        List<LectureDTO> lectureList;
+        log.info("subject: "+subject);
+        if(subject == null || subject.isBlank()) {
+            lectureList = lectureService.getAllLectures(searchDTO, pageRequestDTO);
+        } else {
+            lectureList = lectureService.getLectureMain(subject, searchDTO, pageRequestDTO);
+        }
+        log.info("lecture list: {}", lectureList);
+        model.addAttribute("lectureDTO", lectureList);
+        List<String> subjectList = teacherService.getAllSubject();
+        model.addAttribute("subjectList", subjectList);
+
+        PageResponseDTO<LectureDTO> pageResponseDTO = PageResponseDTO.<LectureDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .totalCount(lectureService.getTotalCount(searchDTO, subject))
+                .dtoList(lectureList)
+                .build();
+        model.addAttribute("responseDTO", pageResponseDTO);
+        return "lecture/lecture";
+    }
+
+    @GetMapping("/lectureDetail")
+    public String lectureDetail(
             @RequestParam("lectureIdx") int lectureIdx,
             Model model
     ){
