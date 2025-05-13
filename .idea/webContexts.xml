@@ -5,7 +5,6 @@
       <map>
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/sales/dashboard.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/sales" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/main.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common" />
-        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/sidebarHeader.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/login/join.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/login" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/myclass/notice/list.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/myclass/notice" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mystudy/plan.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mystudy" />
@@ -13,6 +12,7 @@
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/payment/payment.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/payment" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/teacher/teacherMain.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/teacher" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/teacher/teacherPersonal.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/teacher" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/report/boardReportTable.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/report" />
       </map>
     </option>
   </component>

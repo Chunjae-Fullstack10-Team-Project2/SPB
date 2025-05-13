@@ -91,6 +91,20 @@
                                         <fmt:formatNumber value="${lecture.lectureAmount}" type="number"/>원
                                     </p>
                                 </div>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <c:set var="isBookmarked" value="false" />
+                                    <c:forEach var="b" items="${bookmarked}">
+                                        <c:if test="${b eq lecture.lectureIdx}">
+                                            <c:set var="isBookmarked" value="true" />
+                                        </c:if>
+                                    </c:forEach>
+
+                                    <button class="btn btn-outline-secondary bookmark-btn" data-lecture-idx="${lecture.lectureIdx}" data-bookmarked="${isBookmarked}" onclick="event.stopPropagation();">
+                                        <i class="bi ${isBookmarked ? 'bi-bookmark-fill text-primary' : 'bi-bookmark'}"></i>
+                                    </button>
+
+                                    <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); addCart(${lecture.lectureIdx});">장바구니</button>
+                                </div>
                             </div>
                         </div>
                     </c:forEach>
@@ -114,6 +128,75 @@
             window.location.href = "/teacher/personal?teacherId=" + teacherId;
         });
     });
+
+    $(document).ready(function () {
+        const memberId = '<c:out value="${sessionScope.memberId}" default="" />';
+
+        $('.bookmark-btn').on('click', function () {
+            if (!memberId || memberId.trim() === "") {
+                alert("로그인이 필요합니다.");
+                window.location.href = "/login";
+                return;
+            }
+
+            const button = $(this);
+            const lectureIdx = button.data('lecture-idx');
+            const isBookmarked = button.data('bookmarked');
+            const icon = button.find('i');
+
+            const url = isBookmarked
+                ? '/lecture/deleteBookmark?lectureIdx=' + lectureIdx
+                : '/lecture/addBookmark?lectureIdx=' + lectureIdx;
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                success: function () {
+                    button.data('bookmarked', !isBookmarked);
+                    if (isBookmarked) {
+                        icon.removeClass('bi-bookmark-fill text-primary').addClass('bi-bookmark');
+                        alert('북마크 해제하셨습니다.');
+                    } else {
+                        icon.removeClass('bi-bookmark').addClass('bi-bookmark-fill text-primary');
+                        alert('북마크 추가하셨습니다.');
+                    }
+                },
+                error: function (xhr) {
+                    alert('오류 발생: ' + xhr.responseText);
+                }
+            });
+        });
+    });
+
+    function addCart(lectureIdx) {
+        const memberId = '<c:out value="${sessionScope.memberId}" default="" />';
+        if (!memberId || memberId.trim() === "") {
+            alert("로그인이 필요합니다.");
+            window.location.href = "/login";
+            return;
+        }
+
+        $.ajax({
+            url: '/payment/addCart',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({cartLectureIdx: lectureIdx, cartMemberId: memberId}),
+            success: function (response) {
+                if (response == 999) {
+                    alert("이미 장바구니에 존재합니다.");
+                } else {
+                    alert("장바구니에 추가되었습니다.");
+                }
+
+                if (confirm("장바구니로 이동하시겠습니까?")) {
+                    window.location.href = "/payment/cart?memberId=" + memberId;
+                }
+            },
+            error: function (xhr) {
+                alert("추가 실패: " + xhr.responseText);
+            }
+        });
+    }
 </script>
 </body>
 </html>

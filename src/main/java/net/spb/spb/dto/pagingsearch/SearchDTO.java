@@ -14,4 +14,5 @@ public class SearchDTO {
     private String endDate;
     private String sortColumn;
     private String sortOrder;
+    private String reportState;
 }
