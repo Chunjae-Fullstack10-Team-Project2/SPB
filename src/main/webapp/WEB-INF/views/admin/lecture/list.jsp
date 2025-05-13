@@ -11,7 +11,7 @@
 <c:set var="cp" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-    <title>Title</title>
+    <title>강좌 목록</title>
 </head>
 <body>
 <%@ include file="../../common/sidebarHeader.jsp" %>
@@ -41,7 +41,7 @@
       </thead>
       <tbody>
       <c:forEach var="lecture" items="${lectures}" varStatus="status">
-        <tr>
+        <tr class="clickable-row" data-href="/admin/chapter/list?lectureIdx=${lecture.lectureIdx}">
           <td>${status.index + 1}</td>
           <td>
             <img src="/upload/${lecture.lectureThumbnailImg}" alt="강좌 썸네일" style="width: 80px; height: auto; border-radius: 6px;"
@@ -72,6 +72,18 @@
   </div>
 </div>
 <script>
+
+  const rows = document.querySelectorAll('.clickable-row');
+  rows.forEach(row => {
+    row.addEventListener('mouseover', function() {
+      row.style.cursor = "pointer";
+    })
+    row.addEventListener('click', function () {
+      const url = this.dataset.href;
+      if (url) window.location.href = url;
+    });
+  });
+
   document.querySelectorAll('.btnDelete').forEach(btn => {
     btn.addEventListener('click', function() {
       const lectureIdx = $(this).data('lecture-idx');
