@@ -179,7 +179,7 @@
 
             <div class="d-flex align-items-center gap-4 flex-wrap justify-content-end user-tools">
                 <c:if test="${sessionScope.memberGrade eq 0}">
-                    <a href="${cp}/admin/member/list" class="admin-link" title="관리자 페이지">
+                    <a href="${cp}/admin/" class="admin-link" title="관리자 페이지">
                         <i class="bi bi-gear-fill" style="font-size: 1.4rem;"></i>
                     </a>
                 </c:if>
@@ -331,16 +331,21 @@
                 <div class="collapse" id="admin-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li><a href="${cp}/admin/member/list"
-                               class="d-inline-flex text-decoration-none rounded text-dark">회원 목록</a></li>
+                               class="d-inline-flex text-decoration-none rounded text-dark">회원 관리</a></li>
+                        <li><a href="${cp}/admin/teacher/list"
+                               class="d-inline-flex text-decoration-none rounded text-dark">선생님 관리</a></li>
+                        <li><a href="${cp}/admin/lecture/list"
+                               class="d-inline-flex text-decoration-none rounded text-dark">강좌 관리</a></li>
+                        <li><a href="${cp}/admin/chapter/list"
+                               class="d-inline-flex text-decoration-none rounded text-dark">강의 관리</a></li>
                         <li><a href="${cp}/admin/report/list/board"
-                               class="d-inline-flex text-decoration-none rounded text-dark">게시글 신고 내역</a></li>
-                        <li><a href="${cp}/admin/report/list/review"
-                               class="d-inline-flex text-decoration-none rounded text-dark">강의평 신고 내역</a></li>
-                        <li><a href="${cp}/admin/teacher/regist"
-                               class="d-inline-flex text-decoration-none rounded text-dark">강의 등록</a></li>
-                        <li><a href="${cp}/notice/regist" class="d-inline-flex text-decoration-none rounded text-dark">공지사항
-                            등록</a></li>
-                        <li><a href="${cp}/admin/qna/list" class="d-inline-flex text-decoration-none rounded text-dark">미답변 질문 목록</a></li>
+                               class="d-inline-flex text-decoration-none rounded text-dark">신고 관리</a></li>
+                        <li><a href="${cp}/admin/board/manage"
+                               class="d-inline-flex text-decoration-none rounded text-dark">자유게시판 관리</a></li>
+                        <li><a href="${cp}/admin/qna/list"
+                               class="d-inline-flex text-decoration-none rounded text-dark">Q & A</a></li>
+                        <li><a href="${cp}/notice/regist"
+                               class="d-inline-flex text-decoration-none rounded text-dark">공지사항 등록</a></li>
                         <li><a href="${cp}/admin/sales/info"
                                class="d-inline-flex text-decoration-none rounded text-dark">매출 정보</a></li>
                     </ul>

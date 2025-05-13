@@ -119,6 +119,7 @@ public class AdminController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("boardReportList", boardReportList);
         model.addAttribute("searchDTO", searchDTO);
+        setBreadcrumb(model, Map.of("자유게시판 신고 목록", ""));
         return "admin/report/list";
     }
 
@@ -136,6 +137,7 @@ public class AdminController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("reviewReportList", reviewReportList);
         model.addAttribute("searchDTO", searchDTO);
+        setBreadcrumb(model, Map.of("강의평 신고 목록", ""));
         return "admin/report/list";
     }
 
@@ -499,6 +501,7 @@ public class AdminController {
         model.addAttribute("searchDTO", searchDTO);
         model.addAttribute("responseDTO", pageResponseDTO);
 
+        setBreadcrumb(model, Map.of("매출 대시보드", ""));
         return "/admin/sales/dashboard";
     }
 
@@ -668,15 +671,6 @@ public class AdminController {
         return result;
     }
 
-    // 브레드크럼
-    private void setBreadcrumb(Model model, Map<String, String>... pagePairs) {
-        LinkedHashMap<String, String> pages = new LinkedHashMap<>();
-        for (Map<String, String> page : pagePairs) {
-            pages.putAll(page);
-        }
-        BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
-    }
-
     @GetMapping("/qna/list")
     public String qna(@ModelAttribute SearchDTO searchDTO,
                       @ModelAttribute PageRequestDTO pageRequestDTO,
@@ -692,7 +686,18 @@ public class AdminController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("notAnsweredQnaList", notAnsweredQnaList);
         model.addAttribute("searchDTO", searchDTO);
+        setBreadcrumb(model, Map.of("미답변 문의", ""));
         return "/admin/qna/list";
     }
+
+    // 브레드크럼
+    private void setBreadcrumb(Model model, Map<String, String>... pagePairs) {
+        LinkedHashMap<String, String> pages = new LinkedHashMap<>();
+        for (Map<String, String> page : pagePairs) {
+            pages.putAll(page);
+        }
+        BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
+    }
+
 }
 
