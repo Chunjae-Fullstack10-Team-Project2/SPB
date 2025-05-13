@@ -7,11 +7,9 @@ import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.TeacherDTO;
 import net.spb.spb.dto.pagingsearch.*;
-import net.spb.spb.dto.teacher.TeacherQnaDTO;
-import net.spb.spb.dto.teacher.TeacherQnaListRequestDTO;
-import net.spb.spb.dto.teacher.TeacherQnaResponseDTO;
-import net.spb.spb.service.PaymentServiceIf;
-import net.spb.spb.service.teacher.TeacherQnaService;
+import net.spb.spb.dto.teacher.*;
+import net.spb.spb.service.teacher.TeacherFileServiceIf;
+import net.spb.spb.service.teacher.TeacherQnaServiceIf;
 import net.spb.spb.service.teacher.TeacherServiceIf;
 import net.spb.spb.util.BreadcrumbUtil;
 import org.springframework.http.HttpStatus;
@@ -19,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,7 +30,8 @@ import java.util.Map;
 public class TeacherController {
 
     private final TeacherServiceIf teacherService;
-    private final TeacherQnaService teacherQnaService;
+    private final TeacherQnaServiceIf teacherQnaService;
+    private final TeacherFileServiceIf teacherFileService;
 
     private static final Map<String, String> ROOT_BREADCRUMB = Map.of("name", "선생님", "url", "/teacher");
 
@@ -85,6 +85,40 @@ public class TeacherController {
         model.addAttribute("teacherDTO", teacherDTO);
         model.addAttribute("lectureList", lectureList);
         return "teacher/teacherPersonal";
+    }
+
+    @GetMapping("/personal/library")
+    public String teacherLibraryList(@ModelAttribute TeacherFilePageDTO pageDTO, Model model) {
+        List<TeacherFileResponseDTO> files = teacherFileService.getTeacherFileList(pageDTO.getTeacherId(), pageDTO);
+
+        model.addAttribute("pageDTO", pageDTO);
+        model.addAttribute("fileList", files);
+
+        setBreadcrumb(model, Map.of("자료실", "/teacher/library"));
+
+        return "teacher/library/list";
+    }
+
+    @GetMapping("/personal/library/view")
+    public String teacherLibraryView(
+            @ModelAttribute TeacherFilePageDTO pageDTO,
+            @RequestParam("idx") int idx,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
+        TeacherFileResponseDTO teacherFileDTO = teacherFileService.getTeacherFileByIdx(idx);
+
+        if (teacherFileDTO == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "요청한 자료를 찾을 수 없습니다.");
+            return "redirect:/teacher/personal/library?teacherId=" + pageDTO.getTeacherId();
+        }
+
+        model.addAttribute("pageDTO", pageDTO);
+        model.addAttribute("teacherFileDTO", teacherFileDTO);
+
+        setBreadcrumb(model, Map.of("자료실", "/teacher/library"), Map.of("자료실 상세보기", "/teacher/library/view"));
+
+        return "teacher/library/view";
     }
 
     @GetMapping("/personal/qna")
