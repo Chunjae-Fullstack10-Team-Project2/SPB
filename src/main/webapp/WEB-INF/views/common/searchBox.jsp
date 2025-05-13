@@ -13,7 +13,7 @@
     <form name="frmSearch" method="get" action="${searchAction}" class="mb-1 p-4">
         <div class="row g-2 align-items-center mb-3">
             <c:if test="${param.startDate != null and param.endDate != null}">
-                <c:set var="datefilter" value="${param.startDate} - ${param.endDate}" />
+                <c:set var="datefilter" value="${param.startDate} - ${param.endDate}"/>
             </c:if>
             <c:if test="${not empty dateOptions}">
                 <div class="col-md-2">
@@ -28,7 +28,8 @@
             </c:if>
             <c:if test="${empty isTeacher}">
                 <div class="col-md-${not empty dateOptions ? '4' : '6'}">
-                    <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택" autocomplete="off"
+                    <input type="text" name="datefilter" id="datefilter" class="form-control" placeholder="기간 선택"
+                           autocomplete="off"
                            value="${datefilter != null ? datefilter : ''}"/>
                 </div>
             </c:if>
@@ -49,7 +50,8 @@
                        value="${searchDTO.searchWord != null ? searchDTO.searchWord : ''}"/>
             </div>
             <div class="col-md-3 d-flex gap-1">
-                <button type="button" class="btn btn-primary flex-fill" id="btnSearch" onclick="submitSearch();">검색</button>
+                <button type="button" class="btn btn-primary flex-fill" id="btnSearch" onclick="submitSearch();">검색
+                </button>
                 <button type="button" class="btn btn-link flex-fill text-decoration-none" id="btnReset">초기화</button>
             </div>
         </div>
@@ -66,7 +68,8 @@
             </div>
         </div>
         <c:if test="${fn:contains(currentURI, '/qna') or fn:contains(currentURI, '/mypage/myQna')}">
-            <div class="d-flex flex-wrap gap-3 justify-content-end">
+<%--        <c:if test="${empty isQna}">--%>
+         <div class="d-flex flex-wrap gap-3 justify-content-end">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="answered" id="status_1" value="1"
                         ${param.answered eq 1 ? "checked" : ""} onchange="submitSearch();"/>
@@ -163,7 +166,7 @@
         } else {
             params.delete('answered');
         }
-        console.log("url: "+url.toString());
+        console.log("url: " + url.toString());
         location.href = url.toString();
     }
 
