@@ -48,44 +48,58 @@
 </head>
 <body>
 <%@ include file="../common/sidebarHeader.jsp" %>
-<div class="content">
-  <%@ include file="../common/breadcrumb.jsp" %>
-  <div class="container my-5">
+<div class="content mr-5">
+  <div class="container my-5 mr-5">
+    <%@ include file="../common/breadcrumb.jsp" %>
+  </div>
+  <div class="container my-5 mr-5">
     <div class="my-5">
       <h1 class="h4 fw-bold">관리자 메인 페이지</h1>
     </div>
     <div class="row g-4">
-      <div class="col-md-6">
-        <a href="${cp}/admin/member/list" class="btn-admin">
-          <i class="bi bi-person-lines-fill"></i> 회원 관리
+      <div class="col-md-3">
+        <a href="${cp}/admin/member/list" class="d-block p-3 bg-primary bg-opacity-10 rounded shadow-sm text-decoration-none">
+          <i class="bi bi-people-fill text-primary fs-4 me-2"></i> <strong class="text-dark">회원 관리</strong>
         </a>
       </div>
-      <div class="col-md-6">
-        <a href="${cp}/admin/teacher/list" class="btn-admin">
-          <i class="bi bi-person-workspace"></i> 선생님 관리
+      <div class="col-md-3">
+        <a href="${cp}/admin/teacher/list" class="d-block p-3 bg-success bg-opacity-10 rounded shadow-sm text-decoration-none">
+          <i class="bi bi-person-badge-fill text-success fs-4 me-2"></i> <strong class="text-dark">선생님 관리</strong>
         </a>
       </div>
-      <div class="col-md-6">
-        <a href="${cp}/admin/lecture/list" class="btn-admin">
-          <i class="bi bi-book"></i> 강좌 관리
+      <div class="col-md-3">
+        <a href="${cp}/admin/lecture/list" class="d-block p-3 bg-warning bg-opacity-10 rounded shadow-sm text-decoration-none">
+          <i class="bi bi-easel2-fill text-warning fs-4 me-2"></i> <strong class="text-dark">강좌 관리</strong>
         </a>
       </div>
-      <div class="col-md-6">
-        <a href="${cp}/admin/chapter/list" class="btn-admin">
-          <i class="bi bi-journals"></i> 강의 관리
+      <div class="col-md-3">
+        <a href="${cp}/admin/chapter/list" class="d-block p-3 bg-info bg-opacity-10 rounded shadow-sm text-decoration-none">
+          <i class="bi bi-collection-play-fill text-info fs-4 me-2"></i> <strong class="text-dark">강의 관리</strong>
         </a>
       </div>
-      <div class="col-md-6">
-        <a href="${cp}/admin/report/list" class="btn-admin">
-          <i class="bi bi-flag-fill"></i> 신고 관리
+      <div class="col-md-3">
+        <a href="${cp}/admin/report/list/board" class="d-block p-3 bg-danger bg-opacity-10 rounded shadow-sm text-decoration-none">
+          <i class="bi bi-shield-exclamation text-danger fs-4 me-2"></i> <strong class="text-dark">신고 관리</strong>
         </a>
       </div>
-      <div class="col-md-6">
-        <a href="${cp}/admin/board/manage" class="btn-admin">
-          <i class="bi bi-layout-text-window"></i> 게시판 관리
+      <div class="col-md-3">
+        <a href="${cp}/admin/board/manage" class="d-block p-3 bg-secondary bg-opacity-10 rounded shadow-sm text-decoration-none">
+          <i class="bi bi-card-text text-secondary fs-4 me-2"></i> <strong class="text-dark">게시판 관리</strong>
         </a>
       </div>
-   </div>
+      <div class="col-md-3">
+        <a href="${cp}/admin/board/manage" class="d-block p-3 bg-dark bg-opacity-10 rounded shadow-sm text-decoration-none">
+          <i class="bi bi-question-circle-fill text-dark fs-4 me-2"></i> <strong class="text-dark">Q & A</strong>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a href="${cp}/admin/sales/info" class="d-block p-3 bg-primary bg-opacity-10 rounded shadow-sm text-decoration-none">
+          <i class="bi bi-bar-chart-fill text-primary fs-4 me-2"></i> <strong class="text-dark">매출 정보</strong>
+        </a>
+      </div>
+    </div>
+
+
   </div>
 </div>
 </body>
