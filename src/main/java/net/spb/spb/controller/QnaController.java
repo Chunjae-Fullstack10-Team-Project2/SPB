@@ -62,6 +62,11 @@ public class QnaController {
 
     @PostMapping("/regist")
     public String regist(@Valid @ModelAttribute QnaDTO qnaDTO, BindingResult bindingResult, HttpSession session, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", "오류가 발생했습니다. 다시 시도해주세요.");
+            return "qna/regist";
+        }
+
         String pwd = qnaDTO.getQnaQPwd();
         if (pwd != null && pwd.trim().isEmpty()) {
             qnaDTO.setQnaQPwd(null);

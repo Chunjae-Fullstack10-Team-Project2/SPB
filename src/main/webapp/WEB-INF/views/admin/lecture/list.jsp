@@ -8,6 +8,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<c:set var="cp" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
     <title>Title</title>
@@ -26,7 +27,7 @@
     </div>
 
     <table class="table table-hover align-middle">
-      <thead class="table-light">
+      <thead class="table-light text-center">
       <tr>
         <th scope="col">No</th>
         <th scope="col">썸네일</th>
@@ -43,13 +44,14 @@
         <tr>
           <td>${status.index + 1}</td>
           <td>
-            <img src="/upload/${lecture.lectureThumbnailImg}" alt="썸네일" style="width: 80px; height: auto; border-radius: 6px;">
+            <img src="/upload/${lecture.lectureThumbnailImg}" alt="강좌 썸네일" style="width: 80px; height: auto; border-radius: 6px;"
+            onerror="this.src='${cp}/resources/img/spb_single_logo.png';">
           </td>
           <td>${lecture.lectureTitle}</td>
           <td class="text-truncate" style="max-width: 200px;">${lecture.lectureDescription}</td>
-          <td>${lecture.lectureTeacherId}</td>
-          <td><fmt:formatNumber value="${lecture.lectureAmount}" type="number" />원</td>
-          <td><fmt:formatDate value="${lecture.lectureCreatedAt}" pattern="yyyy-MM-dd" /></td>
+          <td class="text-center">${lecture.lectureTeacherName}<br><span class="text-muted small">(${lecture.lectureTeacherId})</span></td>
+          <td class="text-center"><fmt:formatNumber value="${lecture.lectureAmount}" type="number" />원</td>
+          <td class="text-center"><fmt:formatDate value="${lecture.lectureCreatedAt}" pattern="yyyy-MM-dd" /></td>
           <td>
             <a href="modify?lectureIdx=${lecture.lectureIdx}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i> 수정</a>
             <button type="button" class="btn btn-sm btn-danger btnDelete" data-lecture-idx="${lecture.lectureIdx}"><i class="bi bi-trash"></i> 삭제</button>

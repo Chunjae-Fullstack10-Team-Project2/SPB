@@ -32,8 +32,8 @@
     </style>
 </head>
 <body>
-<%@ include file="../../common/header.jsp" %>
-<div class="content-nonside">
+<%@ include file="../../common/sidebarHeader.jsp" %>
+<div class="content">
     <div class="container my-5">
         <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
             <symbol id="house-door-fill" viewBox="0 0 16 16">
@@ -51,7 +51,7 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a class="link-body-emphasis fw-semibold text-decoration-none" href="/">게시판</a>
+                    <a class="link-body-emphasis fw-semibold text-decoration-none" href="/board/news">뉴스 게시판</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
                     뉴스 목록
