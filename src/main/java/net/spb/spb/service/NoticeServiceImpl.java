@@ -7,6 +7,7 @@ import net.spb.spb.mapper.NoticeMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -121,6 +122,48 @@ public class NoticeServiceImpl implements NoticeService {
             dto.setNoticeUpdatedAt(notice.getNoticeUpdatedAt());
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    // 날짜 범위로 검색
+    @Override
+    public int getCountByDateRange(LocalDate startDate, LocalDate endDate) throws Exception {
+        return noticeMapper.getCountByDateRange(startDate, endDate);
+    }
+
+    @Override
+    public List<NoticeDTO> getListByDateRange(LocalDate startDate, LocalDate endDate, int offset, int size) throws Exception {
+        return noticeMapper.getListByDateRange(startDate, endDate, offset, size)
+                .stream()
+                .map(NoticeDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    // 날짜 범위와 제목으로 검색
+    @Override
+    public int getCountByDateRangeAndTitle(LocalDate startDate, LocalDate endDate, String keyword) throws Exception {
+        return noticeMapper.getCountByDateRangeAndTitle(startDate, endDate, keyword);
+    }
+
+    @Override
+    public List<NoticeDTO> getListByDateRangeAndTitle(LocalDate startDate, LocalDate endDate, String keyword, int offset, int size) throws Exception {
+        return noticeMapper.getListByDateRangeAndTitle(startDate, endDate, keyword, offset, size)
+                .stream()
+                .map(NoticeDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    // 날짜 범위와 내용으로 검색
+    @Override
+    public int getCountByDateRangeAndContent(LocalDate startDate, LocalDate endDate, String keyword) throws Exception {
+        return noticeMapper.getCountByDateRangeAndContent(startDate, endDate, keyword);
+    }
+
+    @Override
+    public List<NoticeDTO> getListByDateRangeAndContent(LocalDate startDate, LocalDate endDate, String keyword, int offset, int size) throws Exception {
+        return noticeMapper.getListByDateRangeAndContent(startDate, endDate, keyword, offset, size)
+                .stream()
+                .map(NoticeDTO::new)
+                .collect(Collectors.toList());
     }
 
 }

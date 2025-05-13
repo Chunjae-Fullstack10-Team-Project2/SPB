@@ -2,6 +2,7 @@ package net.spb.spb.service;
 
 import net.spb.spb.dto.NoticeDTO;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface NoticeService {
@@ -36,4 +37,17 @@ public interface NoticeService {
 
     List<NoticeDTO> getFixedNotices() throws Exception;
 
+    // 날짜 범위로 검색
+    int getCountByDateRange(LocalDate startDate, LocalDate endDate) throws Exception;
+    List<NoticeDTO> getListByDateRange(LocalDate startDate, LocalDate endDate, int offset, int size) throws Exception;
+
+    // 날짜 범위와 제목으로 검색
+    int getCountByDateRangeAndTitle(LocalDate startDate, LocalDate endDate, String keyword) throws Exception;
+    List<NoticeDTO> getListByDateRangeAndTitle(LocalDate startDate, LocalDate endDate, String keyword, int offset, int size) throws Exception;
+
+    // 날짜 범위와 내용으로 검색
+    int getCountByDateRangeAndContent(LocalDate startDate, LocalDate endDate, String keyword) throws Exception;
+    List<NoticeDTO> getListByDateRangeAndContent(LocalDate startDate, LocalDate endDate, String keyword, int offset, int size) throws Exception;
 }
+
+

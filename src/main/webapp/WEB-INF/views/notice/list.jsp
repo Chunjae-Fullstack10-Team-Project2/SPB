@@ -25,11 +25,6 @@
             border-radius: 100%;
         }
 
-        .bar-img {
-            margin-left: 5px;
-            width: 20px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -68,35 +63,48 @@
             </c:if>
         </div>
 
-        <form method="get" action="${pageContext.request.contextPath}/notice/list" class="mb-1 p-4">
-            <input type="hidden" name="size" value="${size}" />
+        <!-- 서치박스 -->
+        <form name="frmSearch" id="frmSearch" method="get" action="/notice/list" class="mb-1 p-4">
+            <div class="row g-2 align-items-center mb-3">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="datefilter" name="datefilter"
+                           value="${not empty param.startDate and not empty param.endDate ? param.startDate.concat(' - ').concat(param.endDate) : ''}"
+                           placeholder="기간 선택" autocomplete="off">
+                </div>
+            </div>
+
             <div class="row g-2 align-items-center mb-3">
                 <div class="col-md-2">
-                    <select name="searchType" class="form-select">
+                    <select id="searchType" name="searchType" class="form-select">
                         <option value="title" ${searchType == 'title' ? 'selected' : ''}>제목</option>
                         <option value="content" ${searchType == 'content' ? 'selected' : ''}>내용</option>
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <input type="text" name="keyword" value="${keyword}" placeholder="검색어 입력" class="form-control" />
+
+                <div class="col-md-5">
+                    <input type="text" id="keyword" name="keyword" class="form-control" value="${keyword}" placeholder="검색어 입력">
                 </div>
-                <div class="col-md-3 d-flex gap-1">
-                    <button type="submit" class="btn btn-primary flex-fill">검색</button>
-                    <button type="button" class="btn btn-link text-decoration-none"
-                            onclick="location.href='${pageContext.request.contextPath}/notice/list?size=${size}'">초기화</button>
+
+                <div class="col-md-2 d-flex gap-1">
+                    <button type="submit" class="btn btn-primary flex-fill" id="btnSearch">검색</button>
+                    <button type="button" id="btnReset" class="btn btn-link text-decoration-none">초기화</button>
+                </div>
+            </div>
+
+            <div class="row g-2 align-items-center mb-3">
+                <div class="col-md-3">
+                    <select id="sizeSelect" name="size" class="form-select">
+                        <option value="5" ${size == 5 ? 'selected' : ''}>5개씩 보기</option>
+                        <option value="10" ${size == 10 ? 'selected' : ''}>10개씩 보기</option>
+                        <option value="15" ${size == 15 ? 'selected' : ''}>15개씩 보기</option>
+                    </select>
                 </div>
             </div>
         </form>
 
-        <div class="d-flex justify-content-end mb-3">
-            <form method="get" action="${pageContext.request.contextPath}/notice/list" class="d-flex align-items-center">
-                <select name="size" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
-                    <option value="5" ${size == 5 ? 'selected' : ''}>5개</option>
-                    <option value="10" ${size == 10 ? 'selected' : ''}>10개</option>
-                    <option value="15" ${size == 15 ? 'selected' : ''}>15개</option>
-                </select>
-            </form>
-        </div>
+
+
+
 
         <div class="list-group">
             <c:forEach var="notice" items="${fixedList}">
@@ -113,7 +121,7 @@
                     <c:if test="${sessionScope.memberGrade == '0'}">
                         <div class="dropdown">
                             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
-                                <img src="${pageContext.request.contextPath}/resources/images/bar.svg" class="bar-img" />
+
                             </a>
                             <ul class="dropdown-menu text-small">
                                 <li>
@@ -139,7 +147,7 @@
                     <c:if test="${sessionScope.memberGrade == '0'}">
                         <div class="dropdown">
                             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
-                                <img src="${pageContext.request.contextPath}/resources/images/bar.svg" class="bar-img" />
+
                             </a>
                             <ul class="dropdown-menu text-small">
                                 <li>
@@ -174,7 +182,150 @@
 </div>
 
 <script>
-    // 드롭다운 동작은 Bootstrap이 자동 처리
+    $(function() {
+        $('input[name="datefilter"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                format: "YYYY-MM-DD",
+                separator: " - ",
+                applyLabel: "확인",
+                cancelLabel: "취소",
+                customRangeLabel: "Custom",
+                weekLabel: "주",
+                daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+                monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+                firstDay: 1
+            }
+        });
+
+
+        $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+            var startDate = picker.startDate.format('YYYY-MM-DD');
+            var endDate = picker.endDate.format('YYYY-MM-DD');
+            console.log("선택된 시작 날짜:", startDate);
+            console.log("선택된 종료 날짜:", endDate);
+            $(this).val(startDate + ' - ' + endDate);
+        });
+
+
+        $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+
+        // 검색 버튼
+        $('#btnSearch').click(function(e) {
+            e.preventDefault();
+            search();
+        });
+
+
+        $('#keyword').keypress(function(e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                search();
+            }
+        });
+
+        // 초기화 버튼
+        $('#btnReset').click(function() {
+            $('input[name="datefilter"]').val('');
+            $('#searchType').val('title');
+            $('#keyword').val('');
+            search();
+        });
+
+
+        $('#frmSearch').submit(function(e) {
+            e.preventDefault();
+            search();
+        });
+    });
+
+    // 검색
+    function search() {
+        var params = new URLSearchParams();
+        params.append('page', '1');
+
+
+        var datefilter = $('input[name="datefilter"]').val();
+        console.log("날짜 필터 값:", datefilter);
+
+        if (datefilter && datefilter.trim() !== '') {
+            var dates = datefilter.split(' - ');
+            if (dates.length === 2) {
+                console.log("시작 날짜:", dates[0]);
+                console.log("종료 날짜:", dates[1]);
+
+
+                if (isValidDate(dates[0]) && isValidDate(dates[1])) {
+                    params.append('startDate', dates[0]);
+                    params.append('endDate', dates[1]);
+                } else {
+                    console.error("날짜 형식이 올바르지 않습니다.");
+                }
+            } else {
+                console.error("날짜 범위 형식이 올바르지 않습니다:", datefilter);
+            }
+        }
+
+        // 검색
+        var searchType = $('#searchType').val();
+        if (searchType) {
+            params.append('searchType', searchType);
+        }
+
+        // 키워드
+        var keyword = $('#keyword').val();
+        if (keyword) {
+            params.append('keyword', keyword);
+        }
+
+        // 개수
+        var size = $('#sizeSelect').val();
+        if (size) {
+            params.append('size', size);
+        }
+
+
+        var url = '${pageContext.request.contextPath}/notice/list';
+        if (params.toString()) {
+            url += '?' + params.toString();
+        }
+
+        console.log("이동할 URL:", url);
+        window.location.href = url;
+    }
+
+
+    function isValidDate(dateString) {
+
+        var regex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!regex.test(dateString)) return false;
+
+
+        var parts = dateString.split("-");
+        var year = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10) - 1;
+        var day = parseInt(parts[2], 10);
+
+        var date = new Date(year, month, day);
+
+        return (
+            date.getFullYear() === year &&
+            date.getMonth() === month &&
+            date.getDate() === day
+        );
+    }
+
+
+    document.getElementById("sizeSelect").addEventListener('change', function () {
+        const size = this.value;
+        const url = new URL(window.location.href);
+        url.searchParams.set("size", size);
+        url.searchParams.set("page", 1);
+        console.log("표시 개수 변경 URL:", url.toString());
+        window.location.href = url.toString();
+    });
 </script>
 </body>
 </html>
