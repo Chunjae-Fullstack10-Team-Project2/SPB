@@ -8,6 +8,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<c:set var="cp" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
     <title>Title</title>
@@ -43,7 +44,8 @@
         <tr>
           <td>${status.index + 1}</td>
           <td>
-            <img src="/upload/${lecture.lectureThumbnailImg}" alt="썸네일" style="width: 80px; height: auto; border-radius: 6px;">
+            <img src="/upload/${lecture.lectureThumbnailImg}" alt="강좌 썸네일" style="width: 80px; height: auto; border-radius: 6px;"
+            onerror="this.src='${cp}/resources/img/spb_single_logo.png';">
           </td>
           <td>${lecture.lectureTitle}</td>
           <td class="text-truncate" style="max-width: 200px;">${lecture.lectureDescription}</td>
