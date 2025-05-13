@@ -1,12 +1,8 @@
 package net.spb.spb.dto.qna;
 
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.*;
-
-import jakarta.validation.constraints.NotNull;
 
 import java.util.Date;
 
@@ -18,6 +14,7 @@ public class QnaDTO {
 
     private String qnaIdx;
 
+    @Size(max = 19000, message = "제목은 19,000자 이하여야 합니다.")
     private String qnaTitle;
 
     @NotNull
@@ -26,6 +23,7 @@ public class QnaDTO {
     private String qnaAMemberId;
 
     @NotNull
+    @Size(max = 19000, message = "질문 내용은 19,000자 이하여야 합니다.")
     private String qnaQContent;
 
     private String qnaAContent;
