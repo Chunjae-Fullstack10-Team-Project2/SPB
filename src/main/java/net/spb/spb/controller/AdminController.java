@@ -120,7 +120,7 @@ public class AdminController {
         model.addAttribute("boardReportList", boardReportList);
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("자유게시판 신고 목록", ""));
-        return "admin/report/list";
+        return "admin/report/boardReportTable";
     }
 
     @GetMapping("/report/list/review")
@@ -138,7 +138,7 @@ public class AdminController {
         model.addAttribute("reviewReportList", reviewReportList);
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("강의평 신고 목록", ""));
-        return "admin/report/list";
+        return "admin/report/reviewReportTable";
     }
 
     @GetMapping("/teacher/list")
