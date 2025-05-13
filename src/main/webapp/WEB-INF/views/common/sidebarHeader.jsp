@@ -279,6 +279,10 @@
                         </li>
                         <li>
                             <a class=" d-inline-flex text-decoration-none rounded text-dark"
+                               href="${cp}/myclass/library">자료실</a>
+                        </li>
+                        <li>
+                            <a class=" d-inline-flex text-decoration-none rounded text-dark"
                                href="${cp}/myclass/grade">성적 관리</a>
                         </li>
                         <li>
