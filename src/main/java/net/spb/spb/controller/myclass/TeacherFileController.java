@@ -48,9 +48,9 @@ public class TeacherFileController {
             Model model
     ) {
         HttpSession session = req.getSession();
-        String teacherId = (String) session.getAttribute("memberId");
+        String memberId = (String) session.getAttribute("memberId");
 
-        List<TeacherFileResponseDTO> files = teacherFileService.getTeacherFileList(teacherId, pageDTO);
+        List<TeacherFileResponseDTO> files = teacherFileService.getTeacherFileList(memberId, pageDTO);
 
         model.addAttribute("fileList", files);
         model.addAttribute("pageDTO", pageDTO);
