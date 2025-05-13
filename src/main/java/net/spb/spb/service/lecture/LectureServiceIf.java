@@ -3,8 +3,10 @@ package net.spb.spb.service.lecture;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.TeacherDTO;
+import net.spb.spb.dto.lecture.LectureReviewDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
+import net.spb.spb.dto.post.PostReportDTO;
 
 import java.util.List;
 
@@ -19,4 +21,6 @@ public interface LectureServiceIf {
     public List<LectureDTO> getAllLectures(SearchDTO searchDTO, PageRequestDTO pageRequestDTO);
     public int getTotalCount(SearchDTO searchDTO, String subject);
     public List<LectureDTO> getLectureMain(String subject, SearchDTO searchDTO, PageRequestDTO pageRequestDTO);
+    public List<LectureReviewDTO> selectLectureReview(int lectureIdx, PageRequestDTO pageRequestDTO);
+    public int insertReport(PostReportDTO postReportDTO);
 }

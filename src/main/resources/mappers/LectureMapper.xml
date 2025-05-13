@@ -105,4 +105,21 @@
             AND tl.lectureTitle LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
         </if>
     </select>
+    <select id="selectLectureReview">
+        select lectureReviewIdx, lectureReviewContent, lectureReviewMemberId, lectureReviewGrade
+        from tbl_lecture_review
+        where lectureReviewRefIdx = #{lectureIdx}
+        and lectureReviewState = 1
+        order by lectureReviewMemberId asc
+        limit #{pageRequestDTO.pageSkipCount}, 5
+    </select>
+    <insert id="insertReport">
+        insert into tbl_report(reportRefType, reportRefIdx, reportMemberId) select 'LECTURE_REVIEW', #{dto.lectureReviewRefIdx}, #{dto.lectureReviewMemberId}
+        from dual
+        where not exists (
+            select 1
+            from tbl_report
+        where reportRefType = 'LECTURE_REVIEW' and reportRefIdx = #{dto.lectureReviewRefIdx} and reportMemberId = #{dto.lectureReviewMemberId}
+        )
+    </insert>
 </mapper>    

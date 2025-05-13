@@ -7,8 +7,10 @@ import net.spb.spb.domain.TeacherVO;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.TeacherDTO;
+import net.spb.spb.dto.lecture.LectureReviewDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
+import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.mapper.lecture.LectureMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -78,5 +80,15 @@ public class LectureServiceImpl implements LectureServiceIf {
     @Override
     public List<LectureDTO> getLectureMain(String subject, SearchDTO searchDTO, PageRequestDTO pageRequestDTO) {
         return lectureMapper.getLectureMain(subject, searchDTO, pageRequestDTO);
+    }
+
+    @Override
+    public List<LectureReviewDTO> selectLectureReview(int lectureIdx, PageRequestDTO pageRequestDTO) {
+        return lectureMapper.selectLectureReview(lectureIdx, pageRequestDTO);
+    }
+
+    @Override
+    public int insertReport(PostReportDTO postReportDTO) {
+        return lectureMapper.insertReport(postReportDTO);
     }
 }

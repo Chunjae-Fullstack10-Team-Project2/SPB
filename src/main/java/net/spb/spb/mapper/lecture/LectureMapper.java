@@ -4,8 +4,10 @@ import net.spb.spb.domain.LectureVO;
 import net.spb.spb.domain.TeacherVO;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
+import net.spb.spb.dto.lecture.LectureReviewDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
+import net.spb.spb.dto.post.PostReportDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,4 +26,6 @@ public interface LectureMapper {
     public List<LectureDTO> getAllLecture(@Param("searchDTO") SearchDTO searchDTO, @Param("pageRequestDTO") PageRequestDTO pageRequestDTO);
     public int getTotalCount(@Param("searchDTO") SearchDTO searchDTO, @Param("subject") String subject);
     public List<LectureDTO> getLectureMain(@Param("subject") String subject, @Param("searchDTO") SearchDTO searchDTO, @Param("pageRequestDTO") PageRequestDTO pageRequestDTO);
+    public List<LectureReviewDTO> selectLectureReview(@Param("lectureIdx") int lectureIdx, @Param("pageRequestDTO") PageRequestDTO pageRequestDTO);
+    public int insertReport(@Param("dto") PostReportDTO dto);
 }
