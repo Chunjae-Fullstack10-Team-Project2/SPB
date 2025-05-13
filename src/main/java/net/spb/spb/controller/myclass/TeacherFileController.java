@@ -73,8 +73,8 @@ public class TeacherFileController {
             @Valid @ModelAttribute TeacherFileDTO teacherFileDTO,
             @RequestParam(name = "file") MultipartFile file,
             BindingResult bindingResult,
-            HttpServletRequest req,
-            RedirectAttributes redirectAttributes
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest req
     ) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage", "잘못된 입력이 있습니다. 다시 확인해주세요.");
