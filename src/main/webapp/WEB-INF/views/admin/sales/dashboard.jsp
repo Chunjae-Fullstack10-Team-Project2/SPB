@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
-<body>
+<body class="bg-light">
 <%@ include file="../../common/sidebarHeader.jsp" %>
 
 <div class="content">
@@ -23,24 +23,6 @@
     </svg>
     <div class="container my-5">
         <%@ include file="../../common/breadcrumb.jsp" %>
-<%--        <nav aria-label="breadcrumb">--%>
-<%--            <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">--%>
-<%--                <li class="breadcrumb-item">--%>
-<%--                    <a class="link-body-emphasis" href="/">--%>
-<%--                        <svg class="bi" width="16" height="16" aria-hidden="true">--%>
-<%--                            <use xlink:href="#house-door-fill"></use>--%>
-<%--                        </svg>--%>
-<%--                        <span class="visually-hidden">Home</span>--%>
-<%--                    </a>--%>
-<%--                </li>--%>
-<%--                <li class="breadcrumb-item">--%>
-<%--                    <a class="link-body-emphasis fw-semibold text-decoration-none" href="/admin/member/list">관리 페이지</a>--%>
-<%--                </li>--%>
-<%--                <li class="breadcrumb-item active" aria-current="page">--%>
-<%--                    매출 대시보드--%>
-<%--                </li>--%>
-<%--            </ol>--%>
-<%--        </nav>--%>
     </div>
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -270,14 +252,21 @@
 
         if (totalPage <= 1) return;
 
-        if (prev) {
-            $pagination.append(
-                '<li class="page-item">' +
-                '<a class="page-link" href="#" data-page="' + (startPage - 1) + '">&laquo;</a>' +
-                '</li>'
-            );
-        }
+        // << 첫 페이지
+        $pagination.append(
+            '<li class="page-item ' + (pageNo === 1 ? 'disabled' : '') + '">' +
+            '<a class="page-link" href="#" data-page="1">&laquo;&laquo;</a>' +
+            '</li>'
+        );
 
+        // < 이전 블록
+        $pagination.append(
+            '<li class="page-item ' + (!prev ? 'disabled' : '') + '">' +
+            '<a class="page-link" href="#" data-page="' + (startPage - 1) + '">&laquo;</a>' +
+            '</li>'
+        );
+
+        // 페이지 숫자
         for (let i = startPage; i <= endPage; i++) {
             $pagination.append(
                 '<li class="page-item ' + (i === pageNo ? 'active' : '') + '">' +
@@ -286,13 +275,19 @@
             );
         }
 
-        if (next) {
-            $pagination.append(
-                '<li class="page-item">' +
-                '<a class="page-link" href="#" data-page="' + (endPage + 1) + '">&raquo;</a>' +
-                '</li>'
-            );
-        }
+        // > 다음 블록
+        $pagination.append(
+            '<li class="page-item ' + (!next ? 'disabled' : '') + '">' +
+            '<a class="page-link" href="#" data-page="' + (endPage + 1) + '">&raquo;</a>' +
+            '</li>'
+        );
+
+        // >> 마지막 페이지
+        $pagination.append(
+            '<li class="page-item ' + (pageNo === totalPage ? 'disabled' : '') + '">' +
+            '<a class="page-link" href="#" data-page="' + totalPage + '">&raquo;&raquo;</a>' +
+            '</li>'
+        );
     }
 
     $(document).on('click', '#salesPagination .page-link', function (e) {

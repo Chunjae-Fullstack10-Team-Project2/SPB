@@ -52,6 +52,7 @@
             width: 280px;
             height: 100vh;
             z-index: 10;
+            background-color: white;
         }
 
         body {
