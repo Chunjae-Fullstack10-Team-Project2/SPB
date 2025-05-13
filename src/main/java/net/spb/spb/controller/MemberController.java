@@ -484,7 +484,6 @@ public class MemberController {
         boolean result = memberService.join(memberDTO);
 
         if (result) {
-
             session.removeAttribute("memberEmail");
             model.addAttribute("errorMessage", "회원가입에 성공했습니다.");
             return "redirect:/login";
