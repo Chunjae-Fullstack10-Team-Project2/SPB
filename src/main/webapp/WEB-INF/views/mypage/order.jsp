@@ -82,6 +82,9 @@
                     <th>
                         구매 상태
                     </th>
+                    <th>
+                        구매 내역 상세
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -100,7 +103,7 @@
                             </c:forEach>
                         </td>
                         <td><fmt:setLocale value="ko_KR"/>
-                            <fmt:formatNumber value="${orderDTO.orderAmount}" type="currency"/>
+                            <fmt:formatNumber value="${orderDTO.orderAmount}" type="number"/>원
                         </td>
                         <td>${orderDTO.orderCreatedAt.toLocalDate()}</td>
                         <td>
@@ -140,6 +143,11 @@
                                     <span class="badge bg-success">구매 확정</span>
                                 </c:when>
                             </c:choose>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-secondary btn-sm"
+                                    onclick="window.location.href='/payment/paymentDetail?orderIdx=${orderDTO.orderIdx}'"/>구매 내역 상세
+                            </button>
                         </td>
                     </tr>
                 </c:forEach>
