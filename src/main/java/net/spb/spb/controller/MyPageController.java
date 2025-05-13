@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.BookmarkDTO;
 import net.spb.spb.dto.OrderDTO;
+import net.spb.spb.dto.OrderLectureDTO;
 import net.spb.spb.dto.post.PostDTO;
 import net.spb.spb.dto.post.PostLikeRequestDTO;
 import net.spb.spb.dto.post.PostReportDTO;
@@ -320,9 +321,9 @@ public class MyPageController {
                 od.setOrderCreatedAt(dto.getOrderCreatedAt());
                 od.setOrderAmount(dto.getOrderAmount());
                 od.setOrderStatus(dto.getOrderStatus());
-                od.setOrderLectureList(new ArrayList<>());
+                od.setOrderLectureDTOList(new ArrayList<>());
                 return od;
-            }).getOrderLectureList().add(dto.getLectureTitle());
+            }).getOrderLectureDTOList().add(new OrderLectureDTO(dto.getLectureIdx(), dto.getLectureTitle()));
         }
 
         List<OrderDTO> finalOrderList = new ArrayList<>(grouped.values());

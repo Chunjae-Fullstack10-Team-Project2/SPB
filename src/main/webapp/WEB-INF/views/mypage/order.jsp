@@ -85,53 +85,58 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${orderList}" var="reportDTO" varStatus="status">
+                <c:forEach items="${orderList}" var="orderDTO" varStatus="status">
                     <tr>
-                        <td>${status.index + 1}</td>
+                        <td>${orderDTO.orderIdx}</td>
+                            <%-- <a href="/lecture/lectureDetail?lectureIdx=${orderDTO.lectureIdx}" class="text-decoration-none text-dark">--%>
                         <td class="text-start">
-                            <c:forEach items="${reportDTO.orderLectureList}" var="lectureTitle" varStatus="loop">
+                            <c:forEach items="${orderDTO.orderLectureDTOList}" var="lecture" varStatus="loop">
                                 <div class="mb-1">
-                                    <i class="bi bi-play-circle text-primary me-1"><a href="#"
-                                                                                      class="text-decoration-none text-dark"></a></i>
-                                        ${lectureTitle}
+                                    <i class="bi bi-play-circle text-primary me-1"></i>
+                                    <a href="/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}" class="text-decoration-none text-dark">
+                                            ${lecture.lectureTitle}
+                                    </a>
                                 </div>
                             </c:forEach>
                         </td>
                         <td><fmt:setLocale value="ko_KR"/>
-                            <fmt:formatNumber value="${reportDTO.orderAmount}" type="currency"/>
+                            <fmt:formatNumber value="${orderDTO.orderAmount}" type="currency"/>
                         </td>
-                        <td>${reportDTO.orderCreatedAt.toLocalDate()}</td>
+                        <td>${orderDTO.orderCreatedAt.toLocalDate()}</td>
                         <td>
                             <c:choose>
-                                <c:when test="${reportDTO.orderStatus eq 's'}">
+                                <c:when test="${orderDTO.orderStatus eq 's'}">
                                     <form method="post" action="/mypage/order/confirm" class="d-inline">
-                                        <input type="hidden" name="orderIdx" value="${reportDTO.orderIdx}"/>
-                                        <input type="hidden" name="orderStatus" value="${reportDTO.orderStatus}"/>
+                                        <input type="hidden" name="orderIdx" value="${orderDTO.orderIdx}"/>
+                                        <input type="hidden" name="orderStatus" value="${orderDTO.orderStatus}"/>
                                         <button type="submit" class="btn btn-success btn-sm"
-                                                onclick="return confirm('정말로 구매를 확정하시겠습니까?')">구매 확정</button>
+                                                onclick="return confirm('정말로 구매를 확정하시겠습니까?')">구매 확정
+                                        </button>
                                     </form>
                                     <form method="post" action="/mypage/order/refund" class="d-inline">
-                                        <input type="hidden" name="orderIdx" value="${reportDTO.orderIdx}"/>
-                                        <input type="hidden" name="orderStatus" value="${reportDTO.orderStatus}"/>
-                                        <button type="submit" class="btn btn-outline-danger btn-sm"
-                                                onclick="return confirm('정말로 환불을 요청하시겠습니까?')">환불 요청</button>
+                                        <input type="hidden" name="orderIdx" value="${orderDTO.orderIdx}"/>
+                                        <input type="hidden" name="orderStatus" value="${orderDTO.orderStatus}"/>
+                                        <button type="submit" class="btn btn-outline-secondary btn-sm"
+                                                onclick="return confirm('정말로 환불을 요청하시겠습니까?')">환불 요청
+                                        </button>
                                     </form>
                                 </c:when>
 
-                                <c:when test="${reportDTO.orderStatus eq 'p'}">
+                                <c:when test="${orderDTO.orderStatus eq 'p'}">
                                     <form method="post" action="/mypage/order/cancel" class="d-inline">
-                                        <input type="hidden" name="orderIdx" value="${reportDTO.orderIdx}"/>
-                                        <input type="hidden" name="orderStatus" value="${reportDTO.orderStatus}"/>
+                                        <input type="hidden" name="orderIdx" value="${orderDTO.orderIdx}"/>
+                                        <input type="hidden" name="orderStatus" value="${orderDTO.orderStatus}"/>
                                         <button type="submit" class="btn btn-warning btn-sm"
-                                                onclick="return confirm('정말로 주문을 취소하시겠습니까?')">주문 취소</button>
+                                                onclick="return confirm('정말로 주문을 취소하시겠습니까?')">주문 취소
+                                        </button>
                                     </form>
                                 </c:when>
 
-                                <c:when test="${reportDTO.orderStatus eq 'r'}">
+                                <c:when test="${orderDTO.orderStatus eq 'r'}">
                                     <span class="badge bg-secondary">환불 완료</span>
                                 </c:when>
 
-                                <c:when test="${reportDTO.orderStatus eq 'f'}">
+                                <c:when test="${orderDTO.orderStatus eq 'f'}">
                                     <span class="badge bg-success">구매 확정</span>
                                 </c:when>
                             </c:choose>
