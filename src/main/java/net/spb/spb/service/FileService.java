@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class FileService {
 
-    private final FileMapper fileMapper;
     private final ModelMapper modelMapper;
+    private final FileMapper fileMapper;
 
     public int insertFile(FileDTO dto) {
         FileVO vo = modelMapper.map(dto, FileVO.class);
@@ -32,4 +32,5 @@ public class FileService {
         return fileMapper.deleteFileByFileName(fileName);
     }
 
+    public FileDTO getFileByIdx(int idx) { return modelMapper.map(fileMapper.selectFileByIdx(idx), FileDTO.class); }
 }
