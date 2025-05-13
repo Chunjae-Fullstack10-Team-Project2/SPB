@@ -6,13 +6,18 @@
     <meta charset="UTF-8">
     <title>구매 내역 상세</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <style>
+        .container-narrow {
+            max-width: 768px;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body class="bg-light">
-<%@ include file="../common/sidebarHeader.jsp" %>
-<div class="content">
-    <div class="container my-5">
+<%@ include file="../common/header.jsp" %>
+<div class="content-nonside">
+    <div class="container-narrow my-5">
 
         <!-- 헤더 -->
         <div class="mb-4">
