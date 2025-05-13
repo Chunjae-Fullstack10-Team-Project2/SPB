@@ -67,9 +67,12 @@
                 </select>
             </div>
         </div>
-        <c:if test="${fn:contains(currentURI, '/qna') or fn:contains(currentURI, '/mypage/myQna')}">
-<%--        <c:if test="${empty isQna}">--%>
-         <div class="d-flex flex-wrap gap-3 justify-content-end">
+        <c:if test="${
+    (fn:contains(currentURI, '/qna') or fn:contains(currentURI, '/mypage/myQna'))
+    and not fn:contains(currentURI, '/admin/qna/list')
+}">
+            <%--        <c:if test="${empty isQna}">--%>
+            <div class="d-flex flex-wrap gap-3 justify-content-end">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="answered" id="status_1" value="1"
                         ${param.answered eq 1 ? "checked" : ""} onchange="submitSearch();"/>
@@ -87,6 +90,31 @@
                 </div>
             </div>
         </c:if>
+        <c:if test="${fn:contains(currentURI, '/report')}">
+            <div class="d-flex flex-wrap gap-3 justify-content-end mt-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="reportState" id="report_1" value="1"
+                        ${param.reportState eq '1' ? "checked" : ""} onchange="submitSearch();"/>
+                    <label class="form-check-label" for="report_1">미처리</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="reportState" id="report_2" value="2"
+                        ${param.reportState eq '2' ? "checked" : ""} onchange="submitSearch();"/>
+                    <label class="form-check-label" for="report_2">처리</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="reportState" id="report_3" value="3"
+                        ${param.reportState eq '3' ? "checked" : ""} onchange="submitSearch();"/>
+                    <label class="form-check-label" for="report_3">반려</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="reportState" id="report_all" value=""
+                        ${empty param.reportState ? "checked" : ""} onchange="submitSearch();"/>
+                    <label class="form-check-label" for="report_all">전체</label>
+                </div>
+            </div>
+        </c:if>
+
     </form>
 </div>
 
@@ -166,6 +194,14 @@
         } else {
             params.delete('answered');
         }
+
+        const reportState = document.querySelector('input[name="reportState"]:checked');
+        if (reportState && reportState.value) {
+            params.set('reportState', reportState.value);
+        } else {
+            params.delete('reportState');
+        }
+
         console.log("url: " + url.toString());
         location.href = url.toString();
     }

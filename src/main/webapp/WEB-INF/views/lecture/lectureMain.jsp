@@ -1,13 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>강좌 페이지</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
@@ -72,6 +71,56 @@
             </tbody>
         </table>
     </div>
+    <!-- 평균 평점 -->
+    <div class="mb-4 p-4 bg-light border rounded">
+        <h5 class="mb-2">수강후기</h5>
+        <div class="d-flex align-items-center">
+            <h2 class="text-warning mb-0 me-2">★ ${averageRating}</h2>
+            <small class="text-muted">총 ${fn:length(reviewList)}개의 리뷰</small>
+        </div>
+    </div>
+
+    <!-- 수강 후기 리스트 -->
+    <c:forEach var="review" items="${reviewList}">
+        <div class="mb-3 p-3 border rounded bg-white shadow-sm">
+
+            <div class="d-flex justify-content-between mb-2">
+                <div>
+                    <!-- 별점 -->
+                    <div class="text-warning mb-1">
+                        <c:forEach begin="1" end="${review.lectureReviewGrade}" var="i">★</c:forEach>
+                        <c:forEach begin="1" end="${5 - review.lectureReviewGrade}" var="i">☆</c:forEach>
+                    </div>
+                    <!-- 아이디 -->
+                    <small class="badge bg-secondary">
+                        <i class="bi bi-person-circle me-1"></i>
+                        <c:choose>
+                            <c:when test="${fn:length(review.lectureReviewMemberId) > 4}">
+                                ${fn:substring(review.lectureReviewMemberId, 0, fn:length(review.lectureReviewMemberId) - 4)}****님
+                            </c:when>
+                            <c:otherwise>****님</c:otherwise>
+                        </c:choose>
+                    </small>
+                </div>
+
+                <!-- 신고 버튼 -->
+                <div>
+                    <button class="btn btn-outline-danger btn-sm"
+                            onclick="reportReview(${review.lectureReviewIdx}, '${review.lectureReviewMemberId}')">
+                        <i class="bi bi-flag"></i> 신고
+                    </button>
+                </div>
+            </div>
+
+            <!-- 후기 내용 -->
+            <p class="mb-0 text-muted">
+                <i class="bi bi-chat-left-text me-1"></i>
+                    ${review.lectureReviewContent}
+            </p>
+        </div>
+    </c:forEach>
+</div>
+</div>
 </div>
 </div>
 <script>
@@ -84,6 +133,39 @@
             '_blank',
             'width=' + screen.width + ',height=' + screen.height + ',top=0,left=0'
         );
+    }
+
+    function reportReview(lectureReviewIdx,lectureReviewId){
+        const memberId = '${sessionScope.memberId}';
+        console.log(memberId);
+        if (!memberId || memberId.trim() === "") {
+            alert("로그인이 필요합니다.");
+            window.location.href = "/login";
+            return;
+        }
+        if(memberId == lectureReviewId){
+            alert("자신의 수강후기는 신고할 수 없습니다.");
+            location.reload();
+            return;
+        }
+        $.ajax({
+            url: '/lecture/report',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                postMemberId: "",
+                lectureReviewIdx : lectureReviewIdx,
+                lectureReviewMemberId : '${sessionScope.memberId}'
+            }),
+            success: function (response) {
+                alert(response.message);
+                location.reload();
+            },
+            error: function (xhr) {
+                console.error('삭제 실패:', xhr.responseText);
+                alert("신고 중 오류가 발생했습니다.");
+            }
+        });
     }
 </script>
 <c:if test="${param.denied eq 'true'}">

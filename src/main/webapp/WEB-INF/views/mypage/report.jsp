@@ -15,36 +15,14 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
 </head>
-<body>
+<body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
 
 <div class="content">
-    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-        <symbol id="house-door-fill" viewBox="0 0 16 16">
-            <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
-        </symbol>
-    </svg>
     <div class="container my-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
-                <li class="breadcrumb-item">
-                    <a class="link-body-emphasis" href="/">
-                        <svg class="bi" width="16" height="16" aria-hidden="true">
-                            <use xlink:href="#house-door-fill"></use>
-                        </svg>
-                        <span class="visually-hidden">Home</span>
-                    </a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="link-body-emphasis fw-semibold text-decoration-none" href="/mypage">마이페이지</a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    신고 목록
-                </li>
-            </ol>
-        </nav>
+        <%@ include file="../common/breadcrumb.jsp" %>
     </div>
-    <div class="container my-5"  style="height: 100%; min-height: 100vh;">
+    <div class="container my-5" style="height: 100%; min-height: 100vh;">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">신고 목록</h3>
         </div>
@@ -97,26 +75,26 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${reportList}" var="reportDTO">
+                <c:forEach items="${reportList}" var="orderDTO">
                     <tr>
-                        <td>${reportDTO.reportIdx}</td>
+                        <td>${orderDTO.reportIdx}</td>
                         <td class="text-start">
-                            <a href="/board/freeboard/view?idx=${reportDTO.reportRefIdx}"
+                            <a href="/board/freeboard/view?idx=${orderDTO.reportRefIdx}"
                                class="text-decoration-none text-dark">
-                                    ${reportDTO.postTitle}
+                                    ${orderDTO.postTitle}
                             </a>
                         </td>
-                        <td>${reportDTO.postMemberId}</td>
-                        <td>${reportDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>${orderDTO.postMemberId}</td>
+                        <td>${orderDTO.postCreatedAt.toLocalDate()}</td>
                         <td>
                             <c:choose>
-                                <c:when test="${reportDTO.reportState == 1}">
+                                <c:when test="${orderDTO.reportState == 1}">
                                     <button type="button" class="btn btn-sm btn-danger"
-                                            onclick="deleteReport(${reportDTO.reportIdx})">
+                                            onclick="deleteReport(${orderDTO.reportIdx})">
                                         삭제
                                     </button>
                                 </c:when>
-                                <c:when test="${reportDTO.reportState == 2}">
+                                <c:when test="${orderDTO.reportState == 2}">
                                     <span class="badge bg-secondary">관리자에 의해 삭제됨</span>
                                 </c:when>
                             </c:choose>

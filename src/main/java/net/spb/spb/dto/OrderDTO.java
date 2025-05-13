@@ -21,6 +21,7 @@ public class OrderDTO {
     private LocalDateTime orderCreatedAt;
     private LocalDateTime orderUpdatedAt;
     private List<String> orderLectureList;
+    private List<OrderLectureDTO> orderLectureDTOList;
 
     //    tbl_order_lecture
     private int orderLectureIdx;

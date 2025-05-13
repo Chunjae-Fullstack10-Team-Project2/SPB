@@ -121,7 +121,7 @@
 
     </style>
 </head>
-<body>
+<body class="bg-light-subtle">
 <%@ include file="../common/header.jsp" %>
 
 <div class="login-container d-flex align-items-center py-4 bg-light text-center">

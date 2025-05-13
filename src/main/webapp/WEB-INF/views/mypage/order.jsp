@@ -8,34 +8,12 @@
 <head>
     <title>강좌 주문 내역</title>
 </head>
-<body>
+<body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
 
 <div class="content">
-    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-        <symbol id="house-door-fill" viewBox="0 0 16 16">
-            <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
-        </symbol>
-    </svg>
     <div class="container my-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
-                <li class="breadcrumb-item">
-                    <a class="link-body-emphasis" href="/">
-                        <svg class="bi" width="16" height="16" aria-hidden="true">
-                            <use xlink:href="#house-door-fill"></use>
-                        </svg>
-                        <span class="visually-hidden">Home</span>
-                    </a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="link-body-emphasis fw-semibold text-decoration-none" href="/mypage">마이페이지</a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    강좌 주문 내역
-                </li>
-            </ol>
-        </nav>
+        <%@ include file="../common/breadcrumb.jsp" %>
     </div>
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -82,59 +60,72 @@
                     <th>
                         구매 상태
                     </th>
+                    <th>
+                        구매 내역 상세
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${orderList}" var="reportDTO" varStatus="status">
+                <c:forEach items="${orderList}" var="orderDTO" varStatus="status">
                     <tr>
-                        <td>${status.index + 1}</td>
+                        <td>${orderDTO.orderIdx}</td>
+                            <%-- <a href="/lecture/lectureDetail?lectureIdx=${orderDTO.lectureIdx}" class="text-decoration-none text-dark">--%>
                         <td class="text-start">
-                            <c:forEach items="${reportDTO.orderLectureList}" var="lectureTitle" varStatus="loop">
+                            <c:forEach items="${orderDTO.orderLectureDTOList}" var="lecture" varStatus="loop">
                                 <div class="mb-1">
-                                    <i class="bi bi-play-circle text-primary me-1"><a href="#"
-                                                                                      class="text-decoration-none text-dark"></a></i>
-                                        ${lectureTitle}
+                                    <i class="bi bi-play-circle text-primary me-1"></i>
+                                    <a href="/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}" class="text-decoration-none text-dark">
+                                            ${lecture.lectureTitle}
+                                    </a>
                                 </div>
                             </c:forEach>
                         </td>
                         <td><fmt:setLocale value="ko_KR"/>
-                            <fmt:formatNumber value="${reportDTO.orderAmount}" type="currency"/>
+                            <fmt:formatNumber value="${orderDTO.orderAmount}" type="number"/>원
                         </td>
-                        <td>${reportDTO.orderCreatedAt.toLocalDate()}</td>
+                        <td>${orderDTO.orderCreatedAt.toLocalDate()}</td>
                         <td>
                             <c:choose>
-                                <c:when test="${reportDTO.orderStatus eq 's'}">
+                                <c:when test="${orderDTO.orderStatus eq 's'}">
                                     <form method="post" action="/mypage/order/confirm" class="d-inline">
-                                        <input type="hidden" name="orderIdx" value="${reportDTO.orderIdx}"/>
-                                        <input type="hidden" name="orderStatus" value="${reportDTO.orderStatus}"/>
+                                        <input type="hidden" name="orderIdx" value="${orderDTO.orderIdx}"/>
+                                        <input type="hidden" name="orderStatus" value="${orderDTO.orderStatus}"/>
                                         <button type="submit" class="btn btn-success btn-sm"
-                                                onclick="return confirm('정말로 구매를 확정하시겠습니까?')">구매 확정</button>
+                                                onclick="return confirm('정말로 구매를 확정하시겠습니까?')">구매 확정
+                                        </button>
                                     </form>
                                     <form method="post" action="/mypage/order/refund" class="d-inline">
-                                        <input type="hidden" name="orderIdx" value="${reportDTO.orderIdx}"/>
-                                        <input type="hidden" name="orderStatus" value="${reportDTO.orderStatus}"/>
-                                        <button type="submit" class="btn btn-outline-danger btn-sm"
-                                                onclick="return confirm('정말로 환불을 요청하시겠습니까?')">환불 요청</button>
+                                        <input type="hidden" name="orderIdx" value="${orderDTO.orderIdx}"/>
+                                        <input type="hidden" name="orderStatus" value="${orderDTO.orderStatus}"/>
+                                        <button type="submit" class="btn btn-outline-secondary btn-sm"
+                                                onclick="return confirm('정말로 환불을 요청하시겠습니까?')">환불 요청
+                                        </button>
                                     </form>
                                 </c:when>
 
-                                <c:when test="${reportDTO.orderStatus eq 'p'}">
+                                <c:when test="${orderDTO.orderStatus eq 'p'}">
                                     <form method="post" action="/mypage/order/cancel" class="d-inline">
-                                        <input type="hidden" name="orderIdx" value="${reportDTO.orderIdx}"/>
-                                        <input type="hidden" name="orderStatus" value="${reportDTO.orderStatus}"/>
+                                        <input type="hidden" name="orderIdx" value="${orderDTO.orderIdx}"/>
+                                        <input type="hidden" name="orderStatus" value="${orderDTO.orderStatus}"/>
                                         <button type="submit" class="btn btn-warning btn-sm"
-                                                onclick="return confirm('정말로 주문을 취소하시겠습니까?')">주문 취소</button>
+                                                onclick="return confirm('정말로 주문을 취소하시겠습니까?')">주문 취소
+                                        </button>
                                     </form>
                                 </c:when>
 
-                                <c:when test="${reportDTO.orderStatus eq 'r'}">
+                                <c:when test="${orderDTO.orderStatus eq 'r'}">
                                     <span class="badge bg-secondary">환불 완료</span>
                                 </c:when>
 
-                                <c:when test="${reportDTO.orderStatus eq 'f'}">
+                                <c:when test="${orderDTO.orderStatus eq 'f'}">
                                     <span class="badge bg-success">구매 확정</span>
                                 </c:when>
                             </c:choose>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-secondary btn-sm"
+                                    onclick="window.location.href='/payment/paymentDetail?orderIdx=${orderDTO.orderIdx}'"/>구매 내역 상세
+                            </button>
                         </td>
                     </tr>
                 </c:forEach>

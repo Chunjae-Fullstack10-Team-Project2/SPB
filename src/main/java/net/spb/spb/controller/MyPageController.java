@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.BookmarkDTO;
 import net.spb.spb.dto.OrderDTO;
+import net.spb.spb.dto.OrderLectureDTO;
 import net.spb.spb.dto.post.PostDTO;
 import net.spb.spb.dto.post.PostLikeRequestDTO;
 import net.spb.spb.dto.post.PostReportDTO;
@@ -16,6 +17,7 @@ import net.spb.spb.dto.pagingsearch.PageResponseDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.service.member.MyPageService;
 import net.spb.spb.service.member.MemberServiceImpl;
+import net.spb.spb.util.BreadcrumbUtil;
 import net.spb.spb.util.FileUtil;
 import net.spb.spb.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,16 @@ public class MyPageController {
     private MemberServiceImpl memberService;
     @Autowired
     private MyPageService myPageService;
+    private static final Map<String, String> ROOT_BREADCRUMB = Map.of("name", "마이 페이지", "url", "/mypage");
+
+    // 브레드크럼
+    private void setBreadcrumb(Model model, Map<String, String>... pagePairs) {
+        LinkedHashMap<String, String> pages = new LinkedHashMap<>();
+        for (Map<String, String> page : pagePairs) {
+            pages.putAll(page);
+        }
+        BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
+    }
 
     @GetMapping("")
     public String mypage(HttpSession session, Model model) {
@@ -56,6 +68,7 @@ public class MyPageController {
         }
         MemberDTO memberDTO = memberService.getMemberById(memberId);
         model.addAttribute("memberDTO", memberDTO);
+        setBreadcrumb(model, Map.of("마이 페이지", ""));
 
         return "mypage/mypage";
     }
@@ -226,6 +239,7 @@ public class MyPageController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("likesList", likesList);
         model.addAttribute("searchDTO", searchDTO);
+        setBreadcrumb(model, Map.of("좋아요 목록", ""));
 
         return "mypage/likes";
     }
@@ -269,6 +283,7 @@ public class MyPageController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("reportList", reportList);
         model.addAttribute("searchDTO", searchDTO);
+        setBreadcrumb(model, Map.of("신고 목록", ""));
         return "mypage/report";
     }
 
@@ -320,9 +335,9 @@ public class MyPageController {
                 od.setOrderCreatedAt(dto.getOrderCreatedAt());
                 od.setOrderAmount(dto.getOrderAmount());
                 od.setOrderStatus(dto.getOrderStatus());
-                od.setOrderLectureList(new ArrayList<>());
+                od.setOrderLectureDTOList(new ArrayList<>());
                 return od;
-            }).getOrderLectureList().add(dto.getLectureTitle());
+            }).getOrderLectureDTOList().add(new OrderLectureDTO(dto.getLectureIdx(), dto.getLectureTitle()));
         }
 
         List<OrderDTO> finalOrderList = new ArrayList<>(grouped.values());
@@ -338,6 +353,8 @@ public class MyPageController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("orderList", finalOrderList);
         model.addAttribute("searchDTO", searchDTO);
+        setBreadcrumb(model, Map.of("강좌 주문 목록", ""));
+
         return "mypage/order";
     }
 
@@ -377,6 +394,7 @@ public class MyPageController {
 
         MemberDTO memberDTO = memberService.getMemberById(memberId);
         model.addAttribute("memberDTO", memberDTO);
+        setBreadcrumb(model, Map.of("비밀번호 변경", ""));
 
         return "mypage/changePwd";
     }
@@ -452,6 +470,8 @@ public class MyPageController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("bookmarkList", bookmarkList);
         model.addAttribute("searchDTO", searchDTO);
+        setBreadcrumb(model, Map.of("북마크 목록", ""));
+
         return "mypage/bookmark";
     }
 
@@ -496,6 +516,8 @@ public class MyPageController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("postList", postList);
         model.addAttribute("searchDTO", searchDTO);
+        setBreadcrumb(model, Map.of("게시글 목록", ""));
+
         return "mypage/post";
     }
 }

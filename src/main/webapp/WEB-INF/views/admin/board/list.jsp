@@ -4,13 +4,6 @@
 <html>
 <head>
     <title>자유게시판 관리</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <c:choose>
@@ -102,7 +95,7 @@
                                 <tr>
                                     <td>${post.postIdx}</td>
                                     <td class="text-start">
-                                        <a href="#" class="text-decoration-none link-primary btn-show-modal" data-id="${post.postIdx}">
+                                        <a href="#" class="text-decoration-none btn-show-modal" data-id="${post.postIdx}">
                                                 ${post.postTitle}
                                         </a>
                                     </td>
@@ -184,7 +177,6 @@
 
 <script>
 
-
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('btnSearchInit').addEventListener('click', function () {
             window.location.href = "list";
@@ -195,14 +187,6 @@
             const url = new URL(window.location.href);
             url.searchParams.set("page_size", pageSize);
             window.location.href = url.toString();
-        });
-
-        const rows = document.querySelectorAll('.clickable-row');
-        rows.forEach(row => {
-            row.addEventListener('click', function () {
-                const url = this.dataset.href;
-                if (url) window.location.href = url;
-            });
         });
     });
 

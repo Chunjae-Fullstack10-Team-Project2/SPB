@@ -8,34 +8,12 @@
 <head>
     <title>찜한 강의</title>
 </head>
-<body>
+<body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
 
 <div class="content">
-    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-        <symbol id="house-door-fill" viewBox="0 0 16 16">
-            <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
-        </symbol>
-    </svg>
     <div class="container my-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
-                <li class="breadcrumb-item">
-                    <a class="link-body-emphasis" href="/">
-                        <svg class="bi" width="16" height="16" aria-hidden="true">
-                            <use xlink:href="#house-door-fill"></use>
-                        </svg>
-                        <span class="visually-hidden">Home</span>
-                    </a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="link-body-emphasis fw-semibold text-decoration-none" href="/mypage">마이페이지</a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    북마크한 강좌
-                </li>
-            </ol>
-        </nav>
+        <%@ include file="../common/breadcrumb.jsp" %>
     </div>
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -89,31 +67,31 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${bookmarkList}" var="postDTO" varStatus="status">
+                <c:forEach items="${bookmarkList}" var="bookmarkDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
-                            <a href="#"
+                            <a href="/lecture/lectureDetail?lectureIdx=${bookmarkDTO.bookmarkLectureIdx}"
                                class="text-decoration-none text-dark">
-                                    ${postDTO.lectureTitle}
+                                    ${bookmarkDTO.lectureTitle}
                             </a>
                         </td>
-                        <td>${postDTO.teacherName}</td>
-                        <td><fmt:formatDate value="${postDTO.bookmarkCreatedAt}" pattern="yyyy-MM-dd" /></td>
+                        <td>${bookmarkDTO.teacherName}</td>
+                        <td><fmt:formatDate value="${bookmarkDTO.bookmarkCreatedAt}" pattern="yyyy-MM-dd" /></td>
                         <td>
-                            <c:if test="${postDTO.bookmarkState == 1}">
+                            <c:if test="${bookmarkDTO.bookmarkState == 1}">
                                 <button type="button" class="btn btn-sm btn-outline-danger"
-                                        onclick="cancelBookmark(${postDTO.bookmarkIdx})">
+                                        onclick="cancelBookmark(${bookmarkDTO.bookmarkIdx})">
                                     북마크 취소
                                 </button>
                             </c:if>
-                            <c:if test="${postDTO.bookmarkState == 2}">
+                            <c:if test="${bookmarkDTO.bookmarkState == 2}">
                                 <span class="badge bg-success">구매 완료</span>
                             </c:if>
                         </td>
                         <td>
                             <button type="button" class="btn btn-sm btn-outline-primary"
-                                    onclick="addCart('${postDTO.bookmarkLectureIdx}')">
+                                    onclick="addCart('${bookmarkDTO.bookmarkLectureIdx}')">
                                 장바구니
                             </button>
                         </td>

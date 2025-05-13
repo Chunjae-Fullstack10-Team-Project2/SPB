@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light-subtle">
 <%@ include file="../common/header.jsp" %>
 
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -57,11 +57,17 @@
                 <div class="mb-3">
                     <label for="noticeContent" class="form-label">내용</label>
                     <textarea class="form-control" id="noticeContent" name="noticeContent"
-                              rows="10" style="resize: none;" required>${dto.noticeContent}</textarea>
+                              rows="10" style="resize: none;" maxlength="19000" required>${dto.noticeContent}</textarea>
                     <div class="invalid-feedback">
                         내용을 입력해주세요.
                     </div>
                 </div>
+
+                <c:if test="${not empty message}">
+                    <div class="alert alert-danger">
+                            ${message}
+                    </div>
+                </c:if>
 
                 <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" id="noticeIsFixedCheckbox"
@@ -85,7 +91,7 @@
     window.onload = function() {
         const isFixedValue = "${dto.noticeIsFixed}";
         if(isFixedValue === "1" || isFixedValue === "true") {
-            document.getElementById("noticeIsFixed").checked = true;
+            document.getElementById("noticeIsFixedCheckbox").checked = true;
         }
     }
 
@@ -99,9 +105,7 @@
     }
 
 
-    <% if(request.getAttribute("message") != null) { %>
-    alert("<%= request.getAttribute("message") %>");
-    <% } %>
+
 
 
 

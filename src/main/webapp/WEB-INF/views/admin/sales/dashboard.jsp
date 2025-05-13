@@ -4,15 +4,15 @@
 <html>
 <head>
     <title>매출 대시보드</title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
-<body>
+<body class="bg-light">
 <%@ include file="../../common/sidebarHeader.jsp" %>
 
 <div class="content">
@@ -22,24 +22,7 @@
         </symbol>
     </svg>
     <div class="container my-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
-                <li class="breadcrumb-item">
-                    <a class="link-body-emphasis" href="/">
-                        <svg class="bi" width="16" height="16" aria-hidden="true">
-                            <use xlink:href="#house-door-fill"></use>
-                        </svg>
-                        <span class="visually-hidden">Home</span>
-                    </a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="link-body-emphasis fw-semibold text-decoration-none" href="/admin/member/list">관리 페이지</a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    매출 대시보드
-                </li>
-            </ol>
-        </nav>
+        <%@ include file="../../common/breadcrumb.jsp" %>
     </div>
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -101,6 +84,7 @@
                         </div>
                         <div class="col-md-3 d-flex gap-2">
                             <button type="submit" class="btn btn-primary flex-fill">검색</button>
+                            <button type="button" class="btn btn-secondary flex-fill" id="btnResetFilter">초기화</button>
                             <button type="button" class="btn btn-success flex-fill" id="btnDownloadExcel">엑셀 다운로드</button>
                         </div>
                     </div>
@@ -168,7 +152,7 @@
                         </th>
                     </tr>
                     </thead>
-                    <tbody id="salesDetailTable">
+                    <tbody id="salesDetailTable" class="bg-white">
                     </tbody>
                 </table>
                 <div class="mt-3 d-flex justify-content-center">
@@ -180,6 +164,13 @@
 </div>
 <script>
     const cp = '<c:out value="${pageContext.request.contextPath}"/>';
+
+    $('#btnResetFilter').click(function () {
+        $('select[name=searchType]').val('');
+        $('input[name=searchWord]').val('');
+        $('input[name=startDate]').val('');
+        $('input[name=endDate]').val('');
+    });
 
     $('#btnDownloadExcel').click(function () {
         const params = {
@@ -239,20 +230,21 @@
                     '<td>' + row.orderMemberId + '</td>' +
                     '<td>' + (row.lectureTitle || '-') + '</td>' +
                     '<td>' + (row.orderAmount != null ? row.orderAmount.toLocaleString() + '원' : '-') + '</td>' +
-                    '<td>' + formatOrderCreatedAtArray(row.orderCreatedAt) + '</td>' +  // ✅ 추가
+                    '<td>' + formatOrderCreatedAtArray(row.orderCreatedAt) + '</td>' +
                     '</tr>'
                 );
             }).join("");
 
             if ((response.dtoList || []).length === 0) {
                 $('#salesDetailTable').html(
-                    '<tr><td colspan="4"><div class="alert alert-warning mt-4" role="alert">게시글이 없습니다.</div></td></tr>'
+                    '<tr><td colspan="5"><div class="alert alert-light mt-4" role="alert">게시글이 없습니다.</div></td></tr>'
                 );
                 $('#salesPagination').empty();
+            } else {
+                $('#salesDetailTable').html(rowsHtml);
+                renderPagination(response);
             }
 
-            $('#salesDetailTable').html(rowsHtml);
-            renderPagination(response);
         });
     }
 
@@ -269,14 +261,21 @@
 
         if (totalPage <= 1) return;
 
-        if (prev) {
-            $pagination.append(
-                '<li class="page-item">' +
-                '<a class="page-link" href="#" data-page="' + (startPage - 1) + '">&laquo;</a>' +
-                '</li>'
-            );
-        }
+        // << 첫 페이지
+        $pagination.append(
+            '<li class="page-item ' + (pageNo === 1 ? 'disabled' : '') + '">' +
+            '<a class="page-link" href="#" data-page="1">&laquo;</a>' +
+            '</li>'
+        );
 
+        // < 이전 블록
+        $pagination.append(
+            '<li class="page-item ' + (!prev ? 'disabled' : '') + '">' +
+            '<a class="page-link" href="#" data-page="' + (startPage - 1) + '"><</a>' +
+            '</li>'
+        );
+
+        // 페이지 숫자
         for (let i = startPage; i <= endPage; i++) {
             $pagination.append(
                 '<li class="page-item ' + (i === pageNo ? 'active' : '') + '">' +
@@ -285,13 +284,19 @@
             );
         }
 
-        if (next) {
-            $pagination.append(
-                '<li class="page-item">' +
-                '<a class="page-link" href="#" data-page="' + (endPage + 1) + '">&raquo;</a>' +
-                '</li>'
-            );
-        }
+        // > 다음 블록
+        $pagination.append(
+            '<li class="page-item ' + (!next ? 'disabled' : '') + '">' +
+            '<a class="page-link" href="#" data-page="' + (endPage + 1) + '">></a>' +
+            '</li>'
+        );
+
+        // >> 마지막 페이지
+        $pagination.append(
+            '<li class="page-item ' + (pageNo === totalPage ? 'disabled' : '') + '">' +
+            '<a class="page-link" href="#" data-page="' + totalPage + '">&raquo;</a>' +
+            '</li>'
+        );
     }
 
     $(document).on('click', '#salesPagination .page-link', function (e) {
@@ -330,8 +335,8 @@
         }, loadLectureChart);
 
         let monthlyChartInstance = null;
-        $('#monthlyStartDate').val(moment().subtract(1, 'months').format('YYYY-MM-DD'));
-        $('#monthlyEndDate').val(moment().format('YYYY-MM-DD'));
+        // $('#monthlyStartDate').val(moment().subtract(1, 'months').format('YYYY-MM-DD'));
+        // $('#monthlyEndDate').val(moment().format('YYYY-MM-DD'));
 
         function loadMonthlyChart() {
             const type = $('#timeType').val();
@@ -367,17 +372,15 @@
             const $end = $('#monthlyEndDate');
 
             if (type === 'YEAR') {
-                $start.attr('type', 'number').attr('placeholder', '예: 2020').val('');
-                $end.attr('type', 'number').attr('placeholder', '예: 2024').val('');
+                $start.attr('type', 'number').attr('placeholder', '예: 2020').val(moment().year());
+                $end.attr('type', 'number').attr('placeholder', '예: 2024').val(moment().year());
             } else if (type === 'MONTH') {
-                $start.attr('type', 'month').val('');
-                $end.attr('type', 'month').val('');
+                $start.attr('type', 'month').val(moment().subtract(1, 'months').format('YYYY-MM'));
+                $end.attr('type', 'month').val(moment().format('YYYY-MM'));
             } else {
-                $start.attr('type', 'date').val('');
-                $end.attr('type', 'date').val('');
+                $start.attr('type', 'date').val(moment().subtract(1, 'months').format('YYYY-MM-DD'));
+                $end.attr('type', 'date').val(moment().format('YYYY-MM-DD'));
             }
-
-            setDefaultMonthlyDates(type);
         }
 
         $(function () {

@@ -11,6 +11,7 @@ import net.spb.spb.dto.qna.QnaDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.service.member.MemberServiceImpl;
 import net.spb.spb.service.qna.QnaService;
+import net.spb.spb.util.BreadcrumbUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,16 @@ public class QnaController {
     @Autowired
     private MemberServiceImpl memberService;
 
+    private static final Map<String, String> ROOT_BREADCRUMB = Map.of("name", "1:1 문의", "url", "/qna/list");
+
+    // 브레드크럼
+    private void setBreadcrumb(Model model, Map<String, String>... pagePairs) {
+        LinkedHashMap<String, String> pages = new LinkedHashMap<>();
+        for (Map<String, String> page : pagePairs) {
+            pages.putAll(page);
+        }
+        BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
+    }
     @GetMapping("/list")
     public String qna(@ModelAttribute SearchDTO searchDTO,
                       @ModelAttribute PageRequestDTO pageRequestDTO,
@@ -48,6 +59,8 @@ public class QnaController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("qnaList", qnaList);
         model.addAttribute("searchDTO", searchDTO);
+        setBreadcrumb(model, Map.of("목록", ""));
+
         return "qna/list";
     }
 
@@ -57,6 +70,8 @@ public class QnaController {
         qnaDTO.setQnaQMemberId(memberId);
 
         model.addAttribute("qnaDTO", qnaDTO);
+        setBreadcrumb(model, Map.of("등록", ""));
+
         return "qna/regist";
     }
 
@@ -109,6 +124,7 @@ public class QnaController {
 
         String memberGrade = memberDTO.getMemberGrade();
         session.setAttribute("memberGrade", memberGrade);
+        setBreadcrumb(model, Map.of("조회", ""));
 
         return "qna/view";
     }
@@ -149,6 +165,8 @@ public class QnaController {
 
         qnaDTO.setQnaAMemberId(memberId);
         model.addAttribute("qnaDTO", qnaDTO);
+        setBreadcrumb(model, Map.of("답변 작성", ""));
+
         return "qna/answerRegist";
     }
 
@@ -201,6 +219,8 @@ public class QnaController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("qnaList", qnaList);
         model.addAttribute("searchDTO", searchDTO);
+        setBreadcrumb(model, Map.of("내가 한 문의", ""));
+
         return "mypage/myQna";
     }
 
