@@ -244,6 +244,7 @@
                                class="d-inline-flex text-decoration-none rounded text-dark">강의 등록</a></li>
                         <li><a href="${cp}/notice/regist" class="d-inline-flex text-decoration-none rounded text-dark">공지사항
                             등록</a></li>
+                        <li><a href="${cp}/admin/qna/list" class="d-inline-flex text-decoration-none rounded text-dark">미답변 질문 목록</a></li>
                         <li><a href="${cp}/admin/sales/info"
                                class="d-inline-flex text-decoration-none rounded text-dark">매출 정보</a></li>
                     </ul>

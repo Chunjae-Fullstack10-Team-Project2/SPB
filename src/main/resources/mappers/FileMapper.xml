@@ -10,4 +10,9 @@
     <delete id="deleteFileByFileName" parameterType="string">
         delete from tbl_file where fileName = #{fileName}
     </delete>
+    <select id="selectFileByIdx" resultType="net.spb.spb.domain.FileVO">
+        select fileIdx, fileName, filePath, fileExt, fileSize, fileOrgName
+        from tbl_file
+        where fileIdx = #{idx}
+    </select>
 </mapper>
