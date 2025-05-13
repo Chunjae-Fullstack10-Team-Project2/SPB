@@ -4,12 +4,11 @@
 <html>
 <head>
     <title>봄콩이 ${category.displayName}</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        #btnSearch {
+            max-width: 75px;
+        }
+    </style>
 </head>
 <body>
 <c:choose>
@@ -49,7 +48,7 @@
                         </select>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <input type="text" name="search_word" class="form-control" id="search_word" placeholder="검색어 입력"
                                value="${search.search_word != null ? search.search_word : ''}" />
                     </div>
@@ -154,7 +153,6 @@
         </div>
     </div>
 </div>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('btnRegist')?.addEventListener('click', function () {
