@@ -5,8 +5,6 @@ change this template use File | Settings | File Templates. --%>
 <html>
 <head>
   <title>봄콩이 자유게시판</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     .content form .form-control,
     .content form .form-label {
