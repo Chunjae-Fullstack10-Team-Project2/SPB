@@ -8,7 +8,7 @@
     <title>선생님 메인</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body>
+<body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
 <div class="content">
 <div class="container my-5">
