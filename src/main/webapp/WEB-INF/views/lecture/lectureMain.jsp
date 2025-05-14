@@ -137,7 +137,6 @@
 
     function reportReview(lectureReviewIdx,lectureReviewId){
         const memberId = '${sessionScope.memberId}';
-        console.log(memberId);
         if (!memberId || memberId.trim() === "") {
             alert("로그인이 필요합니다.");
             window.location.href = "/login";
