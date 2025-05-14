@@ -61,19 +61,19 @@
 
           <div class="mb-3">
             <label for="file1" class="form-label">선생님 이미지</label>
-            <input type="file" class="form-control" id="file1" name="file1" accept="image/*">
+            <input type="file" class="form-control" id="file1" name="file1" accept="image/*" required>
           </div>
 
           <div class="mb-3">
             <label for="teacherIntro" class="form-label">선생님 소개</label>
             <textarea class="form-control" id="teacherIntro" name="teacherIntro" rows="10"
                       placeholder="선생님 소개를 입력하세요." style="resize: none;"
-                      required maxlength="5000">${teacherDTO.teacherIntro}</textarea>
-            <div class="form-text text-end" id="teacherIntroCharCountWrapper"><span id="teacherIntroCharCount">0</span> / 50자</div>
+                      required maxlength="450">${teacherDTO.teacherIntro}</textarea>
+            <div class="form-text text-end" id="teacherIntroCharCountWrapper"><span id="teacherIntroCharCount">0</span> / 450자</div>
           </div>
 
           <div class="d-flex justify-content-end gap-2">
-            <input type="reset" class="btn btn-outline-secondary" value="취소">
+            <input type="button" id="btnCancel" class="btn btn-outline-secondary" value="취소">
             <input type="submit" class="btn btn-primary" value="등록">
           </div>
         </form>
@@ -82,6 +82,10 @@
   </div>
 </div>
 <script>
+
+  const btnCancel = document.getElementById('btnCancel').addEventListener('click', () => {
+    window.location.href="list";
+  })
 
   const teacherSubjectInput = document.getElementById('teacherSubject');
   const teacherIntroInput = document.getElementById('teacherIntro');
@@ -97,7 +101,7 @@
     teacherSubjectCharCount.textContent = length;
 
     // 글자수 초과 시 빨간색
-    if (length > 20000) {
+    if (length > 50) {
       teacherSubjectCharCountWrapper.classList.add('text-danger');
     } else {
       teacherSubjectCharCountWrapper.classList.remove('text-danger');
@@ -106,7 +110,7 @@
   function updateIntroCharCount() {
     const length = teacherIntroInput.value.length;
     teacherIntroCharCount.textContent = length;
-    if (length>50) {
+    if (length>450) {
       teacherIntroCharCountWrapper.classList.add('text-danger');
     } else {
       teacherIntroCharCountWrapper.classList.remove('text-danger');
@@ -128,8 +132,8 @@
 
     if (!teacherIntro) {
       errors.push("선생님 소개글을 입력해주세요.");
-    } else if (teacherIntro.length > 5000) {
-      errors.push("선생님 소개글을 5,000자 이하로 입력해주세요.");
+    } else if (teacherIntro.length > 450) {
+      errors.push("선생님 소개글을 450자 이하로 입력해주세요.");
     }
 
     if (!teacherSubject) {
