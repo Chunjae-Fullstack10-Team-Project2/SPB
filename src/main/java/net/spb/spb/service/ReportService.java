@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 public class ReportService {
-    @Autowired
+    @Autowired(required = false)
     private ReportMapper reportMapper;
 
     public List<PostReportDTO> listBoardReport(SearchDTO searchDTO, PageRequestDTO pageRequestDTO) {
@@ -32,4 +32,20 @@ public class ReportService {
     public int reviewReportTotalCount(SearchDTO searchDTO) {
         return reportMapper.reviewReportTotalCount(searchDTO);
     }
+
+    public void rejectBoardReport(String reportIdx) {
+        reportMapper.rejectBoardReport(reportIdx);
+    }
+
+    public void updateBoardReportAsProcessed(String reportIdx) {
+        reportMapper.updateBoardReportAsProcessed(reportIdx);
+    }
+    public void updateReviewReportAsProcessed(String reportIdx) {
+        reportMapper.updateReviewReportAsProcessed(reportIdx);
+    }
+
+    public void rejectReviewReport(String reportIdx) {
+        reportMapper.rejectReviewReport(reportIdx);
+    }
+
 }
