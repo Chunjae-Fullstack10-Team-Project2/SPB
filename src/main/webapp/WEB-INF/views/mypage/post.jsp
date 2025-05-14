@@ -63,25 +63,25 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${postList}" var="orderDTO" varStatus="status">
+                <c:forEach items="${postList}" var="postDTO" varStatus="status">
                     <tr>
-                        <td>${status.index + 1}</td>
+                        <td>${postDTO.postIdx}</td>
                         <td class="text-start">
                             <c:choose>
-                                <c:when test="${orderDTO.reportState == 2}">
+                                <c:when test="${postDTO.reportState == 2}">
                                     <span class="text-muted-deleted">
-                                        ${orderDTO.postTitle} (관리자에 의해 삭제됨)
+                                        ${postDTO.postTitle} (관리자에 의해 삭제됨)
                                     </span>
                                 </c:when>
                                 <c:otherwise>
-                                    <a href="/board/freeboard/view?idx=${orderDTO.postIdx}"
+                                    <a href="/board/freeboard/view?idx=${postDTO.postIdx}"
                                        class="text-dark text-decoration-none">
-                                            ${orderDTO.postTitle}
+                                            ${postDTO.postTitle}
                                     </a>
                                 </c:otherwise>
                             </c:choose>
                         </td>
-                        <td>${orderDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>${postDTO.postCreatedAt.toLocalDate()}</td>
                     </tr>
                 </c:forEach>
                 </tbody>

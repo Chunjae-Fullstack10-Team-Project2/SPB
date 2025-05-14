@@ -48,7 +48,33 @@
     </c:if>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="emailInputToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive"
+         aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="emailInputToastMessage">경고 메시지</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+<script>
+    function showEmailInputToast(message) {
+        const toastEl = document.getElementById('emailInputToast');
+        const toastMsg = document.getElementById('emailInputToastMessage');
+        toastMsg.textContent = message;
+        const toast = new bootstrap.Toast(toastEl, {delay: 2500});
+        toast.show();
+    }
+
+    $('#memberEmail').on('input', function () {
+        const oldVal = $(this).val();
+        const newVal = oldVal.replace(/[^a-zA-Z0-9@._-]/g, '');
+        if (oldVal !== newVal) {
+            $(this).val(newVal);
+            showEmailInputToast('이메일에는 영문, 숫자, @, ., _, -만 입력할 수 있습니다.');
+        }
+    });
+</script>
 </body>
 </html>

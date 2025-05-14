@@ -8,6 +8,7 @@ import net.spb.spb.dto.pagingsearch.PageResponseDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.dto.qna.QnaDTO;
 import net.spb.spb.service.faq.FaqService;
+import net.spb.spb.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,15 +31,15 @@ public class FaqController {
                       @ModelAttribute PageRequestDTO pageRequestDTO,
                       Model model) {
 
-        List<QnaDTO> faqList = faqService.faqList(searchDTO, pageRequestDTO);
-        PageResponseDTO<QnaDTO> pageResponseDTO = PageResponseDTO.<QnaDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(faqService.totalCount(searchDTO))
-                .dtoList(faqList)
-                .build();
+        int totalCount = faqService.totalCount(searchDTO);
+        PageResponseDTO<QnaDTO> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                totalCount,
+                () -> faqService.faqList(searchDTO, pageRequestDTO)
+        );
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("faqList", faqList);
+        model.addAttribute("faqList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
         return "faq/list";
     }
