@@ -11,9 +11,6 @@
     <title>강좌 목록</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <style>
         body {
             font-family: 'Malgun Gothic', sans-serif;
@@ -83,7 +80,8 @@
                                  onclick="location.href='/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}'"
                                  style="cursor: pointer;">
                                 <img src="/upload/${lecture.lectureThumbnailImg}" alt="${lecture.lectureTitle}"
-                                     class="card-img-top">
+                                     class="card-img-top"
+                                     onerror="this.src='${cp}/resources/img/default_profileImg.png';">
                                 <div class="card-body">
                                     <h6 class="card-title fw-semibold">${lecture.lectureTitle}</h6>
                                     <p class="mb-1 text-muted">${lecture.lectureTeacherName} 선생님</p>

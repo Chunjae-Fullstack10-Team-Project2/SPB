@@ -35,7 +35,7 @@ public class LectureAccessInterceptor implements HandlerInterceptor {
 
         int lectureIdx = Integer.parseInt(lectureIdxStr);
 
-        boolean isAdmin = "A".equalsIgnoreCase(memberGrade);
+        boolean isAdmin = "0".equalsIgnoreCase(memberGrade);
         boolean isLectureOwner = lectureService.isLectureOwner(memberId, lectureIdx);
         boolean hasPurchased = lectureService.checkLecturePermission(memberId, lectureIdx);
 

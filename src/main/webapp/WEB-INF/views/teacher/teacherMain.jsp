@@ -8,7 +8,6 @@
 <head>
     <meta charset="UTF-8">
     <title>과목별 선생님</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .subject-tab {
             display: flex;
@@ -109,7 +108,8 @@
                                     <div class="rounded-circle overflow-hidden border mb-3"
                                          style="width: 120px; height: 120px;">
                                         <img src="/upload/${teacher.teacherProfileImg}" alt="${teacher.teacherName}"
-                                             class="img-fluid w-100 h-100" style="object-fit: cover;">
+                                             class="img-fluid w-100 h-100" style="object-fit: cover;"
+                                             onerror="this.src='${cp}/resources/img/default_profileImg.png';">
                                     </div>
                                     <div class="fw-semibold">${teacher.teacherName} 선생님</div>
                                 </div>

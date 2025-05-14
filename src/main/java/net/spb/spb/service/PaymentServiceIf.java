@@ -29,4 +29,5 @@ public interface PaymentServiceIf {
     public Map<String, Object> cancelPayment(String merchantUid, String reason, int amount) throws Exception;
     public int getCartCount(String memberId);
     public void updateBookmarkState(PaymentDTO dto);
+    public String getOrderStatus(int orderIdx);
 }

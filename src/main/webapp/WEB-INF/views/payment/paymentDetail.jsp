@@ -34,6 +34,7 @@
                     <div class="row g-0 border-bottom p-3 align-items-center">
                         <div class="col-md-3">
                             <img src="/upload/${lecture.lectureThumbnailImg}" class="img-fluid rounded"
+                                 onerror="this.src='${cp}/resources/img/default_profileImg.png';"
                                  style="height: 100px; object-fit: cover;" alt="강의 썸네일">
                         </div>
                         <div class="col-md-9 ps-3 d-flex align-items-center justify-content-between">
@@ -78,6 +79,9 @@
                         <c:when test="${paymentDTO.paymentStatus eq 'c'}">
                             <span class="badge bg-danger">결제 취소</span>
                         </c:when>
+                        <c:when test="${paymentDTO.paymentStatus eq 'f'}">
+                            <span class="badge bg-danger">결제 실패</span>
+                        </c:when>
                         <c:otherwise>
                             <span class="badge bg-secondary">알 수 없음</span>
                         </c:otherwise>
@@ -90,7 +94,7 @@
         <div class="text-end">
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-danger btn-sm"
-                        onclick="openCancelModal(${orderIdx}, ${totalAmount})">
+                        onclick="confirmStatus(${orderIdx}, ${totalAmount})">
                     결제 취소
                 </button>
                 <a href="https://iniweb.inicis.com/DefaultWebApp/mall/cr/cm/mCmReceipt_head.jsp?noTid=${paymentDTO.paymentPgTid}"
@@ -127,6 +131,24 @@
 </div>
 
 <script>
+    function confirmStatus(orderIdx, amount){
+        $.ajax({
+            url: '/payment/confirmStatus?orderIdx='+orderIdx,
+            type: 'GET',
+            success: (orderStatus) => {
+                if(orderStatus == "f"){
+                    alert("구매 확정된 주문은 취소하실 수 없습니다.");
+                } else {
+                    openCancelModal(orderIdx, amount);
+                }
+            },
+            error: (request, status, error) => {
+                console.error("code:" + request.status + "\nmessage:" + request.responseText + "\nerror:" + error);
+                alert("취소 중 오류가 발생했습니다.");
+            }
+        });
+    }
+
     function openCancelModal(orderIdx, amount) {
         document.getElementById("modalOrderIdx").value = orderIdx;
         document.getElementById("modalAmount").value = amount;

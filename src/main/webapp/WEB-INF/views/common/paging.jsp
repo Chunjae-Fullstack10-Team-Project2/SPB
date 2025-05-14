@@ -10,17 +10,36 @@
         <ul class="pagination justify-content-center">
                 <%--            <c:set var="baseUrl" value="${baseUrl}?sortOrder=${searchDTO.sortOrder}&sortColumn=${searchDTO.sortColumn}pageSize=${responseDTO.pageSize}&dateType=${searchDTO.dateType}&startDate=${searchDTO.startDate}&endDate=${searchDTO.endDate}&searchType=${searchDTO.searchType}&searchWord=${searchDTO.searchWord}&pageNo=" />--%>
             <c:url var="baseQuery" value="${baseUrl}">
-                <c:param name="pageSize" value="${responseDTO.pageSize}"/>
-                <c:param name="searchWord" value="${searchDTO.searchWord}"/>
-                <c:param name="searchType" value="${searchDTO.searchType}"/>
-                <c:param name="dateType" value="${searchDTO.dateType}"/>
-                <c:param name="sortColumn" value="${searchDTO.sortColumn}"/>
-                <c:param name="sortOrder" value="${searchDTO.sortOrder}"/>
+                <c:if test="${not empty responseDTO.pageSize}">
+                    <c:param name="pageSize" value="${responseDTO.pageSize}"/>
+                </c:if>
+                <c:if test="${not empty searchDTO.searchWord}">
+                    <c:param name="searchWord" value="${searchDTO.searchWord}"/>
+                </c:if>
+                <c:if test="${not empty searchDTO.searchType}">
+                    <c:param name="searchType" value="${searchDTO.searchType}"/>
+                </c:if>
+                <c:if test="${not empty searchDTO.dateType}">
+                    <c:param name="dateType" value="${searchDTO.dateType}"/>
+                </c:if>
+                <c:if test="${not empty searchDTO.sortColumn}">
+                    <c:param name="sortColumn" value="${searchDTO.sortColumn}"/>
+                </c:if>
+                <c:if test="${not empty searchDTO.sortOrder}">
+                    <c:param name="sortOrder" value="${searchDTO.sortOrder}"/>
+                </c:if>
                 <c:if test="${not empty searchDTO.startDate}">
                     <c:param name="startDate" value="${searchDTO.startDate}"/>
                 </c:if>
                 <c:if test="${not empty searchDTO.endDate}">
                     <c:param name="endDate" value="${searchDTO.endDate}"/>
+                </c:if>
+                <c:if test="${not empty param.reportState}">
+                    <c:param name="reportState" value="${param.reportState}" />
+                </c:if>
+
+                <c:if test="${not empty param.answered}">
+                    <c:param name="answered" value="${param.answered}" />
                 </c:if>
             </c:url>
             <c:set var="baseUrl" value="${baseQuery}&pageNo="/>
