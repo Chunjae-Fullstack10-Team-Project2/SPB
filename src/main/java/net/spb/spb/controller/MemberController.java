@@ -163,6 +163,12 @@ public class MemberController {
         session.setAttribute("memberGrade", memberDTO.getMemberGrade());
         session.setAttribute("memberDTO", memberDTO);
 
+        String redirectUrl = (String) session.getAttribute("redirectAfterLogin");
+        if (redirectUrl != null) {
+            session.removeAttribute("redirectAfterLogin");
+            return "redirect:" + redirectUrl;
+        }
+
         return "redirect:/main";
     }
 
@@ -261,6 +267,12 @@ public class MemberController {
             autoCookie.setMaxAge(checkAutoLogin != null ? 60 * 60 * 24 : 0);
             autoCookie.setPath("/");
             response.addCookie(autoCookie);
+
+            String redirectUrl = (String) session.getAttribute("redirectAfterLogin");
+            if (redirectUrl != null) {
+                session.removeAttribute("redirectAfterLogin");
+                return "redirect:" + redirectUrl;
+            }
 
             return "redirect:/main";
         } else {
