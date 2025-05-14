@@ -46,4 +46,35 @@ public class MailService {
         sendEmail(toEmail, code);
         return code;
     }
+
+    public String createTemporaryPassword() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder password = new StringBuilder();
+        for (int i = 0; i < 8; i++) {
+            password.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return password.toString();
+    }
+
+    public void sendTemporaryPassword(String toEmail, String tempPassword) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setFrom("ribbon0508@naver.com");
+        message.setSubject("[봄콩이] 임시 비밀번호 안내");
+        message.setText(
+                "안녕하세요.\n\n" +
+                        "요청하신 임시 비밀번호는 아래와 같습니다.\n\n" +
+                        "임시 비밀번호: [" + tempPassword + "]\n\n" +
+                        "로그인 후 반드시 비밀번호를 변경해 주세요.\n\n" +
+                        "감사합니다."
+        );
+
+        mailSender.send(message);
+    }
+
+    public String sendTemporaryPasswordToUser(String toEmail) {
+        String tempPassword = createTemporaryPassword();
+        sendTemporaryPassword(toEmail, tempPassword);
+        return tempPassword;
+    }
 }

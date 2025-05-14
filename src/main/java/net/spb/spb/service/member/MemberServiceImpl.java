@@ -7,6 +7,7 @@ import net.spb.spb.dto.pagingsearch.ReportPageDTO;
 import net.spb.spb.mapper.MemberMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -98,5 +99,16 @@ public class MemberServiceImpl implements MemberServiceIf {
     public int getMemberCount(MemberPageDTO memberPageDTO) {
         return memberMapper.getMemberCount(memberPageDTO);
     }
+
+    @Override
+    public boolean updatePassword(String memberId, String encryptedPassword) {
+        return memberMapper.updatePassword(memberId, encryptedPassword) > 0;
+    }
+
+    @Override
+    public String findByEmail(String memberEmail) {
+        return memberMapper.selectByEmail(memberEmail);
+    }
+
 
 }
