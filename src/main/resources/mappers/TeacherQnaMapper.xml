@@ -35,7 +35,7 @@
         </where>
     </sql>
 
-    <select id="selectTeacherQnaListTotalCount" resultType="int">
+    <select id="selectTeacherQnaTotalCount" resultType="int">
         select count(*)
         from tbl_teacher_qna as ttq
         inner join tbl_member as tmq on ttq.teacherQnaQMemberId = tmq.memberId

@@ -47,7 +47,7 @@ public class TeacherNoticeController {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        int totalCount = noticeService.getTeacherNoticeListTotalCount(memberId, pageDTO);
+        int totalCount = noticeService.getTeacherNoticeTotalCount(memberId, pageDTO);
         pageDTO.setTotal_count(totalCount);
 
         List<TeacherNoticeResponseDTO> notices = noticeService.getTeacherNoticeList(memberId, pageDTO);
@@ -61,10 +61,26 @@ public class TeacherNoticeController {
         return "myclass/notice/list";
     }
 
+    @GetMapping("/view")
+    public String view(
+            @ModelAttribute TeacherNoticePageDTO pageDTO,
+            @RequestParam("idx") int idx,
+            Model model
+    ) {
+        TeacherNoticeResponseDTO teacherNoticeDTO = noticeService.getTeacherNoticeByIdx(idx);
+
+        model.addAttribute("pageDTO", pageDTO);
+        model.addAttribute("teacherNoticeDTO", teacherNoticeDTO);
+
+        setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 상세보기", "/myclass/notice/view?idx=" + idx));
+
+        return "/myclass/notice/view";
+    }
+
     @GetMapping("/regist")
     public String registGET(@ModelAttribute TeacherNoticePageDTO pageDTO, Model model) {
         model.addAttribute("pageDTO", pageDTO);
-        setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 등록", "/myclass/regist"));
+        setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 등록", "/myclass/notice/regist"));
         return "myclass/notice/regist";
     }
 
@@ -77,7 +93,7 @@ public class TeacherNoticeController {
             HttpServletRequest req
     ) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "잘못된 입력이 있습니다. 다시 확인해주세요.");
+            redirectAttributes.addFlashAttribute("message", "잘못된 입력이 있습니다. 다시 확인해주세요.");
             redirectAttributes.addFlashAttribute("teacherNoticeDTO", teacherNoticeDTO);
             return "redirect:/myclass/notice/regist?" + pageDTO.getLinkUrl();
         }
@@ -102,21 +118,21 @@ public class TeacherNoticeController {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        TeacherNoticeResponseDTO teacherNoticeDTO = noticeService.getTeacherNoticeByIdx(idx);
+        TeacherNoticeResponseDTO notice = noticeService.getTeacherNoticeByIdx(idx);
 
-        if (teacherNoticeDTO == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "수정 권한이 없습니다.");
+        if (notice == null) {
+            redirectAttributes.addFlashAttribute("message", "요청한 공지사항이 없습니다.");
             return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
         }
-        if(!memberId.equals(teacherNoticeDTO.getTeacherNoticeMemberId())) {
-            redirectAttributes.addFlashAttribute("errorMessage", "수정 권한이 없습니다.");
-            return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
+        if(!memberId.equals(notice.getTeacherNoticeMemberId())) {
+            redirectAttributes.addFlashAttribute("message", "수정 권한이 없습니다.");
+            return "redirect:/myclass/notice?idx=" + idx + "&" + pageDTO.getLinkUrl();
         }
 
         model.addAttribute("pageDTO", pageDTO);
-        model.addAttribute("teacherNoticeDTO", teacherNoticeDTO);
+        model.addAttribute("teacherNoticeDTO", notice);
 
-        setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 수정", "/myclass/notice/modify"));
+        setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 수정", "/myclass/notice/modify?idx=" + idx));
 
         return "myclass/notice/modify";
     }
@@ -125,33 +141,79 @@ public class TeacherNoticeController {
     public String modifyPost(
             @ModelAttribute TeacherNoticePageDTO pageDTO,
             @ModelAttribute TeacherNoticeDTO teacherNoticeDTO,
-            Model model,
+            RedirectAttributes redirectAttributes,
             HttpServletRequest req
     ) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
+
+        int idx = teacherNoticeDTO.getTeacherNoticeIdx();
+        TeacherNoticeResponseDTO notice = noticeService.getTeacherNoticeByIdx(idx);
+
+        if (notice == null) {
+            redirectAttributes.addFlashAttribute("message", "요청한 공지사항이 없습니다.");
+            return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
+        }
+        if(!memberId.equals(notice.getTeacherNoticeMemberId())) {
+            redirectAttributes.addFlashAttribute("message", "수정 권한이 없습니다.");
+            return "redirect:/myclass/notice/view?idx=" + idx + "&" + pageDTO.getLinkUrl();
+        }
 
         noticeService.updateTeacherNotice(memberId, teacherNoticeDTO);
 
-        model.addAttribute("pageDTO", pageDTO);
-        model.addAttribute("teacherNoticeDTO", teacherNoticeDTO);
-
-        return "redirect:/myclass/notice?idx=" + teacherNoticeDTO.getTeacherNoticeIdx() + "&" + pageDTO.getLinkUrl();
+        return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     public String delete(
             @ModelAttribute TeacherNoticePageDTO pageDTO,
             @RequestParam("idx") int idx,
-            Model model,
+            RedirectAttributes redirectAttributes,
             HttpServletRequest req
     ) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
+        TeacherNoticeResponseDTO notice = noticeService.getTeacherNoticeByIdx(idx);
+
+        if (notice == null) {
+            redirectAttributes.addFlashAttribute("message", "요청한 공지사항이 없습니다.");
+            return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
+        }
+        if(!memberId.equals(notice.getTeacherNoticeMemberId())) {
+            redirectAttributes.addFlashAttribute("message", "삭제 권한이 없습니다.");
+            return "redirect:/myclass/notice/view?idx=" + idx + "&" + pageDTO.getLinkUrl();
+        }
+
         noticeService.deleteTeacherNoticeByIdx(memberId, idx);
 
-        model.addAttribute("pageDTO", pageDTO);
+        return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
+    }
+
+    @PostMapping("/delete-multiple")
+    public String deleteMultiple(
+            @ModelAttribute TeacherNoticePageDTO pageDTO,
+            @RequestParam("noticeIdxs") List<Integer> idxList,
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest req
+    ) {
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        for (int idx : idxList) {
+            TeacherNoticeResponseDTO notice = noticeService.getTeacherNoticeByIdx(idx);
+
+            if (notice == null) {
+                redirectAttributes.addFlashAttribute("message", "요청한 공지사항이 없습니다.");
+                return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
+            }
+            if(!memberId.equals(notice.getTeacherNoticeMemberId())) {
+                redirectAttributes.addFlashAttribute("message", "삭제 권한이 없습니다.");
+                return "redirect:/myclass/notice/view?idx=" + idx + "&" + pageDTO.getLinkUrl();
+            }
+
+            noticeService.deleteTeacherNoticeByIdx(memberId, idx);
+        }
 
         return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
     }

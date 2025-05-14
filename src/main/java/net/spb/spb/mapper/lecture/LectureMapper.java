@@ -15,7 +15,6 @@ import java.util.List;
 
 @Mapper
 public interface LectureMapper {
-
     public LectureVO selectLectureMain(int lectureIdx);
     public List<ChapterDTO> selectLectureChapter(int lectureIdx);
     public int addBookmark(@Param("lectureIdx")int lectureIdx, @Param("memberId")String memberId);
@@ -29,4 +28,6 @@ public interface LectureMapper {
     public List<LectureReviewDTO> selectLectureReview(@Param("lectureIdx") int lectureIdx, @Param("pageRequestDTO") PageRequestDTO pageRequestDTO);
     public int insertReport(@Param("dto") PostReportDTO dto);
     public List<Integer> selectBookmark(@Param("lectureIdxList") List<Integer> lectureIdxList, @Param("memberId") String memberId);
+
+    public LectureVO selectLectureByIdx(int lectureIdx);
 }

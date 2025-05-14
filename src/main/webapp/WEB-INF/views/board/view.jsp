@@ -77,7 +77,7 @@ change this template use File | Settings | File Templates. --%>
                     </div>
                 </div>
 
-                <div class="mb-4" style="white-space: pre-line;"><c:out value="${post.postContent}"/></div>
+                <div class="mb-4" style="white-space: pre-line;">${post.postContent}</div>
 
                 <div class="img-gallery">
                     <c:forEach items="${post.postFiles}" var="file">

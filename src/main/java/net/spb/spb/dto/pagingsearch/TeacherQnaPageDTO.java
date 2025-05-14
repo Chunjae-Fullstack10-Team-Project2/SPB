@@ -23,13 +23,13 @@ public class TeacherQnaPageDTO extends PageDTO {
     private LocalDate end_date;
 
     @Builder.Default
-    private String qna_status = "0"; // 0: 미완료, 1: 답변완료
+    private String qna_status = "0"; // 0: 미완료, 1: 답변완료, 2: 전체
     @Builder.Default
     private String sort_by = "teacherQnaIdx";
     @Builder.Default
     private String sort_direction = "desc";
 
-    private static final List<String> SORT_COLUMNS = List.of("teacherQnaIdx", "teacherQnaTitle", "questionMemberName", "teacherQnaStatus", "teacherQnaCreatedAt");
+    private static final List<String> SORT_COLUMNS = List.of("teacherQnaIdx", "teacherQnaTitle", "questionMemberName", "teacherQnaCreatedAt");
     private static final List<String> SORT_DIRECTIONS = List.of("asc", "desc");
 
     public String getSort_by() {

@@ -52,6 +52,7 @@
                                placeholder="질문을 입력하세요."
                                data-maxlength="100"
                                data-target="#faqQCount"
+                               value="<c:out value='${faqDTO.faqQuestion}' />"
                                required>
                     </div>
                     <div class="text-end small text-muted mt-1 mb-3">
@@ -60,6 +61,7 @@
 
                     <div class="mb-3">
                         <label for="faqAnswer" class="form-label">답변</label>
+
                         <textarea class="form-control char-limit"
                                   id="faqAnswer"
                                   name="faqAnswer"
@@ -67,7 +69,8 @@
                                   data-maxlength="15000"
                                   data-target="#faqAnswerCount"
                                   placeholder="답변을 입력해주세요."
-                                  style="resize: none;" required></textarea>
+                                  style="resize: none;" required><c:out
+                                    value="${faqDTO.faqAnswer}" /></textarea>
                     </div>
                     <div class="text-end small text-muted mt-1 mb-3">
                         <span id="faqAnswerCount">0</span> / 15,000

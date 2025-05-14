@@ -5,48 +5,57 @@
 <html>
 <head>
     <title>공지사항 상세보기</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
     <div class="content">
-        <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
-        <div class="container">
-            <h1 class="h4 fw-bold">${teacherNoticeDTO.teacherNoticeTitle}</h1>
-            <div class="d-flex gap-2 align-items-center mb-2">
-                <c:if test="${teacherNoticeDTO.memberProfileImg != null}">
-                    <img src="${teacherNoticeDTO.memberProfileImg}" width="32" height="32" class="rounded-circle">
-                </c:if>
-                <div>
-                    <div class="small">${teacherNoticeDTO.teacherNoticeMemberId}</div>
-                    <div class="text-muted small">
+        <div class="container my-5">
+            <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
+            <h1 class="h2 mb-4">공지사항 상세보기</h1>
+
+            <div class="border p-4 rounded bg-light shadow-sm">
+                <div class="mb-3">
+                    <p class="form-label">제목</p>
+                    <p class="form-control">${teacherNoticeDTO.teacherNoticeTitle}</p>
+                </div>
+
+                <div class="mb-3">
+                    <p class="form-label">내용</p>
+                    <p class="form-control" style="height: 254px;">${teacherNoticeDTO.teacherNoticeContent}</p>
+                </div>
+
+                <div class="d-flex justify-content-between text-muted small">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="checkDefault" readonly
+                               ${teacherNoticeDTO.teacherNoticeFixed == 1 ? "checked" : ""}>
+                        <label class="form-check-label" for="checkDefault">
+                            상단고정
+                        </label>
+                    </div>
+                    <p>
                         등록일: ${fn:replace(teacherNoticeDTO.teacherNoticeCreatedAt, 'T', ' ')}
                         <c:if test="${teacherNoticeDTO.teacherNoticeUpdatedAt != null}">
-                         &nbsp;| 수정일: ${fn:replace(teacherNoticeDTO.teacherNoticeUpdatedAt, 'T', ' ')}
+                            &nbsp;/ 수정일: ${fn:replace(teacherNoticeDTO.teacherNoticeUpdatedAt, 'T', ' ')}
                         </c:if>
-                    </div>
+                    </p>
                 </div>
             </div>
-            <hr/>
 
-            <p>${teacherNoticeDTO.teacherNoticeContent}</p>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <div>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='/myclass/notice?${pageDTO.linkUrl}'">목록</button>
+                </div>
 
-            <form>
-                <div class="gap-2 my-4 d-flex justify-content-between">
-                    <input type="hidden" name="idx" value="${teacherNoticeDTO.teacherNoticeIdx}" />
-
-                    <div>
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='/myclass/notice?${pageDTO.linkUrl}'">목록</button>
-                    </div>
-
-                    <div>
-                        <c:if test="${sessionScope.memberId eq teacherNoticeDTO.teacherNoticeMemberId}">
+                <div>
+                    <c:if test="${sessionScope.memberId eq teacherNoticeDTO.teacherNoticeMemberId}">
+                        <form name="frmSubmit" method="get">
+                            <input type="hidden" name="idx" value="${teacherNoticeDTO.teacherNoticeIdx}" />
                             <button type="button" class="btn btn-warning btn-sm" id="btnModify">수정</button>
                             <button type="button" class="btn btn-danger btn-sm" id="btnDelete">삭제</button>
-                        </c:if>
-                    </div>
+                        </form>
+                    </c:if>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -54,18 +63,20 @@
         const urlParams = "${pageDTO.linkUrl}";
 
         document.getElementById('btnModify').addEventListener('click', () => {
-           const frm = document.forms[0];
-           frm.action = "/myclass/notice/modify?" + urlParams;
-           frm.method = "get";
-           frm.submit();
+            const frm = document.querySelector('form[name="frmSubmit"]');
+            frm.action = "/myclass/notice/modify?" + urlParams;
+            frm.submit();
         });
 
         document.getElementById('btnDelete').addEventListener('click', () => {
-            const frm = document.forms[0];
+            const frm = document.querySelector('form[name="frmSubmit"]');
             frm.action = "/myclass/notice/delete?" + urlParams;
-            frm.method = "get";
             frm.submit();
         });
+
+        <c:if test="${not empty message}">
+            alert("${message}");
+        </c:if>
     </script>
 </body>
 </html>
