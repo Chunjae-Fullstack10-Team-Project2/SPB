@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.exam.ExamMapper">
+    <sql id="condition">
+        <where>
+            and tl.teacherId = #{teacherId}
+            <if test="pageDTO.search_category == 'examLectureIdx'">
+                and te.examLectureIdx = #{lectureIdx}
+            </if>
+            <if test="pageDTO.search_category == 'examTitle'">
+                and te.examTitle like concat('%', #{pageDTO.search_word}, '%')
+            </if>
+            <if test="pageDTO.search_category == 'examDescription'">
+                and te.examDescription like concat('%', #{pageDTO.search_word}, '%')
+            </if>
+            <if test="pageDTO.start_date != null and pageDTO.end_date != null">
+                <if test="pageDTO.date_type == 'examCreatedAt'">
+                    and te.examCreatedAt between #{pageDTO.start_date} and #{pageDTO.end_date}
+                </if>
+                <if test="pageDTO.date_type == 'examDate'">
+                    and date(te.examStartDate) <![CDATA[<=]]> #{pageDTO.start_date}
+                    and date(te.examStartDate) <![CDATA[>=]]> #{pageDTO.end_date}
+                </if>
+            </if>
+        </where>
+    </sql>
+    <select id="selectExamListByTeacherId" resultType="net.spb.spb.dto.exam.ExamResponseDTO">
+        select
+            te.examIdx,
+            te.examLectureIdx,
+            tl.lectureTitle,
+            te.examTitle,
+            te.examDescription,
+            te.examStartDate,
+            te.examEndDate,
+            te.examCreatedAt
+        from tbl_exam as te
+        inner join tbl_lecture as tl on te.examLectureIdx = tl.lectureIdx
+        <include refid="condition"/>
+        <choose>
+            <when test="pageDTO.sort_by == 'examStartDate'">
+                order by examStartDate ${pageDTO.sort_direction}, examEndDate ${pageDTO.sort_direction}
+            </when>
+            <otherwise>
+                order by ${pageDTO.sort_by} ${pageDTO.sort_direction}
+            </otherwise>
+        </choose>
+        limit #{pageDTO.page_skip_count}, #{pageDTO.page_size}
+    </select>
+
+    <select id="selectExamTotalCountByTeacherId" resultType="int">
+        select count(*)
+        from tbl_exam as te
+        inner join tbl_lecture as tl on te.examLectureIdx = tl.lectureIdx
+        <include refid="condition"/>
+    </select>
+
+    <select id="selectExamByIdx" resultType="net.spb.spb.dto.exam.ExamResponseDTO">
+        select
+        te.examIdx,
+        te.examLectureIdx,
+        tl.lectureTitle,
+        te.examTitle,
+        te.examDescription,
+        te.examStartDate,
+        te.examEndDate,
+        te.examCreatedAt
+        from tbl_exam as te
+        inner join tbl_lecture as tl on te.examLectureIdx = tl.lectureIdx
+        where te.examIdx = #{idx}
+    </select>
+
+    <delete id="deleteExamByIdx">
+        delete from tbl_exam
+        where examIdx = #{examIdx}
+    </delete>
+
+    <insert id="insertExam" useGeneratedKeys="true" keyColumn="examIdx" keyProperty="examIdx">
+        insert into tbl_exam (examLectureIdx, examTitle, examDescription, examStartDate, examEndDate)
+        values (#{examLectureIdx}, #{examTitle}, #{examDescription}, #{examStartDate}, #{examEndDate})
+    </insert>
+</mapper>
