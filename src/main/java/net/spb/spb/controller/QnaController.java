@@ -77,8 +77,13 @@ public class QnaController {
 
     @PostMapping("/regist")
     public String regist(@Valid @ModelAttribute QnaDTO qnaDTO, BindingResult bindingResult, HttpSession session, Model model) {
+        setBreadcrumb(model, Map.of("등록", ""));
         if (bindingResult.hasErrors()) {
-            model.addAttribute("errorMessage", "오류가 발생했습니다. 다시 시도해주세요.");
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                log.warn("검증 오류 - field: {}, message: {}", error.getField(), error.getDefaultMessage());
+            }
+            model.addAttribute("qnaDTO", qnaDTO);
+            model.addAttribute("errorMessage", "입력값에 오류가 있습니다. 확인해주세요.");
             return "qna/regist";
         }
 
