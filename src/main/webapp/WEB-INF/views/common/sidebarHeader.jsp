@@ -393,7 +393,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         const path = location.pathname;
 
-        if (path.includes('/mypage')) {
+        if (path.includes('/mypage') || path.includes('/myQna')) {
             const myCollapse = document.querySelector('#mypage-collapse');
             const myToggle = document.querySelector('[data-bs-target="#mypage-collapse"]');
             myCollapse.classList.add('show');
