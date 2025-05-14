@@ -109,7 +109,10 @@ public class MyPageController {
             return "redirect:/mypage";
         }
 
-        if (memberDTO.getMemberAddr1() != null && memberDTO.getMemberAddr1().length() > 100) {
+        if (memberDTO.getMemberAddr1() == null || memberDTO.getMemberAddr1().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "주소는 필수 항목입니다.");
+            return "redirect:/mypage";
+        } else if (memberDTO.getMemberAddr1().length() > 100) {
             redirectAttributes.addFlashAttribute("errorMessage", "주소는 100자 이하여야 합니다.");
             return "redirect:/mypage";
         }
@@ -122,6 +125,11 @@ public class MyPageController {
         if ("14".equals(sessionDTO.getMemberGrade()) &&
                 !sessionDTO.getMemberGrade().equals(memberDTO.getMemberGrade())) {
             redirectAttributes.addFlashAttribute("errorMessage", "승인 대기 중에는 학년을 변경할 수 없습니다.");
+            return "redirect:/mypage";
+        }
+
+        if ("13".equals(sessionDTO.getMemberGrade())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "교사는 해당 필드를 변경할 수 없습니다.");
             return "redirect:/mypage";
         }
 
