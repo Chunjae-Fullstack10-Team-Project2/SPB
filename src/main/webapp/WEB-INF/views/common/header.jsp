@@ -117,17 +117,15 @@
             <div class="d-flex align-items-center gap-4 flex-wrap justify-content-end user-tools">
                 <c:if test="${sessionScope.memberGrade eq 0}">
                     <a href="${cp}/admin/member/list" class="admin-link" title="관리자 페이지">
-                        <i class="bi bi-gear-fill" style="font-size: 1.4rem;"></i>
+                        <i class="bi bi-gear-fill text-dark" style="font-size: 1.4rem;"></i>
                     </a>
                 </c:if>
                 <c:if test="${not empty sessionScope.memberId and sessionScope.memberGrade ne 0}">
                     <div class="greeting">${sessionScope.memberDTO.memberName} 님, 오늘도 즐거운 학습 되세요! 😊</div>
-                </c:if>
-                <c:if test="${not empty sessionScope.memberId}">
                     <div class="cart">
                         <a href="/payment/cart?memberId=${sessionScope.memberId}"
                            class="text-decoration-none position-relative">
-                            <i class="bi bi-cart" style="font-size: 1.4rem;"></i>
+                            <i class="bi bi-cart text-dark" style="font-size: 1.4rem;"></i>
                             <c:if test="${not empty sessionScope.memberId}">
                                 <span id="cart-count-badge"
                                       class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -139,7 +137,7 @@
                 </c:if>
 
                 <div class="dropdown text-end">
-                    <a href="#" class="d-block text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                    <a href="#" class="d-block text-decoration-none dropdown-toggle text-dark" data-bs-toggle="dropdown">
                         <img id="profilePreview" width="32" height="32" class="rounded-circle"
                              src="${pageContext.request.contextPath}/upload/${memberDTO.memberProfileImg}"
                              onerror="this.src='${cp}/resources/img/default_profileImg.png';"

@@ -10,11 +10,11 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
     <script src="${pageContext.request.contextPath}/resources/js/textCounter.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
 <body class="bg-light-subtle">
@@ -227,11 +227,8 @@
 
     $(document).on('click', '.accordion-button', function (e) {
         if ($(this).hasClass('editing')) {
-            // Bootstrap의 아코디언 토글은 이벤트 전파가 꼭 필요하므로
-            // stopPropagation, preventDefault 대신 return false 사용 X!
-            return; // 그냥 아무 처리도 하지 않고 종료
+            return;
         }
-        // 나머지는 Bootstrap 기본 토글에 맡김
     });
 
     $(document).on('click', '.btn-delete', function () {
