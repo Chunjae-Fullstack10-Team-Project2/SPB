@@ -186,8 +186,6 @@
                 </c:if>
                 <c:if test="${not empty sessionScope.memberId and sessionScope.memberGrade ne 0}">
                     <div class="greeting">${sessionScope.memberDTO.memberName} 님, 오늘도 즐거운 학습 되세요! 😊</div>
-                </c:if>
-                <c:if test="${not empty sessionScope.memberId}">
                     <div class="cart">
                         <a href="/payment/cart?memberId=${sessionScope.memberId}"
                            class="text-decoration-none position-relative">
@@ -203,7 +201,7 @@
                 </c:if>
 
                 <div class="dropdown text-end">
-                    <a href="#" class="d-block text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                    <a href="#" class="d-block text-decoration-none dropdown-toggle text-dark" data-bs-toggle="dropdown">
                         <img id="profilePreview" width="32" height="32" class="rounded-circle"
                              src="${pageContext.request.contextPath}/upload/${memberDTO.memberProfileImg}"
                              onerror="this.src='${cp}/resources/img/default_profileImg.png';"
@@ -395,7 +393,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         const path = location.pathname;
 
-        if (path.includes('/mypage')) {
+        if (path.includes('/mypage') || path.includes('/myQna')) {
             const myCollapse = document.querySelector('#mypage-collapse');
             const myToggle = document.querySelector('[data-bs-target="#mypage-collapse"]');
             myCollapse.classList.add('show');

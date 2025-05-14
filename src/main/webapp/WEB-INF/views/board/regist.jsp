@@ -46,9 +46,9 @@ change this template use File | Settings | File Templates. --%>
       <!-- 내용 입력 -->
       <div class="mb-3">
         <label for="postContent" class="form-label">내용</label>
-        <textarea class="form-control" rows="10" name="postContent" id="postContent" placeholder="내용을 입력하세요" maxlength="20000" required>${postDTO.postContent != null and postDTO.postContent != '' ? postDTO.postContent : ''}</textarea>
+        <textarea class="form-control" rows="10" name="postContent" id="postContent" placeholder="내용을 입력하세요" maxlength="19000" required>${postDTO.postContent != null and postDTO.postContent != '' ? postDTO.postContent : ''}</textarea>
         <div class="form-text text-end" id="contentCharCountWrapper">
-          <span id="contentCharCount">0</span> / 20000자
+          <span id="contentCharCount">0</span> / 19000자
         </div>
       </div>
 
@@ -83,7 +83,7 @@ change this template use File | Settings | File Templates. --%>
     contentCharCount.textContent = length;
 
     // 글자수 초과 시 빨간색
-    if (length > 20000) {
+    if (length > 19000) {
       contentCharCountWrapper.classList.add('text-danger');
     } else {
       contentCharCountWrapper.classList.remove('text-danger');

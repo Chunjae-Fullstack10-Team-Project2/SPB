@@ -46,7 +46,7 @@ change this template use File | Settings | File Templates. --%>
     <div class="container my-5">
         <%@ include file="../common/breadcrumb.jsp" %>
     </div>
-    <div class="container my-5">
+    <div class="container my-5 pb-5" style="min-height: 100vh;">
         <div class="card shadow-sm border rounded-3 bg-light">
             <div class="card-body">
                 <h2 class="h4 fw-bold">${post.postTitle}</h2>

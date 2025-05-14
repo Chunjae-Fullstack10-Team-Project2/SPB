@@ -69,4 +69,8 @@ public class MemberDTO {
     private String memberAgree;
 
     private String memberProfileImg;
+
+    // teacher인 회원
+    private int teacherState;
+    private String teacherSubject;
 }

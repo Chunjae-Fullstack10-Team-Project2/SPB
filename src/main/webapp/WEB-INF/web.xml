@@ -33,6 +33,16 @@
         <servlet-name>appServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error/404</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error/500</location>
+    </error-page>
+
     <context-param>
         <param-name>naver.clientId</param-name>
         <param-value>cnVwGS7uEm_5bo6jAIGr</param-value>

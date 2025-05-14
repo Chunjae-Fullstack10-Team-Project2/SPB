@@ -27,13 +27,16 @@
     </select>
 
     <select id="selectTeacherWithTeacherProfile" resultType="net.spb.spb.dto.member.MemberDTO">
-        SELECT *
+        SELECT m.memberIdx,
+               m.memberId,
+               m.memberName,
+               m.memberBirth,
+               m.memberCreatedAt,
+               t.teacherState,
+               t.teacherSubject
         FROM tbl_member m
-        WHERE m.memberGrade = 13 and EXISTS (
-            SELECT 1
-            FROM tbl_teacher t
-            WHERE t.teacherId = m.memberId
-        );
+        JOIN tbl_teacher t ON t.teacherId = m.memberId
+        WHERE m.memberGrade = 13;
     </select>
 
     <update id="modifyTeacherProfile" parameterType="net.spb.spb.domain.TeacherVO">
@@ -41,6 +44,18 @@
         set teacherSubject = #{teacherSubject},
             teacherIntro = #{teacherIntro},
             teacherProfileImg = #{teacherProfileImg}
+        where teacherId = #{teacherId}
+    </update>
+
+    <update id="deleteTeacher" parameterType="string">
+        update tbl_teacher
+        set teacherState = 2
+        where teacherId = #{teacherId}
+    </update>
+
+    <update id="restoreTeacher" parameterType="string">
+        update tbl_teacher
+        set teacherState = 1
         where teacherId = #{teacherId}
     </update>
 
@@ -61,12 +76,12 @@
         tl.lectureDescription,
         tl.lectureCreatedAt,
         tt.teacherName as lectureTeacherName,
-        count(tlc.chapterIdx) as lectureChapterCount
+        count(tlc.chapterIdx) as lectureChapterCount,
+        tl.lectureState
         from tbl_lecture tl
         inner join tbl_teacher tt on tl.lectureTeacherId = tt.teacherId
         left outer join tbl_lecture_chapter tlc on tl.lectureIdx = tlc.chapterLectureIdx
         <where>
-            tl.lectureState = 1
             <if test="search_type != null and search_type != '' and search_word != null and search_word != ''">
                 <if test="search_type == 'teacherName'">
                     and tt.teacherName like concat('%', #{search_word}, '%')
@@ -126,9 +141,15 @@
         where lectureIdx = #{lectureIdx}
     </update>
 
-    <update id="deleteLecture" parameterType="net.spb.spb.domain.LectureVO">
+    <update id="deleteLecture" parameterType="java.lang.Integer">
         update tbl_lecture
-        set lectureState = #{lectureState}
+        set lectureState = 2
+        where lectureIdx = #{lectureIdx}
+    </update>
+
+    <update id="restoreLecture" parameterType="java.lang.Integer">
+        update tbl_lecture
+        set lectureState = 1
         where lectureIdx = #{lectureIdx}
     </update>
 
@@ -222,9 +243,15 @@
         where chapterLectureIdx = #{chapterLectureIdx}
     </update>
 
-    <update id="deleteChapter" parameterType="net.spb.spb.domain.ChapterVO">
+    <update id="deleteChapter" parameterType="java.lang.Integer">
         update tbl_lecture_chapter
-        set chapterState = #{chapterState}
+        set chapterState = 2
+        where chapterIdx = #{chapterIdx}
+    </update>
+
+    <update id="restoreChapter" parameterType="java.lang.Integer">
+        update tbl_lecture_chapter
+        set chapterState = 1
         where chapterIdx = #{chapterIdx}
     </update>
 

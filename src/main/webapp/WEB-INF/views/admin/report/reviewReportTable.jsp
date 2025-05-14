@@ -13,6 +13,7 @@
 <head>
     <title>리뷰 신고 목록</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <%@ include file="../../common/sidebarHeader.jsp" %>
@@ -59,6 +60,8 @@
             List<Map<String, String>> searchTypeOptions = new ArrayList<>();
             searchTypeOptions.add(Map.of("value", "lectureReviewMemberId", "label", "강의평 작성자"));
             searchTypeOptions.add(Map.of("value", "lectureReviewContent", "label", "강의평 내용"));
+            searchTypeOptions.add(Map.of("value", "reportMemberId", "label", "신고자"));
+
             request.setAttribute("searchTypeOptions", searchTypeOptions);
             request.setAttribute("searchAction", "/admin/report/list/review");
         %>
@@ -87,6 +90,14 @@
                             </a>
                         </th>
                         <th>
+                            <a href="javascript:void(0);" onclick="applySort('reportMemberId')">
+                                신고자
+                                <c:if test="${searchDTO.sortColumn eq 'reportMemberId'}">
+                                    ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
+                                </c:if>
+                            </a>
+                        </th>
+                        <th>
                             <a href="javascript:void(0);" onclick="applySort('lectureReviewCreatedAt')">
                                 작성일
                                 <c:if test="${searchDTO.sortColumn eq 'lectureReviewCreatedAt'}">
@@ -102,6 +113,7 @@
                             <td>${postDTO.reportIdx}</td>
                             <td class="text-start">${postDTO.lectureReviewContent}</td>
                             <td>${postDTO.lectureReviewMemberId}</td>
+                            <td>${postDTO.reportMemberId}</td>
                             <td>${postDTO.lectureReviewCreatedAt.toLocalDate()}</td>
                         </tr>
                     </c:forEach>

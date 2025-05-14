@@ -10,10 +10,12 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <script src="${pageContext.request.contextPath}/resources/js/textCounter.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body class="bg-light-subtle">
 <%@ include file="../common/header.jsp" %>
@@ -66,8 +68,16 @@
                                     data-bs-target="#collapse${faqDTO.faqIdx}" aria-expanded="false"
                                     aria-controls="collapse${faqDTO.faqIdx}">
                                 <span class="faq-question-view">Q. ${faqDTO.faqQuestion}</span>
-                                <input type="text" class="form-control faq-question-edit d-none"
-                                       value="${faqDTO.faqQuestion}"/>
+
+                                <div class="faq-question-edit-wrapper d-none w-100">
+                                    <input type="text" class="form-control char-limit"
+                                           value="${faqDTO.faqQuestion}"
+                                           data-maxlength="100"
+                                           data-target="#faqQCount2_${faqDTO.faqIdx}" />
+                                    <div class="text-end small text-muted mt-1 mb-0">
+                                        <span id="faqQCount2_${faqDTO.faqIdx}">0</span> / 100
+                                    </div>
+                                </div>
                             </button>
                         </h2>
 
@@ -158,9 +168,11 @@
         container.find('.faq-edit').removeClass('d-none');
 
         header.find('.faq-question-view').addClass('d-none');
-        header.find('.faq-question-edit').removeClass('d-none');
+        header.find('.faq-question-edit-wrapper').removeClass('d-none');
 
-        container.find('textarea.char-limit').each(function () {
+        header.addClass('editing');
+
+        header.find('.faq-question-edit-wrapper .char-limit').each(function () {
             bindTextCounter(this);
             this.dispatchEvent(new Event('input'));
         });
@@ -173,8 +185,10 @@
         container.find('.faq-edit').addClass('d-none');
         container.find('.faq-view').removeClass('d-none');
 
-        header.find('.faq-question-edit').addClass('d-none');
+        header.find('.faq-question-edit-wrapper').addClass('d-none');
         header.find('.faq-question-view').removeClass('d-none');
+
+        header.removeClass('editing');
     });
 
     $(document).on('click', '.btn-save', function () {
@@ -209,6 +223,12 @@
                 alert("FAQ 수정에 실패했습니다. 다시 시도해주세요.");
             }
         });
+    });
+
+    $(document).on('click', '.accordion-button', function (e) {
+        if ($(this).hasClass('editing')) {
+            return;
+        }
     });
 
     $(document).on('click', '.btn-delete', function () {
