@@ -83,6 +83,7 @@ public class BoardController {
 
         // 이스케이프된 문자 복원
         post.setPostContent(StringEscapeUtils.unescapeHtml4(post.getPostContent()));
+        post.setPostComments(post.getPostComments().stream().peek(comment -> StringEscapeUtils.unescapeHtml4(comment.getPostCommentContent())).toList());
 
         model.addAttribute("post", post);
         addBreadcrumb(model, category, "상세 보기");
