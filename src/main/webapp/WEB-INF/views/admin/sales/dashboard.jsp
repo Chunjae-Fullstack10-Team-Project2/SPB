@@ -371,15 +371,45 @@
             const $start = $('#monthlyStartDate');
             const $end = $('#monthlyEndDate');
 
+            // 기존 datepicker 제거
+            try {
+                $start.data('daterangepicker')?.remove();
+                $end.data('daterangepicker')?.remove();
+            } catch (e) {}
+
             if (type === 'YEAR') {
-                $start.attr('type', 'number').attr('placeholder', '예: 2020').val(moment().year());
-                $end.attr('type', 'number').attr('placeholder', '예: 2024').val(moment().year());
+                $start.attr('type', 'number')
+                    .attr('min', '2000')
+                    .attr('max', moment().year())
+                    .val(moment().year() - 1);
+
+                $end.attr('type', 'number')
+                    .attr('min', '2000')
+                    .attr('max', moment().year())
+                    .val(moment().year());
             } else if (type === 'MONTH') {
                 $start.attr('type', 'month').val(moment().subtract(1, 'months').format('YYYY-MM'));
                 $end.attr('type', 'month').val(moment().format('YYYY-MM'));
             } else {
-                $start.attr('type', 'date').val(moment().subtract(1, 'months').format('YYYY-MM-DD'));
-                $end.attr('type', 'date').val(moment().format('YYYY-MM-DD'));
+                $start.attr('type', 'text').val(moment().subtract(1, 'months').format('YYYY-MM-DD'));
+                $end.attr('type', 'text').val(moment().format('YYYY-MM-DD'));
+
+                // DAY 모드일 때만 datepicker 적용
+                $start.daterangepicker({
+                    singleDatePicker: true,
+                    showDropdowns: true,
+                    locale: { format: 'YYYY-MM-DD' }
+                }, function(start) {
+                    $start.val(start.format('YYYY-MM-DD'));
+                });
+
+                $end.daterangepicker({
+                    singleDatePicker: true,
+                    showDropdowns: true,
+                    locale: { format: 'YYYY-MM-DD' }
+                }, function(end) {
+                    $end.val(end.format('YYYY-MM-DD'));
+                });
             }
         }
 
@@ -450,7 +480,10 @@
             });
         });
 
-        $('#timeType').change(loadMonthlyChart);
+        $('#timeType').on('change', function () {
+            updateMonthlyInputs(); // 타입에 따라 input 구성
+            loadMonthlyChart();    // 바로 조회도 수행
+        });
         $('#filterForm').submit(function (e) {
             e.preventDefault();
             loadSalesDetail();
