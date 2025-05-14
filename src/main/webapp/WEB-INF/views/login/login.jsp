@@ -325,6 +325,13 @@
             location.href = "/login?action=logout";
         }, 1000);
     });
+
+    window.addEventListener('DOMContentLoaded', function () {
+        const memberIdInput = document.getElementById("memberId");
+        if (memberIdInput) {
+            memberIdInput.focus();
+        }
+    });
 </script>
 </body>
 </html>
