@@ -63,10 +63,17 @@ change this template use File | Settings | File Templates. --%>
                         </c:otherwise>
                     </c:choose>
 
-                    <div>
+                    <div class="flex-grow-1">
                         <div class="fw-semibold">${post.memberName} (${post.postMemberId})</div>
-                        <div class="text-muted small">조회 ${post.postReadCnt} | 댓글 ${fn:length(post.postComments)} | 좋아요
-                            <span class="likeCount">${post.postLikeCnt}</span></div>
+                        <div class="d-flex justify-content-between text-muted small">
+                            <div>${fn:replace(post.postCreatedAt, 'T', ' ')}
+                                <c:if test="${not empty post.postUpdatedAt}">
+                                    (수정: ${fn:replace(post.postUpdatedAt, 'T', ' ')})
+                                </c:if>
+                            </div>
+                            <div>조회 ${post.postReadCnt} | 댓글 ${fn:length(post.postComments)} | 좋아요
+                                <span class="likeCount">${post.postLikeCnt}</span></div>
+                        </div>
                     </div>
                 </div>
 
