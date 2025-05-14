@@ -87,6 +87,7 @@
                             <li><a class="dropdown-item" href="${cp}/myclass/lecture">내 강의 목록</a></li>
                             <li><a class="dropdown-item" href="${cp}/myclass/notice">공지사항</a></li>
                             <li><a class="dropdown-item" href="${cp}/myclass/qna">Q&A</a></li>
+                            <li><a class="dropdown-item" href="${cp}/myclass/library">자료실</a></li>
                             <li><a class="dropdown-item" href="${cp}/myclass/grade">성적 관리</a></li>
                             <li><a class="dropdown-item" href="${cp}/myclass/review">수강후기</a></li>
                         </ul>
