@@ -5,9 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.pagingsearch.TeacherFilePageDTO;
 import net.spb.spb.dto.pagingsearch.TeacherNoticePageDTO;
-import net.spb.spb.dto.teacher.TeacherFileResponseDTO;
 import net.spb.spb.dto.teacher.TeacherNoticeDTO;
 import net.spb.spb.dto.teacher.TeacherNoticeResponseDTO;
 import net.spb.spb.service.teacher.TeacherNoticeService;
@@ -49,7 +47,7 @@ public class TeacherNoticeController {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        int totalCount = noticeService.getTeacherNoticeListTotalCount(memberId, pageDTO);
+        int totalCount = noticeService.getTeacherNoticeTotalCount(memberId, pageDTO);
         pageDTO.setTotal_count(totalCount);
 
         List<TeacherNoticeResponseDTO> notices = noticeService.getTeacherNoticeList(memberId, pageDTO);
@@ -82,7 +80,7 @@ public class TeacherNoticeController {
     @GetMapping("/regist")
     public String registGET(@ModelAttribute TeacherNoticePageDTO pageDTO, Model model) {
         model.addAttribute("pageDTO", pageDTO);
-        setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 등록", "/myclass/regist"));
+        setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 등록", "/myclass/notice/regist"));
         return "myclass/notice/regist";
     }
 
@@ -128,13 +126,13 @@ public class TeacherNoticeController {
         }
         if(!memberId.equals(notice.getTeacherNoticeMemberId())) {
             redirectAttributes.addFlashAttribute("message", "수정 권한이 없습니다.");
-            return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
+            return "redirect:/myclass/notice?idx=" + idx + "&" + pageDTO.getLinkUrl();
         }
 
         model.addAttribute("pageDTO", pageDTO);
         model.addAttribute("teacherNoticeDTO", notice);
 
-        setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 수정", "/myclass/notice/modify"));
+        setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 수정", "/myclass/notice/modify?idx=" + idx));
 
         return "myclass/notice/modify";
     }
@@ -149,7 +147,8 @@ public class TeacherNoticeController {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        TeacherNoticeResponseDTO notice = noticeService.getTeacherNoticeByIdx(teacherNoticeDTO.getTeacherNoticeIdx());
+        int idx = teacherNoticeDTO.getTeacherNoticeIdx();
+        TeacherNoticeResponseDTO notice = noticeService.getTeacherNoticeByIdx(idx);
 
         if (notice == null) {
             redirectAttributes.addFlashAttribute("message", "요청한 공지사항이 없습니다.");
@@ -157,7 +156,7 @@ public class TeacherNoticeController {
         }
         if(!memberId.equals(notice.getTeacherNoticeMemberId())) {
             redirectAttributes.addFlashAttribute("message", "수정 권한이 없습니다.");
-            return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
+            return "redirect:/myclass/notice/view?idx=" + idx + "&" + pageDTO.getLinkUrl();
         }
 
         noticeService.updateTeacherNotice(memberId, teacherNoticeDTO);
@@ -183,7 +182,7 @@ public class TeacherNoticeController {
         }
         if(!memberId.equals(notice.getTeacherNoticeMemberId())) {
             redirectAttributes.addFlashAttribute("message", "삭제 권한이 없습니다.");
-            return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
+            return "redirect:/myclass/notice/view?idx=" + idx + "&" + pageDTO.getLinkUrl();
         }
 
         noticeService.deleteTeacherNoticeByIdx(memberId, idx);
@@ -210,7 +209,7 @@ public class TeacherNoticeController {
             }
             if(!memberId.equals(notice.getTeacherNoticeMemberId())) {
                 redirectAttributes.addFlashAttribute("message", "삭제 권한이 없습니다.");
-                return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
+                return "redirect:/myclass/notice/view?idx=" + idx + "&" + pageDTO.getLinkUrl();
             }
 
             noticeService.deleteTeacherNoticeByIdx(memberId, idx);

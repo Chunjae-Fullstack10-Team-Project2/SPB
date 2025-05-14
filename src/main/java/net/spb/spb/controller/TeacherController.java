@@ -169,23 +169,23 @@ public class TeacherController {
         return "teacher/qna/answer";
     }
 
-    @PostMapping("/personal/qna/answer")
-    public String teacherQnaAnswerPOST(
-            @ModelAttribute TeacherQnaPageDTO pageDTO,
-            @ModelAttribute TeacherQnaDTO teacherQnaDTO,
-            Model model,
-            HttpServletRequest req
-    ) {
-        HttpSession session = req.getSession();
-        String memberId = (String) session.getAttribute("memberId");
-
-        teacherQnaService.updateTeacherAnswer(memberId, teacherQnaDTO);
-
-        model.addAttribute("pageDTO", pageDTO);
-        model.addAttribute("teacherQnaDTO", teacherQnaDTO);
-
-        return "redirect:/teacher/personal/qna/view?idx=" + teacherQnaDTO.getTeacherQnaIdx() + "&" + pageDTO.getLinkUrl();
-    }
+//    @PostMapping("/personal/qna/answer")
+//    public String teacherQnaAnswerPOST(
+//            @ModelAttribute TeacherQnaPageDTO pageDTO,
+//            @ModelAttribute TeacherQnaDTO teacherQnaDTO,
+//            Model model,
+//            HttpServletRequest req
+//    ) {
+//        HttpSession session = req.getSession();
+//        String memberId = (String) session.getAttribute("memberId");
+//
+//        teacherQnaService.updateTeacherAnswer(memberId, teacherQnaDTO);
+//
+//        model.addAttribute("pageDTO", pageDTO);
+//        model.addAttribute("teacherQnaDTO", teacherQnaDTO);
+//
+//        return "redirect:/teacher/personal/qna/view?idx=" + teacherQnaDTO.getTeacherQnaIdx() + "&" + pageDTO.getLinkUrl();
+//    }
 
     @GetMapping("/personal/qna/delete")
     public String teacherQnaDelete(
@@ -197,7 +197,7 @@ public class TeacherController {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        teacherQnaService.deleteTeacherQuestionByIdx(memberId, idx);
+        teacherQnaService.deleteTeacherQuestionByIdx(idx);
 
         model.addAttribute("pageDTO", pageDTO);
 

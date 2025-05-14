@@ -24,15 +24,20 @@
                     <p class="form-control" style="height: 254px;">${teacherNoticeDTO.teacherNoticeContent}</p>
                 </div>
 
-                <div class="mb-3">
-                    상단고정여부: ${teacherNoticeDTO.teacherNoticeFixed == 1 ? "Y" : "N"}
-                </div>
-
-                <div class="mb-3 text-muted">
-                    등록일: ${fn:replace(teacherNoticeDTO.teacherNoticeCreatedAt, 'T', ' ')}
-                    <c:if test="${teacherNoticeDTO.teacherNoticeUpdatedAt != null}">
-                        &nbsp;/ 수정일: ${fn:replace(teacherNoticeDTO.teacherNoticeUpdatedAt, 'T', ' ')}
-                    </c:if>
+                <div class="d-flex justify-content-between text-muted small">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="checkDefault" readonly
+                               ${teacherNoticeDTO.teacherNoticeFixed == 1 ? "checked" : ""}>
+                        <label class="form-check-label" for="checkDefault">
+                            상단고정
+                        </label>
+                    </div>
+                    <p>
+                        등록일: ${fn:replace(teacherNoticeDTO.teacherNoticeCreatedAt, 'T', ' ')}
+                        <c:if test="${teacherNoticeDTO.teacherNoticeUpdatedAt != null}">
+                            &nbsp;/ 수정일: ${fn:replace(teacherNoticeDTO.teacherNoticeUpdatedAt, 'T', ' ')}
+                        </c:if>
+                    </p>
                 </div>
             </div>
 

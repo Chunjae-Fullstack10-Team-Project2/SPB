@@ -6,7 +6,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html>
 <head>
-    <title>공지사항</title></head>
+    <title>공지사항</title>
+</head>
 <body>
     <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
     <div class="content">
@@ -25,7 +26,6 @@
             <c:if test="${not empty noticeList}">
                 <form name="frmSubmit" method="post">
                     <input type="hidden" name="idx" value="" />
-
                     <table class="table table-hover text-center align-middle">
                         <colgroup>
                             <col style="width: 40px">
@@ -124,12 +124,10 @@
 
                 const idx = this.closest("tr").querySelector("input[type='checkbox']").value;
 
-                const frm = document.querySelector("form[name='frmSubmit']");
-                frm.idx.value = idx;
+                const params = new URLSearchParams(location.search);
+                params.set("idx", idx);
 
-                frm.action = '/myclass/notice/modify';
-                frm.method = 'get';
-                frm.submit();
+                location.href = "/myclass/notice/modify?" + params.toString();
             });
         });
 
@@ -145,7 +143,9 @@
                 const frm = document.querySelector("form[name='frmSubmit']");
                 frm.idx.value = idx;
 
-                frm.action = '/myclass/notice/delete';
+                const params = new URLSearchParams(location.search);
+
+                frm.action = '/myclass/notice/delete?' + params.toString();
                 frm.submit();
             });
         });
@@ -163,7 +163,10 @@
             if (!confirm("선택하신 자료를 삭제하시겠습니까?\n삭제된 자료는 복구되지 않습니다.")) return;
 
             const frm = document.querySelector("form[name='frmSubmit']");
-            frm.action = '/myclass/notice/delete-multiple';
+
+            const params = new URLSearchParams(location.search);
+
+            frm.action = '/myclass/notice/delete?' + params.toString();
             frm.submit();
         });
 

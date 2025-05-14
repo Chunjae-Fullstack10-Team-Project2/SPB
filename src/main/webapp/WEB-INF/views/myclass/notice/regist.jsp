@@ -11,7 +11,7 @@
 <html>
 <head>
     <title>공지사항 등록</title>
-    <script src="${pageContext.request.contextPath}/resources/js/textCounter.js"></script
+    <script src="${pageContext.request.contextPath}/resources/js/textCounter.js"></script>
 </head>
 <body>
     <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
@@ -21,7 +21,7 @@
 
             <h1 class="h2 mb-4">공지사항 등록</h1>
 
-            <form name="frmRegist" action="/myclass/notice/regist" method="post"
+            <form name="frmRegist" action="/myclass/notice/regist?${pageDTO.linkUrl}" method="post"
                   class="border p-4 rounded bg-light shadow-sm">
                 <div class="mb-3">
                     <label for="teacherNoticeTitle" class="form-label">제목</label>
@@ -43,7 +43,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3 form-check d-flex justify-content-between">
+                <div class="form-check d-flex justify-content-between">
                     <div>
                         <input class="form-check-input" type="checkbox" value="1" name="teacherNoticeFixed" id="teacherNoticeFixed"
                         ${teacherNoticeDTO.teacherNoticeFixed == 1 ? "checked" : ""}>
