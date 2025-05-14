@@ -7,6 +7,8 @@
 <html>
 <head>
     <title>좋아요 누른 게시글</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
