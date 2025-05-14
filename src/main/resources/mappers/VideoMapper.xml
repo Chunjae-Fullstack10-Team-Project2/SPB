@@ -17,7 +17,11 @@
         SET lectureHistoryLastPosition = #{dto.lectureHistoryLastPosition},
             lectureHistoryWatchTime = #{dto.lectureHistoryWatchTime},
             lectureHistoryLastWatchDate = NOW(),
-            lectureHistoryCompleted = #{dto.lectureHistoryCompleted}
+            lectureHistoryCompleted =
+                CASE
+                    WHEN lectureHistoryCompleted = 1 THEN 1
+                    ELSE #{dto.lectureHistoryCompleted}
+                END
         WHERE lectureMemberId = #{dto.lectureMemberId}
           AND lectureHistoryChapterIdx = #{dto.lectureHistoryChapterIdx}
     </update>
@@ -35,4 +39,14 @@
         WHERE lectureMemberId = #{lectureMemberId}
           AND lectureHistoryChapterIdx = #{lectureHistoryChapterIdx}
     </select>
+
+    <!-- 영상 시청 시 구매확정-->
+    <update id="purchaseConfirm" parameterType="net.spb.spb.dto.LectureHistoryDTO">
+        UPDATE tbl_order_info oi
+            JOIN tbl_order_lecture ol ON oi.orderIdx = ol.orderIdx
+        SET oi.orderStatus = 'f'
+        WHERE oi.orderMemberId = #{dto.lectureMemberId}
+          AND ol.orderLectureIdx = #{dto.lectureIdx}
+        and oi.orderStatus = 's'
+    </update>
 </mapper>    

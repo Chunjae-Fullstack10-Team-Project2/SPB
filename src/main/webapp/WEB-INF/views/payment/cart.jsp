@@ -78,7 +78,8 @@
                                     <input type="checkbox" class="form-check-input checkbox" data-lecture-idx="${lecture.cartLectureIdx}" checked>
                                 </td>
                                 <td style="width: 15%;">
-                                    <img src="/upload/${lecture.lectureThumbnailImg}" alt="썸네일" class="cart-thumbnail rounded">
+                                    <img src="/upload/${lecture.lectureThumbnailImg}" alt="썸네일" class="cart-thumbnail rounded"
+                                         onerror="this.src='${cp}/resources/img/default_profileImg.png';">
                                 </td>
                                 <td>
                                     <div class="fw-bold">${lecture.lectureTitle}</div>

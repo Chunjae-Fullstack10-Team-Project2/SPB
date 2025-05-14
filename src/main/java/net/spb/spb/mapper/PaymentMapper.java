@@ -29,4 +29,5 @@ public interface PaymentMapper {
     public void updatePaymentStatus(@Param("merchantUid") String merchantUid, @Param("status") String status);
     public int getCartCount(@Param("memberId") String memberId);
     public void updateBookmarkState(@Param("dto") PaymentDTO dto);
+    public String getOrderStatus(@Param("orderIdx") int orderIdx);
 }

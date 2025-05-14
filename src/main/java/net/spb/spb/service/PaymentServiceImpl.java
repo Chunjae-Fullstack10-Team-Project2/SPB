@@ -171,6 +171,11 @@ public class PaymentServiceImpl implements PaymentServiceIf{
         paymentMapper.updateBookmarkState(dto);
     }
 
+    @Override
+    public String getOrderStatus(int orderIdx) {
+        return paymentMapper.getOrderStatus(orderIdx);
+    }
+
     private String getAccessToken() throws Exception {
         org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

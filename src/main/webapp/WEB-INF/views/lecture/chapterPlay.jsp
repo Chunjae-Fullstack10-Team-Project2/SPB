@@ -47,6 +47,7 @@
 
     // 메타데이터 로드 시 마지막 시청 위치로 이동
     video.addEventListener("loadedmetadata", function () {
+        alert("구매 확정되지 않은 강좌의 경우 영상 시청 시 구매가 확정됩니다. 이용에 참고해주세요.");
         $.ajax({
             url: "/video/progress",
             type: "GET",
@@ -115,19 +116,6 @@
         const watchedSeconds = getWatchedSecondsSinceLastSave();
         const watchTimeFormatted = secondsToHHMMSS(watchedSeconds);
 
-        if (isNaN(seconds)) {
-            console.warn("⛔ currentTime이 NaN입니다. 저장 중단");
-            return;
-        }
-
-        console.log("📦 저장 요청:", formatted, "| 완료 여부:", completed);
-        console.log({
-            lectureMemberId: memberId,
-            lectureHistoryChapterIdx: chapterId,
-            lectureHistoryWatchTime: watchTimeFormatted,
-            lectureHistoryLastPosition: formatted,
-            lectureHistoryCompleted: completed
-        });
         $.ajax({
             url: "/video/progress",
             type: "POST",
@@ -137,7 +125,8 @@
                 lectureHistoryChapterIdx: chapterId,
                 lectureHistoryWatchTime: watchTimeFormatted,
                 lectureHistoryLastPosition: formatted,
-                lectureHistoryCompleted: completed
+                lectureHistoryCompleted: completed,
+                lectureIdx : ${lectureIdx}
             }),
             success: function () {
                 console.log("✅ 저장 완료");

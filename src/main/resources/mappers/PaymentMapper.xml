@@ -148,5 +148,12 @@
         set bookmarkState = '2'
         where bookmarkMemberId = #{dto.paymentMemberId}
         and bookmarkLectureIdx in (select orderLectureIdx from tbl_order_lecture where orderIdx = #{dto.paymentOrderIdx})
-    </update> 
+    </update>
+
+    <!--주문 상태 조회-->
+    <select id="getOrderStatus">
+        select orderStatus
+        from tbl_order_info
+        where orderIdx = #{orderIdx}
+    </select>
 </mapper>    
