@@ -18,7 +18,6 @@ public class ExamPageDTO extends PageDTO {
 
     private String search_category;
 
-    private String date_type;
     private LocalDate start_date;
     private LocalDate end_date;
 
@@ -51,10 +50,6 @@ public class ExamPageDTO extends PageDTO {
         if (this.search_category != null && super.getSearch_word() != null) {
             sb.append("&search_category=" + this.search_category);
             sb.append("&search_word=" + encode(super.getSearch_word()));
-        }
-
-        if (this.date_type != null) {
-            sb.append("&date_type=" + this.date_type);
         }
 
         if (this.start_date != null && this.end_date != null) {

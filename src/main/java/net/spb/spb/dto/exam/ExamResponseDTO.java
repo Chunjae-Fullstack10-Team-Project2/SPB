@@ -17,8 +17,6 @@ public class ExamResponseDTO {
     private String lectureTitle;
     private String examTitle;
     private String examDescription;
-    private LocalDateTime examStartDate;
-    private LocalDateTime examEndDate;
     private LocalDateTime examCreatedAt;
     private LocalDateTime examUpdatedAt;
 }

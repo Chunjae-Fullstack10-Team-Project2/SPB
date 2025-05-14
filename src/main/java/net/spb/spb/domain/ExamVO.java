@@ -16,7 +16,5 @@ public class ExamVO {
     private int examLectureIdx;
     private String examTitle;
     private String examDescription;
-    private LocalDateTime examStartDate;
-    private LocalDateTime examEndDate;
     private LocalDateTime examCreatedAt;
 }
