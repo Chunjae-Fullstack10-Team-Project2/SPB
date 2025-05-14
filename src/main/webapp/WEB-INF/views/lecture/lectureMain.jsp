@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body>
+<body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
 <div class="content">
 <div class="container-lg my-5 px-4">

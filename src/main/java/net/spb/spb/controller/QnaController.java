@@ -34,7 +34,7 @@ public class QnaController {
     @Autowired
     private MemberServiceImpl memberService;
 
-    private static final Map<String, String> ROOT_BREADCRUMB = Map.of("name", "1:1 문의", "url", "/qna");
+    private static final Map<String, String> ROOT_BREADCRUMB = Map.of("name", "1:1 문의", "url", "/qna/list");
 
     // 브레드크럼
     private void setBreadcrumb(Model model, Map<String, String>... pagePairs) {

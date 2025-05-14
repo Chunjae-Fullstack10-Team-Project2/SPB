@@ -70,7 +70,7 @@
         }
     </style>
 </head>
-<body>
+<body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
 <div class="content">
     <div class="container my-5">

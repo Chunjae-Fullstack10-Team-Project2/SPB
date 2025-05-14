@@ -107,30 +107,52 @@
             <div class="col-md-5 col-lg-4">
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                     <span class="text-black">결제 내역</span>
-                    <span class="badge bg-primary rounded-pill" id="cart-count-badge">${fn:length(cartList)}</span>
+                    <span class="badge bg-primary rounded-pill" id="cart-badge">${fn:length(cartList)}</span>
                 </h4>
-                <ul class="list-group mb-3">
+                <table class="table table-borderless mb-3">
+                    <thead class="table-light border-bottom">
+                    <tr>
+                        <th>강좌명</th>
+                        <th class="text-end">금액</th>
+                    </tr>
+                    </thead>
+                    <tbody>
                     <c:forEach var="lecture" items="${cartList}">
-                        <li class="list-group-item d-flex justify-content-between lh-sm">
-                            <div>
-                                <h6 class="my-0">${lecture.lectureTitle}</h6>
-                            </div>
-                            <span class="text-body-secondary">
-                            <fmt:formatNumber value="${lecture.lectureAmount}" type="number"/>원
-                        </span>
-                        </li>
+                        <tr class="cart-summary-item" data-lecture-idx="${lecture.cartLectureIdx}">
+                            <td>${lecture.lectureTitle}</td>
+                            <td class="text-end">
+                                <fmt:formatNumber value="${lecture.lectureAmount}" type="number"/>원
+                            </td>
+                        </tr>
                     </c:forEach>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <strong>총 금액</strong>
-                        <strong class="text-danger total-price">0원</strong>
-                    </li>
-                </ul>
+                    </tbody>
+                    <tfoot class="border-top">
+                    <tr>
+                        <th>총 금액</th>
+                        <th class="text-end text-danger total-price">0원</th>
+                    </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    function updateSummaryList() {
+        const checkedLectureIdxs = Array.from(document.querySelectorAll('.checkbox:checked'))
+            .map(cb => cb.getAttribute('data-lecture-idx'));
+        console.log("checked: "+checkedLectureIdxs);
+        document.querySelectorAll('.cart-summary-item').forEach(item => {
+            const idx = item.getAttribute('data-lecture-idx');
+            console.log("idx: "+idx);
+            item.style.display = checkedLectureIdxs.includes(idx) ? '' : 'none';
+        });
+        console.log(document.getElementById('cart-count-badge'));
+        // 뱃지 숫자도 갱신
+       document.getElementById('cart-badge').textContent = checkedLectureIdxs.length;
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const checkboxes = document.querySelectorAll('.checkbox');
         const checkAll = document.getElementById('checkAll');
@@ -155,6 +177,7 @@
                     checkbox.checked = checkAll.checked;
                 });
                 calculateTotal(); // 총합 재계산
+                updateSummaryList();
             });
         }
 
@@ -162,6 +185,7 @@
         checkboxes.forEach(function (checkbox) {
             checkbox.addEventListener('change', function () {
                 calculateTotal();
+                updateSummaryList();
 
                 // 일부라도 체크 해제되면 전체선택 체크 해제
                 if (!checkbox.checked) {
@@ -176,32 +200,7 @@
 
         // 페이지 로드시 총합 계산
         calculateTotal();
-    });
-
-    // 체크박스 전체 선택/해제 기능
-    document.addEventListener('DOMContentLoaded', function() {
-        // 장바구니 항목이 여러 개일 경우 전체 선택/해제 기능 구현
-        const checkboxes = document.querySelectorAll('.checkbox');
-
-        // 체크박스 상태에 따라 총액 계산 함수
-        function calculateTotal() {
-            let total = 0;
-            checkboxes.forEach(function(checkbox) {
-                if (checkbox.checked) {
-                    const row = checkbox.closest('tr');
-                    const priceText = row.querySelector('.price-cell').textContent;
-                    const price = parseInt(priceText.replace(/[^0-9]/g, ''));
-                    total += price;
-                }
-            });
-
-            document.querySelector('.total-price').textContent = total.toLocaleString() + '원';
-        }
-
-        // 체크박스 변경 이벤트
-        checkboxes.forEach(function(checkbox) {
-            checkbox.addEventListener('change', calculateTotal);
-        });
+        updateSummaryList();
     });
 
     function cartDeleteSelected() {

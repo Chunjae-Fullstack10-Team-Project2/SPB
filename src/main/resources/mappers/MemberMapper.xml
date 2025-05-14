@@ -149,4 +149,17 @@
         </where>
     </select>
 
+    <update id="updatePassword">
+        UPDATE tbl_member
+        SET memberPwd = #{encryptedPassword}
+        WHERE memberId = #{memberId}
+    </update>
+
+    <select id="selectByEmail" parameterType="string">
+        SELECT memberId
+        FROM tbl_member
+        WHERE memberEmail = #{memberEmail}
+    </select>
+
+
 </mapper>

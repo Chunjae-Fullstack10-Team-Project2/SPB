@@ -1,6 +1,7 @@
 package net.spb.spb.mapper;
 
 import net.spb.spb.domain.MemberVO;
+import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.dto.pagingsearch.MemberPageDTO;
 import net.spb.spb.dto.pagingsearch.ReportPageDTO;
 import org.apache.ibatis.annotations.Param;
@@ -33,4 +34,8 @@ public interface MemberMapper {
     boolean updateMemberByAdmin(MemberVO memberVO);
 
     int getMemberCount(MemberPageDTO memberPageDTO);
+
+    int updatePassword(@Param("memberId") String memberId, @Param("encryptedPassword") String encryptedPassword);
+
+    String selectByEmail(String memberEmail);
 }

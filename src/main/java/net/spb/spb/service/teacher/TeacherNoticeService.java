@@ -29,48 +29,27 @@ public class TeacherNoticeService implements TeacherNoticeServiceIf {
 
     @Override
     public List<TeacherNoticeResponseDTO> getTeacherNoticeList(String memberId, TeacherNoticePageDTO pageDTO) {
-        pageDTO.setTotal_count(teacherNoticeMapper.selectTeacherNoticeListTotalCount(memberId, pageDTO));
         return teacherNoticeMapper.selectTeacherNoticeList(memberId, pageDTO);
     }
 
     @Override
     public TeacherNoticeResponseDTO getTeacherNoticeByIdx(int idx) {
-        TeacherNoticeResponseDTO teacherNotice = teacherNoticeMapper.selectTeacherNoticeByIdx(idx);
-
-        if (teacherNotice == null) {
-            // 요청한 공지사항을 찾을 수 없습니다.
-        }
-
-        return teacherNotice;
+        return teacherNoticeMapper.selectTeacherNoticeByIdx(idx);
     }
 
     @Override
     public int updateTeacherNotice(String memberId, TeacherNoticeDTO teacherNoticeDTO) {
-        int idx = teacherNoticeDTO.getTeacherNoticeIdx();
-        TeacherNoticeResponseDTO teacherNotice = teacherNoticeMapper.selectTeacherNoticeByIdx(idx);
-
-        if (teacherNotice == null) {
-            // 요청한 공지사항을 찾을 수 없습니다.
-        }
-        if (!teacherNotice.getTeacherNoticeMemberId().equals(memberId)) {
-            // 수정 권한이 없습니다.
-        }
-
         TeacherNoticeVO teacherNoticeVO = modelMapper.map(teacherNoticeDTO, TeacherNoticeVO.class);
         return teacherNoticeMapper.updateTeacherNotice(teacherNoticeVO);
     }
 
     @Override
     public int deleteTeacherNoticeByIdx(String memberId, int idx) {
-        TeacherNoticeResponseDTO teacherNotice = teacherNoticeMapper.selectTeacherNoticeByIdx(idx);
-
-        if (teacherNotice == null) {
-            // 요청한 공지사항을 찾을 수 없습니다.
-        }
-        if (!teacherNotice.getTeacherNoticeMemberId().equals(memberId)) {
-            // 삭제 권한이 없습니다.
-        }
-
         return teacherNoticeMapper.deleteTeacherNoticeByIdx(idx);
+    }
+
+    @Override
+    public int getTeacherNoticeListTotalCount(String memberId, TeacherNoticePageDTO pageDTO) {
+        return teacherNoticeMapper.selectTeacherNoticeListTotalCount(memberId, pageDTO);
     }
 }

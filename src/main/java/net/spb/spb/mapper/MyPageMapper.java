@@ -2,6 +2,7 @@ package net.spb.spb.mapper;
 
 import net.spb.spb.dto.BookmarkDTO;
 import net.spb.spb.dto.OrderDTO;
+import net.spb.spb.dto.post.PostCommentDTO;
 import net.spb.spb.dto.post.PostDTO;
 import net.spb.spb.dto.post.PostLikeRequestDTO;
 import net.spb.spb.dto.post.PostReportDTO;
@@ -52,4 +53,12 @@ public interface MyPageMapper {
                              @Param("postMemberId") String postMemberId);
 
     int postTotalCount(@Param("searchDTO") SearchDTO searchDTO, @Param("postMemberId") String postMemberId);
+
+    List<PostCommentDTO> listMyComment(@Param("searchDTO") SearchDTO searchDTO,
+                                       @Param("pageDTO") PageRequestDTO pageDTO,
+                                       @Param("postCommentMemberId") String postCommentMemberId);
+
+    int commentTotalCount(@Param("searchDTO") SearchDTO searchDTO,
+                          @Param("postCommentMemberId") String postCommentMemberId);
+
 }

@@ -26,68 +26,69 @@
             %>
 
             <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/searchBoxOnlyPage.jsp" />
+            <c:if test="${not empty fileList}">
+                <form name="frmDelete" method="post">
+                    <input type="hidden" name="teacherFileIdx" value="" />
 
-            <div class="d-flex gap-2 mb-2 justify-content-end">
-                <button class="btn btn-sm btn-danger" type="submit" id="btnDeleteAll">선택삭제</button>
-                <button class="btn btn-sm btn-primary" type="button" id="btnRegist" onclick="location.href='/myclass/library/regist?${pageDTO.linkUrl}'">등록</button>
-            </div>
-
-            <form name="frmDelete" method="post">
-                <input type="hidden" name="teacherFileIdx" value="" />
-
-                <table class="table table-hover text-center align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th><input type="checkbox" id="checkAll" onclick="toggleAll(this);"/></th>
-                            <th>
-                                <a onclick="applySort('teacherFileTitle')">제목
-                                    <c:if test="${pageDTO['sort_by'] eq 'teacherFileTitle'}">
-                                        ${pageDTO['sort_direction'] eq 'asc' ? '▲' : '▼'}
-                                    </c:if>
-                                </a>
-                            </th>
-                            <th>
-                                <a onclick="applySort('teacherFileCreatedAt')">등록일
-                                    <c:if test="${pageDTO['sort_by'] eq 'teacherFileCreatedAt'}">
-                                        ${pageDTO['sort_direction'] eq 'asc' ? '▲' : '▼'}
-                                    </c:if>
-                                </a>
-                            </th>
-                            <th>첨부파일</th>
-                            <th>삭제</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:if test="${empty fileList}">
+                    <table class="table table-hover text-center align-middle">
+                        <thead class="table-light">
                             <tr>
-                                <td colspan="5">등록된 자료가 없습니다.</td>
-                            </tr>
-                        </c:if>
-                        <c:forEach items="${fileList}" var="file" varStatus="status">
-                            <tr>
-                                <td>
-                                    <input type="checkbox" name="fileIdxs" value="${file.teacherFileIdx}"/>
-                                </td>
-                                <td class="text-start">
-                                    <a href="/teacher/personal/library/view?idx=${file.teacherFileIdx}&${pageDTO.linkUrl}"
-                                       class="text-decoration-none text-dark">
-                                            ${file.teacherFileTitle}
+                                <th><input type="checkbox" id="checkAll" onclick="toggleAll(this);"/></th>
+                                <th>
+                                    <a onclick="applySort('teacherFileTitle')">제목
+                                        <c:if test="${pageDTO['sort_by'] eq 'teacherFileTitle'}">
+                                            ${pageDTO['sort_direction'] eq 'asc' ? '▲' : '▼'}
+                                        </c:if>
                                     </a>
-                                </td>
-                                <td>${fn:substring(file.teacherFileCreatedAt, 0, 10)}</td>
-                                <td>
-                                    <a href="/file/download/library/${file.fileDTO.fileIdx}"
-                                       class="btn btn-sm btn-link text-decoration-none text-secondary">
-                                        <i class="bi bi-download"></i> ${file.fileDTO.fileOrgName}
+                                </th>
+                                <th>
+                                    <a onclick="applySort('teacherFileCreatedAt')">등록일
+                                        <c:if test="${pageDTO['sort_by'] eq 'teacherFileCreatedAt'}">
+                                            ${pageDTO['sort_direction'] eq 'asc' ? '▲' : '▼'}
+                                        </c:if>
                                     </a>
-                                </td>
-                                <td><button type="submit" id="btnDeleteOne" class="btn btn-sm btn-outline-dark"><i class="bi bi-trash"></i></button></td>
+                                </th>
+                                <th>첨부파일</th>
+                                <th>삭제</th>
                             </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
-            </form>
-            <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/pagingOnlyPage.jsp" />
+                        </thead>
+                        <tbody>
+                            <c:forEach items="${fileList}" var="file" varStatus="status">
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="fileIdxs" value="${file.teacherFileIdx}"/>
+                                    </td>
+                                    <td class="text-start">
+                                        <a href="/teacher/personal/library/view?idx=${file.teacherFileIdx}&${pageDTO.linkUrl}"
+                                           class="text-decoration-none text-dark">
+                                                ${file.teacherFileTitle}
+                                        </a>
+                                    </td>
+                                    <td>${fn:substring(file.teacherFileCreatedAt, 0, 10)}</td>
+                                    <td>
+                                        <a href="/file/download/library/${file.fileDTO.fileIdx}"
+                                           class="btn btn-sm btn-link text-decoration-none text-secondary">
+                                            <i class="bi bi-download"></i> ${file.fileDTO.fileOrgName}
+                                        </a>
+                                    </td>
+                                    <td><button type="submit" id="btnDeleteOne" class="btn btn-sm btn-outline-dark"><i class="bi bi-trash"></i></button></td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </form>
+                <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/pagingOnlyPage.jsp" />
+
+                <div class="d-flex gap-2 mb-2 justify-content-end">
+                    <button class="btn btn-sm btn-danger" type="submit" id="btnDeleteAll">선택삭제</button>
+                    <button class="btn btn-sm btn-primary" type="button" id="btnRegist" onclick="location.href='/myclass/library/regist?${pageDTO.linkUrl}'">등록</button>
+                </div>
+            </c:if>
+            <c:if test="${empty fileList}">
+                <div class="alert alert-warning mt-4" role="alert">
+                    등록된 자료가 없습니다.
+                </div>
+            </c:if>
         </div>
     </div>
 
