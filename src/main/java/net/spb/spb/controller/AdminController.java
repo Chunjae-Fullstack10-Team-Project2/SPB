@@ -111,17 +111,18 @@ public class AdminController {
     public String boardReportList(@ModelAttribute SearchDTO searchDTO,
                                   @ModelAttribute PageRequestDTO pageRequestDTO,
                                   Model model) {
-        List<PostReportDTO> boardReportList = reportService.listBoardReport(searchDTO, pageRequestDTO);
-        PageResponseDTO<PostReportDTO> pageResponseDTO = PageResponseDTO.<PostReportDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(reportService.boardReportTotalCount(searchDTO))
-                .dtoList(boardReportList)
-                .build();
+        int totalCount = reportService.boardReportTotalCount(searchDTO);
+        PageResponseDTO<PostReportDTO> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                totalCount,
+                () -> reportService.listBoardReport(searchDTO, pageRequestDTO)
+        );
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("boardReportList", boardReportList);
+        model.addAttribute("boardReportList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("자유게시판 신고 목록", ""));
+
         return "admin/report/boardReportTable";
     }
 
@@ -129,17 +130,18 @@ public class AdminController {
     public String reviewReportList(@ModelAttribute SearchDTO searchDTO,
                                    @ModelAttribute PageRequestDTO pageRequestDTO,
                                    Model model) {
-        List<PostReportDTO> reviewReportList = reportService.listReviewReport(searchDTO, pageRequestDTO);
-        PageResponseDTO<PostReportDTO> pageResponseDTO = PageResponseDTO.<PostReportDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(reportService.reviewReportTotalCount(searchDTO))
-                .dtoList(reviewReportList)
-                .build();
+        int totalCount = reportService.reviewReportTotalCount(searchDTO);
+        PageResponseDTO<PostReportDTO> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                totalCount,
+                () -> reportService.listReviewReport(searchDTO, pageRequestDTO)
+        );
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("reviewReportList", reviewReportList);
+        model.addAttribute("reviewReportList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("강의평 신고 목록", ""));
+
         return "admin/report/reviewReportTable";
     }
 
@@ -766,17 +768,18 @@ public class AdminController {
                       @ModelAttribute PageRequestDTO pageRequestDTO,
                       Model model) {
 
-        List<QnaDTO> notAnsweredQnaList = qnaService.notAnsweredQna(searchDTO, pageRequestDTO);
-        PageResponseDTO<QnaDTO> pageResponseDTO = PageResponseDTO.<QnaDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(qnaService.notAnsweredQnaTotalCount(searchDTO))
-                .dtoList(notAnsweredQnaList)
-                .build();
+        int totalCount = qnaService.notAnsweredQnaTotalCount(searchDTO);
+        PageResponseDTO<QnaDTO> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                totalCount,
+                () -> qnaService.notAnsweredQna(searchDTO, pageRequestDTO)
+        );
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("notAnsweredQnaList", notAnsweredQnaList);
+        model.addAttribute("notAnsweredQnaList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("미답변 문의", ""));
+
         return "/admin/qna/list";
     }
 
