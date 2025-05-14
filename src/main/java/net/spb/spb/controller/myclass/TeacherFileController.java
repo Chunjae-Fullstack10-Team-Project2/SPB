@@ -212,14 +212,14 @@ public class TeacherFileController {
     @PostMapping("/delete-multiple")
     public String deleteMultiple(
             @ModelAttribute TeacherFilePageDTO pageDTO,
-            @RequestParam("fileIdxs") List<Integer> fileIdxs,
+            @RequestParam("idxList") List<Integer> idxList,
             RedirectAttributes redirectAttributes,
             HttpServletRequest req
     ) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        for (int idx : fileIdxs) {
+        for (int idx : idxList) {
             TeacherFileResponseDTO file = teacherFileService.getTeacherFileByIdx(idx);
             if (file == null) {
                 redirectAttributes.addFlashAttribute("errorMessage", "요청한 자료를 찾을 수 없습니다.");
