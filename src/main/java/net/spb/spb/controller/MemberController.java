@@ -30,6 +30,7 @@ import java.security.NoSuchAlgorithmException;
 
 import jakarta.validation.Valid;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -531,4 +532,35 @@ public class MemberController {
             return "login/join";
         }
     }
+
+    @GetMapping("/findPwd")
+    public String findPwd() {
+        return "login/findPwd";
+    }
+
+    @PostMapping("/email/sendTempPassword")
+    public String sendTempPassword(@RequestParam("memberEmail") String memberEmail,
+                                   RedirectAttributes redirectAttributes) {
+
+        String memberId = memberService.findByEmail(memberEmail);
+
+        if (memberId == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "해당 이메일로 등록된 계정이 없습니다.");
+            return "redirect:/findPwd";
+        }
+
+        String tempPassword = mailService.sendTemporaryPasswordToUser(memberEmail);
+
+        try {
+            String encryptedPassword = PasswordUtil.encryptPassword(tempPassword);
+
+            memberService.updatePassword(memberId, encryptedPassword);
+            redirectAttributes.addFlashAttribute("successMessage", "임시 비밀번호가 이메일로 발송되었습니다.");
+        } catch (NoSuchAlgorithmException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "임시 비밀번호 처리 중 오류가 발생했습니다.");
+        }
+
+        return "redirect:/findPwd";
+    }
+
 }
