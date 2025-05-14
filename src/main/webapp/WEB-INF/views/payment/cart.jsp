@@ -143,13 +143,10 @@
     function updateSummaryList() {
         const checkedLectureIdxs = Array.from(document.querySelectorAll('.checkbox:checked'))
             .map(cb => cb.getAttribute('data-lecture-idx'));
-        console.log("checked: "+checkedLectureIdxs);
         document.querySelectorAll('.cart-summary-item').forEach(item => {
             const idx = item.getAttribute('data-lecture-idx');
-            console.log("idx: "+idx);
             item.style.display = checkedLectureIdxs.includes(idx) ? '' : 'none';
         });
-        console.log(document.getElementById('cart-count-badge'));
         // 뱃지 숫자도 갱신
        document.getElementById('cart-badge').textContent = checkedLectureIdxs.length;
     }
@@ -246,7 +243,6 @@
         selectCartItemIds.push(lectureIdx);
 
         const query = 'lectureIdxList='  + selectCartItemIds.join('&lectureIdxList=');
-        console.log("query == " + query);
         window.location.href = `/payment/payment?`+query;
     }
 
@@ -263,14 +259,11 @@
             }
         });
 
-        console.log('선택된 강좌 ID: ', selectCartItemIds);
 
         if (selectCartItemIds.length === 0) {
             alert("수강 할 강좌를 선택해주세요.");
             return;
         }
-        //const query = selectCartItemIds.map(id => `lectureIdxList=${id}`).join('&');
-        //console.log('전송할 쿼리:', query);
 
         const query = 'lectureIdxList='  + selectCartItemIds.join('&lectureIdxList=');
         console.log("query == " + query);

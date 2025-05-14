@@ -201,8 +201,6 @@
             }).get()
         }
 
-        console.log(JSON.stringify(data));
-
         $.ajax({
             url: '/payment/insertOrder',
             type: 'POST',
