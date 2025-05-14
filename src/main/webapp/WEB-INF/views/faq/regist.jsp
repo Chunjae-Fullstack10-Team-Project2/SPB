@@ -48,8 +48,14 @@
                 <form name="frmRegist" method="post" class="needs-validation" novalidate>
                     <div class="mb-3">
                         <label for="faqQuestion" class="form-label">질문</label>
-                        <input type="text" class="form-control" id="faqQuestion" name="faqQuestion" maxlength="100"
-                               placeholder="질문을 입력하세요." required>
+                        <input type="text" class="form-control char-limit" id="faqQuestion" name="faqQuestion" maxlength="100"
+                               placeholder="질문을 입력하세요."
+                               data-maxlength="100"
+                               data-target="#faqQCount"
+                               required>
+                    </div>
+                    <div class="text-end small text-muted mt-1 mb-3">
+                        <span id="faqQCount">0</span> / 100
                     </div>
 
                     <div class="mb-3">
@@ -58,13 +64,13 @@
                                   id="faqAnswer"
                                   name="faqAnswer"
                                   rows="10"
-                                  data-maxlength="19000"
+                                  data-maxlength="15000"
                                   data-target="#faqAnswerCount"
                                   placeholder="답변을 입력해주세요."
-                                  style="resize: none;" required>></textarea>
+                                  style="resize: none;" required></textarea>
                     </div>
                     <div class="text-end small text-muted mt-1 mb-3">
-                        <span id="faqAnswerCount">0</span> / 19,000
+                        <span id="faqAnswerCount">0</span> / 15,000
                     </div>
 
                     <div class="d-flex justify-content-end gap-2">
