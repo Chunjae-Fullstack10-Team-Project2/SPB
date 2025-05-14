@@ -49,7 +49,7 @@ public class TeacherNoticeService implements TeacherNoticeServiceIf {
     }
 
     @Override
-    public int getTeacherNoticeListTotalCount(String memberId, TeacherNoticePageDTO pageDTO) {
+    public int getTeacherNoticeTotalCount(String memberId, TeacherNoticePageDTO pageDTO) {
         return teacherNoticeMapper.selectTeacherNoticeListTotalCount(memberId, pageDTO);
     }
 }
