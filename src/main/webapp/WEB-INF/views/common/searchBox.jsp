@@ -7,6 +7,8 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <div class="search-box">
@@ -114,11 +116,59 @@
                 </div>
             </div>
         </c:if>
-
     </form>
 </div>
-
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+    <div id="toastAlert" class="toast align-items-center text-bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastAlertBody">
+                <!-- 메시지 내용 -->
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dateInput = document.querySelector('input[name="datefilter"]');
+
+        if (dateInput) {
+            dateInput.addEventListener('blur', function () {
+                const value = dateInput.value.trim();
+                if (!value) return;
+
+                // 정규식 검사: YYYY-MM-DD - YYYY-MM-DD
+                const regex = /^\d{4}-\d{2}-\d{2} - \d{4}-\d{2}-\d{2}$/;
+
+                if (!regex.test(value)) {
+                    dateInput.value = '';
+                    showToast("날짜 형식은 'YYYY-MM-DD - YYYY-MM-DD'이어야 합니다.");
+                    return;
+                }
+
+                // moment로 날짜 유효성까지 검증
+                const [start, end] = value.split(' - ');
+                const startDateValid = moment(start, 'YYYY-MM-DD', true).isValid();
+                const endDateValid = moment(end, 'YYYY-MM-DD', true).isValid();
+
+                if (!startDateValid || !endDateValid) {
+                    dateInput.value = '';
+                    showToast("유효하지 않은 날짜입니다.");
+                }
+            });
+        }
+    });
+
+    function showToast(message) {
+        const toastEl = document.getElementById('toastAlert');
+        const toastBody = document.getElementById('toastAlertBody');
+
+        toastBody.textContent = message;
+
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    }
+
     $(function () {
         $('input[name="datefilter"]').daterangepicker({
             autoUpdateInput: false,

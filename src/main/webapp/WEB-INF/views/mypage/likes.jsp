@@ -67,20 +67,20 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${likesList}" var="orderDTO" varStatus="status">
+                <c:forEach items="${likesList}" var="postDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
-                            <a href="/post/detail?postIdx=${orderDTO.postLikeRefIdx}"
+                            <a href="/post/detail?postIdx=${postDTO.postLikeRefIdx}"
                                class="text-decoration-none text-dark">
-                                    ${orderDTO.postTitle}
+                                    ${postDTO.postTitle}
                             </a>
                         </td>
-                        <td>${orderDTO.postMemberId}</td>
-                        <td>${orderDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>${postDTO.postMemberId}</td>
+                        <td>${postDTO.postCreatedAt.toLocalDate()}</td>
                         <td>
                             <button type="button" class="btn btn-sm btn-outline-danger"
-                                    onclick="cancelLike(${orderDTO.postLikeRefIdx})">
+                                    onclick="cancelLike(${postDTO.postLikeRefIdx})">
                                 좋아요 취소
                             </button>
                         </td>

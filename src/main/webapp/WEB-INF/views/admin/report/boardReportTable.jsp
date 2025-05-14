@@ -97,17 +97,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${boardReportList}" var="orderDTO" varStatus="status">
+                <c:forEach items="${boardReportList}" var="postDTO" varStatus="status">
                     <tr>
-                        <td>${orderDTO.reportIdx}</td>
+                        <td>${postDTO.reportIdx}</td>
                         <td class="text-start">
-                            <a href="/post/detail?postIdx=${orderDTO.reportRefIdx}"
+                            <a href="/post/detail?postIdx=${postDTO.reportRefIdx}"
                                class="text-decoration-none text-dark">
-                                    ${orderDTO.postTitle}
+                                    ${postDTO.postTitle}
                             </a>
                         </td>
-                        <td>${orderDTO.postMemberId}</td>
-                        <td>${orderDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>${postDTO.postMemberId}</td>
+                        <td>${postDTO.postCreatedAt.toLocalDate()}</td>
                     </tr>
                 </c:forEach>
                 </tbody>
