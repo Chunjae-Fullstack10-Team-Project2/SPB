@@ -134,15 +134,13 @@
                     <input type="text" class="form-control" id="memberId" name="memberId" autocomplete="off"
                            placeholder="아이디"
                            value="${not empty cookie.saveId.value ? cookie.saveId.value : (not empty cookie.autoLogin.value ? cookie.autoLogin.value : '')}"
-                           oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
-                    <label for="memberId">아이디</label>
+                    > <label for="memberId">아이디</label>
 
                 </div>
 
                 <div class="form-floating position-relative mb-3">
                     <input type="password" class="form-control pr-icon" name="memberPwd" id="memberPwd"
-                           placeholder="비밀번호" maxlength="15"
-                           oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
+                           placeholder="비밀번호" maxlength="15">
                     <label for="memberPwd">비밀번호</label>
 
                     <button type="button" class="btn-eye" onclick="togglePasswordVisibility('memberPwd', this)">
@@ -200,10 +198,56 @@
         </main>
     </c:if>
 </div>
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="loginToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive"
+         aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="loginToastMessage">오류 메시지 출력</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+
+    <div class="toast align-items-center text-bg-warning border-0" role="alert"
+         aria-live="assertive" aria-atomic="true" id="inputBlockToast">
+        <div class="d-flex">
+            <div class="toast-body" id="inputBlockToastMessage">입력 제한 안내</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js" type="text/javascript"></script>
 
 <script>
+    function showInputToast(message) {
+        const toastEl = document.getElementById('inputBlockToast');
+        const toastMsg = document.getElementById('inputBlockToastMessage');
+        toastMsg.textContent = message;
+        const toast = new bootstrap.Toast(toastEl, {delay: 2500});
+        toast.show();
+    }
+
+    document.getElementById("memberId")?.addEventListener("input", function () {
+        const origin = this.value;
+        const filtered = origin.replace(/[^a-zA-Z0-9]/g, '');
+        if (origin !== filtered) {
+            this.value = filtered;
+            showInputToast("아이디는 영문과 숫자만 입력 가능합니다.");
+        }
+    });
+
+    document.getElementById("memberPwd")?.addEventListener("input", function () {
+        const origin = this.value;
+        const filtered = origin.replace(/[^a-zA-Z0-9]/g, '');
+        if (origin !== filtered) {
+            this.value = filtered;
+            showInputToast("비밀번호는 영문과 숫자만 입력 가능합니다.");
+        }
+    });
+
     const idRegEx = /^[a-zA-Z0-9]{4,20}$/;
     const pwdRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{4,15}$/;
 
@@ -246,8 +290,14 @@
     }
 
     <c:if test="${not empty errorMessage}">
-    alert("${errorMessage}");
+    const toastEl = document.getElementById('loginToast');
+    const toastMessage = document.getElementById('loginToastMessage');
+    const toast = new bootstrap.Toast(toastEl);
+
+    toastMessage.textContent = "${errorMessage}";
+    toast.show();
     </c:if>
+
 
     document.getElementById("btnSubmit")?.addEventListener("click", function (e) {
         e.preventDefault();
