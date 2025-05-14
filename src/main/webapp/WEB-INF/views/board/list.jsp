@@ -136,19 +136,12 @@
             </c:choose>
 
             <!-- 글 작성 버튼 -->
-            <c:if test="${category=='freeboard' and not empty sessionScope.memberId}">
+            <c:if test="${(category=='freeboard' and not empty sessionScope.memberId) or sessionScope.memberGrade == 0}">
             <div class="d-flex justify-content-end mb-4">
                 <button type="button" class="btn btn-outline-dark btn-sm" id="btnRegist">
                     <i class="bi bi-pencil-square"></i> 글 작성
                 </button>
             </div>
-            </c:if>
-            <c:if test="${sessionScope.memberGrade==0}">
-                <div class="d-flex justify-content-end mb-4">
-                    <button type="button" class="btn btn-outline-dark btn-sm" id="btnRegist">
-                        <i class="bi bi-pencil-square"></i> 글 작성
-                    </button>
-                </div>
             </c:if>
         </div>
     </div>
