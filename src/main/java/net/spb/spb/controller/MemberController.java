@@ -316,31 +316,37 @@ public class MemberController {
         Map<String, Object> result = new HashMap<>();
 
         if (memberEmail != null && !memberEmail.isEmpty()) {
+            // 인증 시도 횟수와 마지막 시도 시간 가져오기
+            Integer emailTryCount = (Integer) session.getAttribute("emailTryCount");
+            Long lastTryTime = (Long) session.getAttribute("lastEmailTryTime");
+            long now = System.currentTimeMillis();
+
+            // 인증 횟수 3회 초과 && 10분 이내 재시도인 경우애눈 여전히 차단
+            if (emailTryCount != null && emailTryCount >= 3) {
+                if (lastTryTime != null && now - lastTryTime < 10 * 60 * 1000) {
+                    result.put("success", false);
+                    result.put("message", "이메일 인증 시도 횟수를 초과했습니다. 10분 후 다시 시도해주세요.");
+                    return result;
+                } else {
+                    // 10분 지났으면 초기화
+                    emailTryCount = 0;
+                }
+            }
+
             // 인증 코드 생성 및 이메일 전송
             String code = mailService.sendVerificationCode(memberEmail);
             session.setAttribute("emailAuthCode", code);
             session.setAttribute("memberEmail", memberEmail);
             session.setAttribute("emailVerified", false);
-            session.setAttribute("emailAuthTime", System.currentTimeMillis());
+            session.setAttribute("emailAuthTime", now);
 
-            // 인증 시도 횟수
-            Integer emailTryCount = (Integer) session.getAttribute("emailTryCount");
-            if (emailTryCount == null) {
-                emailTryCount = 0;
-            }
-
-            if (emailTryCount >= 3) {
-                result.put("success", false);
-                result.put("message", "이메일 인증 시도 횟수를 초과했습니다. 나중에 다시 시도해주세요.");
-                return result;
-            }
-
-            emailTryCount++;
-            session.setAttribute("emailTryCount", emailTryCount);
+            // 횟수 증가 및 시간 저장
+            session.setAttribute("emailTryCount", emailTryCount == null ? 1 : emailTryCount + 1);
+            session.setAttribute("lastEmailTryTime", now);
 
             result.put("success", true);
             result.put("message", "인증 코드가 전송되었습니다.");
-            result.put("emailTryCount", emailTryCount);
+            result.put("emailTryCount", emailTryCount == null ? 1 : emailTryCount + 1);
         } else {
             result.put("success", false);
             result.put("message", "이메일을 입력해주세요.");
@@ -366,6 +372,8 @@ public class MemberController {
         if (authTime == null || (currentTime - authTime) > fiveMinutesInMillis) {
             session.removeAttribute("emailVerified");
             session.removeAttribute("emailAuthCode");
+            session.removeAttribute("emailTryCount");
+            session.removeAttribute("lastEmailTryTime");
             result.put("success", false);
             result.put("message", "인증 시간이 만료되었습니다. 다시 시도해주세요.");
             return result;
@@ -375,6 +383,7 @@ public class MemberController {
             result.put("success", true);
             session.setAttribute("emailVerified", true);
             session.removeAttribute("emailTryCount");
+            session.removeAttribute("lastEmailTryTime");
             session.removeAttribute("emailAuthCode");
             session.removeAttribute("emailAuthTime");
         } else {
@@ -457,6 +466,34 @@ public class MemberController {
         } catch (NoSuchAlgorithmException e) {
             model.addAttribute("errorMessage", "비밀번호 암호화 오류가 발생했습니다.");
             model.addAttribute("memberDTO", memberDTO);
+            return "login/join";
+        }
+
+        String memberZipCode = request.getParameter("memberZipCode");
+        if (!memberZipCode.matches("^\\d{5}$")) {
+            model.addAttribute("errorMessage", "우편번호는 숫자 5자리여야 합니다.");
+            model.addAttribute("memberDTO", memberDTO);
+            model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
+            model.addAttribute("memberEmailCode", request.getParameter("memberEmailCode"));
+            return "login/join";
+        }
+
+        String memberAddr1 = request.getParameter("memberAddr1");
+        String memberAddr2 = request.getParameter("memberAddr2");
+
+        if (memberAddr1 != null && memberAddr1.length() > 100) {
+            model.addAttribute("errorMessage", "기본 주소는 100자 이내로 입력해주세요.");
+            model.addAttribute("memberDTO", memberDTO);
+            model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
+            model.addAttribute("memberEmailCode", request.getParameter("memberEmailCode"));
+            return "login/join";
+        }
+
+        if (memberAddr2 != null && memberAddr2.length() > 100) {
+            model.addAttribute("errorMessage", "상세 주소는 100자 이내로 입력해주세요.");
+            model.addAttribute("memberDTO", memberDTO);
+            model.addAttribute("memberPwdConfirm", request.getParameter("memberPwdConfirm"));
+            model.addAttribute("memberEmailCode", request.getParameter("memberEmailCode"));
             return "login/join";
         }
 
