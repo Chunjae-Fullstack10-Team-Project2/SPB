@@ -13,6 +13,7 @@
 <head>
     <title>게시글 신고 목록</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <%@ include file="../../common/sidebarHeader.jsp" %>
@@ -60,6 +61,7 @@
             searchTypeOptions.add(Map.of("value", "postTitle", "label", "게시글 제목"));
             searchTypeOptions.add(Map.of("value", "postContent", "label", "게시글 내용"));
             searchTypeOptions.add(Map.of("value", "postMemberId", "label", "게시글 작성자"));
+            searchTypeOptions.add(Map.of("value", "reportMemberId", "label", "신고자"));
             request.setAttribute("searchTypeOptions", searchTypeOptions);
             request.setAttribute("searchAction", "/admin/report/list/board");
         %>
@@ -87,6 +89,14 @@
                         </a>
                     </th>
                     <th>
+                        <a href="javascript:void(0);" onclick="applySort('reportMemberId')">
+                            신고자
+                            <c:if test="${searchDTO.sortColumn eq 'reportMemberId'}">
+                                ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
+                            </c:if>
+                        </a>
+                    </th>
+                    <th>
                         <a href="javascript:void(0);" onclick="applySort('postCreatedAt')">
                             작성일
                             <c:if test="${searchDTO.sortColumn eq 'postCreatedAt'}">
@@ -107,6 +117,7 @@
                             </a>
                         </td>
                         <td>${postDTO.postMemberId}</td>
+                        <td>${postDTO.reportMemberId}</td>
                         <td>${postDTO.postCreatedAt.toLocalDate()}</td>
                     </tr>
                 </c:forEach>
