@@ -106,44 +106,45 @@ change this template use File | Settings | File Templates. --%>
                     </c:forEach>
                 </div>
 
-                <div class="d-flex gap-2 mt-3">
-                    <button class="btn btn-outline-primary btn-sm" id="btnCopyUrl"><i class="bi bi-share"></i> 공유
-                    </button>
+                <div class="d-flex justify-content-between align-items-start mt-3 flex-wrap gap-2">
 
-                    <c:if test="${category == 'freeboard' and not empty sessionScope.memberId}">
-                        <button type="submit" id="btnReport" class="btn btn-outline-danger btn-sm"
-                                data-report-ref-idx="${post.postIdx}" data-post-member-id="${post.postMemberId}"
-                                data-report-ref-type="POST">
-                            <i class="bi bi-flag"></i> 신고
+                    <div>
+                        <button class="btn btn-secondary btn-sm" onclick="location.href='list'"><i class="bi bi-list"></i>
+                            목록
                         </button>
-                    </c:if>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 justify-content-end">
+                        <button class="btn btn-outline-primary btn-sm" id="btnCopyUrl"><i class="bi bi-share"></i> 공유</button>
+                        <c:if test="${category == 'freeboard' and not empty sessionScope.memberId}">
+                            <button type="submit" id="btnReport" class="btn btn-outline-danger btn-sm"
+                                    data-report-ref-idx="${post.postIdx}" data-post-member-id="${post.postMemberId}"
+                                    data-report-ref-type="POST">
+                                <i class="bi bi-flag"></i> 신고
+                            </button>
+                        </c:if>
+                        <c:if test="${sessionScope.memberId eq post.postMemberId}">
+                            <button class="btn btn-warning btn-sm" onclick="location.href='modify?idx=${post.postIdx}'"><i
+                                    class="bi bi-pencil"></i> 수정
+                            </button>
+                            <button class="btn btn-danger btn-sm" id="btnPostDelete" data-post-idx="${post.postIdx}"
+                                    data-member-id="${post.postMemberId}">
+                                <i class="bi bi-trash"></i> 삭제
+                            </button>
+                        </c:if>
+
+                        <c:if test="${not empty sessionScope.memberId}">
+                            <button type="button"
+                                    class="btn btn-outline-success btn-sm ${post.like ? 'liked' : ''}"
+                                    id="btnLike"
+                                    data-post-idx="${post.postIdx}"
+                                    data-like-ref-type="POST">
+                                    ${category != 'freeboard' ? '도움이 돼요 ': ''}
+                                👍&nbsp;&nbsp;<span class="likeCount">${post.postLikeCnt}</span>
+                            </button>
+                        </c:if>
+                    </div>
                 </div>
-
-                <div class="d-flex gap-2 my-4">
-                    <button class="btn btn-secondary btn-sm" onclick="location.href='list'"><i class="bi bi-list"></i>
-                        목록
-                    </button>
-                    <c:if test="${sessionScope.memberId eq post.postMemberId}">
-                        <button class="btn btn-warning btn-sm" onclick="location.href='modify?idx=${post.postIdx}'"><i
-                                class="bi bi-pencil"></i> 수정
-                        </button>
-                        <button class="btn btn-danger btn-sm" id="btnPostDelete" data-post-idx="${post.postIdx}"
-                                data-member-id="${post.postMemberId}">
-                            <i class="bi bi-trash"></i> 삭제
-                        </button>
-                    </c:if>
-                </div>
-
-                <c:if test="${not empty sessionScope.memberId}">
-                    <button type="button"
-                            class="btn btn-outline-success btn-sm ${post.like ? 'liked' : ''}"
-                            id="btnLike"
-                            data-post-idx="${post.postIdx}"
-                            data-like-ref-type="POST">
-                        ${category != 'freeboard' ? '도움이 돼요 ': ''}
-                        👍&nbsp;&nbsp;<span class="likeCount">${post.postLikeCnt}</span>
-                    </button>
-                </c:if>
                 <hr/>
 
                 <!-- 댓글 목록 -->
