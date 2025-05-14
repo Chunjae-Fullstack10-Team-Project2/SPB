@@ -40,3 +40,14 @@ th > a:hover {
     font-size: 0.8rem;
     margin: 0.2rem 0 0 0.2rem;
 }
+
+.success-text {
+    color: mediumseagreen;
+    font-size: 0.8rem;
+    margin: 0.2rem 0 0 0.2rem;
+}
+
+.char-counter {
+    font-size: 0.8rem;
+    color: lightgray;
+}

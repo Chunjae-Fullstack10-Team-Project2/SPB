@@ -3,6 +3,8 @@
 <html>
 <head>
     <title>비밀번호 변경</title>
+    <script src="${pageContext.request.contextPath}/resources/js/textCounter.js"></script>
+
 </head>
 <body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
@@ -23,17 +25,25 @@
             <div class="mb-3 row">
                 <label for="newPwd" class="form-label">새 비밀번호</label>
                 <div class="col-sm-10 input-group">
-                    <input type="password" class="form-control" name="newPwd" id="newPwd"
+                    <input type="password" class="form-control char-limit" name="newPwd" id="newPwd"
                            placeholder="새 비밀번호" maxlength="15" required
-                           oninput="validatePassword()"/>
+                           oninput="validatePassword()"
+                           data-maxlength="15" data-target="#memberNewPwdCount"
+                    />
                     <button class="btn btn-outline-secondary" type="button"
                             onclick="togglePasswordVisibility('newPwd', this)">
                         <i class="bi bi-eye"></i>
                     </button>
                 </div>
-                <div id="pwdWarning" class="form-text text-danger d-none">
-                    비밀번호는 영문 대소문자와 숫자를 포함한 4~15자여야 합니다.
+                <div class="d-flex justify-content-between align-items-center mt-1 small text-muted">
+                    <div class="form-text warning-text d-none" id="pwdWarning">
+                        비밀번호는 영문 대소문자와 숫자를 포함한 4~15자여야 합니다.
+                    </div>
+                    <div class="char-counter ms-auto">
+                        <span id="memberNewPwdCount">0</span> / 15
+                    </div>
                 </div>
+
             </div>
             <div class="mb-3 row">
                 <label for="confirmPwd" class="form-label">비밀번호 확인</label>
@@ -90,10 +100,10 @@
         if (password && confirm) {
             if (password === confirm) {
                 message.textContent = "비밀번호가 일치합니다.";
-                message.className = "form-text text-success";
+                message.className = "form-text success-text";
             } else {
                 message.textContent = "비밀번호가 일치하지 않습니다.";
-                message.className = "form-text text-danger";
+                message.className = "form-text warning-text";
             }
             message.classList.remove("d-none");
         } else {
@@ -101,7 +111,7 @@
         }
     }
 
-    document.getElementById("frmChangePwd").addEventListener("submit", function(event) {
+    document.getElementById("frmChangePwd").addEventListener("submit", function (event) {
         event.preventDefault();
 
         const form = this;
@@ -112,7 +122,7 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ memberId: memberId })
+            body: JSON.stringify({memberId: memberId})
         })
             .then(response => response.json())
             .then(data => {
