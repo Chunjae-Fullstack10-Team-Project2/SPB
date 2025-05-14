@@ -67,7 +67,7 @@ public class BoardController {
         return "board/list";
     }
 
-    @PostMapping("/{category}/view")
+    @GetMapping("/{category}/view")
     public String view(@PathVariable("category") BoardCategory category,
                        @RequestParam("idx") int idx,
                        Model model,

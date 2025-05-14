@@ -30,7 +30,7 @@ public class StringEscapeUtils {
             String s = String.valueOf(c);
             sb.append(ESCAPE_MAP.getOrDefault(s, s));
         }
-        return sb.toString();
+        return sb.toString().replace("\n", "<br/>");
     }
 
     /**
