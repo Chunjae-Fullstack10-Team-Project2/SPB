@@ -51,11 +51,11 @@
                             <label for="qnaQContent" class="form-label">내용</label>
                             <textarea class="form-control char-limit" id="qnaQContent" name="qnaQContent" rows="10"
                                       placeholder="문의 내용을 입력해주세요." style="resize: none;" required
-                                      data-maxlength="19000" data-target="#qnaQCount"
+                                      data-maxlength="15000" data-target="#qnaQCount"
                                       required>${qnaDTO.qnaQContent != null ? qnaDTO.qnaQContent : ''}</textarea>
                         </div>
                         <div class="text-end small text-muted mt-1 mb-3">
-                            <span id="qnaQCount">0</span> / 19000
+                            <span id="qnaQCount">0</span> / 15000
                         </div>
 
                         <div class="d-flex justify-content-end gap-2">
