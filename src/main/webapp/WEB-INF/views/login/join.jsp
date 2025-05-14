@@ -393,14 +393,12 @@
                             <input type="text" class="form-control"
                                    value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}"
                                    maxlength="11" disabled
-                                   placeholder="휴대전화번호"
-                            > </c:when>
+                                   placeholder="휴대전화번호"> </c:when>
                         <c:otherwise>
                             <input type="text" class="form-control" name="memberPhone" id="memberPhone"
                                    value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}"
                                    maxlength="11"
-                                   placeholder="휴대전화번호" required
-                            > </c:otherwise>
+                                   placeholder="휴대전화번호" required> </c:otherwise>
                     </c:choose>
                 </div>
             </div>

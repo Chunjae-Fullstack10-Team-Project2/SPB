@@ -411,6 +411,8 @@ public class MyPageController {
 
         if (memberId == null) return "redirect:/login";
 
+        setBreadcrumb(model, Map.of("비밀번호 변경", ""));
+
         String originalEncryptedPwd = memberService.getPwdById(memberId);
         String encryptedCurrentPwd = PasswordUtil.encryptPassword(currentPwd);
 
@@ -419,17 +421,9 @@ public class MyPageController {
             return "mypage/changePwd";
         }
 
-        if (!currentPwd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{4,15}$")) {
-            model.addAttribute("message", "비밀번호 형식이 올바르지 않습니다.");
-            return "mypage/changePwd";
-        }
-
-        if (!newPwd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{4,15}$")) {
-            model.addAttribute("message", "비밀번호 형식이 올바르지 않습니다.");
-            return "mypage/changePwd";
-        }
-
-        if (!confirmPwd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{4,15}$")) {
+        if (!currentPwd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{4,15}$") ||
+                !newPwd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{4,15}$") ||
+                !confirmPwd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{4,15}$")) {
             model.addAttribute("message", "비밀번호 형식이 올바르지 않습니다.");
             return "mypage/changePwd";
         }
@@ -443,7 +437,6 @@ public class MyPageController {
         boolean result = myPageService.changePwd(encryptedNewPwd, memberId);
 
         if (result) {
-            model.addAttribute("message", "비밀번호 변경에 성공했습니다.");
             return "redirect:/mypage";
         } else {
             model.addAttribute("message", "비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
