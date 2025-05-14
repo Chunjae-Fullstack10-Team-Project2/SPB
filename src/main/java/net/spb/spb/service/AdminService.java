@@ -118,13 +118,31 @@ public class AdminService {
         return adminMapper.modifyTeacherProfile(modelMapper.map(teacherDTO, TeacherVO.class));
     }
 
+    public int deleteTeacher(String teacherId) {
+        return adminMapper.deleteTeacher(teacherId);
+    }
+
+    public int restoreTeacher(String teacherId) {
+        return adminMapper.restoreTeacher(teacherId);
+    }
+
     public int updateLecture(LectureDTO lectureDTO) {
         return adminMapper.updateLecture(modelMapper.map(lectureDTO, LectureVO.class));
     }
 
-    public int deleteLecture(LectureDTO lectureDTO) {
-        lectureDTO.setLectureState(2);
-        return adminMapper.deleteLecture(modelMapper.map(lectureDTO, LectureVO.class));
+    public int deleteLecture(int lectureIdx) {
+        return adminMapper.deleteLecture(lectureIdx);
+    }
+
+    public int restoreLecture(int lectureIdx) {
+        return adminMapper.restoreLecture(lectureIdx);
+    }
+
+    public int deleteChapter(int chapterIdx) {
+        return adminMapper.deleteChapter(chapterIdx);
+    }
+    public int restoreChapter(int chapterIdx) {
+        return adminMapper.restoreChapter(chapterIdx);
     }
 
     public boolean existsByLectureId(int lectureIdx) {

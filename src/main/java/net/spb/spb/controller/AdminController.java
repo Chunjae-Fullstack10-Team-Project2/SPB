@@ -307,6 +307,38 @@ public class AdminController {
         return "/admin/teacher/searchPopup";
     }
 
+    @PostMapping("/teacher/delete")
+    @ResponseBody
+    public Map<String, Object> teacherDelete(@RequestParam("teacherId") String teacherId) {
+        Map<String, Object> result = new HashMap<>();
+        int rtnResult = adminService.deleteTeacher(teacherId);
+        if (rtnResult > 0) {
+            result.put("success", true);
+            result.put("message", "선생님 삭제되었습니다.");
+            result.put("redirect", "/admin/teacher/list");
+        } else {
+            result.put("success", false);
+            result.put("message", "삭제에 실패했습니다.");
+        }
+        return result;
+    }
+
+    @PostMapping("/teacher/restore")
+    @ResponseBody
+    public Map<String, Object> teacherRestore(@RequestParam("teacherId") String teacherId) {
+        Map<String, Object> result = new HashMap<>();
+        int rtnResult = adminService.restoreTeacher(teacherId);
+        if (rtnResult > 0) {
+            result.put("success", true);
+            result.put("message", "선생님 정보가 복구되었습니다.");
+            result.put("redirect", "/admin/teacher/list");
+        } else {
+            result.put("success", false);
+            result.put("message", "삭제에 실패했습니다.");
+        }
+        return result;
+    }
+
     @GetMapping("/lecture/list")
     public void lectureList(@ModelAttribute LecturePageDTO lecturePageDTO, Model model) {
         List<LectureDTO> lectureDTOs = adminService.selectLectureList(lecturePageDTO);
@@ -430,12 +462,28 @@ public class AdminController {
 
     @PostMapping("/lecture/delete")
     @ResponseBody
-    public Map<String, Object> lectureDeletePOST(@ModelAttribute LectureDTO lectureDTO) {
+    public Map<String, Object> lectureDelete(@RequestParam("lectureIdx") int lectureIdx) {
         Map<String, Object> result = new HashMap<>();
-        int rtnResult = adminService.deleteLecture(lectureDTO);
+        int rtnResult = adminService.deleteLecture(lectureIdx);
         if (rtnResult > 0) {
             result.put("success", true);
-            result.put("message", "게시글이 삭제되었습니다.");
+            result.put("message", "강좌가 삭제되었습니다.");
+            result.put("redirect", "/admin/lecture/list");
+        } else {
+            result.put("success", false);
+            result.put("message", "삭제에 실패했습니다.");
+        }
+        return result;
+    }
+
+    @PostMapping("/lecture/restore")
+    @ResponseBody
+    public Map<String, Object> lectureRestore(@RequestParam("lectureIdx") int lectureIdx) {
+        Map<String, Object> result = new HashMap<>();
+        int rtnResult = adminService.restoreLecture(lectureIdx);
+        if (rtnResult > 0) {
+            result.put("success", true);
+            result.put("message", "강좌가 복구되었습니다.");
             result.put("redirect", "/admin/lecture/list");
         } else {
             result.put("success", false);
@@ -567,6 +615,38 @@ public class AdminController {
         }
         adminService.updateChapter(chapterDTO);
         return ResponseEntity.ok(Map.of("message", "강의 수정 성공"));
+    }
+
+    @PostMapping("/chapter/delete")
+    @ResponseBody
+    public Map<String, Object> chapterDelete(@RequestParam("chapterIdx") int chapterIdx) {
+        Map<String, Object> result = new HashMap<>();
+        int rtnResult = adminService.deleteChapter(chapterIdx);
+        if (rtnResult > 0) {
+            result.put("success", true);
+            result.put("message", "강의가 삭제되었습니다.");
+            result.put("redirect", "/admin/chapter/list");
+        } else {
+            result.put("success", false);
+            result.put("message", "삭제에 실패했습니다.");
+        }
+        return result;
+    }
+
+    @PostMapping("/chapter/restore")
+    @ResponseBody
+    public Map<String, Object> chapterRestore(@RequestParam("chapterIdx") int chapterIdx) {
+        Map<String, Object> result = new HashMap<>();
+        int rtnResult = adminService.restoreChapter(chapterIdx);
+        if (rtnResult > 0) {
+            result.put("success", true);
+            result.put("message", "강의가 복구되었습니다.");
+            result.put("redirect", "/admin/chapter/list");
+        } else {
+            result.put("success", false);
+            result.put("message", "삭제에 실패했습니다.");
+        }
+        return result;
     }
 
     @GetMapping("/sales/info")
