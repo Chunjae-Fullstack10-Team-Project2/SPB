@@ -159,6 +159,11 @@
         const url = new URL(location.href);
         const params = url.searchParams;
 
+        const dateType = document.querySelector('select[name="dateType"]');
+        if (dateType) {
+            params.set('dateType', dateType.value);
+        }
+
         const datefilterInput = document.querySelector('input[name="datefilter"]');
         const datefilter = datefilterInput ? datefilterInput.value : '';
 
