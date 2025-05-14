@@ -32,11 +32,12 @@ public class PageResponseDTO<E> {
     public PageResponseDTO(PageRequestDTO pageRequestDTO, int totalCount, List<E> dtoList) {
         this.totalCount = Math.max(0, totalCount);
 
-        this.pageNo = pageRequestDTO.getPageNo() < 1 ? 1 : pageRequestDTO.getPageNo();
         this.pageSize = pageRequestDTO.getPageSize() < 1 ? 10 : pageRequestDTO.getPageSize();
-        this.pageSkipCount = Math.max((this.pageNo - 1) * this.pageSize, 0);
-
         this.totalPage = this.totalCount > 0 ? (int) Math.ceil((double) this.totalCount / this.pageSize) : 1;
+
+        int inputPageNo = pageRequestDTO.getPageNo();
+        this.pageNo = inputPageNo < 1 ? 1 : Math.min(inputPageNo, this.totalPage);
+        this.pageSkipCount = Math.max((this.pageNo - 1) * this.pageSize, 0);
 
         this.pageBlockSize = pageRequestDTO.getPageBlockSize() < 1 ? 10 : pageRequestDTO.getPageBlockSize();
         this.pageBlockStart = ((this.pageNo - 1) / this.pageBlockSize) * this.pageBlockSize + 1;

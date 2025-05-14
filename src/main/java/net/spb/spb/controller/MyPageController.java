@@ -20,6 +20,7 @@ import net.spb.spb.service.member.MyPageService;
 import net.spb.spb.service.member.MemberServiceImpl;
 import net.spb.spb.util.BreadcrumbUtil;
 import net.spb.spb.util.FileUtil;
+import net.spb.spb.util.PageUtil;
 import net.spb.spb.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -215,41 +216,24 @@ public class MyPageController {
             searchDTO.setDateType("postLikeCreatedAt");
         }
 
-        if ("".equals(searchDTO.getStartDate())) {
-            searchDTO.setStartDate(null);
-        }
-        if ("".equals(searchDTO.getEndDate())) {
-            searchDTO.setEndDate(null);
-        }
-        if ("".equals(searchDTO.getSearchWord())) {
-            searchDTO.setSearchWord(null);
-        }
-        if ("".equals(searchDTO.getSearchType())) {
-            searchDTO.setSearchType(null);
-        }
-        if ("".equals(searchDTO.getSortColumn())) {
-            searchDTO.setSortColumn(null);
-        }
-        if ("".equals(searchDTO.getSortOrder())) {
-            searchDTO.setSortOrder(null);
-        }
+        if ("".equals(searchDTO.getStartDate())) searchDTO.setStartDate(null);
+        if ("".equals(searchDTO.getEndDate())) searchDTO.setEndDate(null);
+        if ("".equals(searchDTO.getSearchWord())) searchDTO.setSearchWord(null);
+        if ("".equals(searchDTO.getSearchType())) searchDTO.setSearchType(null);
+        if ("".equals(searchDTO.getSortColumn())) searchDTO.setSortColumn(null);
+        if ("".equals(searchDTO.getSortOrder())) searchDTO.setSortOrder(null);
 
-        pageRequestDTO.setPageSkipCount(pageRequestDTO.getPageSkipCount());
-
-        List<PostLikeRequestDTO> likesList = myPageService.listMyLikes(searchDTO, pageRequestDTO, postLikeMemberId);
         int totalCount = myPageService.likesTotalCount(searchDTO, postLikeMemberId);
-
-        PageResponseDTO<PostLikeRequestDTO> pageResponseDTO = PageResponseDTO.<PostLikeRequestDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(totalCount)
-                .dtoList(likesList)
-                .build();
+        PageResponseDTO<PostLikeRequestDTO> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                totalCount,
+                () -> myPageService.listMyLikes(searchDTO, pageRequestDTO, postLikeMemberId)
+        );
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("likesList", likesList);
+        model.addAttribute("likesList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("좋아요 목록", ""));
-
         return "mypage/likes";
     }
 
@@ -282,15 +266,15 @@ public class MyPageController {
             searchDTO.setDateType("reportCreatedAt");
         }
 
-        List<PostReportDTO> reportList = myPageService.listMyReport(searchDTO, pageRequestDTO, reportMemberId);
-        PageResponseDTO<PostReportDTO> pageResponseDTO = PageResponseDTO.<PostReportDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(myPageService.reportTotalCount(searchDTO, reportMemberId))
-                .dtoList(reportList)
-                .build();
+        int totalCount = myPageService.reportTotalCount(searchDTO, reportMemberId);
+        PageResponseDTO<PostReportDTO> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                totalCount,
+                () -> myPageService.listMyReport(searchDTO, pageRequestDTO, reportMemberId)
+        );
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("reportList", reportList);
+        model.addAttribute("reportList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("신고 목록", ""));
         return "mypage/report";
@@ -327,17 +311,12 @@ public class MyPageController {
             searchDTO.setDateType("orderCreatedAt");
         }
 
-        // 1. 페이징 대상인 주문번호만 가져옴
         List<Integer> pagedOrderIdxList = myPageService.getPagedOrderIdxList(searchDTO, pageRequestDTO, memberId);
-
-        // 2. 주문번호 리스트 기반으로 주문+강좌 전체 조회
         List<OrderDTO> flatList = myPageService.getOrdersWithLectures(pagedOrderIdxList, searchDTO);
 
-        // 3. 주문 단위로 그룹핑
         Map<Integer, OrderDTO> grouped = new LinkedHashMap<>();
         for (OrderDTO dto : flatList) {
-            int orderIdx = dto.getOrderIdx();
-            grouped.computeIfAbsent(orderIdx, idx -> {
+            grouped.computeIfAbsent(dto.getOrderIdx(), idx -> {
                 OrderDTO od = new OrderDTO();
                 od.setOrderIdx(idx);
                 od.setOrderMemberId(dto.getOrderMemberId());
@@ -350,20 +329,18 @@ public class MyPageController {
         }
 
         List<OrderDTO> finalOrderList = new ArrayList<>(grouped.values());
-
         int totalCount = myPageService.orderTotalCount(searchDTO, memberId);
 
-        PageResponseDTO<OrderDTO> pageResponseDTO = PageResponseDTO.<OrderDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(totalCount)
-                .dtoList(finalOrderList)
-                .build();
+        PageResponseDTO<OrderDTO> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                totalCount,
+                () -> finalOrderList
+        );
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("orderList", finalOrderList);
+        model.addAttribute("orderList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("강좌 주문 목록", ""));
-
         return "mypage/order";
     }
 
@@ -462,18 +439,17 @@ public class MyPageController {
             searchDTO.setDateType("bookmarkCreatedAt");
         }
 
-        List<BookmarkDTO> bookmarkList = myPageService.listMyBookmark(searchDTO, pageRequestDTO, bookmarkMemberId);
-        PageResponseDTO<BookmarkDTO> pageResponseDTO = PageResponseDTO.<BookmarkDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(myPageService.bookmarkTotalCount(searchDTO, bookmarkMemberId))
-                .dtoList(bookmarkList)
-                .build();
+        int totalCount = myPageService.bookmarkTotalCount(searchDTO, bookmarkMemberId);
+        PageResponseDTO<BookmarkDTO> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                totalCount,
+                () -> myPageService.listMyBookmark(searchDTO, pageRequestDTO, bookmarkMemberId)
+        );
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("bookmarkList", bookmarkList);
+        model.addAttribute("bookmarkList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("북마크 목록", ""));
-
         return "mypage/bookmark";
     }
 
@@ -515,15 +491,15 @@ public class MyPageController {
             }
         }
 
-        List<PostDTO> postList = myPageService.listMyPost(searchDTO, pageRequestDTO, postMemberId);
-        PageResponseDTO<PostDTO> pageResponseDTO = PageResponseDTO.<PostDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(myPageService.postTotalCount(searchDTO, postMemberId))
-                .dtoList(postList)
-                .build();
+        int totalCount = myPageService.postTotalCount(searchDTO, postMemberId);
+        PageResponseDTO<PostDTO> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                totalCount,
+                () -> myPageService.listMyPost(searchDTO, pageRequestDTO, postMemberId)
+        );
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("postList", postList);
+        model.addAttribute("postList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("게시글 목록", ""));
 
@@ -534,24 +510,23 @@ public class MyPageController {
     public String listMyComment(HttpSession session, Model model,
                                 @ModelAttribute SearchDTO searchDTO,
                                 @ModelAttribute PageRequestDTO pageRequestDTO) {
-        String postMemberId = (String) session.getAttribute("memberId");
+        String memberId = (String) session.getAttribute("memberId");
 
         if (searchDTO.getDateType() == null || searchDTO.getDateType().isEmpty()) {
             searchDTO.setDateType("postCommentCreatedAt");
         }
 
-        List<PostCommentDTO> commentList = myPageService.listMyComment(searchDTO, pageRequestDTO, postMemberId);
-        PageResponseDTO<PostCommentDTO> pageResponseDTO = PageResponseDTO.<PostCommentDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(myPageService.commentTotalCount(searchDTO, postMemberId))
-                .dtoList(commentList)
-                .build();
+        int totalCount = myPageService.commentTotalCount(searchDTO, memberId);
+        PageResponseDTO<PostCommentDTO> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                totalCount,
+                () -> myPageService.listMyComment(searchDTO, pageRequestDTO, memberId)
+        );
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("commentList", commentList);
+        model.addAttribute("commentList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("댓글 목록", ""));
-
         return "mypage/comment";
     }
 
