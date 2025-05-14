@@ -78,11 +78,11 @@
                                     <input type="checkbox" class="form-check-input checkbox" data-lecture-idx="${lecture.cartLectureIdx}" checked>
                                 </td>
                                 <td style="width: 15%;">
-                                    <img src="/upload/${lecture.lectureThumbnailImg}" alt="썸네일" class="cart-thumbnail rounded"
+                                    <img src="/upload/<c:out value='${lecture.lectureThumbnailImg}'/>" alt="썸네일" class="cart-thumbnail rounded"
                                          onerror="this.src='${cp}/resources/img/default_profileImg.png';">
                                 </td>
                                 <td>
-                                    <div class="fw-bold">${lecture.lectureTitle}</div>
+                                    <div class="fw-bold"><c:out value="${lecture.lectureTitle}"/></div>
                                 </td>
                                 <td class="text-end price-cell" style="width: 20%;">
                                 <span class="text-primary fw-semibold">
@@ -90,7 +90,7 @@
                                 </span>
                                 </td>
                                 <td style="width: 15%;">
-                                    <button type="button" class="btn btn-success btn-sm w-100" onclick="cartPaymentOne('${lecture.cartLectureIdx}')">수강하기</button>
+                                    <button type="button" class="btn btn-success btn-sm w-100" data-lecture-idx="${lecture.cartLectureIdx}" onclick="cartPaymentOne(this.dataset.lectureIdx)">수강하기</button>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -144,7 +144,7 @@
         <div class="toast align-items-center text-bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true" id="errorToast">
             <div class="d-flex">
                 <div class="toast-body">
-                        ${errorMessage}
+                    <c:out value="${errorMessage}" />
                 </div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>

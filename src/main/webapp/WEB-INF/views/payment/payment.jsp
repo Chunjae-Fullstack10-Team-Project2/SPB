@@ -140,15 +140,15 @@
             <th colspan="2">구매자 정보</th>
                 <tr>
                     <td>이름</td>
-                    <td id="mName">${member.memberName}</td>
+                    <td id="mName"><c:out value='${member.memberName}'/></td>
                 </tr>
                 <tr>
                     <td>Email</td>
-                    <td id="mEmail">${member.memberEmail}</td>
+                    <td id="mEmail"><c:out value='${member.memberEmail}'/></td>
                 </tr>
                 <tr>
                     <td>Phone</td>
-                    <td id="mPhone">${member.memberPhone}</td>
+                    <td id="mPhone"><c:out value='${member.memberPhone}'/></td>
                 </tr>
         </table>
         <form id="frm">
@@ -157,12 +157,12 @@
                 <th colspan="2">주문 내역</th>
                 <c:forEach var="lecture" items="${selectedLectures}">
                     <tr>
-                        <input type="hidden" name ="lectureIdx" value="${lecture.lectureIdx}" />
-                        <input type="hidden" name="lectureTitle" value="${lecture.lectureTitle}" />
-                        <td><img src="/upload/${lecture.lectureThumbnailImg}" alt="강의 썸네일" height="80" width="130"
+                        <input type="hidden" name ="lectureIdx" value="<c:out value='${lecture.lectureIdx}'/>" />
+                        <input type="hidden" name="lectureTitle" value="<c:out value='${lecture.lectureTitle}'/>" />
+                        <td><img src="/upload/<c:out value='${lecture.lectureThumbnailImg}'/>" alt="강의 썸네일" height="80" width="130"
                                  onerror="this.src='${cp}/resources/img/default_profileImg.png';"></td>
-                        <td>${lecture.lectureTitle}</td>
-                        <td class="price">${lecture.lectureAmount}원</td>
+                        <td><c:out value='${lecture.lectureTitle}'/></td>
+                        <td class="price"><c:out value='${lecture.lectureAmount}'/>원</td>
                     </tr>
                 </c:forEach>
             </table>
@@ -221,7 +221,7 @@
     function cancelOrder() {
         if (confirm('주문을 취소하시겠습니까?')) {
             // 장바구니 페이지로 이동
-            window.location.href = '/payment/cart?memberId=${member.memberId}';
+            window.location.href = '/payment/cart?memberId=<c:out value="${member.memberId}"/>';
             alert('주문이 취소되었습니다.');
         }
     }
@@ -246,9 +246,9 @@
             merchant_uid: orderIdx,
             name: displayTitle,
             amount: document.getElementById('total-price').textContent.replace("원","").replace(",",""),
-            buyer_email: "${member.memberEmail}",
-            buyer_name: "${member.memberName}",
-            buyer_tel: "${member.memberPhone}",
+            buyer_email: "<c:out value='${member.memberEmail}'/>",
+            buyer_name: "<c:out value='${member.memberName}'/>",
+            buyer_tel: "<c:out value='${member.memberPhone}'/>",
         }, function (rsp) {
             console.log("rsp === " + rsp);
             if (rsp.success) {
