@@ -1,10 +1,15 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="cp" value="${pageContext.request.contextPath}"/>
+
 <html>
 <head>
     <title>봄콩이</title>
     <link href="/resources/css/carousel.css" rel="stylesheet">
     <style>
+        body {
+            word-break: keep-all;
+        }
         .carousel-item {
             position: relative;
         }
@@ -88,7 +93,7 @@
                     <div class="carousel-caption text-start">
                         <h1>초등 수학 마스터 과정</h1>
                         <p class="opacity-75">기초부터 탄탄하게! 수학에 자신감을 심어주는 커리큘럼.</p>
-                        <p><a class="btn btn-lg btn-primary" href="#">강의 살펴보기</a></p>
+                        <p><a class="btn btn-lg btn-primary" href="${cp}/lecture/lectureDetail?lectureIdx=12">강의 살펴보기</a></p>
                     </div>
                 </div>
             </div>
@@ -99,18 +104,18 @@
                     <div class="carousel-caption">
                         <h1>중등 영어 회화 집중반</h1>
                         <p>원어민처럼 말하고 싶은 친구들을 위한 최고의 선택.</p>
-                        <p><a class="btn btn-lg btn-primary" href="#">강의 살펴보기</a></p>
+                        <p><a class="btn btn-lg btn-primary" href="${cp}/lecture/lectureDetail?lectureIdx=12">강의 살펴보기</a></p>
                     </div>
                 </div>
             </div>
             <div class="carousel-item">
-                <img src="/resources/img/spb_logo.png" class="d-block w-100" alt="추천 강의 3">
+                <img src="/resources/img/spb_illustration5.png" class="d-block w-100" alt="추천 강의 3">
                 <div class="overlay"></div>
                 <div class="container">
                     <div class="carousel-caption text-end">
                         <h1>과학실험으로 배우는 물리</h1>
                         <p>직접 실험하며 배우는 원리, 재미와 이해를 동시에!</p>
-                        <p><a class="btn btn-lg btn-primary" href="#">강의 살펴보기</a></p>
+                        <p><a class="btn btn-lg btn-primary" href="${cp}/lecture/lectureDetail?lectureIdx=12">강의 살펴보기</a></p>
                     </div>
                 </div>
             </div>
@@ -135,22 +140,28 @@
         <!-- Three columns of text below the carousel -->
         <div class="row">
             <div class="col-lg-4">
-                <img src="/resources/img/spb_teachers.png" class="rounded-circle" width="140" height="140" alt="강사진">
+                <img src="/resources/img/spb_teachers.png" class="rounded-circle" width="140" height="140"
+                     style="object-fit: cover;"
+                     alt="강사진">
                 <h2 class="fw-bold">우수 강사진</h2>
                 <p>현직 교사, 교육 전문가들이 직접 강의합니다.</p>
-                <p><a class="btn btn-secondary" href="#">더 알아보기 &raquo;</a></p>
+                <p><a class="btn btn-secondary" href="${cp}/teacher">더 알아보기 &raquo;</a></p>
             </div>
             <div class="col-lg-4">
-                <img src="/resources/img/spb_logo.png" class="rounded-circle" width="140" height="140" alt="콘텐츠">
+                <img src="/resources/img/spb_illustration6.png" class="rounded-circle" width="140" height="140"
+                     style="object-fit: cover;"
+                     alt="콘텐츠">
                 <h2 class="fw-bold">다양한 콘텐츠</h2>
                 <p>기초부터 심화까지! 초·중·고 전과목 학습자료를 제공합니다.</p>
-                <p><a class="btn btn-secondary" href="#">콘텐츠 보기 &raquo;</a></p>
+                <p><a class="btn btn-secondary" href="${cp}/board/reference/list">콘텐츠 보기 &raquo;</a></p>
             </div>
             <div class="col-lg-4">
-                <img src="/resources/img/spb_logo.png" class="rounded-circle" width="140" height="140" alt="AI 진단">
+                <img src="/resources/img/spb_illustration8.png" class="rounded-circle" width="140" height="140"
+                     style="object-fit: cover;"
+                     alt="자기주도적 학습">
                 <h2 class="fw-bold">자기주도적 학습</h2>
                 <p>나의 학습과 강의를 바탕으로 자기주도학습을 시작하세요.</p>
-                <p><a class="btn btn-secondary" href="#">나의 학습방 &raquo;</a></p>
+                <p><a class="btn btn-secondary" href="${cp}/mystudy/plan">나의 학습방 &raquo;</a></p>
             </div>
         </div>
 
@@ -165,19 +176,19 @@
                 <p class="lead">복잡한 수업은 이제 그만! 봄콩은 쉬운 설명과 직관적인 UI로 학습에만 집중할 수 있도록 설계되었습니다.</p>
             </div>
             <div class="col-md-5">
-                <img src="/resources/img/spb_logo.png" class="img-fluid" alt="학습환경">
+                <img src="/resources/img/spb_illustration5.png" class="img-fluid" alt="학습환경">
             </div>
         </div>
         <hr class="featurette-divider">
 
         <div class="row featurette">
-            <div class="col-md-7 order-md-2">
+            <div class="col-md-7 order-md-2 text-end">
                 <h2 class="featurette-heading">모바일, 태블릿 완벽 지원. </h2>
                 <h2><span class="text-muted">언제 어디서나.</span></h2>
-                <p class="lead">PC는 물론, 스마트폰과 태블릿에서도 최적화된 학습 환경을 제공합니다.</p>
+                <p class="lead">더이상 학습 환경에 구애 받지 않아도 됩니다! PC는 물론, 스마트폰과 태블릿에서도 최적화된 학습 환경을 제공합니다.</p>
             </div>
             <div class="col-md-5 order-md-1">
-                <img src="/resources/img/spb_logo.png" class="img-fluid" alt="모바일 지원">
+                <img src="/resources/img/spb_illustration7.png" class="img-fluid" alt="모바일 지원">
             </div>
         </div>
 

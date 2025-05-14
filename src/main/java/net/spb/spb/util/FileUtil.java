@@ -79,6 +79,15 @@ public class FileUtil {
         }
     }
 
+    public boolean deleteOnlyFile(String fileName) throws Exception {
+        File file = new File(uploadDir + fileName);
+        boolean isDeleted = false;
+        if (file.exists()) {
+            isDeleted = file.delete();
+        }
+        return isDeleted;
+    }
+
     public void downloadFile(String sFileName, String oFileName, HttpServletResponse response) throws Exception {
         File file = new File(uploadDir + sFileName);
 

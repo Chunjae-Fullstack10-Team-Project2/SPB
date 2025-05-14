@@ -12,6 +12,7 @@ import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.service.member.MemberServiceImpl;
 import net.spb.spb.service.qna.QnaService;
 import net.spb.spb.util.BreadcrumbUtil;
+import net.spb.spb.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,18 +50,17 @@ public class QnaController {
                       @ModelAttribute PageRequestDTO pageRequestDTO,
                       Model model) {
 
-        List<QnaDTO> qnaList = qnaService.searchQna(searchDTO, pageRequestDTO);
-        PageResponseDTO<QnaDTO> pageResponseDTO = PageResponseDTO.<QnaDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(qnaService.totalCount(searchDTO))
-                .dtoList(qnaList)
-                .build();
+        int totalCount = qnaService.totalCount(searchDTO);
+        PageResponseDTO<QnaDTO> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                totalCount,
+                () -> qnaService.searchQna(searchDTO, pageRequestDTO)
+        );
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("qnaList", qnaList);
+        model.addAttribute("qnaList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("목록", ""));
-
         return "qna/list";
     }
 
@@ -77,8 +77,13 @@ public class QnaController {
 
     @PostMapping("/regist")
     public String regist(@Valid @ModelAttribute QnaDTO qnaDTO, BindingResult bindingResult, HttpSession session, Model model) {
+        setBreadcrumb(model, Map.of("등록", ""));
         if (bindingResult.hasErrors()) {
-            model.addAttribute("errorMessage", "오류가 발생했습니다. 다시 시도해주세요.");
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                log.warn("검증 오류 - field: {}, message: {}", error.getField(), error.getDefaultMessage());
+            }
+            model.addAttribute("qnaDTO", qnaDTO);
+            model.addAttribute("errorMessage", "입력값에 오류가 있습니다. 확인해주세요.");
             return "qna/regist";
         }
 
@@ -208,19 +213,18 @@ public class QnaController {
                         @ModelAttribute PageRequestDTO pageRequestDTO) {
 
         String qnaQMemberId = (String) session.getAttribute("memberId");
+        int totalCount = qnaService.myQnaTotalCount(searchDTO, qnaQMemberId);
 
-        List<QnaDTO> qnaList = qnaService.myQna(searchDTO, pageRequestDTO, qnaQMemberId);
-        PageResponseDTO<QnaDTO> pageResponseDTO = PageResponseDTO.<QnaDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(qnaService.myQnaTotalCount(searchDTO, qnaQMemberId))
-                .dtoList(qnaList)
-                .build();
+        PageResponseDTO<QnaDTO> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                totalCount,
+                () -> qnaService.myQna(searchDTO, pageRequestDTO, qnaQMemberId)
+        );
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("qnaList", qnaList);
+        model.addAttribute("qnaList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("내가 한 문의", ""));
-
         return "mypage/myQna";
     }
 

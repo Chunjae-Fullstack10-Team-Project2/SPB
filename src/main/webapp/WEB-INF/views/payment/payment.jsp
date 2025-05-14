@@ -131,7 +131,7 @@
         }
     </style>
 </head>
-<body>
+<body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
 <div class="content">
 <div class="page-container">
@@ -159,7 +159,8 @@
                     <tr>
                         <input type="hidden" name ="lectureIdx" value="${lecture.lectureIdx}" />
                         <input type="hidden" name="lectureTitle" value="${lecture.lectureTitle}" />
-                        <td><img src="/upload/${lecture.lectureThumbnailImg}" alt="강의 썸네일" height="80" width="130"></td>
+                        <td><img src="/upload/${lecture.lectureThumbnailImg}" alt="강의 썸네일" height="80" width="130"
+                                 onerror="this.src='${cp}/resources/img/default_profileImg.png';"></td>
                         <td>${lecture.lectureTitle}</td>
                         <td class="price">${lecture.lectureAmount}원</td>
                     </tr>

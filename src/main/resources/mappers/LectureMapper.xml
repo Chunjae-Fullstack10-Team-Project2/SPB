@@ -61,6 +61,9 @@
         join tbl_teacher tt on tl.lectureTeacherId = tt.teacherId
         where 1=1
         and tl.lectureState = '1'
+        <if test="searchDTO.searchWord != null">
+            AND tl.lectureTitle like CONCAT('%', #{searchDTO.searchWord}, '%')
+        </if>
         order by tl.lectureTitle asc
         limit #{pageRequestDTO.pageSkipCount}, #{pageRequestDTO.pageSize}
     </select>

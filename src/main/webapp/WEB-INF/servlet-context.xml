@@ -45,6 +45,7 @@
             <mvc:mapping path="/admin/**"/>
             <mvc:mapping path="/notice/*"/>
             <mvc:mapping path="/qna/regist"/>
+            <mvc:mapping path="/mypage/**"/>
             <mvc:exclude-mapping path="/notice/list"/>
             <mvc:exclude-mapping path="/notice/view"/>
             <bean class="net.spb.spb.interceptor.LoginCheckInterceptor"/>

@@ -37,7 +37,7 @@ public class AdminService {
     }
 
     public boolean existsByTeacherId(String teacherId) {
-        return adminMapper.existsByTeacherId(teacherId) == 1 ? true: false;
+        return adminMapper.existsByTeacherId(teacherId) == 1 ? true : false;
     }
 
     public int insertTeacher(TeacherDTO teacherDTO) {
@@ -54,6 +54,10 @@ public class AdminService {
 
     public List<ChapterDTO> selectChapterList(ChapterPageDTO chapterPageDTO) {
         return adminMapper.selectChapterList(chapterPageDTO);
+    }
+
+    public int selectChapterCount(ChapterPageDTO chapterPageDTO) {
+        return adminMapper.selectChapterCount(chapterPageDTO);
     }
 
     public ChapterDTO selectChapter(int chapterIdx) {
@@ -121,6 +125,10 @@ public class AdminService {
     public int deleteLecture(LectureDTO lectureDTO) {
         lectureDTO.setLectureState(2);
         return adminMapper.deleteLecture(modelMapper.map(lectureDTO, LectureVO.class));
+    }
+
+    public boolean existsByLectureId(int lectureIdx) {
+        return adminMapper.existsByLectureId(lectureIdx) > 1 ? true : false;
     }
 
     public int updateChapter(ChapterDTO chapterDTO) {

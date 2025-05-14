@@ -13,6 +13,7 @@
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/teacher/teacherMain.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/teacher" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/teacher/teacherPersonal.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/teacher" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/report/boardReportTable.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/report" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/error/invalidPageParam.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/error" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/qna/regist.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/qna" />
       </map>
     </option>

@@ -6,6 +6,7 @@ import net.spb.spb.domain.LectureVO;
 import net.spb.spb.domain.TeacherVO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.TeacherDTO;
+import net.spb.spb.dto.pagingsearch.LecturePageDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
 import net.spb.spb.mapper.teacher.TeacherMapper;
@@ -75,5 +76,18 @@ public class TeacherServiceImpl implements TeacherServiceIf {
     @Override
     public List<Integer> selectBookmark(String teacherId, String memberId) {
         return teacherMapper.selectBookmark(teacherId, memberId);
+    }
+
+    @Override
+    public int getTeacherLectureListTotalCount(String teacherId, LecturePageDTO pageDTO) {
+        return teacherMapper.selectTeacherLectureListTotalCount(teacherId, pageDTO);
+    }
+
+    @Override
+    public List<LectureDTO> getTeacherLectureListById(String teacherId, LecturePageDTO pageDTO) {
+        List<LectureVO> voList = teacherMapper.selectTeacherLectureListById(teacherId, pageDTO);
+        return voList.stream().map(
+                vo -> modelMapper.map(vo, LectureDTO.class)
+        ).collect(Collectors.toList());
     }
 }

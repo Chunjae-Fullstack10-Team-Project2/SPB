@@ -58,33 +58,40 @@
                     <button type="button" class="btn btn-link flex-fill text-decoration-none" id="btnReset">초기화</button>
                 </div>
             </div>
-            <div class="row g-2 align-items-center">
-                <div class="col-md-2">
-                    <select name="page_size" class="form-select" onchange="submitSearch();">
-                        <option value="" disabled ${empty param.page_size ? "selected" : ""}>선택</option>
-                        <option value="1" ${param.page_size == 1 ? "selected" : ""}>1개씩 보기</option>
-                        <option value="5" ${param.page_size == 5 ? "selected" : ""}>5개씩 보기</option>
-                        <option value="10" ${param.page_size == 10 ? "selected" : ""}>10개씩 보기</option>
-                        <option value="15" ${param.page_size == 15 ? "selected" : ""}>15개씩 보기</option>
-                        <option value="100" ${param.page_size == 100 ? "selected" : ""}>100개씩 보기</option>
-                    </select>
-                </div>
-            </div>
-            <c:if test="${fn:contains(currentURI, '/qna')}">
-                <div class="d-flex flex-wrap gap-3 justify-content-end">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="qna_status" id="status_0" value="0"
-                               ${param.qna_status == null or param.qna_status eq 0 ? "checked" : ""} onchange="submitSearch();"/>
-                        <label for="status_0">미답변</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="qna_status" id="status_1" value="1"
-                               ${param.qna_status eq 1 ? "checked" : ""} onchange="submitSearch();"/>
-                        <label for="status_1">답변완료</label>
-                    </div>
-                </div>
-            </c:if>
         </form>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span>${totalCount}개의 글</span>
+            <div class="d-flex align-items-center gap-3">
+                <c:if test="${fn:contains(currentURI, '/qna')}">
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="qna_status" id="status_2" value="2"
+                                ${param.qna_status eq null or param.qna_status eq 2 ? "checked" : ""} onchange="submitSearch();"/>
+                            <label for="status_2">전체</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="qna_status" id="status_0" value="0"
+                                ${param.qna_status eq 0 ? "checked" : ""} onchange="submitSearch();"/>
+                            <label for="status_0">미답변</label>
+                        </div>
+                        <div class="form-check" >
+                            <input class="form-check-input" type="radio" name="qna_status" id="status_1" value="1"
+                                ${param.qna_status eq 1 ? "checked" : ""} onchange="submitSearch();"/>
+                            <label for="status_1">답변완료</label>
+                        </div>
+                    </div>
+                </c:if>
+
+                <select class="form-select form-select-sm w-auto" name="page_size" onchange="submitSearch();">
+                    <option value="5" ${param.page_size eq "5" ? "selected":""}>5개씩</option>
+                    <option value="10" ${param.page_size eq "10" ? "selected":""}>10개씩</option>
+                    <option value="15" ${param.page_size eq "15" ? "selected":""}>15개씩</option>
+                    <option value="20" ${param.page_size eq "20" ? "selected":""}>20개씩</option>
+                    <option value="30" ${param.page_size eq "30" ? "selected":""}>30개씩</option>
+                </select>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -128,46 +135,65 @@
             const url = new URL(location.href);
             const params = url.searchParams;
 
-            const date_type = document.querySelector('select[name="date_type"]').value;
-            if (date_type) {
-                params.set('date_type', date_type);
+            const dateTypeEl = document.querySelector('select[name="date_type"]');
+            if (dateTypeEl) {
+                const date_type = dateTypeEl.value;
+                if (date_type) {
+                    params.set('date_type', date_type);
+                } else {
+                    params.delete('date_type');
+                }
             } else {
                 params.delete('date_type');
             }
 
-            const date_value = document.querySelector('input[name="date_value"]').value;
-            if (date_value) {
-                const dates = date_value.split(' - ');
-                params.set('start_date', dates[0]);
-                params.set('end_date', dates[1]);
+            const dateValueEl = document.querySelector('input[name="date_value"]');
+            if (dateValueEl) {
+                const date_value = dateValueEl.value;
+                if (date_value) {
+                    const dates = date_value.split(' - ');
+                    params.set('start_date', dates[0]);
+                    params.set('end_date', dates[1]);
+                } else {
+                    params.delete('start_date');
+                    params.delete('end_date');
+                }
             } else {
                 params.delete('start_date');
                 params.delete('end_date');
             }
 
-            const search_category = document.querySelector('select[name="search_category"]').value;
-            const search_word = document.querySelector('input[name="search_word"]').value;
-            if (search_word && search_word.length > 0) {
-                params.set('search_category', search_category);
-                params.set('search_word', search_word);
-            } else {
-                params.delete('search_category', search_category);
-                params.delete('search_word', search_word);
+            const searchCategoryEl = document.querySelector('select[name="search_category"]');
+            const searchWordEl = document.querySelector('input[name="search_word"]');
+            if (searchCategoryEl && searchWordEl) {
+                const search_category = searchCategoryEl.value;
+                const search_word = searchWordEl.value;
+                if (search_word && search_word.length > 0) {
+                    params.set('search_category', search_category);
+                    params.set('search_word', search_word);
+                } else {
+                    params.delete('search_category');
+                    params.delete('search_word');
+                }
             }
 
-            const page_size = document.querySelector('select[name="page_size"]').value;
-            if (page_size) {
-                params.set('page_size', page_size);
-            } else {
-                params.delete('page_size');
+            const pageSizeEl = document.querySelector('select[name="page_size"]');
+            if (pageSizeEl) {
+                const page_size = pageSizeEl.value;
+                if (page_size) {
+                    params.set('page_size', page_size);
+                } else {
+                    params.delete('page_size');
+                }
             }
 
-            const qna_status = document.querySelector('input[name="qna_status"]:checked');
-            if (qna_status) {
-                params.set('qna_status', qna_status.value);
+            const qnaStatusEl = document.querySelector('input[name="qna_status"]:checked');
+            if (qnaStatusEl) {
+                params.set('qna_status', qnaStatusEl.value);
             } else {
                 params.delete('qna_status');
             }
+
 
             location.href = url.toString();
         }

@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body>
+<body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
 <div class="content">
 <div class="container-lg my-5 px-4">
@@ -25,6 +25,7 @@
             <div class="ms-4" style="flex-shrink: 0;">
                 <img src="/upload/${lectureDTO.lectureThumbnailImg}" alt="강좌 썸네일"
                      class="rounded border"
+                     onerror="this.src='${cp}/resources/img/default_profileImg.png';"
                      style="width: 200px; height: 120px; object-fit: cover;">
             </div>
         </div>
@@ -126,7 +127,6 @@
 <script>
     function openPlayer(chapterIdx) {
         const lectureIdx = '${lectureDTO.lectureIdx}';
-        console.log("▶ openPlayer URL: /lecture/chapter/play?chapterLectureIdx=" + ${lectureDTO.lectureIdx} + "&chapterIdx=" + chapterIdx);
 
         window.open(
             '/lecture/chapter/play?chapterLectureIdx=' + lectureIdx + '&chapterIdx=' + chapterIdx,
@@ -171,7 +171,7 @@
 <c:if test="${param.denied eq 'true'}">
     <script>
         alert("강좌 구매 후 시청 하실 수 있습니다.");
-        history.back();
+        window.close();
     </script>
 </c:if>
 </body>

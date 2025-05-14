@@ -53,7 +53,9 @@ public class AdminController {
     private final QnaService qnaService;
     private final FileUtil fileUtil;
 
-    private static final long MAX_FILE_SIZE = 500 * 1024 * 1024;
+    private static final long MAX_FILE_SIZE_500 = 500 * 1024 * 1024;
+    private static final long MAX_FILE_SIZE_10 = 10 * 1024 * 1024;
+    private static final long MAX_FILE_SIZE_100 = 100 * 1024 * 1024;
     private static final Map<String, String> ROOT_BREADCRUMB = Map.of("name", "관리 페이지", "url", "/admin");
 
     @GetMapping({"","/"})
@@ -109,17 +111,18 @@ public class AdminController {
     public String boardReportList(@ModelAttribute SearchDTO searchDTO,
                                   @ModelAttribute PageRequestDTO pageRequestDTO,
                                   Model model) {
-        List<PostReportDTO> boardReportList = reportService.listBoardReport(searchDTO, pageRequestDTO);
-        PageResponseDTO<PostReportDTO> pageResponseDTO = PageResponseDTO.<PostReportDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(reportService.boardReportTotalCount(searchDTO))
-                .dtoList(boardReportList)
-                .build();
+        int totalCount = reportService.boardReportTotalCount(searchDTO);
+        PageResponseDTO<PostReportDTO> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                totalCount,
+                () -> reportService.listBoardReport(searchDTO, pageRequestDTO)
+        );
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("boardReportList", boardReportList);
+        model.addAttribute("boardReportList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("자유게시판 신고 목록", ""));
+
         return "admin/report/boardReportTable";
     }
 
@@ -127,17 +130,18 @@ public class AdminController {
     public String reviewReportList(@ModelAttribute SearchDTO searchDTO,
                                    @ModelAttribute PageRequestDTO pageRequestDTO,
                                    Model model) {
-        List<PostReportDTO> reviewReportList = reportService.listReviewReport(searchDTO, pageRequestDTO);
-        PageResponseDTO<PostReportDTO> pageResponseDTO = PageResponseDTO.<PostReportDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(reportService.reviewReportTotalCount(searchDTO))
-                .dtoList(reviewReportList)
-                .build();
+        int totalCount = reportService.reviewReportTotalCount(searchDTO);
+        PageResponseDTO<PostReportDTO> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                totalCount,
+                () -> reportService.listReviewReport(searchDTO, pageRequestDTO)
+        );
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("reviewReportList", reviewReportList);
+        model.addAttribute("reviewReportList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("강의평 신고 목록", ""));
+
         return "admin/report/reviewReportTable";
     }
 
@@ -228,41 +232,74 @@ public class AdminController {
             log.info(e.getMessage());
         }
         adminService.insertTeacher(teacherDTO);
+        session.removeAttribute("registTeacherId");
+        session.removeAttribute("registTeacherName");
         return "redirect:/admin/teacher/list";
     }
 
     @GetMapping("/teacher/modify")
-    public void teacherModify(@RequestParam(name = "teacherId", defaultValue = "") String teacherId, Model model) {
+    public String teacherModify(@RequestParam(name = "teacherId", defaultValue = "") String teacherId,
+                                Model model,
+                                RedirectAttributes redirectAttributes,
+                                HttpSession session) {
+        if(teacherId.isBlank()||!adminService.existsByTeacherId(teacherId)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "존재하지 않는 선생님입니다.");
+            return "redirect:/admin/teacher/list";
+        }
+
         TeacherDTO teacherDTO = teacherService.selectTeacher(teacherId);
+        session.setAttribute("modifyTeacherId", teacherDTO.getTeacherId());
         model.addAttribute("teacherDTO", teacherDTO);
         setBreadcrumb(model,
                 Map.of("선생님 목록", "/admin/teacher/list"),
                 Map.of("선생님 등록", "")
         );
+        return "admin/teacher/modify";
     }
 
     @PostMapping("/teacher/modify")
-    public String teacherModifyPost(@RequestParam(name = "file1") MultipartFile file, @ModelAttribute TeacherDTO teacherDTO) {
+    public String teacherModifyPost(@RequestParam(name = "file1") MultipartFile file,
+                                    @Valid @ModelAttribute TeacherDTO teacherDTO,
+                                    BindingResult bindingResult,
+                                    HttpSession session,
+                                    RedirectAttributes redirectAttributes) {
+        String sessionTeacherId = (String)session.getAttribute("modifyTeacherId");
+
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)
+                    .collect(Collectors.toList());
+            redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
+            redirectAttributes.addFlashAttribute("teacherDTO", teacherDTO);
+            return "redirect:/admin/teacher/modify?teacherId="+sessionTeacherId;
+        }
+
         try {
             if (file != null && !file.isEmpty()) {
                 File savedFile = fileUtil.saveFile(file);
+                if (!teacherDTO.getTeacherProfileImg().isBlank()) {
+                    fileUtil.deleteOnlyFile(teacherDTO.getTeacherProfileImg());
+                }
                 teacherDTO.setTeacherProfileImg(savedFile.getName());
             }
         } catch (Exception e) {
             log.info(e.getMessage());
         }
+        teacherDTO.setTeacherId(sessionTeacherId);
         adminService.modifyTeacherProfile(teacherDTO);
+        session.removeAttribute("modifyTeacherId");
         return "redirect:/admin/teacher/list";
     }
 
     @GetMapping("/teacher/search")
     public String teacherSearchPopup(@ModelAttribute MemberPageDTO memberPageDTO, Model model, HttpServletRequest req) {
         memberPageDTO.setSearch_member_grade("13");
+        memberPageDTO.setPage_size(5);
         String baseUrl = req.getRequestURI();
-        memberPageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, memberPageDTO));
+        memberPageDTO.setLinkUrl(NewPagingUtil.buildLinkUrl(baseUrl, memberPageDTO));
         int total_count = memberService.getMemberCount(memberPageDTO);
         memberPageDTO.setTotal_count(total_count);
-        String paging = PagingUtil.pagingArea(memberPageDTO);
+        String paging = NewPagingUtil.pagingArea(memberPageDTO);
         List<MemberDTO> memberDTOs = memberService.getMembers(memberPageDTO);
         model.addAttribute("teachers", memberDTOs);
         model.addAttribute("searchDTO", memberPageDTO);
@@ -291,17 +328,29 @@ public class AdminController {
                                   BindingResult bindingResult,
                                   RedirectAttributes redirectAttributes) {
 
-        if (bindingResult.hasErrors() || lectureDTO.getLectureAmount() < 0 || lectureDTO.getLectureTeacherId().isBlank() || !adminService.existsByTeacherId(lectureDTO.getLectureTeacherId())) {
+        if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage)
                     .collect(Collectors.toList());
-            redirectAttributes.addFlashAttribute("errorMessage", "모든 필드 값을 입력해주세요.");
+            redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
             redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
             log.error(errorMessages);
             return "redirect:/admin/lecture/regist";
         }
 
-        if (file != null && !file.isEmpty() && file.getSize() > (10 * 1024 * 1024)) {
+        if (lectureDTO.getLectureAmount() < 0 || lectureDTO.getLectureAmount() > 5000000) {
+            redirectAttributes.addFlashAttribute("errorMessage", "강좌 가격을 최대 5,000,000원 이하로 입력하세요.");
+            redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
+            return "redirect:/admin/lecture/regist";
+        }
+
+        if (lectureDTO.getLectureTeacherId().isBlank() || !adminService.existsByTeacherId(lectureDTO.getLectureTeacherId())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "선생님 정보가 올바르지 않습니다.");
+            redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
+            return "redirect:/admin/lecture/regist";
+        }
+
+        if (file != null && !file.isEmpty() && file.getSize() > MAX_FILE_SIZE_10) {
             redirectAttributes.addFlashAttribute("errorMessage", "파일은 10MB 이하만 업로드할 수 있습니다.");
             redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
             log.error("파일 크기 제한");
@@ -338,17 +387,29 @@ public class AdminController {
                                   BindingResult bindingResult,
                                   RedirectAttributes redirectAttributes) {
 
-        if (bindingResult.hasErrors() || lectureDTO.getLectureAmount() < 0 || lectureDTO.getLectureTeacherId().isBlank() || !adminService.existsByTeacherId(lectureDTO.getLectureTeacherId())) {
+        if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage)
                     .collect(Collectors.toList());
-            redirectAttributes.addFlashAttribute("errorMessage", "모든 필드 값을 입력해주세요.");
+            redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
             redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
             log.error(errorMessages);
             return "redirect:/admin/lecture/modify?lectureIdx="+lectureIdx;
         }
 
-        if (file != null && !file.isEmpty() && file.getSize() > (10 * 1024 * 1024)) {
+        if (lectureDTO.getLectureAmount() < 0 || lectureDTO.getLectureAmount() > 5000000) {
+            redirectAttributes.addFlashAttribute("errorMessage", "강좌 가격을 최대 5,000,000원 이하로 입력하세요.");
+            redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
+            return "redirect:/admin/lecture/regist";
+        }
+
+        if (lectureDTO.getLectureTeacherId().isBlank() || !adminService.existsByTeacherId(lectureDTO.getLectureTeacherId())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "선생님 정보가 올바르지 않습니다.");
+            redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
+            return "redirect:/admin/lecture/modify?lectureIdx="+lectureIdx;
+        }
+
+        if (file != null && !file.isEmpty() && file.getSize() > MAX_FILE_SIZE_10) {
             redirectAttributes.addFlashAttribute("errorMessage", "파일은 10MB 이하만 업로드할 수 있습니다.");
             redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
             log.error("파일 크기 제한");
@@ -386,10 +447,10 @@ public class AdminController {
     @GetMapping("/lecture/search")
     public String lectureSearchPopup(@ModelAttribute LecturePageDTO lecturePageDTO, HttpServletRequest req, Model model) {
         String baseUrl = req.getRequestURI();
-        lecturePageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, lecturePageDTO));
+        lecturePageDTO.setLinkUrl(NewPagingUtil.buildLinkUrl(baseUrl, lecturePageDTO));
         int total_count = adminService.selectLectureCount(lecturePageDTO);
         lecturePageDTO.setTotal_count(total_count);
-        String paging = PagingUtil.pagingArea(lecturePageDTO);
+        String paging = NewPagingUtil.pagingArea(lecturePageDTO);
         List<LectureDTO> lectureDTOs = adminService.selectLectureList(lecturePageDTO);
         model.addAttribute("lectures", lectureDTOs);
         model.addAttribute("searchDTO", lecturePageDTO);
@@ -398,9 +459,16 @@ public class AdminController {
     }
 
     @GetMapping("/chapter/list")
-    public void chapterList(@ModelAttribute ChapterPageDTO chapterPageDTO, Model model) {
+    public void chapterList(@ModelAttribute ChapterPageDTO chapterPageDTO, Model model, HttpServletRequest req) {
+        String baseUrl = req.getRequestURI();
+        chapterPageDTO.setLinkUrl(NewPagingUtil.buildLinkUrl(baseUrl, chapterPageDTO));
+        int totalCount = adminService.selectChapterCount(chapterPageDTO);
+        String paging = NewPagingUtil.pagingArea(chapterPageDTO);
         List<ChapterDTO> chapters = adminService.selectChapterList(chapterPageDTO);
         model.addAttribute("chapters", chapters);
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("searchDTO", chapterPageDTO);
+        model.addAttribute("paging", paging);
         setBreadcrumb(model,
                 Map.of("강좌 목록", "/admin/lecture/list"),
                 Map.of("강의 목록", "")
@@ -410,7 +478,6 @@ public class AdminController {
     @GetMapping("/chapter/regist")
     public void chapterRegist(@RequestParam(name = "lectureIdx", defaultValue = "0") int lectureIdx, Model model) {
         model.addAttribute("lectureIdx", lectureIdx);
-
         setBreadcrumb(model,
                 Map.of("강좌 목록", "/admin/lecture/list"),
                 Map.of("강의 등록", "")
@@ -420,10 +487,27 @@ public class AdminController {
     @PostMapping("/chapter/regist")
     @ResponseBody
     public ResponseEntity<?> chapterRegistPOST(@RequestParam(name = "file1", required = true) MultipartFile file,
-                                                      @ModelAttribute ChapterDTO chapterDTO) {
+                                               @Valid @ModelAttribute ChapterDTO chapterDTO,
+                                               BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getFieldError().getDefaultMessage();
+            log.error(errorMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", errorMessage));
+        }
+
+        if(file==null || file.isEmpty())
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("message", "강의 영상은 필수입니다."));
+
+        if(adminService.existsByLectureId(chapterDTO.getChapterLectureIdx()))
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "존재하지 않는 강좌 번호입니다."));
+
         try {
             if (file != null && !file.isEmpty()) {
-                if (file.getSize() > MAX_FILE_SIZE) {
+                if (file.getSize()>MAX_FILE_SIZE_100) {
                     return ResponseEntity
                             .status(HttpStatus.PAYLOAD_TOO_LARGE)
                             .body(Map.of("message", "파일 크기가 100MB를 초과했습니다."));
@@ -454,11 +538,22 @@ public class AdminController {
 
     @PostMapping("/chapter/modify")
     @ResponseBody
-    public ResponseEntity<?> chapterModifyPOST(@RequestParam(name = "file1", required = true) MultipartFile file,
-                                               @ModelAttribute ChapterDTO chapterDTO) {
+    public ResponseEntity<?> chapterModifyPOST(@RequestParam(name = "file1") MultipartFile file,
+                                               @Valid @ModelAttribute ChapterDTO chapterDTO,
+                                               BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getFieldError().getDefaultMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+        }
+
+        if(adminService.existsByLectureId(chapterDTO.getChapterLectureIdx()))
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "강좌 번호가 존재하지 않습니다."));
+
         try {
             if (file != null && !file.isEmpty()) {
-                if (file.getSize() > MAX_FILE_SIZE) {
+                if (file.getSize() > MAX_FILE_SIZE_100) {
                     return ResponseEntity
                             .status(HttpStatus.PAYLOAD_TOO_LARGE)
                             .body(Map.of("message", "파일 크기가 100MB를 초과했습니다."));
@@ -466,15 +561,12 @@ public class AdminController {
                 File savedFile = fileUtil.saveFile(file);
                 chapterDTO.setChapterVideo(savedFile.getName());
                 chapterDTO.setChapterRuntime(VideoUtil.getVideoDuration(savedFile));
-                adminService.updateChapter(chapterDTO);
-                return ResponseEntity.ok(Map.of("message", "강의 등록 완료"));
             }
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("message", "강의 등록 중 오류가 발생했습니다."));
+        adminService.updateChapter(chapterDTO);
+        return ResponseEntity.ok(Map.of("message", "강의 수정 성공"));
     }
 
     @GetMapping("/sales/info")
@@ -676,17 +768,18 @@ public class AdminController {
                       @ModelAttribute PageRequestDTO pageRequestDTO,
                       Model model) {
 
-        List<QnaDTO> notAnsweredQnaList = qnaService.notAnsweredQna(searchDTO, pageRequestDTO);
-        PageResponseDTO<QnaDTO> pageResponseDTO = PageResponseDTO.<QnaDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(qnaService.notAnsweredQnaTotalCount(searchDTO))
-                .dtoList(notAnsweredQnaList)
-                .build();
+        int totalCount = qnaService.notAnsweredQnaTotalCount(searchDTO);
+        PageResponseDTO<QnaDTO> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                totalCount,
+                () -> qnaService.notAnsweredQna(searchDTO, pageRequestDTO)
+        );
 
         model.addAttribute("responseDTO", pageResponseDTO);
-        model.addAttribute("notAnsweredQnaList", notAnsweredQnaList);
+        model.addAttribute("notAnsweredQnaList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
         setBreadcrumb(model, Map.of("미답변 문의", ""));
+
         return "/admin/qna/list";
     }
 

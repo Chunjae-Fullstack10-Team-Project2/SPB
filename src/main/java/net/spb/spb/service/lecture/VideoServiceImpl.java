@@ -1,4 +1,4 @@
-package net.spb.spb.service;
+package net.spb.spb.service.lecture;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -19,6 +19,7 @@ public class VideoServiceImpl implements VideoServiceIf{
 
     @Override
     public void saveProgress(LectureHistoryDTO lectureHistoryDTO) {
+        log.info("lectureHistoryDTO: " + lectureHistoryDTO);
         videoMapper.saveProgress(lectureHistoryDTO);
     }
 
@@ -35,5 +36,10 @@ public class VideoServiceImpl implements VideoServiceIf{
     @Override
     public boolean existsByMemberIdAndChapterIdx(String lectureMemberId, int lectureHistoryChapterIdx) {
         return videoMapper.countByMemberIdAndChapterIdx(lectureMemberId, lectureHistoryChapterIdx) > 0;
+    }
+
+    @Override
+    public void purchaseConfirm(LectureHistoryDTO lectureHistoryDTO) {
+        videoMapper.purchaseConfirm(lectureHistoryDTO);
     }
 }

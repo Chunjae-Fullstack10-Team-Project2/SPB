@@ -247,4 +247,12 @@ public class PaymentController {
         return paymentService.getCartCount(memberId);
     }
 
+    @GetMapping("/confirmStatus")
+    @ResponseBody
+    public String getOrderStatus(@RequestParam("orderIdx") int orderIdx, Model model){
+        log.info("orderIdx === " + orderIdx);
+        String orderStatus = paymentService.getOrderStatus(orderIdx);
+        return orderStatus;
+    }
+
 }

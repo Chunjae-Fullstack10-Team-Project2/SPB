@@ -31,24 +31,9 @@
     </svg>
     <div class="container my-5">
         <%@ include file="../../common/breadcrumb.jsp" %>
-<%--        <nav aria-label="breadcrumb">--%>
-<%--            <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">--%>
-<%--                <li class="breadcrumb-item">--%>
-<%--                    <a class="link-body-emphasis" href="/">--%>
-<%--                        <svg class="bi" width="16" height="16" aria-hidden="true">--%>
-<%--                            <use xlink:href="#house-door-fill"></use>--%>
-<%--                        </svg>--%>
-<%--                        <span class="visually-hidden">Home</span>--%>
-<%--                    </a>--%>
-<%--                </li>--%>
-<%--                <li class="breadcrumb-item active" aria-current="page">--%>
-<%--                    미답변 문의--%>
-<%--                </li>--%>
-<%--            </ol>--%>
-<%--        </nav>--%>
     </div>
 
-    <div class="container my-5">
+    <div class="container my-5" style="height: 100%; min-height: 100vh;">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">미답변 문의 목록</h3>
         </div>

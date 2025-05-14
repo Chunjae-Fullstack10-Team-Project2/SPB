@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,12 +39,20 @@ public class TeacherNoticeController {
     }
 
     @GetMapping("")
-    public String list(@ModelAttribute TeacherNoticePageDTO pageDTO, Model model, HttpServletRequest req) {
+    public String list(
+            @ModelAttribute TeacherNoticePageDTO pageDTO,
+            Model model,
+            HttpServletRequest req
+    ) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
+        int totalCount = noticeService.getTeacherNoticeListTotalCount(memberId, pageDTO);
+        pageDTO.setTotal_count(totalCount);
+
         List<TeacherNoticeResponseDTO> notices = noticeService.getTeacherNoticeList(memberId, pageDTO);
 
+        model.addAttribute("totalCount", totalCount);
         model.addAttribute("pageDTO", pageDTO);
         model.addAttribute("noticeList", notices);
 
@@ -64,14 +73,13 @@ public class TeacherNoticeController {
             @ModelAttribute TeacherNoticePageDTO pageDTO,
             @Valid @ModelAttribute TeacherNoticeDTO teacherNoticeDTO,
             BindingResult bindingResult,
-            Model model,
+            RedirectAttributes redirectAttributes,
             HttpServletRequest req
     ) {
         if (bindingResult.hasErrors()) {
-            // 잘못된 입력이 있습니다. 다시 확인해주세요.
-            model.addAttribute("pageDTO", pageDTO);
-            model.addAttribute("teacherNoticeDTO", teacherNoticeDTO);
-            return "myclass/notice/regist";
+            redirectAttributes.addFlashAttribute("errorMessage", "잘못된 입력이 있습니다. 다시 확인해주세요.");
+            redirectAttributes.addFlashAttribute("teacherNoticeDTO", teacherNoticeDTO);
+            return "redirect:/myclass/notice/regist?" + pageDTO.getLinkUrl();
         }
 
         HttpSession session = req.getSession();
@@ -83,21 +91,27 @@ public class TeacherNoticeController {
         return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
     }
 
-    @GetMapping("/view")
-    public String view(@ModelAttribute TeacherNoticePageDTO pageDTO, @RequestParam("idx") int idx, Model model) {
-        TeacherNoticeResponseDTO teacherNoticeDTO = noticeService.getTeacherNoticeByIdx(idx);
-
-        model.addAttribute("pageDTO", pageDTO);
-        model.addAttribute("teacherNoticeDTO", teacherNoticeDTO);
-
-        setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 상세보기", "/myclass/notice/view"));
-
-        return "/myclass/notice/view";
-    }
-
     @GetMapping("/modify")
-    public String modifyGET(@ModelAttribute TeacherNoticePageDTO pageDTO, @RequestParam("idx") int idx, Model model) {
+    public String modifyGET(
+            @ModelAttribute TeacherNoticePageDTO pageDTO,
+            @RequestParam("idx") int idx,
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest req,
+            Model model
+    ) {
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
         TeacherNoticeResponseDTO teacherNoticeDTO = noticeService.getTeacherNoticeByIdx(idx);
+
+        if (teacherNoticeDTO == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "수정 권한이 없습니다.");
+            return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
+        }
+        if(!memberId.equals(teacherNoticeDTO.getTeacherNoticeMemberId())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "수정 권한이 없습니다.");
+            return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
+        }
 
         model.addAttribute("pageDTO", pageDTO);
         model.addAttribute("teacherNoticeDTO", teacherNoticeDTO);
