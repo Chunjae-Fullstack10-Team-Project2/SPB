@@ -559,15 +559,12 @@ public class AdminController {
                 File savedFile = fileUtil.saveFile(file);
                 chapterDTO.setChapterVideo(savedFile.getName());
                 chapterDTO.setChapterRuntime(VideoUtil.getVideoDuration(savedFile));
-                adminService.updateChapter(chapterDTO);
-                return ResponseEntity.ok(Map.of("message", "강의 등록 완료"));
             }
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("message", "강의 등록 중 오류가 발생했습니다."));
+        adminService.updateChapter(chapterDTO);
+        return ResponseEntity.ok(Map.of("message", "강의 수정 성공"));
     }
 
     @GetMapping("/sales/info")
