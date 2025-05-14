@@ -31,10 +31,10 @@
             <div class="mb-3">
                 <label for="examTitle" class="form-label">제목</label>
                 <input type="text" class="form-control char-limit" name="examTitle" id="examTitle"
-                       data-maxlength="50" data-target="#examTitleCount"
+                       data-maxlength="50" data-target="#titleCount"
                        value="${examDTO.examTitle}" placeholder="제목을 입력하세요." maxlength="50" required />
                 <div class="text-end small text-muted mt-1 mb-3">
-                    <span id="examTitleCount">0</span> / 50
+                    <span id="titleCount">0</span> / 50
                 </div>
             </div>
 
@@ -44,7 +44,7 @@
                           data-maxlength="19000" data-target="#examDescriptionCount"
                           placeholder="내용을 입력하세요" required style="resize: none;">${examDTO.examDescription}</textarea>
                 <div class="text-end small text-muted mt-1 mb-3">
-                    <span id="examDescriptionCount">0</span> / 19000
+                    <span id="contentCount">0</span> / 19000
                 </div>
             </div>
 

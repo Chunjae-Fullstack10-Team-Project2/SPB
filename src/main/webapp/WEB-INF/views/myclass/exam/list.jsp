@@ -74,7 +74,7 @@
                                 <td>${fn:substring(item.examCreatedAt, 0, 10)}</td>
                                 <td><button type="button" id="btnDeleteOne" class="btn btn-sm btn-danger">삭제</button></td>
                                 <td>
-                                    <a href=""
+                                    <a href="/lecture/lectureDetail?lectureIdx=${item.examLectureIdx}"
                                        class="btn btn-sm btn-link text-decoration-none text-secondary">원문보기
                                     </a>
                                 </td>
@@ -112,7 +112,7 @@
     }
 
     document.querySelectorAll('#btnDeleteOne').forEach(el => {
-        el.addEventListener('click', function(e) {
+        el.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
 
@@ -128,7 +128,7 @@
         });
     });
 
-    document.querySelector('#btnDeleteAll').addEventListener('click', function(e) {
+    document.querySelector('#btnDeleteAll').addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -144,6 +144,10 @@
         frm.action = '/myclass/exam/delete-multiple';
         frm.submit();
     });
+
+    <c:if test="${not empty message}">
+        alert("${message}");
+    </c:if>
 </script>
 </body>
 </html>

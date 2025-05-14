@@ -11,22 +11,31 @@
 <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
     <div class="content">
         <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
-        <h1 class="mb-4">공지사항 등록</h1>
+        <h1 class="h2 mb-4">공지사항 등록</h1>
 
-        <form name="frmModify" action="/myclass/notice/modify?${pageDTO.linkUrl}" method="post" class="border p-4 rounded bg-light shadow-sm">
+        <form name="frmModify" action="/myclass/notice/modify?${pageDTO.linkUrl}" method="post"
+              class="border p-4 rounded bg-light shadow-sm">
             <input type="hidden" name="teacherNoticeIdx" value="${teacherNoticeDTO.teacherNoticeIdx}"/>
             <input type="hidden" name="teacherNoticeMemberId" value="${teacherNoticeDTO.teacherNoticeMemberId}"/>
 
             <div class="mb-3">
                 <label for="teacherNoticeTitle" class="form-label">제목</label>
-                <input type="text" class="form-control" name="teacherNoticeTitle" id="teacherNoticeTitle"
+                <input type="text" class="form-control char-limit" name="teacherNoticeTitle" id="teacherNoticeTitle"
+                       data-maxlength="50" data-target="#titleCount"
                        value="${teacherNoticeDTO.teacherNoticeTitle}" placeholder="제목을 입력하세요." maxlength="50" required />
+                <div class="text-end small text-muted mt-1 mb-3">
+                    <span id="titleCount">0</span> / 50
+                </div>
             </div>
 
             <div class="mb-3">
                 <label for="teacherNoticeContent" class="form-label">내용</label>
-                <textarea class="form-control" rows="10" name="teacherNoticeContent" id="teacherNoticeContent"
+                <textarea class="form-control char-limit" rows="10" name="teacherNoticeContent" id="teacherNoticeContent"
+                          data-maxlength="19000" data-target="#contentCount"
                           placeholder="내용을 입력하세요" required>${teacherNoticeDTO.teacherNoticeContent}</textarea>
+                <div class="text-end small text-muted mt-1 mb-3">
+                    <span id="contentCount">0</span> / 19000
+                </div>
             </div>
 
             <div class="mb-3 form-check d-flex justify-content-between">
@@ -36,7 +45,7 @@
                     <label class="form-check-label" for="teacherNoticeFixed">이 공지사항을 상단에 고정합니다</label>
                 </div>
                 <div>
-                    <button type="submit" class="btn btn-primary">수정</button>
+                    <button type="submit" class="btn btn-primary" id="btnModify">수정</button>
                     <button type="button" class="btn btn-outline-secondary" onclick="history.back();">취소</button>
                 </div>
             </div>
@@ -44,26 +53,16 @@
     </div>
 
     <script>
-        document.querySelector('button[type="submit"]').addEventListener('click', (e) => {
+        document.querySelector('#btnModify').addEventListener('click', (e) => {
             e.preventDefault();
 
-            const frm = document.forms[0];
-            const title = frm.teacherNoticeTitle.value;
-            const content = frm.teacherNoticeContent.value;
-
-            if (title == null || title.length < 1 || title.length > 50) {
-                alert("제목은 1자 이상 50자 이하로 입력해주세요.");
-                frm.teacherNoticeTitle.focus();
-                return;
-            }
-            if (content == null) {
-                alert("내용은 필수 항목입니다.");
-                frm.teacherNoticeContent.focus();
-                return;
-            }
-
+            const frm = document.querySelector('form[name="frmModify"]');
             frm.submit();
         });
+
+        <c:if test="${not empty message}">
+            alert("${message}");
+        </c:if>
     </script>
 </body>
 </html>
