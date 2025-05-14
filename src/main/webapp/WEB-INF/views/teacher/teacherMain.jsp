@@ -8,7 +8,6 @@
 <head>
     <meta charset="UTF-8">
     <title>과목별 선생님</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .subject-tab {
             display: flex;

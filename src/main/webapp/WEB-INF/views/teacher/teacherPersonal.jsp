@@ -13,11 +13,28 @@
 <div class="content">
 <div class="container my-5">
     <div class="d-flex align-items-center mb-4">
-        <img src="/upload/${teacherDTO.teacherProfileImg}" alt="프로필" class="rounded-circle me-3" style="width:100px;height:100px;object-fit:cover;"
-             onerror="this.src='${cp}/resources/img/default_profileImg.png';">
-        <div>
-            <h3 class="mb-0">${teacherDTO.teacherName} 선생님</h3>
-            <p class="text-muted">${teacherDTO.teacherSubject} 전문 강사</p>
+        <!-- 왼쪽: 프로필 + 이름/과목 -->
+        <div class="d-flex align-items-center me-4">
+            <img src="/upload/${teacherDTO.teacherProfileImg}" alt="프로필"
+                 class="rounded-circle me-3"
+                 style="width:100px;height:100px;object-fit:cover;"
+                 onerror="this.src='${cp}/resources/img/default_profileImg.png';">
+            <div>
+                <h3 class="mb-1">${teacherDTO.teacherName} 선생님</h3>
+                <p class="text-muted mb-0">${teacherDTO.teacherSubject} 전문 강사</p>
+            </div>
+        </div>
+
+        <div class="d-flex flex-column justify-content-center" style="gap: 0.4rem; line-height: 1.5;">
+            <a href="/myclass/qna" class="text-decoration-none text-primary fw-semibold">
+                💬 질문 있어요
+            </a>
+            <a href="/myclass/notice" class="text-decoration-none fw-semibold" style="color: red;">
+                📢 공지합니다
+            </a>
+            <a href="/myclass/library" class="text-decoration-none fw-semibold text-dark">
+                📁 자료실
+            </a>
         </div>
     </div>
 

@@ -47,7 +47,7 @@
 
     // 메타데이터 로드 시 마지막 시청 위치로 이동
     video.addEventListener("loadedmetadata", function () {
-        alert("구매 확정되지 않은 강좌의 경우 영상 시청 시 구매가 확정됩니다. 이용에 참고해주세요.");
+        alert("✔️구매 확정되지 않은 강좌의 경우 영상 시청 시 구매가 확정됩니다. \n이용에 참고해주세요.");
         $.ajax({
             url: "/video/progress",
             type: "GET",
