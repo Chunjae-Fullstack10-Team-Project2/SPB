@@ -57,11 +57,11 @@
                     <div class="mb-3">
                         <label for="qnaAContent" class="form-label">내용</label>
                         <textarea class="form-control char-limit" id="qnaAContent" name="qnaAContent" rows="10"
-                                  data-maxlength="19000" data-target="#qnaACount"
+                                  data-maxlength="15000" data-target="#qnaACount"
                                   placeholder="답변 내용을 입력하세요." style="resize: none;" required></textarea>
                     </div>
                     <div class="text-end small text-muted mt-1 mb-3">
-                        <span id="qnaACount">0</span> / 19000
+                        <span id="qnaACount">0</span> / 15000
                     </div>
 
                     <div class="d-flex justify-content-end gap-2">
