@@ -138,6 +138,19 @@
         </div>
     </div>
 </div>
+<!-- 토스트 영역 -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+    <c:if test="${not empty errorMessage}">
+        <div class="toast align-items-center text-bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true" id="errorToast">
+            <div class="d-flex">
+                <div class="toast-body">
+                        ${errorMessage}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </c:if>
+</div>
 
 <script>
     function updateSummaryList() {
