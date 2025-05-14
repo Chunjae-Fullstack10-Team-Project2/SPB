@@ -15,10 +15,7 @@ import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.service.board.BoardFileService;
 import net.spb.spb.service.board.BoardServiceImpl;
 import net.spb.spb.service.board.NaverNewsService;
-import net.spb.spb.util.BoardCategory;
-import net.spb.spb.util.FileUtil;
-import net.spb.spb.util.NewPagingUtil;
-import net.spb.spb.util.ReportRefType;
+import net.spb.spb.util.*;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,10 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -296,7 +290,6 @@ public class BoardController {
     public String listNews(Model model,
                            @ModelAttribute SearchDTO searchDTO,
                            @ModelAttribute PageRequestDTO pageRequestDTO) throws Exception {
-
         String keyword = searchDTO.getSearchWord();
 
         if (keyword == null || keyword.isBlank()) {
@@ -308,7 +301,6 @@ public class BoardController {
 
         List<Map<String, Object>> fullList = naverNewsService.searchNewsList(keyword);
 
-        // 내부 검색 필터링
         String searchType = searchDTO.getSearchType();
         if (searchType != null && !searchType.isBlank()) {
             fullList = fullList.stream()
@@ -316,43 +308,36 @@ public class BoardController {
                         Object field = news.get(searchType);
                         return field != null && field.toString().toLowerCase().contains(keyword.toLowerCase());
                     })
-                    .toList();
+                    .collect(Collectors.toList());
         }
 
-        // 정렬 처리
-        String sortColumn = searchDTO.getSortColumn() != null ? searchDTO.getSortColumn() : "pubDate";
-        String sortOrder = searchDTO.getSortOrder() != null ? searchDTO.getSortOrder() : "desc";
+        String sortColumn = Optional.ofNullable(searchDTO.getSortColumn()).orElse("pubDate");
+        String sortOrder = Optional.ofNullable(searchDTO.getSortOrder()).orElse("desc");
 
         Comparator<Map<String, Object>> comparator = Comparator.comparing(
-                news -> {
-                    Object value = news.get(sortColumn);
-                    return value != null ? value.toString() : "";
-                },
-                Comparator.naturalOrder()
+                news -> Optional.ofNullable(news.get(sortColumn)).map(Object::toString).orElse("")
         );
 
         if ("desc".equalsIgnoreCase(sortOrder)) {
             comparator = comparator.reversed();
         }
 
-        fullList = fullList.stream().sorted(comparator).toList();
+        List<Map<String, Object>> sortedList = fullList.stream().sorted(comparator).collect(Collectors.toList());
 
-        // 페이징
-        int total = fullList.size();
-        int start = pageRequestDTO.getPageSkipCount();
-        int end = Math.min(start + pageRequestDTO.getPageSize(), total);
-        List<Map<String, Object>> pageList = (start >= total) ? List.of() : fullList.subList(start, end);
+        int total = sortedList.size();
+        PageResponseDTO<Map<String, Object>> pageResponseDTO = PageUtil.buildAndCorrectPageResponse(
+                pageRequestDTO,
+                total,
+                () -> {
+                    int start = pageRequestDTO.getPageSkipCount();
+                    int end = Math.min(start + pageRequestDTO.getPageSize(), total);
+                    return start >= total ? List.of() : sortedList.subList(start, end);
+                }
+        );
 
-        PageResponseDTO<Map<String, Object>> pageResponseDTO = PageResponseDTO.<Map<String, Object>>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .totalCount(total)
-                .dtoList(pageList)
-                .build();
-
-        model.addAttribute("newsList", pageList);
+        model.addAttribute("newsList", pageResponseDTO.getDtoList());
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("searchDTO", searchDTO);
-
         return "board/news/news";
     }
 

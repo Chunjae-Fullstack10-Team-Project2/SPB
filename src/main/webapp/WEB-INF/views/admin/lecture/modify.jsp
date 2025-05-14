@@ -24,7 +24,7 @@
         <h5 class="mb-0">강좌 수정</h5>
       </div>
       <div class="card-body">
-        <form name="frmRegist" method="post" action="/admin/lecture/modify"
+        <form name="frmRegist" method="post" action="/admin/lecture/modify" id="frmRegist"
               class="needs-validation" novalidate enctype="multipart/form-data">
           <c:if test="${not empty errorMessages}">
             <c:forEach items="${errorMessages}" var="errorMessage">
@@ -47,6 +47,7 @@
             <input type="text" class="form-control" id="lectureTitle" name="lectureTitle"
                    placeholder="강좌명을 입력하세요." required
                    value="${lectureDTO.lectureTitle != null ? lectureDTO.lectureTitle : ''}">
+            <div class="form-text text-end" id="lectureTitleCharCountWrapper"><span id="lectureTitleCharCount">0</span> / 50자</div>
             <div class="invalid-feedback">강좌명을 입력해주세요.</div>
           </div>
 
@@ -63,7 +64,7 @@
           </div>
 
           <div class="mb-3">
-            <label for="lectureTeacherId" class="form-label">강좌 가격</label>
+            <label for="lectureAmount" class="form-label">강좌 가격</label>
             <input type="text" class="form-control" id="lectureAmount" name="lectureAmount"
                    placeholder="강좌 가격을 입력하세요. (최대 5,000,000원)"
                    value="${lectureDTO.lectureAmount}" required maxlength="10">
@@ -78,10 +79,13 @@
 
           <div class="mb-3">
             <label for="lectureDescription" class="form-label">강좌 설명</label>
-            <textarea class="form-control" id="lectureDescription" name="lectureDescription" rows="10"
+            <textarea class="form-control" id="lectureDescription" name="lectureDescription" rows="3"
                       placeholder="강좌 설명을 입력하세요." style="resize: none;"
-                      required>${lectureDTO.lectureDescription != null ? lectureDTO.lectureDescription : ''}</textarea>
-            <div class="invalid-feedback">강좌 설명을 입력해주세요.</div>
+                      maxlength="100" required>${lectureDTO.lectureDescription != null ? lectureDTO.lectureDescription : ''}</textarea>
+            <div class="d-flex justify-content-between">
+              <div class="form-text invalid-feedback">강좌 설명을 입력해주세요.</div>
+              <div class="form-text text-end w-100" id="lectureDescriptionCharCountWrapper"><span id="lectureDescriptionCharCount">0</span> / 100자</div>
+            </div>
           </div>
 
           <div class="d-flex justify-content-end gap-2">
@@ -94,7 +98,23 @@
   </div>
 
 </div>
+<script src="${pageContext.request.contextPath}/resources/js/bindCharCount.js"></script>
 <script>
+
+  bindCharCount(
+          document.getElementById('lectureTitle'),
+          document.getElementById('lectureTitleCharCount'),
+          document.getElementById('lectureTitleCharCountWrapper'),
+          50
+  );
+
+  bindCharCount(
+          document.getElementById('lectureDescription'),
+          document.getElementById('lectureDescriptionCharCount'),
+          document.getElementById('lectureDescriptionCharCountWrapper'),
+          450
+  );
+
   function openTeacherSearch() {
     window.open('/admin/teacher/search','teacherSearch', 'width=600,height=500,scrollbars=yes,resizable=no');
   }
@@ -103,6 +123,7 @@
     document.getElementById('lectureTeacherId').value = id;
     document.getElementById('lectureTeacherName').value = name+"("+id+")";
   }
+
   const amountInput = document.getElementById('lectureAmount');
   amountInput.addEventListener('input', function (e) {
     const value = e.target.value.replace(/,/g, '');
@@ -118,6 +139,22 @@
     e.preventDefault();
     const form = document.forms['frmRegist'];
 
+    const fileInput = document.getElementById('file1');
+    const maxFileSize = 10 * 1024 * 1024; // 10MB
+    const teacherIdInput = document.getElementById('lectureTeacherId');
+    const teacherNameInput = document.getElementById('lectureTeacherName');
+    let isValid = true;
+
+    if (!teacherIdInput.value) {
+      teacherNameInput.classList.add('is-invalid');
+      const feedback = teacherNameInput.closest('.mb-3')?.querySelector('.invalid-feedback');
+      if (feedback) feedback.innerText = '선생님을 선택해주세요.';
+      teacherNameInput.focus();
+      isValid = false;
+    } else {
+      teacherNameInput.classList.remove('is-invalid');
+    }
+
     const rawAmount = amountInput.value.replace(/,/g, '');
     amountInput.value = rawAmount;
     if (isNaN(rawAmount) || Number(rawAmount) > 5000000) {
@@ -129,10 +166,22 @@
       return false;
     }
 
-    if (form.checkValidity()) {
-      form.submit();
+    // 파일 사이즈 처리
+    if (fileInput.files.length > 0 && fileInput.files[0].size > maxFileSize) {
+      fileInput.classList.add('is-invalid');
+      const feedback = fileInput.closest('.form-group')?.querySelector('.invalid-feedback');
+      if (feedback) feedback.innerText = '파일은 10MB 이하만 업로드할 수 있습니다.';
+      fileInput.focus();
+      isValid = false;
     } else {
-      form.classList.add('was-validated');
+      fileInput.classList.remove('is-invalid');
+    }
+
+    // 부트스트랩 검증 표시
+    form.classList.add('was-validated');
+
+    if (isValid && form.checkValidity()) {
+      form.submit();
     }
   });
 </script>

@@ -3,7 +3,7 @@ package net.spb.spb.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.LectureHistoryDTO;
-import net.spb.spb.service.VideoServiceIf;
+import net.spb.spb.service.lecture.VideoServiceIf;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -37,6 +37,7 @@ public class VideoController {
         } else {
             videoService.saveProgress(historyDTO);
         }
+        videoService.purchaseConfirm(historyDTO);
     }
 
     @GetMapping("/progress")

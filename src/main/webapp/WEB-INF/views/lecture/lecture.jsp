@@ -83,7 +83,8 @@
                                  onclick="location.href='/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}'"
                                  style="cursor: pointer;">
                                 <img src="/upload/${lecture.lectureThumbnailImg}" alt="${lecture.lectureTitle}"
-                                     class="card-img-top">
+                                     class="card-img-top"
+                                     onerror="this.src='${cp}/resources/img/default_profileImg.png';">
                                 <div class="card-body">
                                     <h6 class="card-title fw-semibold">${lecture.lectureTitle}</h6>
                                     <p class="mb-1 text-muted">${lecture.lectureTeacherName} 선생님</p>
