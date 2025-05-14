@@ -19,7 +19,7 @@ public class LectureDTO {
     @Size(max=50, message="강좌 제목은 50자 이하여야 합니다. ")
     private String lectureTitle;
     @NotBlank(message="강좌 설명은 필수입니다.")
-    @Size(max=20000, message="강좌 설명은 20,000 이하여야 합니다.")
+    @Size(max=100, message="강좌 설명은 100자 이하여야 합니다.")
     private String lectureDescription;
     @NotBlank(message = "선생님 선택은 필수입니다.")
     @Size(max=20, message="선생님 아이디는 20자 이하여야 합니다. ")

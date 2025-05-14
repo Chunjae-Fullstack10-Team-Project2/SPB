@@ -370,6 +370,8 @@
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li><a href="${cp}/mypage/post" class="d-inline-flex text-decoration-none rounded text-dark">작성한
                             게시글</a></li>
+                        <li><a href="${cp}/mypage/comment" class="d-inline-flex text-decoration-none rounded text-dark">작성한
+                            댓글</a></li>
                         <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded text-dark">추천한
                             게시글</a></li>
                         <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded text-dark">신고한
