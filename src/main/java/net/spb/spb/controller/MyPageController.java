@@ -505,7 +505,14 @@ public class MyPageController {
         String postMemberId = (String) session.getAttribute("memberId");
 
         if (searchDTO.getDateType() == null || searchDTO.getDateType().isEmpty()) {
-            searchDTO.setDateType("bookmarkCreatedAt");
+            searchDTO.setDateType("postCreatedAt");
+        }
+
+        // endDate가 날짜 문자열이면 "23:59:59" 붙이기
+        if (searchDTO.getEndDate() != null && !searchDTO.getEndDate().isBlank()) {
+            if (!searchDTO.getEndDate().contains(" ")) {
+                searchDTO.setEndDate(searchDTO.getEndDate() + " 23:59:59");
+            }
         }
 
         List<PostDTO> postList = myPageService.listMyPost(searchDTO, pageRequestDTO, postMemberId);
