@@ -59,13 +59,23 @@
                 </c:choose>
               </td>
               <td>
-                <a href="modify?chapterIdx=${chapter.chapterIdx}" class="btn btn-sm btn-warning">
-                  <i class="bi bi-pencil"></i> 수정
-                </a>
-                <button type="button" class="btn btn-sm btn-danger btnDeleteChapter"
-                        data-chapter-idx="${chapter.chapterIdx}" data-lecture-idx="${chapter.chapterLectureIdx}">
-                  <i class="bi bi-trash"></i> 삭제
-                </button>
+                <c:choose>
+                  <c:when test="${chapter.chapterState == 1}">
+                    <a href="modify?chapterIdx=${chapter.chapterIdx}" class="btn btn-sm btn-warning">
+                      <i class="bi bi-pencil"></i> 수정
+                    </a>
+                    <button type="button" class="btn btn-sm btn-danger btnDeleteChapter"
+                            data-chapter-idx="${chapter.chapterIdx}" data-lecture-idx="${chapter.chapterLectureIdx}">
+                      <i class="bi bi-trash"></i> 삭제
+                    </button>
+                  </c:when>
+                  <c:otherwise>
+                    <button type="button" class="btn btn-sm btn-danger btnRestoreChapter"
+                            data-chapter-idx="${chapter.chapterIdx}">
+                      <i class="bi bi-arrow-counterclockwise"></i> 복구
+                    </button>
+                  </c:otherwise>
+                </c:choose>
               </td>
             </tr>
           </c:forEach>
@@ -87,25 +97,59 @@
     if (!confirm('정말 삭제하시겠습니까?')) return;
 
     const chapterIdx = $(this).data('chapter-idx');
-    const lectureIdx = $(this).data('lecture-idx');
 
     $.ajax({
-      url: '/admin/lecture/chapter/delete',
+      url: '/admin/chapter/delete',
       method: 'POST',
       data: {
-        chapterIdx: chapterIdx,
-        chapterLectureIdx: lectureIdx
+        chapterIdx: chapterIdx
       },
       success: function (res) {
         if (res.success) {
-          alert(res.message);
-          $('#chapterRow-' + chapterIdx).remove();
+          const row = $('#chapterRow-' + chapterIdx);
+          const badgeCell = row.find('td').eq(5);
+          badgeCell.html('<span class="badge bg-secondary">삭제됨</span>');
+          const controlCell = row.find('td').eq(6);
+          controlCell.html('<button type="button" class="btn btn-sm btn-danger btnRestoreChapter" data-chapter-idx=' +
+                  chapterIdx +
+                  '"><i class="bi bi-arrow-counterclockwise"></i> 복구 </button>');
         } else {
           alert(res.message);
         }
       },
       error: function () {
         alert('삭제 요청 중 오류가 발생했습니다.');
+      }
+    });
+  });
+
+  $(document).on('click', '.btnRestoreChapter', function () {
+    if (!confirm('강의를 복구하시겠습니까?')) return;
+
+    const chapterIdx = $(this).data('chapter-idx');
+
+    $.ajax({
+      url: '/admin/chapter/restore',
+      method: 'POST',
+      data: {
+        chapterIdx: chapterIdx
+      },
+      success: function (res) {
+        if (res.success) {
+          const row = $('#chapterRow-' + chapterIdx);
+          const badgeCell = row.find('td').eq(5);
+          badgeCell.html('<span class="badge bg-success">정상</span>');
+          const controlCell = row.find('td').eq(6);
+          controlCell.html('<a href="modify?chapterIdx=' +
+                  chapterIdx +'" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i> 수정</a>'+
+            '<button type="button" class="btn btn-sm btn-danger btnDeleteChapter" data-chapter-idx="' +chapterIdx +'"> <i class="bi bi-trash"></i> 삭제 </button>'
+          );
+        } else {
+          alert(res.message);
+        }
+      },
+      error: function () {
+        alert('복구 요청 중 오류가 발생했습니다.');
       }
     });
   });
