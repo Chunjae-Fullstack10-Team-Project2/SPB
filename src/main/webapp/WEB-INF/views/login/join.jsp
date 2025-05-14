@@ -148,16 +148,15 @@
                         <c:choose>
                             <c:when test="${memberDTO.memberJoinPath eq '2'}">
                                 <input type="text" class="form-control"
-                                       value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
+                                       value="<c:out value="${memberDTO.memberId != null ? memberDTO.memberId : ''}" />"
                                        placeholder="아이디" maxlength="20" disabled/>
-
                                 <button class="btn btn-outline-secondary" type="button" disabled>
                                     중복 확인
                                 </button>
                             </c:when>
                             <c:otherwise>
                                 <input type="text" class="form-control char-limit" name="memberId" id="memberId"
-                                       value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
+                                       value="<c:out value="${memberDTO.memberId != null ? memberDTO.memberId : ''}" />"
                                        placeholder="아이디" maxlength="20" required
                                        data-maxlength="20"
                                        data-target="#memberIdCount"
@@ -188,7 +187,7 @@
             <div class="mb-3 row">
                 <div class="col-sm-10 input-group">
                     <input type="password" class="form-control char-limit" name="memberPwd" id="memberPwd"
-                           value="${memberDTO.memberPwd != null ? memberDTO.memberPwd : ''}"
+                           value="<c:out value="${memberDTO.memberPwd != null ? memberDTO.memberPwd : ''}" />"
                            placeholder="비밀번호" maxlength="15" required
                            data-maxlength="15"
                            data-target="#memberPwdCount"
@@ -211,7 +210,7 @@
             <div class="mb-3 row">
                 <div class="col-sm-10 input-group">
                     <input type="password" class="form-control char-limit" name="memberPwdConfirm" id="memberPwdConfirm"
-                           value="${memberPwdConfirm != null ? memberPwdConfirm : ''}"
+                           value="<c:out value="${memberPwdConfirm != null ? memberPwdConfirm : ''}" />"
                            placeholder="비밀번호 확인" maxlength="15" required
                            data-maxlength="15"
                            data-target="#memberPwdConfirmCount"
@@ -232,7 +231,7 @@
             <div class="mb-3 row">
                 <div class="col-sm-4">
                     <input type="text" class="form-control char-limit" name="memberName" id="memberName"
-                           value="${memberDTO.memberName != null ? memberDTO.memberName : ''}"
+                           value="<c:out value="${memberDTO.memberName != null ? memberDTO.memberName : ''}" />"
                            data-maxlength="30"
                            data-target="#memberNameCount"
                            placeholder="이름" maxlength="30" required>
@@ -266,7 +265,8 @@
 
                 <div class="col-sm-4">
                     <input type="text" class="form-control" name="memberBirth" id="memberBirth"
-                           value="${memberDTO.memberBirth != null ? memberDTO.memberBirth : ''}" maxlength="8"
+                           value="<c:out value="${memberDTO.memberBirth != null ? memberDTO.memberBirth : ''}" />"
+                           maxlength="8"
                            placeholder="생년월일" required>
                 </div>
             </div>
@@ -276,7 +276,7 @@
                 <div class="col-sm-5">
                     <div class="input-group">
                         <input type="text" class="form-control" id="memberZipCode" name="memberZipCode"
-                               value="${memberDTO.memberZipCode != null ? memberDTO.memberZipCode : ''}"
+                               value="<c:out value="${memberDTO.memberZipCode != null ? memberDTO.memberZipCode : ''}" />"
                                placeholder="우편번호" required maxlength="5"
                         >
                         <button class="btn btn-outline-secondary" type="button" onclick="sample6_execDaumPostcode()">
@@ -286,7 +286,8 @@
                 </div>
                 <div class="col-sm-7">
                     <input type="text" class="form-control" id="memberAddr1" name="memberAddr1"
-                           value="${memberDTO.memberAddr1 != null ? memberDTO.memberAddr1 : ''}" placeholder="주소"
+                           value="<c:out value="${memberDTO.memberAddr1 != null ? memberDTO.memberAddr1 : ''}" />"
+                           placeholder="주소"
                            required>
                 </div>
             </div>
@@ -294,7 +295,8 @@
             <div class="mb-3 row">
                 <div class="col-sm-12">
                     <input type="text" class="form-control char-limit" id="memberAddr2" name="memberAddr2"
-                           value="${memberDTO.memberAddr2 != null ? memberDTO.memberAddr2 : ''}" placeholder="상세주소"
+                           value="<c:out value="${memberDTO.memberAddr2 != null ? memberDTO.memberAddr2 : ''}" />"
+                           placeholder="상세주소"
                            maxlength="100" data-maxlength="100" data-target="#memberAddr2Count">
                     <div class="text-muted small text-end char-counter"><span id="memberAddr2Count">0</span> / 100</div>
                 </div>
@@ -325,7 +327,7 @@
                         <c:otherwise>
                             <!-- 일반 사용자: 입력 및 중복 확인 가능 -->
                             <input type="text" class="form-control char-limit" name="memberEmail1" id="memberEmail1"
-                                   value="${memberDTO.memberEmail != null ? memberEmail1[0] : ''}"
+                                   value="<c:out value="${memberDTO.memberEmail != null ? memberEmail1[0] : ''}" />"
                                    placeholder="이메일" required
                                    data-maxlength="20" data-target="#memberEmail1Count">
                             <span class="input-group-text">@</span>
@@ -366,7 +368,8 @@
                 <div class="col-sm-10 input-group">
                     <input type="text" class="form-control" id="memberEmailCode" name="memberEmailCode"
                            placeholder="인증 코드"
-                           maxlength="6" required value="${memberEmailCode != null ? memberEmailCode : ''}"
+                           maxlength="6" required
+                           value="<c:out value="${memberEmailCode != null ? memberEmailCode : ''}" />"
                            <c:if test="${memberDTO.memberJoinPath eq '2'}">disabled</c:if> >
 
                     <button type="button" class="btn btn-outline-secondary" id="btnMemberEmailCodeAuth"
@@ -391,12 +394,12 @@
                     <c:choose>
                         <c:when test="${memberDTO.memberJoinPath eq '2'}">
                             <input type="text" class="form-control"
-                                   value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}"
+                                   value="<c:out value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}" />"
                                    maxlength="11" disabled
                                    placeholder="휴대전화번호"> </c:when>
                         <c:otherwise>
                             <input type="text" class="form-control" name="memberPhone" id="memberPhone"
-                                   value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}"
+                                   value="<c:out value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}" />"
                                    maxlength="11"
                                    placeholder="휴대전화번호" required> </c:otherwise>
                     </c:choose>
@@ -475,7 +478,7 @@
 
     $('#memberName').on('input', function () {
         const oldVal = $(this).val();
-        const newVal = oldVal.replace(/[^가-힣a-zA-Z\s]/g, '');
+        const newVal = oldVal.replace(/[^가-힣a-zA-Z]/g, '');
         if (oldVal !== newVal) {
             $(this).val(newVal);
             showInputToast('이름은 한글 또는 영문만 입력 가능합니다.');

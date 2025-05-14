@@ -96,4 +96,10 @@ public class LectureServiceImpl implements LectureServiceIf {
     public List<Integer> selectBookmark(List<Integer> lectureIdxList, String memberId) {
         return lectureMapper.selectBookmark(lectureIdxList, memberId);
     }
+
+    @Override
+    public LectureDTO getLectureByIdx(int lectureIdx) {
+        LectureVO vo = lectureMapper.selectLectureByIdx(lectureIdx);
+        return modelMapper.map(vo, LectureDTO.class);
+    }
 }
