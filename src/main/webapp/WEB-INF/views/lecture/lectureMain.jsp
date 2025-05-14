@@ -17,13 +17,13 @@
     <div class="row mb-4">
         <div class="col-md-12 d-flex align-items-start">
             <div class="flex-grow-1">
-                <h4 class="fw-bold mb-3">${lectureDTO.lectureTitle}</h4>
+                <h4 class="fw-bold mb-3"><c:out value='${lectureDTO.lectureTitle}'/></h4>
                 <div class="p-3 bg-light rounded border mb-0 text-muted">
-                    ${lectureDTO.lectureDescription}
+                    <c:out value='${lectureDTO.lectureDescription}'/>
                 </div>
             </div>
             <div class="ms-4" style="flex-shrink: 0;">
-                <img src="/upload/${lectureDTO.lectureThumbnailImg}" alt="강좌 썸네일"
+                <img src="/upload/<c:out value='${lectureDTO.lectureThumbnailImg}'/>" alt="강좌 썸네일"
                      class="rounded border"
                      onerror="this.src='${cp}/resources/img/default_profileImg.png';"
                      style="width: 200px; height: 120px; object-fit: cover;">
@@ -34,7 +34,7 @@
     <!-- 강의 목차 헤더 -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-semibold mb-0">강의 목차</h5>
-        <small class="text-muted">전체 ${chapterCount}개</small>
+        <small class="text-muted">전체 <c:out value='${chapterCount}'/>개</small>
     </div>
 
     <!-- 강의 리스트 -->
@@ -55,11 +55,12 @@
                             <td>${status.index + 1}강</td>
                             <td class="text-start">
                                 <a href="javascript:void(0);" class="text-decoration-none text-dark fw-semibold"
-                                   onclick="openPlayer('${chapter.chapterIdx}')">
-                                        ${chapter.chapterName}
+                                   data-chapter-idx="${chapter.chapterIdx}"
+                                   onclick="openPlayer(this.dataset.chapterIdx)">
+                                        <c:out value='${chapter.chapterName}'/>
                                 </a>
                             </td>
-                            <td>${chapter.chapterRuntime}</td>
+                            <td><c:out value='${chapter.chapterRuntime}'/></td>
                         </tr>
                     </c:forEach>
                 </c:when>
@@ -76,7 +77,7 @@
     <div class="mb-4 p-4 bg-light border rounded">
         <h5 class="mb-2">수강후기</h5>
         <div class="d-flex align-items-center">
-            <h2 class="text-warning mb-0 me-2">★ ${averageRating}</h2>
+            <h2 class="text-warning mb-0 me-2">★ <c:out value='${averageRating}'/></h2>
             <small class="text-muted">총 ${fn:length(reviewList)}개의 리뷰</small>
         </div>
     </div>
@@ -106,8 +107,8 @@
 
                 <!-- 신고 버튼 -->
                 <div>
-                    <button class="btn btn-outline-danger btn-sm"
-                            onclick="reportReview(${review.lectureReviewIdx}, '${review.lectureReviewMemberId}')">
+                    <button class="btn btn-outline-danger btn-sm" data-lecture-review-idx="${review.lectureReviewIdx}" data-lecture-review-memberId="${review.lectureReviewMemberId}"
+                            onclick="reportReview(this.dataset.lectureReviewIdx, this.dataset.lectureReviewMemberId)">
                         <i class="bi bi-flag"></i> 신고
                     </button>
                 </div>
@@ -116,7 +117,7 @@
             <!-- 후기 내용 -->
             <p class="mb-0 text-muted">
                 <i class="bi bi-chat-left-text me-1"></i>
-                    ${review.lectureReviewContent}
+                    <c:out value='${review.lectureReviewContent}'/>
             </p>
         </div>
     </c:forEach>
@@ -126,7 +127,7 @@
 </div>
 <script>
     function openPlayer(chapterIdx) {
-        const lectureIdx = '${lectureDTO.lectureIdx}';
+        const lectureIdx = '<c:out value="${lectureDTO.lectureIdx}"/>';
 
         window.open(
             '/lecture/chapter/play?chapterLectureIdx=' + lectureIdx + '&chapterIdx=' + chapterIdx,

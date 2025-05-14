@@ -126,7 +126,7 @@
                 lectureHistoryWatchTime: watchTimeFormatted,
                 lectureHistoryLastPosition: formatted,
                 lectureHistoryCompleted: completed,
-                lectureIdx : ${lectureIdx}
+                lectureIdx : <c:out value='${lectureIdx}'/>
             }),
             success: function () {
                 console.log("✅ 저장 완료");

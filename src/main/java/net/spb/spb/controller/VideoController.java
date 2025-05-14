@@ -1,5 +1,6 @@
 package net.spb.spb.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.LectureHistoryDTO;
@@ -44,7 +45,8 @@ public class VideoController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getProgress(
             @RequestParam("lectureMemberId") String lectureMemberId,
-            @RequestParam("lectureHistoryChapterIdx") int lectureHistoryChapterIdx) {
+            @RequestParam("lectureHistoryChapterIdx") int lectureHistoryChapterIdx
+    ) {
         String timeStr = videoService.getLastWatchedTime(lectureMemberId, lectureHistoryChapterIdx); // 예: "00:03:15"
         int seconds = 0;
 

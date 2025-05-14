@@ -62,10 +62,10 @@
                 전체
             </a>
             <c:forEach var="subject" items="${subjectList}">
-                <a href="?subject=${subject}"
+                <a href="?subject=<c:out value='${subject}'/>"
                    class="btn rounded-pill
                    ${param.subject eq subject ? 'btn-primary text-white' : 'btn-outline-secondary'}">
-                        ${subject}
+                        <c:out value='${subject}'/>
                 </a>
             </c:forEach>
         </div>
@@ -79,12 +79,12 @@
                             <div class="card h-100 shadow-sm border-0"
                                  onclick="location.href='/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}'"
                                  style="cursor: pointer;">
-                                <img src="/upload/${lecture.lectureThumbnailImg}" alt="${lecture.lectureTitle}"
+                                <img src="/upload/<c:out value='${lecture.lectureThumbnailImg}'/>" alt="<c:out value='${lecture.lectureTitle}'/>"
                                      class="card-img-top"
                                      onerror="this.src='${cp}/resources/img/default_profileImg.png';">
                                 <div class="card-body">
-                                    <h6 class="card-title fw-semibold">${lecture.lectureTitle}</h6>
-                                    <p class="mb-1 text-muted">${lecture.lectureTeacherName} 선생님</p>
+                                    <h6 class="card-title fw-semibold"><c:out value='${lecture.lectureTitle}'/></h6>
+                                    <p class="mb-1 text-muted"><c:out value='${lecture.lectureTeacherName}'/> 선생님</p>
                                     <p class="text-primary fw-bold">
                                         <fmt:formatNumber value="${lecture.lectureAmount}" type="number"/>원
                                     </p>
@@ -101,7 +101,7 @@
                                         <i class="bi ${isBookmarked ? 'bi-bookmark-fill text-primary' : 'bi-bookmark'}"></i>
                                     </button>
 
-                                    <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); addCart(${lecture.lectureIdx});">장바구니</button>
+                                    <button class="btn btn-sm btn-primary" data-lecture-idx="${lecture.lectureIdx}" onclick="event.stopPropagation(); addCart(this.dataset.lecturIdx);">장바구니</button>
                                 </div>
                             </div>
                         </div>
