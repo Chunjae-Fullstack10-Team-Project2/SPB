@@ -8,6 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <%-- 기타 --%>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/textCounter.js"></script>
 
     <style>
         .join-container {
@@ -85,6 +86,11 @@
             overflow-y: scroll;
             font-size: 14px;
         }
+
+        .char-counter {
+            font-size: 0.8rem;
+            color: lightgray;
+        }
     </style>
 </head>
 <body class="bg-light-subtle">
@@ -144,23 +150,31 @@
                                 <input type="text" class="form-control"
                                        value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
                                        placeholder="아이디" maxlength="20" disabled/>
+
                                 <button class="btn btn-outline-secondary" type="button" disabled>
                                     중복 확인
                                 </button>
                             </c:when>
                             <c:otherwise>
-                                <input type="text" class="form-control" name="memberId" id="memberId"
+                                <input type="text" class="form-control char-limit" name="memberId" id="memberId"
                                        value="${memberDTO.memberId != null ? memberDTO.memberId : ''}"
                                        placeholder="아이디" maxlength="20" required
-                                       oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
+                                       data-maxlength="20"
+                                       data-target="#memberIdCount"
+                                >
                                 <button class="btn btn-outline-secondary" type="button" id="btnCheckId">
                                     중복 확인
                                 </button>
                             </c:otherwise>
                         </c:choose>
                     </div>
-                    <div id="idWarning" class="warning-text d-none mt-1">
-                        아이디는 4~20자, 알파벳과 숫자만 가능합니다.
+                    <div class="d-flex justify-content-between align-items-center mt-1 mb-3 small text-muted">
+                        <div class="char-counter">
+                            <span id="memberIdCount">0</span> / 20
+                        </div>
+                        <div id="idWarning" class="warning-text d-none">
+                            아이디는 4~20자, 알파벳과 숫자만 가능합니다.
+                        </div>
                     </div>
                     <div id="memberIdCheck">
                         <c:if test="${not empty idCheckMessage}">
@@ -173,37 +187,56 @@
 
             <div class="mb-3 row">
                 <div class="col-sm-10 input-group">
-                    <input type="password" class="form-control" name="memberPwd" id="memberPwd"
+                    <input type="password" class="form-control char-limit" name="memberPwd" id="memberPwd"
                            value="${memberDTO.memberPwd != null ? memberDTO.memberPwd : ''}"
                            placeholder="비밀번호" maxlength="15" required
-                           oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
+                           data-maxlength="15"
+                           data-target="#memberPwdCount"
+                    >
                     <button class="btn btn-outline-secondary" type="button"
                             onclick="togglePasswordVisibility('memberPwd', this)">
                         <i class="bi bi-eye"></i>
                     </button>
                 </div>
-                <div id="pwdWarning" class="warning-text d-none">비밀번호는 대소문자와 숫자를 포함한 4~15자여야 합니다.</div>
+                <div class="d-flex justify-content-between align-items-center mt-1 mb-3 small text-muted">
+                    <div class="char-counter">
+                        <span id="memberPwdCount">0</span> / 15
+                    </div>
+                    <div id="pwdWarning" class="warning-text d-none">
+                        비밀번호는 대소문자와 숫자를 포함한 4~15자여야 합니다.
+                    </div>
+                </div>
             </div>
 
             <div class="mb-3 row">
                 <div class="col-sm-10 input-group">
-                    <input type="password" class="form-control" name="memberPwdConfirm" id="memberPwdConfirm"
+                    <input type="password" class="form-control char-limit" name="memberPwdConfirm" id="memberPwdConfirm"
                            value="${memberPwdConfirm != null ? memberPwdConfirm : ''}"
                            placeholder="비밀번호 확인" maxlength="15" required
-                           oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
+                           data-maxlength="15"
+                           data-target="#memberPwdConfirmCount"
+                    >
                     <button class="btn btn-outline-secondary" type="button"
                             onclick="togglePasswordVisibility('memberPwdConfirm', this)">
                         <i class="bi bi-eye"></i>
                     </button>
                 </div>
-                <div id="pwdMatchWarning" class="warning-text d-none">비밀번호가 일치하지 않습니다.</div>
+                <div class="d-flex justify-content-between align-items-center mt-1 mb-3 small text-muted">
+                    <div class="char-counter">
+                        <span id="memberPwdConfirmCount">0</span> / 15
+                    </div>
+                    <div id="pwdMatchWarning" class="warning-text d-none">비밀번호가 일치하지 않습니다.</div>
+                </div>
             </div>
 
             <div class="mb-3 row">
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" name="memberName" id="memberName"
+                    <input type="text" class="form-control char-limit" name="memberName" id="memberName"
                            value="${memberDTO.memberName != null ? memberDTO.memberName : ''}"
+                           data-maxlength="30"
+                           data-target="#memberNameCount"
                            placeholder="이름" maxlength="30" required>
+                    <div class="char-counter"><span id="memberNameCount">0</span> / 30</div>
                 </div>
                 <div class="col-sm-4">
                     <select class="form-select" id="memberGrade" name="memberGrade">
@@ -240,25 +273,30 @@
 
 
             <div class="mb-3 row">
-                <div class="col-sm-10 input-group">
-                    <input type="text" class="form-control" id="memberZipCode" name="memberZipCode"
-                           value="${memberDTO.memberZipCode != null ? memberDTO.memberZipCode : ''}"
-                           placeholder="우편번호" required>
-                    <button class="btn btn-outline-secondary" type="button" onclick="sample6_execDaumPostcode()">
-                        우편번호 찾기
-                    </button>
+                <div class="col-sm-5">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="memberZipCode" name="memberZipCode"
+                               value="${memberDTO.memberZipCode != null ? memberDTO.memberZipCode : ''}"
+                               placeholder="우편번호" required maxlength="5"
+                        >
+                        <button class="btn btn-outline-secondary" type="button" onclick="sample6_execDaumPostcode()">
+                            찾기
+                        </button>
+                    </div>
                 </div>
-            </div>
-
-            <div class="mb-3 row">
-                <div class="col-sm-6">
+                <div class="col-sm-7">
                     <input type="text" class="form-control" id="memberAddr1" name="memberAddr1"
                            value="${memberDTO.memberAddr1 != null ? memberDTO.memberAddr1 : ''}" placeholder="주소"
                            required>
                 </div>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" id="memberAddr2" name="memberAddr2"
-                           value="${memberDTO.memberAddr2 != null ? memberDTO.memberAddr2 : ''}" placeholder="상세주소">
+            </div>
+
+            <div class="mb-3 row">
+                <div class="col-sm-12">
+                    <input type="text" class="form-control char-limit" id="memberAddr2" name="memberAddr2"
+                           value="${memberDTO.memberAddr2 != null ? memberDTO.memberAddr2 : ''}" placeholder="상세주소"
+                           maxlength="100" data-maxlength="100" data-target="#memberAddr2Count">
+                    <div class="text-muted small text-end char-counter"><span id="memberAddr2Count">0</span> / 100</div>
                 </div>
             </div>
 
@@ -272,8 +310,7 @@
                             <!-- 네이버 가입한 사용자: 이메일 입력 비활성화 -->
                             <input type="text" class="form-control" name="memberEmail1" id="memberEmail1"
                                    value="${memberDTO.memberEmail != null ? memberEmail1[0] : ''}"
-                                   placeholder="이메일" required
-                                   oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')" disabled>
+                                   placeholder="이메일" required disabled>
                             <span class="input-group-text">@</span>
                             <select class="form-select" id="memberEmail2" name="memberEmail2"
                                     onchange="toggleCustomEmailInput(this)" disabled>
@@ -283,15 +320,14 @@
                                 <option value="custom">직접 입력</option>
                             </select>
                             <input type="text" class="form-control d-none" id="memberEmailCustom" placeholder="직접 입력"
-                                   maxlength="20" oninput="this.value=this.value.replace(/[^a-zA-Z0-9.]/g, '')"
-                                   disabled>
+                                   maxlength="20" disabled>
                         </c:when>
                         <c:otherwise>
                             <!-- 일반 사용자: 입력 및 중복 확인 가능 -->
-                            <input type="text" class="form-control" name="memberEmail1" id="memberEmail1"
+                            <input type="text" class="form-control char-limit" name="memberEmail1" id="memberEmail1"
                                    value="${memberDTO.memberEmail != null ? memberEmail1[0] : ''}"
                                    placeholder="이메일" required
-                                   oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')">
+                                   data-maxlength="20" data-target="#memberEmail1Count">
                             <span class="input-group-text">@</span>
                             <select class="form-select" id="memberEmail2" name="memberEmail2"
                                     onchange="toggleCustomEmailInput(this)">
@@ -300,10 +336,19 @@
                                 <option>hanmail.net</option>
                                 <option value="custom">직접 입력</option>
                             </select>
-                            <input type="text" class="form-control d-none" id="memberEmailCustom" placeholder="직접 입력"
-                                   maxlength="20" oninput="this.value=this.value.replace(/[^a-zA-Z0-9.]/g, '')">
+                            <input type="text" class="form-control d-none char-limit" id="memberEmailCustom"
+                                   placeholder="직접 입력" maxlength="20"
+                                   data-maxlength="20" data-target="#memberEmailCustomCount">
                         </c:otherwise>
                     </c:choose>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-1 mb-3 small text-muted">
+                    <div class="char-counter d-none">
+                        <span id="memberEmailCustomCount">0</span> / 20
+                    </div>
+                    <div class="char-counter">
+                        <span id="memberEmail1Count">0</span> / 20
+                    </div>
                 </div>
             </div>
 
@@ -312,6 +357,8 @@
                         onclick="sendEmailCode()"
                         <c:if test="${memberDTO.memberJoinPath eq '2'}">disabled</c:if>
                 >인증 코드 전송
+                    <span id="emailSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status"
+                          aria-hidden="true"></span>
                 </button>
             </div>
 
@@ -346,14 +393,14 @@
                             <input type="text" class="form-control"
                                    value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}"
                                    maxlength="11" disabled
-                                   placeholder="휴대전화번호" oninput="this.value=this.value.replace(/[^0-9]/g, '')">
-                        </c:when>
+                                   placeholder="휴대전화번호"
+                            > </c:when>
                         <c:otherwise>
                             <input type="text" class="form-control" name="memberPhone" id="memberPhone"
                                    value="${memberDTO.memberPhone != null ? memberDTO.memberPhone : ''}"
                                    maxlength="11"
-                                   placeholder="휴대전화번호" required oninput="this.value=this.value.replace(/[^0-9]/g, '')">
-                        </c:otherwise>
+                                   placeholder="휴대전화번호" required
+                            > </c:otherwise>
                     </c:choose>
                 </div>
             </div>
@@ -364,7 +411,7 @@
                 <p>3. 보유기간: 회원 탈퇴 시까지 또는 관련 법령에 따른 보관</p>
                 <p>※ 귀하는 위의 개인정보 수집 및 이용에 대해 동의하지 않으실 수 있으며, 이 경우 서비스 이용이 제한될 수 있습니다.</p>
             </div>
-            <div class="form-check mt-2">
+            <div class="form-check my-3 text-small">
                 <input class="form-check-input" type="checkbox" value="1" id="memberAgree" name="memberAgree" disabled>
                 <label class="form-check-label text-muted" for="memberAgree">
                     위 내용을 모두 읽었습니다. (동의)
@@ -377,8 +424,102 @@
         </form>
     </div>
 </div>
-
+<!-- Toast 영역 -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999">
+    <div id="inputToast" class="toast align-items-center text-white bg-danger border-0" role="alert"
+         aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage">
+                <!-- 메시지 영역 -->
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 <script>
+    let lastToastTime = 0;
+
+    function showInputToast(message) {
+        const now = Date.now();
+        if (now - lastToastTime < 1000) return;
+        lastToastTime = now;
+        document.getElementById('toastMessage').textContent = message;
+        new bootstrap.Toast(document.getElementById('inputToast'), {delay: 3000}).show();
+    }
+
+    $('#memberId').on('input', function () {
+        const oldVal = $(this).val();
+        const newVal = oldVal.replace(/[^a-zA-Z0-9]/g, '');
+        if (oldVal !== newVal) {
+            $(this).val(newVal);
+            showInputToast('아이디는 영문자와 숫자만 입력 가능합니다.');
+        }
+    });
+
+    $('#memberPwd').on('input', function () {
+        const oldVal = $(this).val();
+        const newVal = oldVal.replace(/[^a-zA-Z0-9]/g, '');
+        if (oldVal !== newVal) {
+            $(this).val(newVal);
+            showInputToast('비밀번호는 영문자와 숫자만 입력 가능합니다.');
+        }
+    });
+
+    $('#memberPwdConfirm').on('input', function () {
+        const oldVal = $(this).val();
+        const newVal = oldVal.replace(/[^a-zA-Z0-9]/g, '');
+        if (oldVal !== newVal) {
+            $(this).val(newVal);
+            showInputToast('비밀번호는 영문자와 숫자만 입력 가능합니다.');
+        }
+    });
+
+    $('#memberName').on('input', function () {
+        const oldVal = $(this).val();
+        const newVal = oldVal.replace(/[^가-힣a-zA-Z\s]/g, '');
+        if (oldVal !== newVal) {
+            $(this).val(newVal);
+            showInputToast('이름은 한글 또는 영문만 입력 가능합니다.');
+        }
+    });
+
+    $('#memberZipCode').on('input', function () {
+        const oldVal = $(this).val();
+        const newVal = oldVal.replace(/[^0-9]/g, '');
+        if (oldVal !== newVal) {
+            $(this).val(newVal);
+            showInputToast('우편번호는 숫자만 입력 가능합니다.');
+        }
+    });
+
+    $('#memberPhone').on('input', function () {
+        const oldVal = $(this).val();
+        const newVal = oldVal.replace(/[^0-9]/g, '');
+        if (oldVal !== newVal) {
+            $(this).val(newVal);
+            showInputToast('전화번호는 숫자만 입력 가능합니다.');
+        }
+    });
+
+    $('#memberEmail1').on('input', function () {
+        const oldVal = $(this).val();
+        const newVal = oldVal.replace(/[^a-zA-Z0-9]/g, '');
+        if (oldVal !== newVal) {
+            $(this).val(newVal);
+            showInputToast('이메일 아이디는 영문자와 숫자만 입력 가능합니다.');
+        }
+    });
+
+    $('#memberEmailCustom').on('input', function () {
+        const oldVal = $(this).val();
+        const newVal = oldVal.replace(/[^a-zA-Z0-9.]/g, '');
+        if (oldVal !== newVal) {
+            $(this).val(newVal);
+            showInputToast('이메일 도메인은 영문자, 숫자, 점(.)만 입력 가능합니다.');
+        }
+    });
+
     function checkScrollComplete() {
         const box = document.getElementById('agreeText');
         const checkbox = document.getElementById('memberAgree');
@@ -420,6 +561,9 @@
     }
 
     function sendEmailCode() {
+        const spinner = document.getElementById('emailSpinner');
+        spinner.classList.remove('d-none');
+
         let memberEmail1 = document.getElementById("memberEmail1").value.trim();
         let memberEmail2 = document.getElementById("memberEmail2").value;
 
@@ -443,9 +587,13 @@
             data: JSON.stringify({memberEmail: memberEmail}),
             success: function (response) {
                 if (response.success) {
+                    spinner.classList.add('d-none');
                     alert('인증 코드가 전송되었습니다.');
                     document.getElementById('memberEmail1').readOnly = true;
                     document.getElementById('btnMemberEmailCodeSend').disabled = true;
+
+                    document.getElementById('memberEmailCode').disabled = false;
+                    document.getElementById('btnMemberEmailCodeAuth').disabled = false;
 
                     const count = response.emailTryCount;
                     const emailCountWarning = document.getElementById('emailCountWarning');
@@ -453,6 +601,7 @@
 
                     startEmailAuthTimer();
                 } else {
+                    spinner.classList.add('d-none');
                     alert('이메일 인증 코드 전송 실패: ' + response.message);
                 }
             },
@@ -646,20 +795,17 @@
     }
 
     function checkPasswordMatch() {
-        const password = document.getElementById("password").value;
-        const confirm = document.getElementById("confirmPassword").value;
-        const message = document.getElementById("passwordMessage");
+        const password = document.getElementById("memberPwd").value;
+        const confirm = document.getElementById("memberPwdConfirm").value;
 
         if (password && confirm) {
             if (password === confirm) {
-                message.textContent = "비밀번호가 일치합니다.";
-                message.className = "form-text text-success";
+                document.getElementById("pwdMatchWarning").classList.add("d-none");
             } else {
-                message.textContent = "비밀번호가 일치하지 않습니다.";
-                message.className = "form-text text-danger";
+                document.getElementById("pwdMatchWarning").classList.remove("d-none");
             }
         } else {
-            message.textContent = "";
+            document.getElementById("pwdMatchWarning").classList.add("d-none");
         }
     }
 
