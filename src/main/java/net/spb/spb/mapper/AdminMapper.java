@@ -28,6 +28,10 @@ public interface AdminMapper {
 
     int modifyTeacherProfile (TeacherVO teacherVO);
 
+    int deleteTeacher (String teacherId);
+
+    int restoreTeacher (String teacherId);
+
     // Lecture
     int insertLecture(LectureVO lectureVo);
 
@@ -39,7 +43,9 @@ public interface AdminMapper {
 
     int updateLecture(LectureVO lectureVO);
 
-    int deleteLecture(LectureVO lectureVO);
+    int deleteLecture(int lectureIdx);
+
+    int restoreLecture(int lectureIdx);
 
     int existsByLectureId(int lectureIdx);
 
@@ -54,8 +60,9 @@ public interface AdminMapper {
 
     int updateChapter(ChapterVO chapterVO);
 
-    int deleteChapter(ChapterVO chapterVO);
+    int deleteChapter(int chapterIdx);
 
+    int restoreChapter(int chapterIdx);
     // Sales
     List<Map<String, Object>> selectMonthlySales(Map<String, Object> param);
 
