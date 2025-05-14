@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,8 +37,15 @@ public class PaymentController {
     @GetMapping("/cart")
     public String cart(
             @RequestParam("memberId") String memberId,
-            Model model
+            HttpSession session,
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
+        String sessionId = (String) session.getAttribute("memberId");
+        if(!sessionId.equals(memberId)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "잘못된 접근입니다.");
+            return "redirect:/";
+        }
         List<CartDTO> cartList = paymentService.selectCart(memberId);
         log.info("cartList: "+cartList);
         model.addAttribute("cartList", cartList);

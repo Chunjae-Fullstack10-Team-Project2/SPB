@@ -15,13 +15,13 @@
     <div class="d-flex align-items-center mb-4">
         <!-- 왼쪽: 프로필 + 이름/과목 -->
         <div class="d-flex align-items-center me-4">
-            <img src="/upload/${teacherDTO.teacherProfileImg}" alt="프로필"
+            <img src="/upload/<c:out value='${teacherDTO.teacherProfileImg}'/>" alt="프로필"
                  class="rounded-circle me-3"
                  style="width:100px;height:100px;object-fit:cover;"
                  onerror="this.src='${cp}/resources/img/default_profileImg.png';">
             <div>
-                <h3 class="mb-1">${teacherDTO.teacherName} 선생님</h3>
-                <p class="text-muted mb-0">${teacherDTO.teacherSubject} 전문 강사</p>
+                <h3 class="mb-1"><c:out value='${teacherDTO.teacherName}'/> 선생님</h3>
+                <p class="text-muted mb-0"><c:out value='<${teacherDTO.teacherSubject}'/> 전문 강사</p>
             </div>
         </div>
 
@@ -41,7 +41,7 @@
     <div class="card mb-4">
         <div class="card-body">
             <h5 class="card-title">선생님 설명</h5>
-            <p class="card-text mb-0">${teacherDTO.teacherIntro}</p>
+            <p class="card-text mb-0"><c:out value='${teacherDTO.teacherIntro}'/></p>
         </div>
     </div>
 
@@ -68,7 +68,7 @@
                                  onerror="this.src='${cp}/resources/img/default_profileImg.png';">
                         </td>
                         <td class="text-start">
-                            <a href="/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}" class="text-decoration-none text-dark fw-semibold">${lecture.lectureTitle}</a>
+                            <a href="/lecture/lectureDetail?lectureIdx=<c:out value='${lecture.lectureIdx}'/>" class="text-decoration-none text-dark fw-semibold"><c:out value='${lecture.lectureTitle}'/></a>
                         </td>
                         <td>
                             <fmt:formatNumber value="${lecture.lectureAmount}" type="number" groupingUsed="true"/>원
@@ -86,7 +86,7 @@
                                     <i class="bi ${isBookmarked ? 'bi-bookmark-fill text-primary' : 'bi-bookmark'}"></i>
                                 </button>
 
-                                <button class="btn btn-sm btn-primary" onclick="addCart(${lecture.lectureIdx})">장바구니</button>
+                                <button class="btn btn-sm btn-primary" data-lecture-idx="${lecture.lectureIdx}" onclick="addCart(this.dataset.lectureIdx)">장바구니</button>
                             </div>
                         </td>
                     </tr>
