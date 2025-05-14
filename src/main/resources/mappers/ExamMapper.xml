@@ -3,9 +3,9 @@
 <mapper namespace="net.spb.spb.mapper.exam.ExamMapper">
     <sql id="condition">
         <where>
-            and tl.teacherId = #{teacherId}
-            <if test="pageDTO.search_category == 'examLectureIdx'">
-                and te.examLectureIdx = #{lectureIdx}
+            and tl.lectureTeacherId = #{teacherId}
+            <if test="pageDTO.lectureIdx != null and pageDTO.lectureIdx != ''">
+                and te.examLectureIdx = #{pageDTO.lectureIdx}
             </if>
             <if test="pageDTO.search_category == 'examTitle'">
                 and te.examTitle like concat('%', #{pageDTO.search_word}, '%')

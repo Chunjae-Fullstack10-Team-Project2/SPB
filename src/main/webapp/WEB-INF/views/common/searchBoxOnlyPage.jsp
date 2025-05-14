@@ -19,6 +19,20 @@
     %>
     <div class="search-box">
         <form name="frmSearch" method="get" action="${searchAction}" class="mb-1 p-4">
+            <c:if test="${fn:contains(currentURI, '/exam')}">
+                <div class="row g-2 align-items-center mb-3">
+                    <div class="col-md-6">
+                        <select name="lectureIdx" class="form-select">
+                            <option value="" ${param.lectureIdx eq null ? "selected" : ""}>강좌를 선택하세요.</option>
+                            <c:forEach var="item" items="${lectureList}">
+                                <option value="${item.lectureIdx}" ${param.lectureIdx != null and param.lectureIdx == item.lectureIdx ? "selected" : ""}>
+                                        ${item.lectureTitle}
+                                </option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                </div>
+            </c:if>
             <div class="row g-2 align-items-center mb-3">
                 <c:if test="${param['start_date'] != null and param['end_date'] != null}">
                     <c:set var="date_value" value="${param['start_date']} - ${param['end_date']}" />
@@ -43,7 +57,7 @@
                 <div class="col-md-2">
                     <select name="search_category" class="form-select">
                         <c:forEach var="item" items="${searchSelect}">
-                            <option value="${item.value}" ${param['search_catgory'] eq item.value ? "selected" : ""}>
+                            <option value="${item.value}" ${param['search_category'] eq item.value ? "selected" : ""}>
                                 ${item.label}
                             </option>
                         </c:forEach>
@@ -135,6 +149,16 @@
             const url = new URL(location.href);
             const params = url.searchParams;
 
+            const lectureEL = document.querySelector('select[name="lectureIdx"]');
+            if (lectureEL) {
+                const lectureIdx = lectureEL.value;
+                if (lectureIdx) {
+                    params.set('lectureIdx', lectureIdx);
+                } else {
+                    params.delete('lectureIdx');
+                }
+            }
+
             const dateTypeEl = document.querySelector('select[name="date_type"]');
             if (dateTypeEl) {
                 const date_type = dateTypeEl.value;
@@ -143,8 +167,6 @@
                 } else {
                     params.delete('date_type');
                 }
-            } else {
-                params.delete('date_type');
             }
 
             const dateValueEl = document.querySelector('input[name="date_value"]');
@@ -158,9 +180,6 @@
                     params.delete('start_date');
                     params.delete('end_date');
                 }
-            } else {
-                params.delete('start_date');
-                params.delete('end_date');
             }
 
             const searchCategoryEl = document.querySelector('select[name="search_category"]');
