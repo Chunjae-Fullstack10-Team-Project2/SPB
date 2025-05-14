@@ -18,7 +18,6 @@
     <div class="content">
         <div class="container my-5">
             <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
-
             <h1 class="h2 mb-4">공지사항 등록</h1>
 
             <form name="frmRegist" action="/myclass/notice/regist?${pageDTO.linkUrl}" method="post"
@@ -43,16 +42,15 @@
                     </div>
                 </div>
 
-                <div class="form-check d-flex justify-content-between">
-                    <div>
-                        <input class="form-check-input" type="checkbox" value="1" name="teacherNoticeFixed" id="teacherNoticeFixed"
-                        ${teacherNoticeDTO.teacherNoticeFixed == 1 ? "checked" : ""}>
-                        <label class="form-check-label" for="teacherNoticeFixed">이 공지사항을 상단에 고정합니다</label>
-                    </div>
-                    <div>
-                        <button type="submit" class="btn btn-primary" id="btnRegist">등록</button>
-                        <button type="button" class="btn btn-outline-secondary" onclick="history.back();">취소</button>
-                    </div>
+                <div class="mb-3">
+                    <input class="form-check-input" type="checkbox" value="1" name="teacherNoticeFixed" id="teacherNoticeFixed"
+                    ${teacherNoticeDTO.teacherNoticeFixed == 1 ? "checked" : ""}>
+                    <label class="form-check-label" for="teacherNoticeFixed">이 공지사항을 상단에 고정합니다</label>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-primary" id="btnRegist">등록</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="history.back();">취소</button>
                 </div>
             </form>
         </div>

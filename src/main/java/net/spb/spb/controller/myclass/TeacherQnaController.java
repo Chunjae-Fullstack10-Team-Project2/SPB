@@ -141,7 +141,7 @@ public class TeacherQnaController {
 
         service.updateTeacherAnswer(dto);
 
-        return "redirect:/myclass/qna?" + pageDTO.getLinkUrl();
+        return "redirect:/myclass/qna/view?idx=" + idx + "&" + pageDTO.getLinkUrl();
     }
 
     @PostMapping("/delete")
