@@ -34,6 +34,9 @@
                 <when test="searchDTO.searchType == 'postMemberId'">
                     AND postMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
                 </when>
+                <when test="searchDTO.searchType == 'reportMemberId'">
+                    AND reportMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
             </choose>
         </if>
 
@@ -50,6 +53,7 @@
         <if test="searchDTO.sortColumn != null and searchDTO.sortOrder != null">
             ORDER BY
             <choose>
+                <when test="searchDTO.sortColumn == 'reportMemberId'">reportMemberId</when>
                 <when test="searchDTO.sortColumn == 'postTitle'">postTitle</when>
                 <when test="searchDTO.sortColumn == 'postMemberId'">postMemberId</when>
                 <when test="searchDTO.sortColumn == 'postCreatedAt'">postCreatedAt</when>
@@ -84,6 +88,9 @@
                 </when>
                 <when test="searchDTO.searchType == 'postMemberId'">
                     AND postMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'reportMemberId'">
+                    AND reportMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
                 </when>
             </choose>
         </if>
@@ -133,6 +140,9 @@
                 <when test="searchDTO.searchType == 'lectureReviewContent'">
                     AND lectureReviewContent LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
                 </when>
+                <when test="searchDTO.searchType == 'reportMemberId'">
+                    AND reportMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
             </choose>
         </if>
 
@@ -149,6 +159,7 @@
         <if test="searchDTO.sortColumn != null and searchDTO.sortOrder != null">
             ORDER BY
             <choose>
+                <when test="searchDTO.sortColumn == 'reportMemberId'">reportMemberId</when>
                 <when test="searchDTO.sortColumn == 'lectureReviewMemberId'">lectureReviewMemberId</when>
                 <when test="searchDTO.sortColumn == 'lectureReviewCreatedAt'">lectureReviewCreatedAt</when>
                 <otherwise>reportIdx</otherwise>
@@ -178,6 +189,9 @@
                 </when>
                 <when test="searchDTO.searchType == 'lectureReviewContent'">
                     AND lectureReviewContent LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
+                </when>
+                <when test="searchDTO.searchType == 'reportMemberId'">
+                    AND reportMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
                 </when>
             </choose>
         </if>
