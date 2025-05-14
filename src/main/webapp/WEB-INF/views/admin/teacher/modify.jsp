@@ -25,6 +25,7 @@
       <div class="card-body">
         <form name="frmModify" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
           <input type="hidden" name="teacherIdx" value="${teacherDTO.teacherIdx}">
+          <input type="hidden" name="teacherProfileImg" value="${teacherDTO.teacherProfileImg}">
           <div class="mb-3">
             <label for="teacherId" class="form-label">선생님 아이디</label>
             <input type="text" class="form-control" id="teacherId" name="teacherId"

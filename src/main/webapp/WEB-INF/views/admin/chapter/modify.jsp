@@ -53,6 +53,7 @@
           <div class="mb-3">
             <label for="file1" class="form-label">강의 동영상</label>
             <input type="file" class="form-control" id="file1" name="file1" accept="video/*">
+            <input type="hidden" name="chapterVideo" value="${chapterDTO.chapterVideo}"/>
           </div>
 
           <div class="d-flex justify-content-end gap-2">
@@ -63,6 +64,11 @@
             <div id="progressBar" class="progress-bar" style="width: 0%">0%</div>
           </div>
         </form>
+      </div>
+      <div class="preloader" style="display: none;">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+          <span class="visually-hidden">강의 영상 업로드 중...</span>
+        </div>
       </div>
     </div>
   </div>
@@ -83,29 +89,27 @@
     const form = document.getElementById("frmRegist");
     const formData = new FormData(form);
     const xhr = new XMLHttpRequest();
+
+    document.querySelector(".preloader").style.display = "flex";
+
     xhr.open("POST", "/admin/chapter/modify");
-    xhr.upload.onprogress = function(event) {
-      if (event.lengthComputable) {
-        const progress = document.querySelector('.progress');
-                progress.style = "display: block";
-                progress.style = "margin-top: 30px";
-        const percent = Math.round((event.loaded / event.total) * 100);
-        document.getElementById('progressText').innerText = `${percent}% 업로드 중...`;
-        const progressBar = document.getElementById("progressBar");
-        progressBar.style.width = percent + "%";
-        progressBar.innerText = percent + "%";
-      }
-    };
 
     xhr.onload = function () {
-      if (xhr.status === 200) {
+      document.querySelector(".preloader").style.display = "none";
+      try {
         const response = JSON.parse(xhr.responseText);
-        alert("성공: " + response.message);
-      } else {
-        alert("업로드 실패: " + xhr.responseText);
+        if (xhr.status === 200) {
+          alert("성공: " + response.message);
+          window.location.href = "/admin/chapter/list";
+        } else {
+          alert("실패: " + response.message);
+        }
+      } catch (e) {
+        alert("응답 처리 중 오류 발생: " + xhr.responseText);
       }
     };
     xhr.onerror = function () {
+      document.querySelector(".preloader").style.display = "none";
       alert("네트워크 오류 발생");
     };
 
