@@ -14,6 +14,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Builder
 public class LectureHistoryDTO {
+    private int lectureIdx;
     private int lectureHistoryIdx;
     private String lectureMemberId;
     private int lectureHistoryChapterIdx;

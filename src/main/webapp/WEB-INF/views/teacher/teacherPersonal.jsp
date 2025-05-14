@@ -13,7 +13,8 @@
 <div class="content">
 <div class="container my-5">
     <div class="d-flex align-items-center mb-4">
-        <img src="/upload/${teacherDTO.teacherProfileImg}" alt="프로필" class="rounded-circle me-3" style="width:100px;height:100px;object-fit:cover;">
+        <img src="/upload/${teacherDTO.teacherProfileImg}" alt="프로필" class="rounded-circle me-3" style="width:100px;height:100px;object-fit:cover;"
+             onerror="this.src='${cp}/resources/img/default_profileImg.png';">
         <div>
             <h3 class="mb-0">${teacherDTO.teacherName} 선생님</h3>
             <p class="text-muted">${teacherDTO.teacherSubject} 전문 강사</p>
@@ -46,7 +47,8 @@
                 <c:forEach var="lecture" items="${lectureList}">
                     <tr>
                         <td>
-                            <img src="/upload/${lecture.lectureThumbnailImg}" alt="썸네일" class="img-fluid rounded" width="130" height="80">
+                            <img src="/upload/${lecture.lectureThumbnailImg}" alt="썸네일" class="img-fluid rounded" width="130" height="80"
+                                 onerror="this.src='${cp}/resources/img/default_profileImg.png';">
                         </td>
                         <td class="text-start">
                             <a href="/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}" class="text-decoration-none text-dark fw-semibold">${lecture.lectureTitle}</a>

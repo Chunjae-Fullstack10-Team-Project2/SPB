@@ -44,7 +44,7 @@ public class LectureController {
     ) {
         String memberId = (String) session.getAttribute("memberId");
         List<LectureDTO> lectureList;
-        log.info("subject: "+subject);
+        log.info("searchDTO: {}",searchDTO);
         if(subject == null || subject.isBlank()) {
             lectureList = lectureService.getAllLectures(searchDTO, pageRequestDTO);
         } else {
@@ -58,8 +58,10 @@ public class LectureController {
         List<Integer> lectureIdxList = lectureList.stream().map(LectureDTO::getLectureIdx)
                 .collect(Collectors.toList());
         log.info("lectureIdxList:{}", lectureIdxList);
-        List<Integer> bookmarked = lectureService.selectBookmark(lectureIdxList, memberId);
-        model.addAttribute("bookmarked", bookmarked);
+        if(memberId != null) {
+            List<Integer> bookmarked = lectureService.selectBookmark(lectureIdxList, memberId);
+            model.addAttribute("bookmarked", bookmarked);
+        }
 
         PageResponseDTO<LectureDTO> pageResponseDTO = PageResponseDTO.<LectureDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -115,10 +117,14 @@ public class LectureController {
     }
 
     @GetMapping("/chapter/play")
-    public String playVideo(@RequestParam("chapterIdx") int chapterIdx, Model model) {
+    public String playVideo(
+            @RequestParam("chapterLectureIdx") int chapterLectureIdx,
+            @RequestParam("chapterIdx") int chapterIdx,
+            Model model) {
         log.info("💡 컨트롤러 진입 확인");
         ChapterDTO chapter = lectureService.getChapterById(chapterIdx);
         model.addAttribute("chapter", chapter);
+        model.addAttribute("lectureIdx", chapterLectureIdx);
         return "lecture/chapterPlay";
     }
 

@@ -109,7 +109,8 @@
                                     <div class="rounded-circle overflow-hidden border mb-3"
                                          style="width: 120px; height: 120px;">
                                         <img src="/upload/${teacher.teacherProfileImg}" alt="${teacher.teacherName}"
-                                             class="img-fluid w-100 h-100" style="object-fit: cover;">
+                                             class="img-fluid w-100 h-100" style="object-fit: cover;"
+                                             onerror="this.src='${cp}/resources/img/default_profileImg.png';">
                                     </div>
                                     <div class="fw-semibold">${teacher.teacherName} 선생님</div>
                                 </div>
