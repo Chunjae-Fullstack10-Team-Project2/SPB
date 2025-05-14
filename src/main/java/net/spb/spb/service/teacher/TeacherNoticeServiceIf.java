@@ -12,4 +12,5 @@ public interface TeacherNoticeServiceIf {
     public TeacherNoticeResponseDTO getTeacherNoticeByIdx(int idx);
     public int updateTeacherNotice(String memberId, TeacherNoticeDTO teacherNoticeDTO);
     public int deleteTeacherNoticeByIdx(String memberId, int idx);
+    public int getTeacherNoticeListTotalCount(String memberId, TeacherNoticePageDTO pageDTO);
 }

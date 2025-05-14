@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.BookmarkDTO;
 import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.OrderLectureDTO;
+import net.spb.spb.dto.post.PostCommentDTO;
 import net.spb.spb.dto.post.PostDTO;
 import net.spb.spb.dto.post.PostLikeRequestDTO;
 import net.spb.spb.dto.post.PostReportDTO;
@@ -520,4 +521,30 @@ public class MyPageController {
 
         return "mypage/post";
     }
+
+    @GetMapping("/comment")
+    public String listMyComment(HttpSession session, Model model,
+                                @ModelAttribute SearchDTO searchDTO,
+                                @ModelAttribute PageRequestDTO pageRequestDTO) {
+        String postMemberId = (String) session.getAttribute("memberId");
+
+        if (searchDTO.getDateType() == null || searchDTO.getDateType().isEmpty()) {
+            searchDTO.setDateType("postCommentCreatedAt");
+        }
+
+        List<PostCommentDTO> commentList = myPageService.listMyComment(searchDTO, pageRequestDTO, postMemberId);
+        PageResponseDTO<PostCommentDTO> pageResponseDTO = PageResponseDTO.<PostCommentDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .totalCount(myPageService.commentTotalCount(searchDTO, postMemberId))
+                .dtoList(commentList)
+                .build();
+
+        model.addAttribute("responseDTO", pageResponseDTO);
+        model.addAttribute("commentList", commentList);
+        model.addAttribute("searchDTO", searchDTO);
+        setBreadcrumb(model, Map.of("댓글 목록", ""));
+
+        return "mypage/comment";
+    }
+
 }

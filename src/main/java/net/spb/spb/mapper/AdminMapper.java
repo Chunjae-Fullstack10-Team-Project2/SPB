@@ -41,8 +41,12 @@ public interface AdminMapper {
 
     int deleteLecture(LectureVO lectureVO);
 
+    int existsByLectureId(int lectureIdx);
+
     // Chapter
     int insertChapter(ChapterVO chapterVO);
+
+    int selectChapterCount(ChapterPageDTO chapterPageDTO);
 
     List<ChapterDTO> selectChapterList(ChapterPageDTO chapterPageDTO);
 

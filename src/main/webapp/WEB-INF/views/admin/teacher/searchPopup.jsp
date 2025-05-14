@@ -54,11 +54,9 @@
                     </td>
                 </tr>
             </c:forEach>
-            <tr>
-                <td colspan="5">${paging}</td>
-            </tr>
             </tbody>
         </table>
+        <div class="text-center">${paging}</div>
     </div>
     <div class="text-end my-3">
         <button type="button" class="btn btn-secondary btn-sm" onclick="window.close()">창 닫기</button>

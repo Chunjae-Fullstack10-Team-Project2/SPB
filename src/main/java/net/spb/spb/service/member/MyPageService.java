@@ -3,6 +3,7 @@ package net.spb.spb.service.member;
 import lombok.RequiredArgsConstructor;
 import net.spb.spb.dto.BookmarkDTO;
 import net.spb.spb.dto.OrderDTO;
+import net.spb.spb.dto.post.PostCommentDTO;
 import net.spb.spb.dto.post.PostDTO;
 import net.spb.spb.dto.post.PostLikeRequestDTO;
 import net.spb.spb.dto.post.PostReportDTO;
@@ -95,5 +96,12 @@ public class MyPageService {
 
     public int postTotalCount(SearchDTO searchDTO, String postMemberId) {
         return myPageMapper.postTotalCount(searchDTO, postMemberId);
+    }
+
+    public List<PostCommentDTO> listMyComment(SearchDTO searchDTO, PageRequestDTO pageRequestDTO, String postCommentMemberId) {
+        return myPageMapper.listMyComment(searchDTO, pageRequestDTO, postCommentMemberId);
+    }
+    public int commentTotalCount(SearchDTO searchDTO, String postCommentMemberId) {
+        return myPageMapper.commentTotalCount(searchDTO, postCommentMemberId);
     }
 }

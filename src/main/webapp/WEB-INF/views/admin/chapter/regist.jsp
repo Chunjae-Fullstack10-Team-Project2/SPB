@@ -14,6 +14,17 @@
       flex: 0 0 10%;
       max-width: 85px;
     }
+    .preloader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
   </style>
 </head>
 <body>
@@ -64,6 +75,11 @@
           </div>
         </form>
       </div>
+      <div class="preloader" style="display: none;">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+          <span class="visually-hidden">강의 영상 업로드 중...</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -83,29 +99,24 @@
     const form = document.getElementById("frmRegist");
     const formData = new FormData(form);
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/admin/lecture/chapter/regist");
-    xhr.upload.onprogress = function(event) {
-      if (event.lengthComputable) {
-        const progress = document.querySelector('.progress');
-                progress.style = "display: block";
-                progress.style = "margin-top: 30px";
-        const percent = Math.round((event.loaded / event.total) * 100);
-        document.getElementById('progressText').innerText = `${percent}% 업로드 중...`;
-        const progressBar = document.getElementById("progressBar");
-        progressBar.style.width = percent + "%";
-        progressBar.innerText = percent + "%";
-      }
-    };
-
+    document.querySelector(".preloader").style.display = "flex";
+    xhr.open("POST", "/admin/chapter/regist");
     xhr.onload = function () {
-      if (xhr.status === 200) {
+      document.querySelector(".preloader").style.display = "none";
+      try {
         const response = JSON.parse(xhr.responseText);
-        alert("성공: " + response.message);
-      } else {
-        alert("업로드 실패: " + xhr.responseText);
+        if (xhr.status === 200) {
+          alert("성공: " + response.message);
+          window.location.href = "/admin/chapter/list";
+        } else {
+          alert("업로드 실패: " + response.message);
+        }
+      } catch (e) {
+        alert("응답 처리 중 오류 발생: " + xhr.responseText);
       }
     };
     xhr.onerror = function () {
+      document.querySelector(".preloader").style.display = "none";
       alert("네트워크 오류 발생");
     };
 

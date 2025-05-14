@@ -31,4 +31,9 @@ public interface MemberServiceIf {
     boolean updateMemberByAdmin(MemberDTO memberDTO);
 
     int getMemberCount(MemberPageDTO memberPageDTO);
+
+    boolean updatePassword(String memberId, String encryptedPassword);
+
+    String findByEmail(String memberEmail);
+
 }

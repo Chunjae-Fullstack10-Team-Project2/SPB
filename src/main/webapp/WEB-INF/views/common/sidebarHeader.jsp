@@ -151,6 +151,7 @@
                             <li><a class="dropdown-item" href="${cp}/myclass/lecture">내 강의 목록</a></li>
                             <li><a class="dropdown-item" href="${cp}/myclass/notice">공지사항</a></li>
                             <li><a class="dropdown-item" href="${cp}/myclass/qna">Q&A</a></li>
+                            <li><a class="dropdown-item" href="${cp}/myclass/library">자료실</a></li>
                             <li><a class="dropdown-item" href="${cp}/myclass/grade">성적 관리</a></li>
                             <li><a class="dropdown-item" href="${cp}/myclass/review">수강후기</a></li>
                         </ul>
@@ -281,6 +282,10 @@
                         </li>
                         <li>
                             <a class=" d-inline-flex text-decoration-none rounded text-dark"
+                               href="${cp}/myclass/library">자료실</a>
+                        </li>
+                        <li>
+                            <a class=" d-inline-flex text-decoration-none rounded text-dark"
                                href="${cp}/myclass/grade">성적 관리</a>
                         </li>
                         <li>
@@ -365,6 +370,8 @@
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li><a href="${cp}/mypage/post" class="d-inline-flex text-decoration-none rounded text-dark">작성한
                             게시글</a></li>
+                        <li><a href="${cp}/mypage/comment" class="d-inline-flex text-decoration-none rounded text-dark">작성한
+                            댓글</a></li>
                         <li><a href="${cp}/mypage/likes" class="d-inline-flex text-decoration-none rounded text-dark">추천한
                             게시글</a></li>
                         <li><a href="${cp}/mypage/report" class="d-inline-flex text-decoration-none rounded text-dark">신고한

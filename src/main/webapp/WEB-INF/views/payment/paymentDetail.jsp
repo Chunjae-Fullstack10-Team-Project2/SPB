@@ -14,7 +14,7 @@
         }
     </style>
 </head>
-<body class="bg-light">
+<body class="bg-light-subtle">
 <%@ include file="../common/header.jsp" %>
 <div class="content-nonside">
     <div class="container-narrow my-5">
