@@ -29,7 +29,7 @@
                             <input type="text" class="form-control char-limit" id="qnaTitle" name="qnaTitle"
                                    placeholder="제목을 입력하세요." required
                                    data-maxlength="100" data-target="#qnaQTitleCount"
-                                   value="${qnaDTO.qnaTitle != null ? qnaDTO.qnaTitle : ''}">
+                                   value="<c:out value='${qnaDTO.qnaTitle}' />">
                         </div>
                         <div class="text-end small text-muted mt-1 mb-3">
                             <span id="qnaQTitleCount">0</span> / 100
@@ -38,21 +38,21 @@
                         <div class="mb-3">
                             <label for="qnaQMemberId" class="form-label">작성자</label>
                             <input type="text" class="form-control" id="qnaQMemberId" name="qnaQMemberId"
-                                   value="${qnaDTO.qnaQMemberId}" readonly>
+                                   value="<c:out value='${qnaDTO.qnaQMemberId}' />" readonly>
                         </div>
 
                         <div class="mb-3">
                             <label for="qnaQPwd" class="form-label">비밀번호(선택)</label>
                             <input type="text" class="form-control" id="qnaQPwd" name="qnaQPwd" maxlength="4"
-                                   value="${qnaDTO.qnaQPwd}">
+                                   value="<c:out value='${qnaDTO.qnaQPwd}' />">
                         </div>
 
                         <div class="mb-3">
                             <label for="qnaQContent" class="form-label">내용</label>
                             <textarea class="form-control char-limit" id="qnaQContent" name="qnaQContent" rows="10"
                                       placeholder="문의 내용을 입력해주세요." style="resize: none;" required
-                                      data-maxlength="15000" data-target="#qnaQCount"
-                                      required>${qnaDTO.qnaQContent != null ? qnaDTO.qnaQContent : ''}</textarea>
+                                      data-maxlength="15000" data-target="#qnaQCount"><c:out
+                                    value="${qnaDTO.qnaQContent}"/></textarea>
                         </div>
                         <div class="text-end small text-muted mt-1 mb-3">
                             <span id="qnaQCount">0</span> / 15000

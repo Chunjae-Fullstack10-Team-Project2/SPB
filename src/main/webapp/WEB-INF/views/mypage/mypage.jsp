@@ -128,14 +128,15 @@
             </div>
 
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="memberId" name="memberId" value="${memberDTO.memberId}"
+                <input type="text" class="form-control" id="memberId" name="memberId"
+                       value="<c:out value='${memberDTO.memberId}' />"
                        disabled>
                 <label for="memberId">아이디</label>
             </div>
 
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="memberName" name="memberName"
-                       value="${memberDTO.memberName}"
+                       value="<c:out value="${memberDTO.memberName}" />"
                        placeholder="이름" maxlength="30" required>
                 <label for="memberName">이름</label>
             </div>
@@ -171,34 +172,36 @@
                 <label for="memberGrade">학년</label>
 
                 <c:if test="${memberDTO.memberGrade == '13' || memberDTO.memberGrade == '14'}">
-                    <input type="hidden" name="memberGrade" value="${memberDTO.memberGrade}" />
+                    <input type="hidden" name="memberGrade" value="${memberDTO.memberGrade}"/>
                 </c:if>
             </div>
 
 
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="memberBirth" name="memberBirth"
-                       value="${memberDTO.memberBirth}"
+                       value="<c:out value="${memberDTO.memberBirth}" />"
                        maxlength="8" placeholder="생년월일" required>
                 <label for="memberBirth">생년월일</label>
             </div>
 
             <div class="form-floating mb-3">
                 <input type="email" class="form-control" id="memberEmail" name="memberEmail"
-                       value="${memberDTO.memberEmail}" placeholder="이메일" disabled>
+                       value="<c:out value="${memberDTO.memberEmail}" />"
+                       placeholder="이메일" disabled>
                 <label for="memberEmail">이메일</label>
             </div>
 
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="memberPhone" name="memberPhone"
-                       value="${memberDTO.memberPhone}"
+                       value="<c:out value="${memberDTO.memberPhone}" />"
                        placeholder="휴대전화번호" disabled>
                 <label for="memberPhone">휴대전화번호</label>
             </div>
 
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="memberZipCode" name="memberZipCode"
-                       value="${memberDTO.memberZipCode}" placeholder="우편번호" maxlength="5" required>
+                       value="<c:out value="${memberDTO.memberZipCode}" />"
+                       placeholder="우편번호" maxlength="5" required>
                 <label for="memberZipCode">우편번호</label>
             </div>
             <div class="d-grid gap-2 mb-3">
@@ -208,14 +211,16 @@
 
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="memberAddr1" name="memberAddr1"
-                       value="${memberDTO.memberAddr1}" maxlength="100"
+                       value="<c:out value="${memberDTO.memberAddr1}" />"
+                       maxlength="100"
                        placeholder="주소" required>
                 <label for="memberAddr1">주소</label>
             </div>
 
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="memberAddr2" name="memberAddr2"
-                       value="${memberDTO.memberAddr2}" maxlength="100"
+                       value="<c:out value="${memberDTO.memberAddr2}" />"
+                       maxlength="100"
                        placeholder="상세주소">
                 <label for="memberAddr2">상세주소</label>
             </div>

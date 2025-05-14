@@ -133,9 +133,8 @@
                 <div class="form-floating">
                     <input type="text" class="form-control" id="memberId" name="memberId" autocomplete="off"
                            placeholder="아이디"
-                           value="${not empty cookie.saveId.value ? cookie.saveId.value : (not empty cookie.autoLogin.value ? cookie.autoLogin.value : '')}"
-                    > <label for="memberId">아이디</label>
-
+                           value="<c:out value='${not empty cookie.saveId.value ? cookie.saveId.value : (not empty cookie.autoLogin.value ? cookie.autoLogin.value : "")}'/>">
+                    <label for="memberId">아이디</label>
                 </div>
 
                 <div class="form-floating position-relative mb-3">
