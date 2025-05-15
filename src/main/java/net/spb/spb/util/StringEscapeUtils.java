@@ -2,6 +2,8 @@ package net.spb.spb.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringEscapeUtils {
 
@@ -39,10 +41,19 @@ public class StringEscapeUtils {
     public static String unescapeHtml4(String input) {
         if (input == null) return null;
         String output = input;
-        // 긴 엔티티부터 치환
+        // 1. 이름 기반 매핑 복원
         for (Map.Entry<String, String> e : UNESCAPE_MAP.entrySet()) {
             output = output.replace(e.getKey(), e.getValue());
         }
-        return output;
+        // 2. 숫자형 엔티티 복원
+        Pattern pattern = Pattern.compile("&#(\\d+);");
+        Matcher matcher = pattern.matcher(output);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            int codePoint = Integer.parseInt(matcher.group(1));
+            matcher.appendReplacement(sb, Matcher.quoteReplacement(String.valueOf((char) codePoint)));
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
     }
 }
