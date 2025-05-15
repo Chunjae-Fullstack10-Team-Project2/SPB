@@ -148,7 +148,7 @@
                 </tr>
                 <tr>
                     <td>Phone</td>
-                    <td id="mPhone"><c:out value='${member.memberPhone}'/></td>
+                    <td id="mPhone"><c:out value='${phone}'/></td>
                 </tr>
         </table>
         <form id="frm">
