@@ -351,7 +351,7 @@
 
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
-                <when test="searchDTO.searchType == 'memberId'">
+                <when test="searchDTO.searchType == 'orderMemberId'">
                     AND o.orderMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
                 </when>
                 <when test="searchDTO.searchType == 'lectureTitle'">
@@ -396,7 +396,7 @@
         WHERE o.orderStatus = 's'
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
-                <when test="searchDTO.searchType == 'memberId'">
+                <when test="searchDTO.searchType == 'orderMemberId'">
                     AND o.orderMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
                 </when>
                 <when test="searchDTO.searchType == 'lectureTitle'">
@@ -410,22 +410,29 @@
     </select>
 
     <select id="selectSalesListForExport">
-        SELECT o.orderIdx, orderMemberId, lectureTitle, orderAmount, orderCreatedAt
+        SELECT o.orderIdx, o.orderMemberId, l.lectureTitle, o.orderAmount, o.orderCreatedAt
         FROM tbl_order_info AS o
         JOIN tbl_order_lecture ol ON o.orderIdx = ol.orderIdx
         JOIN tbl_lecture l ON ol.orderLectureIdx = l.lectureIdx
-        WHERE orderStatus = 's'
+        WHERE o.orderStatus = 's'
 
-        <if test="searchType != null and searchWord != null">
-            AND ${searchType} LIKE CONCAT('%', #{searchWord}, '%')
-        </if>
+        <choose>
+            <when test="searchType == 'lectureTitle' and searchWord != null and searchWord != ''">
+                AND l.lectureTitle LIKE CONCAT('%', #{searchWord}, '%')
+            </when>
+            <when test="searchType == 'orderMemberId' and searchWord != null and searchWord != ''">
+                AND o.orderMemberId LIKE CONCAT('%', #{searchWord}, '%')
+            </when>
+        </choose>
+
         <if test="startDate != null and startDate != ''">
-            AND orderCreatedAt &gt;= #{startDate}
+            AND o.orderCreatedAt &gt;= #{startDate}
         </if>
         <if test="endDate != null and endDate != ''">
-            AND orderCreatedAt &lt;= #{endDate}
+            AND o.orderCreatedAt &lt;= #{endDate}
         </if>
-        ORDER BY orderCreatedAt DESC
+
+        ORDER BY o.orderCreatedAt DESC
     </select>
 
     <select id="selectReportedPosts" resultType="net.spb.spb.dto.post.PostDTO" parameterType="net.spb.spb.dto.pagingsearch.PostPageDTO">

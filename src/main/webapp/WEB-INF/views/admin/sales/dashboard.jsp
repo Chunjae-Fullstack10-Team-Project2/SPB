@@ -76,7 +76,7 @@
                             <select name="searchType" class="form-select">
                                 <option value="" selected disabled>검색 조건</option>
                                 <option value="lectureTitle">강좌명</option>
-                                <option value="memberId">회원 아이디</option>
+                                <option value="orderMemberId">회원 아이디</option>
                             </select>
                         </div>
                         <div class="col-md-3">
