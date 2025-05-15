@@ -84,6 +84,12 @@ public class PaymentController {
         MemberDTO memberDTO = paymentService.getMemberInfo(memberId);
         log.info("memberDTO: "+memberDTO.toString());
         model.addAttribute("member", memberDTO);
+        String phone = memberDTO.getMemberPhone();
+        if(phone != null && !phone.isEmpty()){
+            phone = phone.replaceAll("(\\d{3})(\\d{4})(\\d{4})", "$1-$2-$3");
+        }
+        model.addAttribute("phone", phone);
+
 
         log.info("memberId: " + memberId);
         List<LectureDTO> selectedLectures = paymentService.findLecturesByIds(lectureIdxList);

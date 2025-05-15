@@ -21,7 +21,7 @@
                  onerror="this.src='${cp}/resources/img/default_profileImg.png';">
             <div>
                 <h3 class="mb-1"><c:out value='${teacherDTO.teacherName}'/> 선생님</h3>
-                <p class="text-muted mb-0"><c:out value='<${teacherDTO.teacherSubject}'/> 전문 강사</p>
+                <p class="text-muted mb-0"><c:out value='${teacherDTO.teacherSubject}'/> 전문 강사</p>
             </div>
         </div>
 
