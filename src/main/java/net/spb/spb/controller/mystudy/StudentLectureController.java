@@ -10,6 +10,7 @@ import net.spb.spb.dto.pagingsearch.TeacherQnaPageDTO;
 import net.spb.spb.dto.teacher.TeacherQnaListRequestDTO;
 import net.spb.spb.dto.teacher.TeacherQnaResponseDTO;
 import net.spb.spb.service.lecture.LectureGradeService;
+import net.spb.spb.service.lecture.LectureReviewServiceIf;
 import net.spb.spb.service.lecture.StudentLectureServiceIf;
 import net.spb.spb.service.teacher.TeacherQnaService;
 import net.spb.spb.util.BreadcrumbUtil;
@@ -30,6 +31,7 @@ import java.util.Map;
 @RequestMapping("/mystudy")
 public class StudentLectureController {
     private final StudentLectureServiceIf studentLectureService;
+    private final LectureReviewServiceIf lectureReviewService;
 
     private static final Map<String, String> ROOT_BREADCRUMB = Map.of("name", "나의학습방", "url", "/mystudy");
 
@@ -54,6 +56,12 @@ public class StudentLectureController {
         pageDTO.setTotal_count(totalCount);
 
         List<StudentLectureResponseDTO> lectures = studentLectureService.getStudentLectureList(memberId, pageDTO);
+        lectures.forEach(dto -> {
+            boolean hasReview = lectureReviewService.hasLectureReview(memberId, dto.getLectureRegisterIdx());
+            dto.setHasLectureReview(hasReview);
+        });
+
+        log.info("lecture: {}", lectures);
 
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("lectureList", lectures);

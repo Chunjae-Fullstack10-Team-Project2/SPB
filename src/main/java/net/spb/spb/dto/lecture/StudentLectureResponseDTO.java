@@ -22,4 +22,5 @@ public class StudentLectureResponseDTO {
     private String lectureRegisterStatus;
     private LocalDateTime lectureHistoryLastWatchDate;
     private int lectureProgress;
+    private boolean hasLectureReview;
 }

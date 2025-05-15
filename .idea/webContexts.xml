@@ -6,6 +6,8 @@
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/myclass/grade/list.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/myclass/grade" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/myclass/grade/regist.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/myclass/grade" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mystudy/qna.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mystudy" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mystudy/review/modify.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mystudy/review" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mystudy/review/regist.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mystudy/review" />
       </map>
     </option>
   </component>

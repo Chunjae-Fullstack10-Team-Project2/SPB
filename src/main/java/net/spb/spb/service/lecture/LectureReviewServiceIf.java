@@ -15,4 +15,6 @@ public interface LectureReviewServiceIf {
     public int deleteLectureReviewByIdx(String memberId, int idx);
 
     public int getLectureReviewTotalCount(LectureReviewListRequestDTO reqDTO, LectureReviewPageDTO pageDTO);
+
+    public boolean hasLectureReview(String memberId, int idx);
 }

@@ -29,4 +29,9 @@ public class StudentLectureService implements StudentLectureServiceIf {
     public int getStudentLectureTotalCount(String memberId, StudentLecturePageDTO pageDTO) {
         return studentLectureMapper.getStudentLectureTotalCount(memberId, pageDTO);
     }
+
+    @Override
+    public boolean isLectureRegisteredByMemberId(String memberId, int lectureIdx) {
+        return studentLectureMapper.isLectureRegisteredByMemberId(memberId, lectureIdx);
+    }
 }

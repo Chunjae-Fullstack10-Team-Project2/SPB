@@ -8,6 +8,7 @@
 <html>
 <head>
     <title>Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
     <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
@@ -53,6 +54,12 @@
                         <div class="card mb-3 shadow-sm border-0 rounded-4 overflow-hidden" style="min-width: 440px;"
                              role="button" onclick="location.href='/lecture/lectureDetail?lectureIdx=${lecture.lectureRegisterRefIdx}'">
                             <div class="col px-4 py-3">
+                                <c:if test="${lecture.hasLectureReview eq false}">
+                                    <button type="button" class="btn btn-sm btn-outline-warning mb-3" class="btnReview"
+                                            onclick="location.href='mystudy/review/regist?idx=${lecture.lectureRegisterRefIdx}&${pageDTO.linkUrl}'">
+                                        <i class="bi bi-star"></i> 수강평 남기기
+                                    </button>
+                                </c:if>
                                 <h6 class="mb-1 text-dark">${lecture.lectureTitle}</h6>
                                 <p class="mb-1 text-muted">${lecture.teacherName} 선생님</p>
                                 <div class="d-flex flex-md-row justify-content-md-between align-items-md-end
@@ -77,7 +84,6 @@
                 </div>
             </c:if>
 
-
             <c:if test="${empty lectureList}">
                 <div class="alert alert-warning text-center" role="alert">
                     강좌가 없습니다.
@@ -101,6 +107,12 @@
 
             location.href = "/mystudy?" + params.toString();
         }
+
+        document.querySelectorAll('button').forEach(el => {
+            el.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
     </script>
 </body>
 </html>

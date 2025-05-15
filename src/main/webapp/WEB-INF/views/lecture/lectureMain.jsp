@@ -84,7 +84,7 @@
 
     <!-- 수강 후기 리스트 -->
     <c:forEach var="review" items="${reviewList}">
-        <div class="mb-3 p-3 border rounded bg-white shadow-sm">
+        <div class="mb-3 p-3 border rounded bg-white shadow-sm" id="review_${review.lectureReviewIdx}">
 
             <div class="d-flex justify-content-between mb-2">
                 <div>
