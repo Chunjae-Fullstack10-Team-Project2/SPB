@@ -351,7 +351,7 @@
 
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
-                <when test="searchDTO.searchType == 'memberId'">
+                <when test="searchDTO.searchType == 'orderMemberId'">
                     AND o.orderMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
                 </when>
                 <when test="searchDTO.searchType == 'lectureTitle'">
@@ -396,7 +396,7 @@
         WHERE o.orderStatus = 's'
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
-                <when test="searchDTO.searchType == 'memberId'">
+                <when test="searchDTO.searchType == 'orderMemberId'">
                     AND o.orderMemberId LIKE CONCAT('%', #{searchDTO.searchWord}, '%')
                 </when>
                 <when test="searchDTO.searchType == 'lectureTitle'">
