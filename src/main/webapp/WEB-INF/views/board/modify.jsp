@@ -27,7 +27,7 @@ change this template use File | Settings | File Templates. --%>
 
   <h1>${category.displayName} 수정</h1>
 
-  <form name="frmModify" action="/board/${category}/modify" method="post" enctype="multipart/form-data" class="border p-4 rounded bg-light shadow-sm">
+  <form name="frmModify" action="/board/${category}/modify?${queryString}" method="post" enctype="multipart/form-data" class="border p-4 rounded bg-light shadow-sm">
     <input type="hidden" name="postCategory" value="${post.postCategory}"/>
     <input type="hidden" name="postIdx" value="${post.postIdx}"/>
     <input type="hidden" name="postMemberId" value="${post.postMemberId}"/>
@@ -88,7 +88,7 @@ change this template use File | Settings | File Templates. --%>
 
     <!-- 버튼 영역 -->
     <div class="d-flex justify-content-end gap-2">
-      <button type="button" class="btn btn-outline-secondary" onclick="history.back();">
+      <button type="button" class="btn btn-outline-secondary" onclick="view?${queryString}">
         <i class="bi bi-x-circle"></i> 취소
       </button>
       <button type="submit" class="btn btn-primary">

@@ -100,7 +100,7 @@
                         <c:forEach var="post" items="${posts}">
                             <tr class="clickable-row" data-href="view?idx=${post.postIdx}">
                                 <td>${post.postIdx}</td>
-                                <td class="text-start">${post.postTitle}</td>
+                                <td class="text-start text-truncate">${post.postTitle}</td>
                                 <td>${post.postMemberId}</td>
                                 <td>${fn:substringBefore(post.postCreatedAt, 'T')}</td>
                                 <td>${post.postReadCnt}</td>
@@ -139,6 +139,7 @@
         </c:if>
     </div>
 </div>
+<script src="${pageContext.request.contextPath}/resources/js/navigation.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('btnRegist')?.addEventListener('click', function () {
@@ -163,7 +164,9 @@
             })
             row.addEventListener('click', function () {
                 const url = this.dataset.href;
-                if (url) window.location.href = url;
+                if (url) {
+                    navigateWithCurrentParams(url);
+                }
             });
         });
     });
