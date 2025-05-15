@@ -84,7 +84,7 @@
 <script>
 
   const btnCancel = document.getElementById('btnCancel').addEventListener('click', () => {
-    window.location.href="list";
+    window.location.href="manage";
   })
 
   const teacherSubjectInput = document.getElementById('teacherSubject');

@@ -39,38 +39,43 @@ public class AdminTeacherController extends AdminBaseController {
     private final AdminService adminService;
     private final FileUtil fileUtil;
 
-    @GetMapping("/list")
-    public void teacherList(@ModelAttribute TeacherPageDTO pageDTO,
-                            Model model,
-                            HttpServletRequest req) {
+    @GetMapping("/manage")
+    public String teacherManage(@ModelAttribute TeacherPageDTO pageDTO,
+                                Model model,
+                                HttpServletRequest req) {
         String baseURL = req.getRequestURI();
+
+        // 1. 등록된 선생님 목록 (teacher1)
         pageDTO.setLinkUrl(NewPagingUtil.buildLinkUrl(baseURL, pageDTO));
         int totalCount = adminService.selectTeacherWithTeacherProfileCount(pageDTO);
-        List<MemberDTO> teacherWithTeacherProfile = adminService.selectTeacherWithTeacherProfile(pageDTO);
+        List<MemberDTO> teacherWithProfile = adminService.selectTeacherWithTeacherProfile(pageDTO);
         pageDTO.setTotal_count(totalCount);
-        String paging = NewPagingUtil.pagingArea(pageDTO);
-        model.addAttribute("teacher1", teacherWithTeacherProfile);
-        model.addAttribute("paging", paging);
-        model.addAttribute("totalCount", totalCount);
-        model.addAttribute("search", pageDTO);
-        setBreadcrumb(model, Map.of("선생님 목록", ""));
-    }
+        String paging1 = NewPagingUtil.pagingArea(pageDTO);
 
-    @GetMapping("/requestList")
-    public void teacherReqList(@ModelAttribute TeacherPageDTO pageDTO,
-                               Model model,
-                               HttpServletRequest req) {
-        String baseURL = req.getRequestURI();
-        pageDTO.setLinkUrl(NewPagingUtil.buildLinkUrl(baseURL, pageDTO));
-        int totalCount = adminService.selectTeacherWithoutTeacherProfileCount(pageDTO);
-        List<MemberDTO> teacherWithoutTeacherProfile = adminService.selectTeacherWithoutTeacherProfile(pageDTO);
-        pageDTO.setTotal_count(totalCount);
-        String paging = NewPagingUtil.pagingArea(pageDTO);
-        model.addAttribute("teacher2", teacherWithoutTeacherProfile);
-        model.addAttribute("paging", paging);
+        // 2. 등록 요청 선생님 목록 (teacher2)
+        TeacherPageDTO requestPageDTO = new TeacherPageDTO();
+        requestPageDTO.setPage_no(pageDTO.getPage_no());
+        requestPageDTO.setPage_size(pageDTO.getPage_size());
+        requestPageDTO.setLinkUrl(NewPagingUtil.buildLinkUrl(baseURL, requestPageDTO));
+        requestPageDTO.setSearch_word(pageDTO.getSearch_word());
+
+        int requestTotalCount = adminService.selectTeacherWithoutTeacherProfileCount(requestPageDTO);
+        List<MemberDTO> teacherWithoutProfile = adminService.selectTeacherWithoutTeacherProfile(requestPageDTO);
+        requestPageDTO.setTotal_count(requestTotalCount);
+        String paging2 = NewPagingUtil.pagingArea(requestPageDTO);
+
+        // model attribute 설정
+        model.addAttribute("teacher1", teacherWithProfile);
+        model.addAttribute("teacher2", teacherWithoutProfile);
         model.addAttribute("totalCount", totalCount);
+        model.addAttribute("requestTotalCount", requestTotalCount);
+        model.addAttribute("paging1", paging1);
+        model.addAttribute("paging2", paging2);
         model.addAttribute("search", pageDTO);
-        setBreadcrumb(model, Map.of("선생님 요청 목록", ""));
+
+        setBreadcrumb(model, Map.of("선생님 관리", ""));
+
+        return "admin/teacher/teacher_manage";
     }
 
     @GetMapping("/regist")
@@ -81,18 +86,18 @@ public class AdminTeacherController extends AdminBaseController {
 
         if (memberId.isBlank()) {
             redirectAttributes.addFlashAttribute("errorMessage", "회원 ID가 누락되었습니다.");
-            return "redirect:/admin/teacher/list";
+            return "redirect:/admin/teacher/manage";
         }
 
         MemberDTO memberDTO = memberService.getMemberById(memberId);
         if (memberDTO == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "존재하지 않는 회원입니다.");
-            return "redirect:/admin/teacher/list";
+            return "redirect:/admin/teacher/manage";
         }
 
         if(adminService.existsByTeacherId(memberDTO.getMemberId())) {
             redirectAttributes.addFlashAttribute("errorMessage", "이미 등록된 선생님입니다.");
-            return "redirect:/admin/teacher/list";
+            return "redirect:/admin/teacher/manage";
         }
 
         session.setAttribute("registTeacherName", memberDTO.getMemberName());
@@ -153,7 +158,7 @@ public class AdminTeacherController extends AdminBaseController {
         adminService.insertTeacher(teacherDTO);
         session.removeAttribute("registTeacherId");
         session.removeAttribute("registTeacherName");
-        return "redirect:/admin/teacher/list";
+        return "redirect:/admin/teacher/manage";
     }
 
     @GetMapping("/modify")
@@ -163,15 +168,15 @@ public class AdminTeacherController extends AdminBaseController {
                                 HttpSession session) {
         if(teacherId.isBlank()||!adminService.existsByTeacherId(teacherId)) {
             redirectAttributes.addFlashAttribute("errorMessage", "존재하지 않는 선생님입니다.");
-            return "redirect:/admin/teacher/list";
+            return "redirect:/admin/teacher/manage";
         }
 
         TeacherDTO teacherDTO = teacherService.selectTeacher(teacherId);
         session.setAttribute("modifyTeacherId", teacherDTO.getTeacherId());
         model.addAttribute("teacherDTO", teacherDTO);
         setBreadcrumb(model,
-                Map.of("선생님 목록", "/admin/teacher/list"),
-                Map.of("선생님 등록", "")
+                Map.of("선생님 목록", "/admin/teacher/manage"),
+                Map.of("선생님 수정", "")
         );
         return "admin/teacher/modify";
     }
@@ -207,7 +212,7 @@ public class AdminTeacherController extends AdminBaseController {
         teacherDTO.setTeacherId(sessionTeacherId);
         adminService.modifyTeacherProfile(teacherDTO);
         session.removeAttribute("modifyTeacherId");
-        return "redirect:/admin/teacher/list";
+        return "redirect:/admin/teacher/manage";
     }
 
     @GetMapping("/search")
@@ -234,7 +239,7 @@ public class AdminTeacherController extends AdminBaseController {
         if (rtnResult > 0) {
             result.put("success", true);
             result.put("message", "선생님 삭제되었습니다.");
-            result.put("redirect", "/admin/teacher/list");
+            result.put("redirect", "/admin/teacher/manage");
         } else {
             result.put("success", false);
             result.put("message", "삭제에 실패했습니다.");
@@ -250,7 +255,7 @@ public class AdminTeacherController extends AdminBaseController {
         if (rtnResult > 0) {
             result.put("success", true);
             result.put("message", "선생님 정보가 복구되었습니다.");
-            result.put("redirect", "/admin/teacher/list");
+            result.put("redirect", "/admin/teacher/manage");
         } else {
             result.put("success", false);
             result.put("message", "삭제에 실패했습니다.");
