@@ -11,14 +11,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StudentLectureResponseDTO {
+public class LectureGradeListDTO {
     private int lectureRegisterIdx;
     private String lectureRegisterMemberId;
     private int lectureRegisterRefIdx;
     private String lectureTitle;
+    private String lectureTeacherId;
     private String teacherName;
     private LocalDateTime lectureRegisterStartedAt;
-    private String lectureRegisterStatus;
-    private LocalDateTime lectureHistoryLastWatchDate;
-    private int lectureProgress;
+    private int lectureGradeScore;
+    private boolean lectureGradeStatus;
 }

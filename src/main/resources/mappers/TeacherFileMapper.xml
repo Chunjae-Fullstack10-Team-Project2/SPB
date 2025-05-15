@@ -6,6 +6,12 @@
         values (#{teacherFileMemberId}, #{teacherFileTitle}, #{teacherFileContent}, #{teacherFileFileIdx})
     </insert>
 
+    <update id="updateTeacherFile">
+        update tbl_teacher_file
+        set teacherFileTitle = #{teacherFileTitle}, teacherFileContent = #{teacherFileContent}, teacherFileFileIdx = #{teacherFileFileIdx}
+        where teacherFileIdx = #{teacherFileIdx}
+    </update>
+
     <delete id="deleteTeacherFileByIdx">
         delete from tbl_teacher_file
         where teacherFileIdx = #{idx}

@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface TeacherFileMapper {
     int insertTeacherFile(TeacherFileVO vo);
+    int updateTeacherFile(TeacherFileVO vo);
     int deleteTeacherFileByIdx(int idx);
     int deleteTeacherFileByFileIdx(int fileIdx);
     List<TeacherFileVO> selectTeacherFileList(@Param("teacherId") String teacherId, @Param("pageDTO") TeacherFilePageDTO pageDTO);

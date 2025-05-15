@@ -4,27 +4,35 @@
 <html>
 <head>
     <title>자료실 등록</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="${pageContext.request.contextPath}/resources/js/textCounter.js"></script>
 </head>
 <body>
 <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
 <div class="content">
-    <div class="container">
+    <div class="container my-5">
         <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
         <h1 class="h2 mb-4">자료실 등록</h1>
 
-        <form name="frmRegist" action="/myclass/library/regist" method="post" enctype="multipart/form-data"
+        <form name="frmRegist" action="/myclass/library/regist?${pageDTO.linkUrl}" method="post" enctype="multipart/form-data"
               class="border p-4 rounded bg-light shadow-sm mb-0">
             <div class="mb-3">
                 <label for="teacherFileTitle" class="form-label">제목</label>
-                <input type="text" class="form-control" name="teacherFileTitle" id="teacherFileTitle"
+                <input type="text" class="form-control char-limit" name="teacherFileTitle" id="teacherFileTitle"
+                       data-maxlength="50" data-target="#titleCount"
                        value="${teacherFileDTO.teacherFileTitle}" placeholder="제목을 입력하세요." maxlength="50" required />
+                <div class="text-end small text-muted mt-1 mb-3">
+                    <span id="titleCount">0</span> / 50
+                </div>
             </div>
 
             <div class="mb-3">
                 <label for="teacherFileContent" class="form-label">내용</label>
-                <textarea class="form-control" rows="10" name="teacherFileContent" id="teacherFileContent"
+                <textarea class="form-control char-limit" rows="10" name="teacherFileContent" id="teacherFileContent"
+                          data-maxlength="19000" data-target="#contentCount"
                           placeholder="내용을 입력하세요" style="resize: none;">${teacherFileDTO.teacherFileContent}</textarea>
+                <div class="text-end small text-muted mt-1 mb-3">
+                    <span id="contentCount">0</span> / 19000
+                </div>
             </div>
 
             <div class="mb-4">
@@ -41,19 +49,30 @@
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("textarea.char-limit, input[type='text'].char-limit").forEach(function (el) {
+            const maxLength = parseInt(el.dataset.maxlength || "1000", 10);
+            const counterSelector = el.dataset.target;
+            const counterEl = counterSelector ? document.querySelector(counterSelector) : null;
+
+            el.addEventListener("input", function () {
+                let text = el.value;
+                if (text.length > maxLength) {
+                    el.value = text.substring(0, maxLength);
+                }
+                if (counterEl) {
+                    counterEl.textContent = el.value.length;
+                }
+            });
+        });
+    });
+
     document.querySelector('button[type="submit"]').addEventListener('click', (e) => {
         e.preventDefault();
 
         const frm = document.forms[0];
-        const title = frm.teacherFileTitle.value;
-        const content = frm.teacherFileContent.value;
         const file = frm.file.files;
 
-        if (title == null || title.length < 1 || title.length > 50) {
-            alert("제목은 1자 이상 50자 이하로 입력해주세요.");
-            frm.teacherFileTitle.focus();
-            return;
-        }
         if (file.length < 1) {
             alert("파일을 첨부해주세요.");
             return;
@@ -66,6 +85,10 @@
 
         frm.submit();
     });
+
+    <c:if test="${not empty message}">
+        alert("${message}");
+    </c:if>
 </script>
 </body>
 </html>
