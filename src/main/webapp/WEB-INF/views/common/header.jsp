@@ -116,7 +116,7 @@
 
             <div class="d-flex align-items-center gap-4 flex-wrap justify-content-end user-tools">
                 <c:if test="${sessionScope.memberGrade eq 0}">
-                    <a href="${cp}/admin/member/list" class="admin-link" title="관리자 페이지">
+                    <a href="${cp}/admin/" class="admin-link" title="관리자 페이지">
                         <i class="bi bi-gear-fill text-dark" style="font-size: 1.4rem;"></i>
                     </a>
                 </c:if>
