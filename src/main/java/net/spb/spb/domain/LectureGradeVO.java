@@ -15,7 +15,7 @@ public class LectureGradeVO {
     private int lectureGradeIdx;
     private int lectureGradeRefIdx;
     private String lectureGradeMemberId;
-    private int lectureGradeScore;
+    private String lectureGradeScore;
     private String lectureGradeFeedback;
     private LocalDateTime lectureGradeCreatedAt;
     private LocalDateTime lectureGradeUpdatedAt;

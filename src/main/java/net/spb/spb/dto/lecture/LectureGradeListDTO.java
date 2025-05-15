@@ -19,6 +19,7 @@ public class LectureGradeListDTO {
     private String lectureTeacherId;
     private String teacherName;
     private LocalDateTime lectureRegisterStartedAt;
-    private int lectureGradeScore;
-    private boolean lectureGradeStatus;
+    private int lectureGradeIdx;
+    private String lectureGradeFeedback;
+    private String lectureGradeScore;
 }

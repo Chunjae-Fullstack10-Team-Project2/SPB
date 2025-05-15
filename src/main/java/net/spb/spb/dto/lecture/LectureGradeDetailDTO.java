@@ -13,14 +13,20 @@ import java.time.LocalDateTime;
 @SuperBuilder
 public class LectureGradeDetailDTO {
     private int lectureGradeIdx;
+
+    private String lectureGradeMemberId;
+    private String memberName;
+    private String memberProfileImg;
+
     private int lectureGradeRefIdx;
     private String lectureTitle;
     private String lectureDescription;
     private String lectureThumbnailImg;
-    private String lectureGradeMemberId;
-    private String memberName;
-    private String memberProfileImg;
-    private int lectureGradeScore;
+
+    private String lectureTeacherId;
+    private String teacherName;
+
+    private String lectureGradeScore;
     private String lectureGradeFeedback;
     private LocalDateTime lectureGradeCreatedAt;
     private LocalDateTime lectureGradeUpdatedAt;
