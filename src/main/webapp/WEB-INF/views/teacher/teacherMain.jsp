@@ -78,7 +78,7 @@
             List<Map<String, String>> searchTypeOptions = new ArrayList<>();
             searchTypeOptions.add(Map.of("value", "lectureTeacherId", "label", "선생님"));
             request.setAttribute("searchTypeOptions", searchTypeOptions);
-            request.setAttribute("searchAction", "/teacher/main");
+            request.setAttribute("searchAction", "/teacher");
             request.setAttribute("isTeacher", "Y");
         %>
         <jsp:include page="../common/searchBox.jsp"/>
