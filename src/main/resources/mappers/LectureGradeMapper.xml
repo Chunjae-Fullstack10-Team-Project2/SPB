@@ -8,11 +8,11 @@
                 <if test="search_category == 'lectureRegisterMemberId'">
                     and tlr.lectureRegisterMemberId like concat('%', #{search_word}, '%')
                 </if>
-                <if test="search_category == 'lectureTitle'">
-                    and tl.lectureTitle like concat('%', #{search_word}, '%')
-                </if>
                 <if test="search_category == 'teacherName'">
                     and tt.teacherName like concat('%', #{search_word}, '%')
+                </if>
+                <if test="search_category == 'lectureGradeFeedback'">
+                    and tlr.lectureGradeFeedback like concat('%', #{search_word}, '%')
                 </if>
             </if>
             <if test="start_date != null and end_date != null">
@@ -41,8 +41,9 @@
             tl.lectureTeacherId,
             tt.teacherName,
             tlr.lectureRegisterStartedAt,
-            tlg.lectureGradeScore,
-            (tlg.lectureGradeScore IS NULL) as lectureGradeStatus
+            tlg.lectureGradeIdx,
+            tlg.lectureGradeFeedback,
+            tlg.lectureGradeScore
         from tbl_lecture_register as tlr
         inner join tbl_lecture as tl on tlr.lectureRegisterRefIdx = tl.lectureIdx
         inner join tbl_teacher as tt on tl.lectureTeacherId = tt.teacherId
@@ -58,18 +59,22 @@
         select
             tlg.lectureGradeIdx,
             tlg.lectureGradeRefIdx,
+            tlg.lectureGradeMemberId,
+            tm.memberName,
+            tm.memberProfileImg,
             tl.lectureTitle,
             tl.lectureDescription,
             tl.lectureThumbnailImg,
             tlg.lectureGradeMemberId,
-            tm.memberName,
-            tm.memberProfileImg,
+            tl.lectureTeacherId,
+            tt.teacherName,
             tlg.lectureGradeScore,
             tlg.lectureGradeFeedback,
             tlg.lectureGradeCreatedAt,
             tlg.lectureGradeUpdatedAt
         from tbl_lecture_grade as tlg
         inner join tbl_lecture as tl on tlg.lectureGradeRefIdx = tl.lectureIdx
+        inner join tbl_teacher as tt on tl.lectureTeacherId = tt.teacherId
         inner join tbl_member as tm on tlg.lectureGradeMemberId = tm.memberId
         where lectureGradeIdx = #{idx}
     </select>

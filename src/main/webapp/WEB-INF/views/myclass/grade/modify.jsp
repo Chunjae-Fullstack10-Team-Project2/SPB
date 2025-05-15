@@ -3,7 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html>
 <head>
-    <title>성적 등록</title>
+    <title>성적 수정</title>
     <script src="${pageContext.request.contextPath}/resources/js/textCounter.js"></script>
 </head>
 <body>
@@ -11,20 +11,20 @@
     <div class="content">
         <div class="container my-5">
             <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
-            <h1 class="h2 mb-4">성적 등록</h1>
-
-            <form name="frmRegist" action="/myclass/grade/regist?${pageDTO.linkUrl}" method="post"
+            <h1 class="h2 mb-4">성적 수정</h1>
+            <form name="frmModify" action="/myclass/grade/modify?${pageDTO.linkUrl}" method="post"
                   class="border p-4 rounded bg-light shadow-sm">
-                <input type="hidden" name="lectureGradeRefIdx" value="${lecture.lectureIdx}" />
-                <input type="hidden" name="lectureGradeMemberId" value="${memberId}" />
+                <input type="hidden" name="lectureGradeIdx" value="${lectureGradeDTO.lectureGradeIdx}" />
+                <input type="hidden" name="lectureGradeRefIdx" value="${lectureGradeDTO.lectureGradeRefIdx}" />
+                <input type="hidden" name="lectureGradeMemberId" value="${lectureGradeDTO.lectureGradeMemberId}" />
                 <div class="mb-3">
                     <p class="form-label">회원ID</p>
-                    <input type="text" class="form-control" disabled value="${memberId}"/>
+                    <input type="text" class="form-control" disabled value="${lectureGradeDTO.lectureGradeMemberId}"/>
                 </div>
 
                 <div class="mb-3">
                     <p class="form-label">강좌명</p>
-                    <input type="text" class="form-control" disabled value="${lecture.lectureTitle}"/>
+                    <input type="text" class="form-control" disabled value="${lectureGradeDTO.lectureTitle}"/>
                 </div>
 
                 <div class="mb-3">
@@ -51,7 +51,7 @@
                 </div>
 
                 <div>
-                    <button type="submit" class="btn btn-primary">등록</button>
+                    <button type="submit" class="btn btn-primary">수정</button>
                     <button type="button" class="btn btn-outline-secondary" onclick="history.back();">취소</button>
                 </div>
             </form>
@@ -80,7 +80,7 @@
         document.querySelector('button[type="submit"]').addEventListener('click', (e) => {
             e.preventDefault();
 
-            const frm = document.querySelector('form[name="frmRegist"]');
+            const frm = document.querySelector('form[name="frmModify"]');
             const score = frm.lectureGradeScore.value;
 
             if (!score) {
@@ -92,8 +92,8 @@
             frm.submit();
         });
 
-        <c:if test="${not empty errorMessage}">
-            alert("${errorMessage}");
+        <c:if test="${not empty message}">
+            alert("${message}");
         </c:if>
     </script>
 </body>

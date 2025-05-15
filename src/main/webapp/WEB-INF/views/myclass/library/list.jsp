@@ -123,6 +123,12 @@
             checkboxes.forEach(cb => cb.checked = source.checked);
         }
 
+        document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+            el.addEventListener('click', function (e) {
+                e.stopPropagation();
+            });
+        });
+
         document.querySelectorAll('#btnModify').forEach(el => {
             el.addEventListener('click', function (e) {
                 e.preventDefault();

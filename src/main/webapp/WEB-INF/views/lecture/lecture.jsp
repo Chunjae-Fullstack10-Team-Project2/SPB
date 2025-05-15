@@ -101,7 +101,7 @@
                                         <i class="bi ${isBookmarked ? 'bi-bookmark-fill text-primary' : 'bi-bookmark'}"></i>
                                     </button>
 
-                                    <button class="btn btn-sm btn-primary" data-lecture-idx="${lecture.lectureIdx}" onclick="event.stopPropagation(); addCart(this.dataset.lecturIdx);">장바구니</button>
+                                    <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); addCart('${lecture.lectureIdx}');">장바구니</button>
                                 </div>
                             </div>
                         </div>
@@ -167,7 +167,7 @@
     });
 
     function addCart(lectureIdx) {
-        const memberId = '<c:out value="${sessionScope.memberId}" default="" />';
+        const memberId = '${sessionScope.memberId}';
         if (!memberId || memberId.trim() === "") {
             alert("로그인이 필요합니다.");
             window.location.href = "/login";

@@ -44,7 +44,7 @@ public class LectureGradeService implements LectureGradeServiceIf {
     }
 
     @Override
-    public List<LectureGradeListDTO> getLectureGradeTotalCount(LectureGradePageDTO pageDTO) {
+    public int getLectureGradeTotalCount(LectureGradePageDTO pageDTO) {
         return lectureGradeMapper.selectLectureGradeTotalCount(pageDTO);
     }
 

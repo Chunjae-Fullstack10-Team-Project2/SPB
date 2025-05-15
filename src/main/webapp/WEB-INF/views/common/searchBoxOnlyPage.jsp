@@ -19,7 +19,7 @@
     %>
     <div class="search-box">
         <form name="frmSearch" method="get" action="${searchAction}" class="mb-1 p-4">
-            <c:if test="${fn:contains(currentURI, '/exam')}">
+            <c:if test="${fn:contains(currentURI, '/grade')}">
                 <div class="row g-2 align-items-center mb-3">
                     <div class="col-md-6">
                         <select name="lectureIdx" class="form-select">
