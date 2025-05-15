@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @Controller
 @Log4j2
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/admin/teacher")
 public class AdminTeacherController extends AdminBaseController {
 
     private final MemberServiceIf memberService;
@@ -39,7 +39,7 @@ public class AdminTeacherController extends AdminBaseController {
     private final AdminService adminService;
     private final FileUtil fileUtil;
 
-    @GetMapping("/teacher/list")
+    @GetMapping("/list")
     public void teacherList(@ModelAttribute TeacherPageDTO pageDTO,
                             Model model,
                             HttpServletRequest req) {
@@ -56,7 +56,7 @@ public class AdminTeacherController extends AdminBaseController {
         setBreadcrumb(model, Map.of("선생님 목록", ""));
     }
 
-    @GetMapping("/teacher/requestList")
+    @GetMapping("/requestList")
     public void teacherReqList(@ModelAttribute TeacherPageDTO pageDTO,
                                Model model,
                                HttpServletRequest req) {
@@ -73,7 +73,7 @@ public class AdminTeacherController extends AdminBaseController {
         setBreadcrumb(model, Map.of("선생님 요청 목록", ""));
     }
 
-    @GetMapping("/teacher/regist")
+    @GetMapping("/regist")
     public String teacherRegist(@RequestParam(name = "memberId", defaultValue = "") String memberId,
                                 Model model,
                                 RedirectAttributes redirectAttributes,
@@ -106,7 +106,7 @@ public class AdminTeacherController extends AdminBaseController {
         return "admin/teacher/regist";
     }
 
-    @PostMapping("/teacher/regist")
+    @PostMapping("/regist")
     public String teacherRegistPost(@RequestParam(name = "file1") MultipartFile file,
                                     @Valid @ModelAttribute TeacherDTO teacherDTO,
                                     BindingResult bindingResult,
@@ -156,7 +156,7 @@ public class AdminTeacherController extends AdminBaseController {
         return "redirect:/admin/teacher/list";
     }
 
-    @GetMapping("/teacher/modify")
+    @GetMapping("/modify")
     public String teacherModify(@RequestParam(name = "teacherId", defaultValue = "") String teacherId,
                                 Model model,
                                 RedirectAttributes redirectAttributes,
@@ -176,7 +176,7 @@ public class AdminTeacherController extends AdminBaseController {
         return "admin/teacher/modify";
     }
 
-    @PostMapping("/teacher/modify")
+    @PostMapping("/modify")
     public String teacherModifyPost(@RequestParam(name = "file1") MultipartFile file,
                                     @Valid @ModelAttribute TeacherDTO teacherDTO,
                                     BindingResult bindingResult,
@@ -210,7 +210,7 @@ public class AdminTeacherController extends AdminBaseController {
         return "redirect:/admin/teacher/list";
     }
 
-    @GetMapping("/teacher/search")
+    @GetMapping("/search")
     public String teacherSearchPopup(@ModelAttribute MemberPageDTO memberPageDTO, Model model, HttpServletRequest req) {
         memberPageDTO.setSearch_member_grade("13");
         memberPageDTO.setPage_size(5);
@@ -226,7 +226,7 @@ public class AdminTeacherController extends AdminBaseController {
         return "/admin/teacher/searchPopup";
     }
 
-    @PostMapping("/teacher/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public Map<String, Object> teacherDelete(@RequestParam("teacherId") String teacherId) {
         Map<String, Object> result = new HashMap<>();
@@ -242,7 +242,7 @@ public class AdminTeacherController extends AdminBaseController {
         return result;
     }
 
-    @PostMapping("/teacher/restore")
+    @PostMapping("/restore")
     @ResponseBody
     public Map<String, Object> teacherRestore(@RequestParam("teacherId") String teacherId) {
         Map<String, Object> result = new HashMap<>();

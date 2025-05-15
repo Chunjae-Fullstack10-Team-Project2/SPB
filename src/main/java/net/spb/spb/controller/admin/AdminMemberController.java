@@ -47,13 +47,13 @@ import java.util.stream.Collectors;
 @Controller
 @Log4j2
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/admin/member")
 public class AdminMemberController extends AdminBaseController {
 
     private final MemberServiceIf memberService;
     private final AdminService adminService;
 
-    @GetMapping("/member/list")
+    @GetMapping("/list")
     public void memberList(@ModelAttribute MemberPageDTO memberPageDTO, Model model, HttpServletRequest req) {
         String baseUrl = req.getRequestURI();
         memberPageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, memberPageDTO));
@@ -71,20 +71,20 @@ public class AdminMemberController extends AdminBaseController {
         setBreadcrumb(model, Map.of("회원 목록", ""));
     }
 
-    @PostMapping("/member/update")
+    @PostMapping("/update")
     public String memberModify(@ModelAttribute MemberDTO memberDTO) {
         memberService.updateMemberByAdmin(memberDTO);
         return "/admin/member/update-success";
     }
 
-    @PostMapping("/member/state")
+    @PostMapping("/state")
     public String memberModifyState(@ModelAttribute MemberPageDTO memberPageDTO, @ModelAttribute MemberDTO memberDTO) {
         memberService.updateMemberState(memberDTO);
         String query = memberPageDTO.toQueryString();
         return "redirect:/admin/member/list?" + query;
     }
 
-    @GetMapping("/member/view")
+    @GetMapping("/view")
     public String memberView(@RequestParam("memberId") String memberId, Model model) {
         MemberDTO memberDTO = memberService.getMemberById(memberId);
         model.addAttribute("memberDTO", memberDTO);

@@ -22,12 +22,12 @@ import java.util.Map;
 @Controller
 @Log4j2
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/admin/qna")
 public class AdminQnaController extends AdminBaseController {
 
     private final QnaService qnaService;
 
-    @GetMapping("/qna/list")
+    @GetMapping("/list")
     public String qna(@ModelAttribute SearchDTO searchDTO,
                       @ModelAttribute PageRequestDTO pageRequestDTO,
                       Model model) {
