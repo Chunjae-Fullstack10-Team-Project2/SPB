@@ -68,7 +68,7 @@
                                  onerror="this.src='${cp}/resources/img/default_profileImg.png';">
                         </td>
                         <td class="text-start">
-                            <a href="/lecture/lectureDetail?lectureIdx=<c:out value='${lecture.lectureIdx}'/>" class="text-decoration-none text-dark fw-semibold"><c:out value='${lecture.lectureTitle}'/></a>
+                            <a href="/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}" class="text-decoration-none text-dark fw-semibold"><c:out value='${lecture.lectureTitle}'/></a>
                         </td>
                         <td>
                             <fmt:formatNumber value="${lecture.lectureAmount}" type="number" groupingUsed="true"/>원

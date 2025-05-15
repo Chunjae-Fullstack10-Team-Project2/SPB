@@ -24,7 +24,7 @@ public interface PaymentMapper {
     public OrderVO selectOrder(String merchantUid);
     public MemberVO getMemberInfo(String memberId);
     public List<Integer> getOrderLectureIdxs(int orderIdx);
-    public PaymentVO getPaymentInfo(int orderIdx);
+    public PaymentVO getPaymentInfo(@Param("orderIdx") int orderIdx);
     public void updateOrderInfo(PaymentVO paymentVO);
     public void updatePaymentStatus(@Param("merchantUid") String merchantUid, @Param("status") String status);
     public int getCartCount(@Param("memberId") String memberId);
