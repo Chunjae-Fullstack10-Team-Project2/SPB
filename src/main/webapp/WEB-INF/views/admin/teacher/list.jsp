@@ -94,7 +94,7 @@
             </tbody>
         </table>
     </div>
-    <div class="container my-2 pb-5" style="min-height: 100vh;">>
+    <div class="container my-2 pb-5" style="min-height: 100vh;">
         <h5>선생님 등록 요청</h5>
         <table class="table table-hover text-center align-middle">
             <thead class="table-light">
