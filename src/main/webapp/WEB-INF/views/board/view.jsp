@@ -38,6 +38,12 @@ change this template use File | Settings | File Templates. --%>
         .file-list {
             font-size: 13px;
         }
+
+        .btn.liked {
+            background-color: #198754;
+            color: white;
+            border-color: #198754;
+        }
     </style>
 </head>
 <body>
@@ -108,7 +114,7 @@ change this template use File | Settings | File Templates. --%>
                 <!-- 버튼 -->
                 <div class="d-flex justify-content-between align-items-start mt-3 flex-wrap gap-2">
                     <div>
-                        <button class="btn btn-secondary btn-sm" onclick="location.href='list'"><i class="bi bi-list"></i>
+                        <button class="btn btn-secondary btn-sm" onclick="location.href='list?${queryString}'"><i class="bi bi-list"></i>
                             목록
                         </button>
                     </div>
@@ -122,7 +128,7 @@ change this template use File | Settings | File Templates. --%>
                             </button>
                         </c:if>
                         <c:if test="${sessionScope.memberId eq post.postMemberId}">
-                            <button class="btn btn-warning btn-sm" onclick="location.href='modify?idx=${post.postIdx}'"><i
+                            <button class="btn btn-warning btn-sm" onclick="location.href='modify?idx=${post.postIdx}&${queryString}'"><i
                                     class="bi bi-pencil"></i> 수정
                             </button>
                             <button class="btn btn-danger btn-sm" id="btnPostDelete" data-post-idx="${post.postIdx}"
@@ -250,6 +256,8 @@ change this template use File | Settings | File Templates. --%>
 <script>
     const sessionMemberId = '${sessionScope.memberId != null ? sessionScope.memberId : ''}';
     const category = '${category}';
+    const cp = '${cp}';
+
     // 게시글 삭제
     document.getElementById('btnPostDelete')?.addEventListener('click', function () {
         if (!confirm("정말 게시글을 삭제할까요?")) return;
@@ -263,7 +271,7 @@ change this template use File | Settings | File Templates. --%>
         }).then(res => res.json()).then(json => {
             if (json.success) {
                 showToast(json.message);
-                setTimeout(() => window.location.href = json.redirect, 1500);
+                setTimeout(() => window.location.href = 'list?'+'${queryString}', 1500);
             } else showToast(json.message, true);
         }).catch(() => showToast("삭제 실패", true));
     });
@@ -411,7 +419,7 @@ change this template use File | Settings | File Templates. --%>
                 div.innerHTML =
                     '<div class="d-flex justify-content-between">' +
                     '<div class="d-flex align-items-center">' +
-                    '<img src="' + profileImg + '" width="24" height="24" class="rounded-circle me-2" alt="프로필">' +
+                    '<img src="' + profileImg + '" width="24" height="24" class="rounded-circle me-2" alt="프로필" onerror="this.src=\'' + cp + '/resources/img/default_profileImg.png\'">' +
                     '<strong>' + comment.postCommentMemberId + '</strong>' +
                     '</div>' +
                     '<div class="text-muted small comment-info" data-original-date="' + createdAt + '">' + createdAt + '</div>' +
@@ -477,20 +485,19 @@ change this template use File | Settings | File Templates. --%>
                 postLikeRefType: this.dataset.likeRefType
             })
         })
-            .then(res => res.json())
-            .then(json => {
-                if (json.success) {
-                    showToast(json.message);
-                    btn.classList.toggle("liked");
-                    const countSpans = document.querySelectorAll(".likeCount");
-                    countSpans.forEach((countSpan) => {
-                        let count = parseInt(countSpan.textContent.trim(), 10);
-                        if (!isNaN(count))
-                            countSpan.textContent = isLiked ? count - 1 : count + 1;
-                    })
-
-                } else showToast(json.message, true);
-            }).catch(() => showToast("좋아요 처리 실패", true));
+        .then(res => res.json())
+        .then(json => {
+            if (json.success) {
+                showToast(json.message);
+                btn.classList.toggle("liked");
+                const countSpans = document.querySelectorAll(".likeCount");
+                countSpans.forEach((countSpan) => {
+                    let count = parseInt(countSpan.textContent.trim(), 10);
+                    if (!isNaN(count))
+                        countSpan.textContent = isLiked ? count - 1 : count + 1;
+                })
+            } else showToast(json.message, true);
+        }).catch(() => showToast("좋아요 처리 실패", true));
     })
 
     // 게시글 신고
