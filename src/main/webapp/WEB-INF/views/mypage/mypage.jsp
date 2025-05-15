@@ -143,7 +143,7 @@
 
             <div class="form-floating mb-3">
                 <select class="form-select" id="memberGrade" name="memberGrade" aria-label="학년 선택"
-                        <c:if test="${memberDTO.memberGrade == '13' || memberDTO.memberGrade == '14'}">disabled</c:if>>>
+                        <c:if test="${memberDTO.memberGrade == '13' || memberDTO.memberGrade == '14'}">disabled</c:if>>
                     <optgroup label="초등학교">
                         <option value="1" ${memberDTO.memberGrade == '1' ? 'selected' : ''}>초1</option>
                         <option value="2" ${memberDTO.memberGrade == '2' ? 'selected' : ''}>초2</option>
@@ -162,13 +162,17 @@
                         <option value="11" ${memberDTO.memberGrade == '11' ? 'selected' : ''}>고2</option>
                         <option value="12" ${memberDTO.memberGrade == '12' ? 'selected' : ''}>고3</option>
                     </optgroup>
-                    <optgroup label="교사">
-                        <option value="13" ${memberDTO.memberGrade == '13' ? 'selected' : ''}>교사</option>
-                    </optgroup>
-                    <optgroup label="승인 대기 중">
-                        <option value="14" ${memberDTO.memberGrade == '14' ? 'selected' : ''}>승인 대기 중</option>
-                    </optgroup>
+
+                    <c:if test="${memberDTO.memberGrade == '13' || memberDTO.memberGrade == '14' || memberDTO.memberGrade == '0'}">
+                        <optgroup label="교사">
+                            <option value="13" ${memberDTO.memberGrade == '13' ? 'selected' : ''}>교사</option>
+                        </optgroup>
+                        <optgroup label="승인 대기 중">
+                            <option value="14" ${memberDTO.memberGrade == '14' ? 'selected' : ''}>승인 대기 중</option>
+                        </optgroup>
+                    </c:if>
                 </select>
+
                 <label for="memberGrade">학년</label>
 
                 <c:if test="${memberDTO.memberGrade == '13' || memberDTO.memberGrade == '14'}">
@@ -211,7 +215,7 @@
 
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="memberAddr1" name="memberAddr1"
-                       value="<c:out value="${memberDTO.memberAddr1}" />"
+                       value="${memberDTO.memberAddr1}"
                        maxlength="100"
                        placeholder="주소" required>
                 <label for="memberAddr1">주소</label>
