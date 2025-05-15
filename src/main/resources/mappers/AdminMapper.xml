@@ -438,7 +438,7 @@
     <select id="selectReportedPosts" resultType="net.spb.spb.dto.post.PostDTO" parameterType="net.spb.spb.dto.pagingsearch.PostPageDTO">
         select p.postIdx, p.postTitle, p.postMemberId, p.postReadCnt, p.postCreatedAt, p.postUpdatedAt, p.postState, count(r.reportIdx) as postReportCnt
         from tbl_post p
-        inner join tbl_report r on p.postIdx = r.reportRefIdx and r.reportRefType= "POST"
+        left outer join tbl_report r on p.postIdx = r.reportRefIdx and r.reportRefType= "POST"
         <where>
             p.postCategory = "FREEBOARD"
             <if test="search_word != null and search_word != '' and search_type != null and search_type != ''">
