@@ -536,7 +536,7 @@
     </select>
 
     <select id="selectReportedPostsCount" resultType="java.lang.Integer" parameterType="net.spb.spb.dto.pagingsearch.PostPageDTO">
-        select count(distinct p.postIdx)
+        select count(reportIdx)
         from tbl_post p
         inner join tbl_report r on p.postIdx = r.reportRefIdx and r.reportRefType= "POST"
         <where>
