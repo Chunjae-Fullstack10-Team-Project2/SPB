@@ -56,14 +56,9 @@
                         </thead>
                         <tbody>
                         <c:forEach items="${lectureList}" var="lecture" varStatus="status">
-                            <tr ${notice.teacherNoticeFixed == 1 ? "class='table-secondary'" : ""}>
+                            <tr class="clickable-row" data-href="/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}">
                                 <td>${pageDTO.total_count - ((pageDTO.page_no - 1) * pageDTO.page_size) - status.index}</td>
-                                <td class="text-start">
-                                    <a href="/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}"
-                                       class="text-decoration-none text-dark">
-                                            ${lecture.lectureTitle}
-                                    </a>
-                                </td>
+                                <td class="text-start">${lecture.lectureTitle}</td>
                                 <td>${lecture.lectureAmount}₩</td>
                                 <td>${fn:substring(lecture.lectureCreatedAt, 0, 10)}</td>
                             </tr>
@@ -83,5 +78,16 @@
             </div>
         </div>
     </div>
+    <script>
+        document.querySelectorAll('.clickable-row').forEach(el => {
+            el.addEventListener('mouseover', function() {
+                this.style.cursor = "pointer";
+            });
+            el.addEventListener('click', function () {
+                const url = this.dataset.href;
+                if (url) window.location.href = url;
+            });
+        });
+    </script>
 </body>
 </html>

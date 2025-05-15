@@ -89,10 +89,10 @@
                 전체
             </a>
             <c:forEach var="subject" items="${subjectList}">
-                <a href="?subject=${subject}"
+                <a href="?subject=<c:out value='${subject}'/>"
                    class="btn btn-outline-secondary rounded-pill
                       ${param.subject eq subject ? 'active btn-primary text-white border-primary' : ''}">
-                        ${subject}
+                        <c:out value='${subject}'/>
                 </a>
             </c:forEach>
         </div>
@@ -103,15 +103,15 @@
                     <c:forEach var="teacher" items="${teacherDTO}">
                         <div class="col">
                             <div class="card text-center h-100 border-0 shadow-sm" role="button"
-                                 onclick="location.href='/teacher/personal?teacherId=${teacher.teacherId}'">
+                                 onclick="location.href='/teacher/personal?teacherId=<c:out value="${teacher.teacherId}"/>">
                                 <div class="card-body d-flex flex-column align-items-center">
                                     <div class="rounded-circle overflow-hidden border mb-3"
                                          style="width: 120px; height: 120px;">
-                                        <img src="/upload/${teacher.teacherProfileImg}" alt="${teacher.teacherName}"
+                                        <img src="/upload/<c:out value='${teacher.teacherProfileImg}'/>" alt="<c:out value='${teacher.teacherName}'/>"
                                              class="img-fluid w-100 h-100" style="object-fit: cover;"
                                              onerror="this.src='${cp}/resources/img/default_profileImg.png';">
                                     </div>
-                                    <div class="fw-semibold">${teacher.teacherName} 선생님</div>
+                                    <div class="fw-semibold"><c:out value='${teacher.teacherName}'/> 선생님</div>
                                 </div>
                             </div>
                         </div>

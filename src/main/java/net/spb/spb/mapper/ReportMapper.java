@@ -17,4 +17,13 @@ public interface ReportMapper {
     List<PostReportDTO> listReviewReport(@Param("searchDTO") SearchDTO searchDTO, @Param("pageDTO") PageRequestDTO pageDTO);
 
     int reviewReportTotalCount(@Param("searchDTO") SearchDTO searchDTO);
+
+    void rejectBoardReport(@Param("reportIdx") String reportIdx);
+
+    void updateBoardReportAsProcessed(@Param("reportIdx") String reportIdx);
+
+    void updateReviewReportAsProcessed(@Param("reportIdx") String reportIdx);
+
+    void rejectReviewReport(@Param("reportIdx") String reportIdx);
+
 }

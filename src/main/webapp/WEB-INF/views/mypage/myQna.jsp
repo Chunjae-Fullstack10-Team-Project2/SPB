@@ -11,6 +11,7 @@
 <html>
 <head>
     <title>나의 1:1 문의</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body class="bg-light-subtle">
 
@@ -20,7 +21,7 @@
     <div class="container my-5">
         <%@ include file="../common/breadcrumb.jsp" %>
     </div>
-    <div class="container my-5">
+    <div class="container my-5 pb-5" style="min-height: 100vh;">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">나의 문의 목록</h3>
             <a href="/qna/regist" class="btn btn-primary">
@@ -43,12 +44,18 @@
             <div class="list-group">
                 <c:forEach var="qnaDTO" items="${qnaList}">
                     <a href="/qna/view?qnaIdx=${qnaDTO.qnaIdx}"
-                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                            <div class="fw-bold">${qnaDTO.qnaTitle}</div>
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-2">
+
+                        <!-- 왼쪽: 제목 + 작성자 -->
+                        <div class="d-flex flex-column flex-shrink-1" style="min-width: 0;">
+                            <div class="fw-bold text-truncate" style="max-width: 100%;">
+                                    ${qnaDTO.qnaTitle}
+                            </div>
                             <small class="text-muted">작성자: ${qnaDTO.qnaQMemberId}</small>
                         </div>
-                        <div class="d-flex flex-column align-items-end">
+
+                        <!-- 오른쪽: 배지 + 날짜 -->
+                        <div class="text-end flex-shrink-0" style="white-space: nowrap;">
                             <c:choose>
                                 <c:when test="${not empty qnaDTO.qnaAnsweredAt}">
                                     <span class="badge bg-success mb-1">답변</span>
@@ -57,10 +64,13 @@
                                     <span class="badge bg-danger mb-1">미답변</span>
                                 </c:otherwise>
                             </c:choose>
-                            <small class="text-muted"><fmt:formatDate value="${qnaDTO.qnaCreatedAt}"
-                                                                      pattern="yyyy-MM-dd"/></small>
+                            <div class="text-muted small">
+                                <fmt:formatDate value="${qnaDTO.qnaCreatedAt}" pattern="yyyy-MM-dd"/>
+                            </div>
                         </div>
                     </a>
+
+
                 </c:forEach>
             </div>
         </c:if>

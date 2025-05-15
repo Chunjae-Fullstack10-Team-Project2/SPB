@@ -22,30 +22,30 @@
         <!-- 헤더 -->
         <div class="mb-4">
             <h3><i class="bi bi-journal-text me-2"></i>구매 내역 상세</h3>
-            <p class="text-muted mb-1"><i class="bi bi-receipt me-1"></i>주문번호: ${orderIdx}</p>
+            <p class="text-muted mb-1"><i class="bi bi-receipt me-1"></i>주문번호: <c:out value='${orderIdx}'/></p>
             <p class="text-secondary">구매하신 강의 내역입니다. 아래에서 확인하세요.</p>
         </div>
 
         <!-- 강의 리스트 -->
         <div class="card mb-4">
-            <div class="card-header bg-white fw-bold">구매한 강의수: ${lectureDTOSize}개</div>
+            <div class="card-header bg-white fw-bold">구매한 강의수: <c:out value='${lectureDTOSize}'/>개</div>
             <div class="card-body p-0">
                 <c:forEach var="lecture" items="${lectureDTO}">
                     <div class="row g-0 border-bottom p-3 align-items-center">
                         <div class="col-md-3">
-                            <img src="/upload/${lecture.lectureThumbnailImg}" class="img-fluid rounded"
+                            <img src="/upload/<c:out value='${lecture.lectureThumbnailImg}'/>" class="img-fluid rounded"
                                  onerror="this.src='${cp}/resources/img/default_profileImg.png';"
                                  style="height: 100px; object-fit: cover;" alt="강의 썸네일">
                         </div>
                         <div class="col-md-9 ps-3 d-flex align-items-center justify-content-between">
                             <div>
-                                <h5 class="mb-1">${lecture.lectureTitle}</h5>
-                                <div class="text-muted small mb-1">${lecture.lectureTeacherName} 선생님</div>
+                                <h5 class="mb-1"><c:out value='${lecture.lectureTitle}'/></h5>
+                                <div class="text-muted small mb-1"><c:out value='${lecture.lectureTeacherName}'/> 선생님</div>
                                 <div class="text-primary fw-semibold">
                                     <fmt:formatNumber value="${lecture.lectureAmount}" type="number"/>원
                                 </div>
                             </div>
-                            <a href="/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}"
+                            <a href="/lecture/lectureDetail?lectureIdx=<c:out value='${lecture.lectureIdx}'/>"
                                class="btn btn-success btn-sm">
                                 <i class="bi bi-play-circle me-1"></i>수강하러 가기
                             </a>
@@ -93,11 +93,11 @@
         <!-- 버튼 그룹 -->
         <div class="text-end">
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-danger btn-sm"
-                        onclick="confirmStatus(${orderIdx}, ${totalAmount})">
+                <button type="button" class="btn btn-danger btn-sm" data-order-idx="${orderIdx}" data-total-amount="${totalAmount}"
+                        onclick="confirmStatus(this.dataset.orderIdx, this.dataset.totalAmount)">
                     결제 취소
                 </button>
-                <a href="https://iniweb.inicis.com/DefaultWebApp/mall/cr/cm/mCmReceipt_head.jsp?noTid=${paymentDTO.paymentPgTid}"
+                <a href="https://iniweb.inicis.com/DefaultWebApp/mall/cr/cm/mCmReceipt_head.jsp?noTid=<c:out value='${paymentDTO.paymentPgTid}'/>"
                    target="_blank" class="btn btn-primary btn-sm">
                     영수증
                 </a>

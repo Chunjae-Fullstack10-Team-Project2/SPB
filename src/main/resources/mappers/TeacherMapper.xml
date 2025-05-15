@@ -9,7 +9,13 @@
     </select>
     <!--선생님 강좌 조회-->
     <select id="selectTeacherLecture" resultType="net.spb.spb.domain.LectureVO">
-        select lectureIdx, lectureTitle, lectureThumbnailImg, lectureAmount
+        select lectureIdx,
+               lectureTitle,
+               lectureDescription,
+               lectureThumbnailImg,
+               lectureTeacherId,
+               lectureAmount,
+               lectureCreatedAt
         from tbl_lecture
         where lectureTeacherId = #{teacherId}
           and lectureState = '1'

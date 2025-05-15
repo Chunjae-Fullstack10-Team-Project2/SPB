@@ -136,4 +136,18 @@
               </foreach>
         and bookmarkMemberId = #{memberId}
     </select>
+
+    <select id="selectLectureByIdx" resultType="net.spb.spb.domain.LectureVO">
+        select
+            lectureIdx,
+            lectureTitle,
+            lectureDescription,
+            lectureTeacherId,
+            lectureCreatedAt,
+            lectureThumbnailImg,
+            lectureAmount,
+            lectureState
+        from tbl_lecture
+        where lectureIdx = #{lectureIdx}
+    </select>
 </mapper>    

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <title>QnA 답변 등록</title>
@@ -9,39 +10,41 @@
 </head>
 <body class="bg-light-subtle">
 <%@ include file="../common/header.jsp" %>
+
 <div class="content-nonside">
     <div class="container my-5">
         <%@ include file="../common/breadcrumb.jsp" %>
     </div>
     <div class="container my-5">
+
+        <!-- 질문 카드 -->
         <div class="card mb-5">
             <div class="card-header">
-                <h4>Q. ${qnaDTO.qnaTitle}</h4>
+                <h4>Q. <c:out value="${qnaDTO.qnaTitle}" /></h4>
             </div>
             <div class="card-body">
-                <%--      <form id="frmDelete" method="post" action="/qna/delete">--%>
-                <%--        <input type="hidden" name="idx" value="${qnaDTO.qnaIdx}">--%>
-                <%--      </form>--%>
-                <input type="hidden" id="idx" value="${qnaDTO.qnaIdx}">
+                <input type="hidden" id="idx" value="<c:out value='${qnaDTO.qnaIdx}' />">
                 <div class="form-group">
                     <label for="qnaQMemberId">작성자</label>
                     <input type="text" class="form-control" id="qnaQMemberId" name="qnaQMemberId"
-                           value="${qnaDTO.qnaQMemberId}" readonly>
+                           value="<c:out value='${qnaDTO.qnaQMemberId}' />" readonly>
                 </div>
                 <div class="form-group">
                     <label for="qnaCreatedAt">등록일</label>
                     <fmt:formatDate var="qnaCreatedAt" value="${qnaDTO.qnaCreatedAt}" pattern="yyyy-MM-dd"/>
                     <input type="text" class="form-control" id="qnaCreatedAt" name="qnaCreatedAt"
-                           value="${qnaCreatedAt}" readonly>
+                           value="<c:out value='${qnaCreatedAt}' />" readonly>
                 </div>
                 <div class="form-group">
                     <label for="qnaQContent">질문 내용</label>
-                    <textarea class="form-control" name="qnaQContent" id="qnaQContent" cols="50" rows="10"
-                              readonly>${qnaDTO.qnaQContent}</textarea>
+                    <textarea class="form-control" name="qnaQContent" id="qnaQContent" cols="50" rows="10" readonly>
+<c:out value="${qnaDTO.qnaQContent}" />
+                    </textarea>
                 </div>
             </div>
         </div>
 
+        <!-- 답변 카드 -->
         <div class="card shadow rounded">
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">답변 등록</h5>
@@ -51,7 +54,7 @@
                     <div class="mb-3">
                         <label for="qnaAMemberId" class="form-label">작성자</label>
                         <input type="text" class="form-control" id="qnaAMemberId" name="qnaAMemberId"
-                               value="${qnaDTO.qnaAMemberId}" readonly>
+                               value="<c:out value='${qnaDTO.qnaAMemberId}' />" readonly>
                     </div>
 
                     <div class="mb-3">
@@ -65,7 +68,8 @@
                     </div>
 
                     <div class="d-flex justify-content-end gap-2">
-                        <a href="/qna/view?qnaIdx=${qnaDTO.qnaIdx}" class="btn btn-outline-secondary">취소</a>
+                        <a href="/qna/view?qnaIdx=<c:out value='${qnaDTO.qnaIdx}' />"
+                           class="btn btn-outline-secondary">취소</a>
                         <input type="submit" class="btn btn-primary" id="btnSubmit" name="btnSubmit" value="등록">
                     </div>
                 </form>
@@ -73,10 +77,11 @@
         </div>
     </div>
 </div>
-    <script>
-        <c:if test="${not empty message}">
-        alert("${message}");
-        </c:if>
-    </script>
+
+<script>
+    <c:if test="${not empty message}">
+    alert("<c:out value='${message}' />");
+    </c:if>
+</script>
 </body>
 </html>

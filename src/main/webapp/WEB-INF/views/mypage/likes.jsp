@@ -7,6 +7,8 @@
 <html>
 <head>
     <title>좋아요 누른 게시글</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
@@ -67,20 +69,20 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${likesList}" var="postDTO" varStatus="status">
+                <c:forEach items="${likesList}" var="reportDTO" varStatus="status">
                     <tr>
                         <td>${status.index + 1}</td>
                         <td class="text-start">
-                            <a href="/post/detail?postIdx=${postDTO.postLikeRefIdx}"
+                            <a href="/post/detail?postIdx=${reportDTO.postLikeRefIdx}"
                                class="text-decoration-none text-dark">
-                                    ${postDTO.postTitle}
+                                    ${reportDTO.postTitle}
                             </a>
                         </td>
-                        <td>${postDTO.postMemberId}</td>
-                        <td>${postDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>${reportDTO.postMemberId}</td>
+                        <td>${reportDTO.postCreatedAt.toLocalDate()}</td>
                         <td>
                             <button type="button" class="btn btn-sm btn-outline-danger"
-                                    onclick="cancelLike(${postDTO.postLikeRefIdx})">
+                                    onclick="cancelLike(${reportDTO.postLikeRefIdx})">
                                 좋아요 취소
                             </button>
                         </td>

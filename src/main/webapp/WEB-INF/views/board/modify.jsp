@@ -49,13 +49,14 @@ change this template use File | Settings | File Templates. --%>
     <div class="mb-3">
       <label for="postTitle" class="form-label">제목</label>
       <input type="text" class="form-control" id="postTitle" name="postTitle" value="${post.postTitle}" maxlength="50" required>
-      <div class="form-text text-end"><span id="titleCharCount">0</span> / 50자</div>
+      <div class="form-text text-end" id="titleCharCountWrapper"><span id="titleCharCount">0</span> / 50자</div>
     </div>
 
     <!-- 내용 -->
     <div class="mb-3">
       <label for="postContent" class="form-label">내용</label>
-      <textarea class="form-control" rows="10" id="postContent" name="postContent" maxlength="19000" required>${post.postContent}</textarea>
+      <textarea class="form-control" style="overflow:hidden; resize:none;"
+                rows="10" id="postContent" name="postContent" maxlength="19000" required>${post.postContent}</textarea>
       <div class="form-text text-end" id="contentCharCountWrapper">
         <span id="contentCharCount">0</span> / 19000자
       </div>
@@ -180,6 +181,24 @@ change this template use File | Settings | File Templates. --%>
       form.insertBefore(div, form.firstChild);
     });
   }
+
+  // textarea 크기
+  function autoResizeTextarea(el) {
+    el.style.height = 'auto';
+    el.style.height = (el.scrollHeight) + 'px';
+  }
+
+  contentInput.addEventListener('input', () => {
+    updateContentCharCount();
+    autoResizeTextarea(contentInput);
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateTitleCharCount();
+    updateContentCharCount();
+    autoResizeTextarea(contentInput);
+  });
+
 </script>
 </body>
 </html>

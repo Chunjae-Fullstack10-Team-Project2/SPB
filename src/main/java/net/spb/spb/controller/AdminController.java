@@ -126,6 +126,18 @@ public class AdminController {
         return "admin/report/boardReportTable";
     }
 
+    @PostMapping(path = "/report/board/reject", produces = "text/plain;charset=UTF-8")
+    public ResponseEntity<String> rejectBoardReport(@RequestParam("reportIdx") String reportIdx) {
+        reportService.rejectBoardReport(reportIdx);
+        return ResponseEntity.ok("신고가 반려되었습니다.");
+    }
+
+    @PostMapping(path = "/report/board/process", produces = "text/plain;charset=UTF-8")
+    public ResponseEntity<String> processBoardReport(@RequestParam("reportIdx") String reportIdx) {
+        reportService.updateBoardReportAsProcessed(reportIdx);
+        return ResponseEntity.ok("신고가 처리되었습니다.");
+    }
+
     @GetMapping("/report/list/review")
     public String reviewReportList(@ModelAttribute SearchDTO searchDTO,
                                    @ModelAttribute PageRequestDTO pageRequestDTO,
@@ -143,6 +155,20 @@ public class AdminController {
         setBreadcrumb(model, Map.of("강의평 신고 목록", ""));
 
         return "admin/report/reviewReportTable";
+    }
+
+    @PostMapping(path = "/report/review/process", produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public ResponseEntity<String> processReviewReport(@RequestParam("reportIdx") String reportIdx) {
+        reportService.updateReviewReportAsProcessed(reportIdx);
+        return ResponseEntity.ok("신고가 처리되었습니다.");
+    }
+
+    @PostMapping(path = "/report/review/reject", produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public ResponseEntity<String> rejectReviewReport(@RequestParam("reportIdx") String reportIdx) {
+        reportService.rejectReviewReport(reportIdx);
+        return ResponseEntity.ok("신고가 반려되었습니다.");
     }
 
     @GetMapping("/teacher/list")

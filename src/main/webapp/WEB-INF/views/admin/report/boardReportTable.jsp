@@ -13,6 +13,8 @@
 <head>
     <title>게시글 신고 목록</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 <body>
 <%@ include file="../../common/sidebarHeader.jsp" %>
@@ -45,7 +47,7 @@
         </nav>
     </div>
 
-    <div class="container my-5" style="height: 100%; min-height: 100vh;">
+    <div class="container my-5 pb-5" style="min-height: 100vh;">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">게시글 신고 목록</h3>
         </div>
@@ -60,6 +62,7 @@
             searchTypeOptions.add(Map.of("value", "postTitle", "label", "게시글 제목"));
             searchTypeOptions.add(Map.of("value", "postContent", "label", "게시글 내용"));
             searchTypeOptions.add(Map.of("value", "postMemberId", "label", "게시글 작성자"));
+            searchTypeOptions.add(Map.of("value", "reportMemberId", "label", "신고자"));
             request.setAttribute("searchTypeOptions", searchTypeOptions);
             request.setAttribute("searchAction", "/admin/report/list/board");
         %>
@@ -87,6 +90,14 @@
                         </a>
                     </th>
                     <th>
+                        <a href="javascript:void(0);" onclick="applySort('reportMemberId')">
+                            신고자
+                            <c:if test="${searchDTO.sortColumn eq 'reportMemberId'}">
+                                ${searchDTO.sortOrder eq 'asc' ? '▲' : '▼'}
+                            </c:if>
+                        </a>
+                    </th>
+                    <th>
                         <a href="javascript:void(0);" onclick="applySort('postCreatedAt')">
                             작성일
                             <c:if test="${searchDTO.sortColumn eq 'postCreatedAt'}">
@@ -94,20 +105,34 @@
                             </c:if>
                         </a>
                     </th>
+                    <th>신고 상태</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${boardReportList}" var="postDTO" varStatus="status">
+                <c:forEach items="${boardReportList}" var="reportDTO" varStatus="status">
                     <tr>
-                        <td>${postDTO.reportIdx}</td>
+                        <td>${reportDTO.reportIdx}</td>
                         <td class="text-start">
-                            <a href="/post/detail?postIdx=${postDTO.reportRefIdx}"
+                            <a href="/post/detail?postIdx=${reportDTO.reportRefIdx}"
                                class="text-decoration-none text-dark">
-                                    ${postDTO.postTitle}
+                                    ${reportDTO.postTitle}
                             </a>
                         </td>
-                        <td>${postDTO.postMemberId}</td>
-                        <td>${postDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>${reportDTO.postMemberId}</td>
+                        <td>${reportDTO.reportMemberId}</td>
+                        <td>${reportDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>
+                            <c:if test="${reportDTO.reportState == 1}">
+                                <button class="btn btn-sm btn-outline-success me-1 btn-process" data-id="${reportDTO.reportIdx}">처리</button>
+                                <button class="btn btn-sm btn-outline-danger btn-reject" data-id="${reportDTO.reportIdx}">반려</button>
+                            </c:if>
+                            <c:if test="${reportDTO.reportState == 2}">
+                                <span class="badge bg-success">처리됨</span>
+                            </c:if>
+                            <c:if test="${reportDTO.reportState == 3}">
+                                <span class="badge bg-secondary">반려됨</span>
+                            </c:if>
+                        </td>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -127,6 +152,26 @@
 </div>
 
 <script>
+    $(document).on('click', '.btn-process', function () {
+        const reportIdx = $(this).data('id');
+        if (!confirm('해당 신고를 처리하시겠습니까?')) return;
+        $.post('/admin/report/board/process', { reportIdx })
+            .done(msg => {
+                alert(msg);
+                location.reload();
+            });
+    });
+
+    $(document).on('click', '.btn-reject', function () {
+        const reportIdx = $(this).data('id');
+        if (!confirm('해당 신고를 반려하시겠습니까?')) return;
+        $.post('/admin/report/board/reject', { reportIdx })
+            .done(msg => {
+                alert(msg);
+                location.reload();
+            });
+    });
+
     <c:if test="${not empty message}">
     alert("${message}");
     </c:if>

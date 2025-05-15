@@ -46,7 +46,9 @@ change this template use File | Settings | File Templates. --%>
       <!-- 내용 입력 -->
       <div class="mb-3">
         <label for="postContent" class="form-label">내용</label>
-        <textarea class="form-control" rows="10" name="postContent" id="postContent" placeholder="내용을 입력하세요" maxlength="19000" required>${postDTO.postContent != null and postDTO.postContent != '' ? postDTO.postContent : ''}</textarea>
+        <textarea class="form-control" style="overflow:hidden; resize:none;"
+                  rows="10" name="postContent" id="postContent"
+                  placeholder="내용을 입력하세요" maxlength="19000" required>${postDTO.postContent != null and postDTO.postContent != '' ? postDTO.postContent : ''}</textarea>
         <div class="form-text text-end" id="contentCharCountWrapper">
           <span id="contentCharCount">0</span> / 19000자
         </div>
@@ -152,6 +154,24 @@ change this template use File | Settings | File Templates. --%>
       form.insertBefore(div, form.firstChild);
     });
   }
+
+  // textarea 크기
+  function autoResizeTextarea(el) {
+    el.style.height = 'auto'; // 높이 초기화
+    el.style.height = (el.scrollHeight) + 'px'; // 내용만큼 높이 조절
+  }
+
+  contentInput.addEventListener('input', () => {
+    updateContentCharCount();
+    autoResizeTextarea(contentInput);
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateTitleCharCount();
+    updateContentCharCount();
+    autoResizeTextarea(contentInput);
+  });
+
 </script>
 </body>
 </html>
