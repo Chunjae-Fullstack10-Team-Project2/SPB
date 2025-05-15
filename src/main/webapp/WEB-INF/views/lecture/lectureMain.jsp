@@ -107,7 +107,7 @@
 
                 <!-- 신고 버튼 -->
                 <div>
-                    <button class="btn btn-outline-danger btn-sm" data-lecture-review-idx="${review.lectureReviewIdx}" data-lecture-review-memberId="${review.lectureReviewMemberId}"
+                    <button class="btn btn-outline-danger btn-sm" data-lecture-review-idx="${review.lectureReviewIdx}" data-lecture-review-member-id="${review.lectureReviewMemberId}"
                             onclick="reportReview(this.dataset.lectureReviewIdx, this.dataset.lectureReviewMemberId)">
                         <i class="bi bi-flag"></i> 신고
                     </button>
