@@ -6,7 +6,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>1:1 문의</title>
+    <title>자주 묻는 질문</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -42,7 +42,7 @@
     </div>
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0">문의 목록</h3>
+            <h3 class="mb-0">자주 묻는 질문 목록</h3>
             <c:if test="${memberGrade eq '0'}">
                 <a href="/faq/regist" class="btn btn-primary">
                     <i class="bi bi-pencil-square"></i> 문의 등록

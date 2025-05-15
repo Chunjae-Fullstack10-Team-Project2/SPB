@@ -6,7 +6,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>좋아요 누른 게시글</title>
+    <title>추천한 게시글</title>
 </head>
 <body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
@@ -17,11 +17,11 @@
     </div>
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0">좋아요 누른 게시글</h3>
+            <h3 class="mb-0">추천한 게시글</h3>
         </div>
         <%
             List<Map<String, String>> dateOptions = new ArrayList<>();
-            dateOptions.add(Map.of("value", "postLikeCreatedAt", "label", "좋아요 누른 날짜"));
+            dateOptions.add(Map.of("value", "postLikeCreatedAt", "label", "추천한 날짜"));
             dateOptions.add(Map.of("value", "postCreatedAt", "label", "게시글 작성일자"));
             request.setAttribute("dateOptions", dateOptions);
 

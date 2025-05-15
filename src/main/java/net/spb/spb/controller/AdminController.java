@@ -703,7 +703,7 @@ public class AdminController {
         model.addAttribute("searchDTO", searchDTO);
         model.addAttribute("responseDTO", pageResponseDTO);
 
-        setBreadcrumb(model, Map.of("매출 대시보드", ""));
+        setBreadcrumb(model, Map.of("매출 정보", ""));
         return "/admin/sales/dashboard";
     }
 
@@ -889,7 +889,7 @@ public class AdminController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("notAnsweredQnaList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
-        setBreadcrumb(model, Map.of("미답변 문의", ""));
+        setBreadcrumb(model, Map.of("미답변 문의 관리", ""));
 
         return "/admin/qna/list";
     }

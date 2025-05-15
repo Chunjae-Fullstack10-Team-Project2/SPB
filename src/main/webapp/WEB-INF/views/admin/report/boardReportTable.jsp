@@ -11,7 +11,7 @@
 %>
 <html>
 <head>
-    <title>게시글 신고 목록</title>
+    <title>게시글 신고 관리</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -41,7 +41,7 @@
                     <a class="link-body-emphasis fw-semibold text-decoration-none" href="/admin/member/list">관리자 페이지</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    게시글 신고
+                    게시글 신고 관리
                 </li>
             </ol>
         </nav>
@@ -49,7 +49,7 @@
 
     <div class="container my-5 pb-5" style="min-height: 100vh;">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0">게시글 신고 목록</h3>
+            <h3 class="mb-0">게시글 신고 관리</h3>
         </div>
 
         <%
