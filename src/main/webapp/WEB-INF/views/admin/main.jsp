@@ -88,7 +88,7 @@
         </a>
       </div>
       <div class="col-md-3">
-        <a href="${cp}/admin/board/manage" class="d-block p-3 bg-dark bg-opacity-10 rounded shadow-sm text-decoration-none">
+        <a href="${cp}/admin/qna/list" class="d-block p-3 bg-dark bg-opacity-10 rounded shadow-sm text-decoration-none">
           <i class="bi bi-question-circle-fill text-dark fs-4 me-2"></i> <strong class="text-dark">Q & A</strong>
         </a>
       </div>

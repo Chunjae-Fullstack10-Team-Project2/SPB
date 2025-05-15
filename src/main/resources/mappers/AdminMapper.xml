@@ -16,17 +16,27 @@
                 #{teacherSubject})
     </insert>
 
-    <select id="selectTeacherWithoutTeacherProfile" resultType="net.spb.spb.dto.member.MemberDTO">
-        SELECT *
+    <select id="selectTeacherWithoutTeacherProfile" parameterType="net.spb.spb.dto.pagingsearch.TeacherPageDTO" resultType="net.spb.spb.dto.member.MemberDTO">
+        SELECT m.memberId, m.memberIdx, m.memberName, m.memberBirth, m.memberCreatedAt
         FROM tbl_member m
-        WHERE m.memberGrade = 13 and NOT EXISTS (
-            SELECT 1
-            FROM tbl_teacher t
-            WHERE t.teacherId = m.memberId
-        );
+        WHERE m.memberGrade = 13
+          AND NOT EXISTS (
+            SELECT 1 FROM tbl_teacher t WHERE t.teacherId = m.memberId
+        )
+        ORDER BY m.memberCreatedAt DESC
+            LIMIT #{page_skip_count}, #{page_size}
     </select>
 
-    <select id="selectTeacherWithTeacherProfile" resultType="net.spb.spb.dto.member.MemberDTO">
+    <select id="selectTeacherWithoutTeacherProfileCount" parameterType="net.spb.spb.dto.pagingsearch.TeacherPageDTO" resultType="int">
+        SELECT count(*)
+        FROM tbl_member m
+        WHERE m.memberGrade = 13
+          AND NOT EXISTS (
+            SELECT 1 FROM tbl_teacher t WHERE t.teacherId = m.memberId
+        )
+    </select>
+
+    <select id="selectTeacherWithTeacherProfile" parameterType="net.spb.spb.dto.pagingsearch.TeacherPageDTO" resultType="net.spb.spb.dto.member.MemberDTO">
         SELECT m.memberIdx,
                m.memberId,
                m.memberName,
@@ -36,7 +46,26 @@
                t.teacherSubject
         FROM tbl_member m
         JOIN tbl_teacher t ON t.teacherId = m.memberId
-        WHERE m.memberGrade = 13;
+        <where>
+            m.memberGrade = 13
+            <if test="search_word != null and search_word != ''">
+                and (m.memberName like concat('%', #{search_word}, '%') or m.memberId like concat('%',#{search_word}, '%'))
+            </if>
+        </where>
+        order by ${sort_by} ${sort_direction}
+        limit #{page_skip_count}, #{page_size}
+    </select>
+
+    <select id="selectTeacherWithTeacherProfileCount" parameterType="net.spb.spb.dto.pagingsearch.TeacherPageDTO" resultType="int">
+        SELECT count(m.memberIdx)
+        FROM tbl_member m
+        JOIN tbl_teacher t ON t.teacherId = m.memberId
+        <where>
+            m.memberGrade = 13
+            <if test="search_word != null and search_word != ''">
+                and (m.memberName like concat('%', #{search_word}, '%') or m.memberId like concat('%',#{search_word}, '%'))
+            </if>
+        </where>
     </select>
 
     <update id="modifyTeacherProfile" parameterType="net.spb.spb.domain.TeacherVO">
