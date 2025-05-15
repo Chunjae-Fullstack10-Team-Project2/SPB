@@ -6,7 +6,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>내가 쓴 댓글</title>
+    <title>작성한 댓글</title>
     <style>
         .text-muted-deleted {
             color: lightgray !important;
@@ -24,7 +24,7 @@
     </div>
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0">내가 쓴 댓글</h3>
+            <h3 class="mb-0">작성한 댓글</h3>
         </div>
         <%
             List<Map<String, String>> dateOptions = new ArrayList<>();
@@ -74,10 +74,7 @@
                                     </span>
                                 </c:when>
                                 <c:otherwise>
-                                    <a href="/board/freeboard/view?idx=${comment.postCommentRefPostIdx}#comment-${comment.postCommentIdx}"
-                                       class="text-dark text-decoration-none">
-                                            ${comment.postCommentContent}
-                                    </a>
+                                    <span>${comment.postCommentContent}</span>
                                 </c:otherwise>
                             </c:choose>
                         </td>

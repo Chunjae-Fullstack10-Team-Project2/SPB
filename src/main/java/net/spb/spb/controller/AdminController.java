@@ -17,6 +17,7 @@ import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.dto.qna.QnaDTO;
 import net.spb.spb.service.AdminService;
 import net.spb.spb.service.ReportService;
+import net.spb.spb.service.board.BoardServiceIf;
 import net.spb.spb.service.qna.QnaService;
 import net.spb.spb.service.teacher.TeacherServiceIf;
 import net.spb.spb.service.member.MemberServiceIf;
@@ -50,6 +51,7 @@ public class AdminController {
     private final ReportService reportService;
     private final AdminService adminService;
     private final TeacherServiceIf teacherService;
+    private final BoardServiceIf boardService;
     private final QnaService qnaService;
     private final FileUtil fileUtil;
 
@@ -323,10 +325,10 @@ public class AdminController {
         memberPageDTO.setPage_size(5);
         String baseUrl = req.getRequestURI();
         memberPageDTO.setLinkUrl(NewPagingUtil.buildLinkUrl(baseUrl, memberPageDTO));
-        int total_count = memberService.getMemberCount(memberPageDTO);
+        int total_count = adminService.getAllTeachersCount(memberPageDTO);
         memberPageDTO.setTotal_count(total_count);
         String paging = NewPagingUtil.pagingArea(memberPageDTO);
-        List<MemberDTO> memberDTOs = memberService.getMembers(memberPageDTO);
+        List<MemberDTO> memberDTOs = adminService.getAllTeachers(memberPageDTO);
         model.addAttribute("teachers", memberDTOs);
         model.addAttribute("searchDTO", memberPageDTO);
         model.addAttribute("paging", paging);
@@ -401,7 +403,9 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
             return "redirect:/admin/lecture/regist";
         }
-
+        log.info("lectureDTO.getLectureTeacherId() : {}", lectureDTO.getLectureTeacherId());
+        log.info("lectureDTO.getLectureTeacherId().isBlank() : {}", lectureDTO.getLectureTeacherId().isBlank());
+        log.info("!adminService.existsByTeacherId(lectureDTO.getLectureTeacherId()) : {}", !adminService.existsByTeacherId(lectureDTO.getLectureTeacherId()));
         if (lectureDTO.getLectureTeacherId().isBlank() || !adminService.existsByTeacherId(lectureDTO.getLectureTeacherId())) {
             redirectAttributes.addFlashAttribute("errorMessage", "선생님 정보가 올바르지 않습니다.");
             redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
@@ -543,6 +547,7 @@ public class AdminController {
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("searchDTO", chapterPageDTO);
         model.addAttribute("paging", paging);
+        model.addAttribute("lectureIdx", chapterPageDTO.getLectureIdx());
         setBreadcrumb(model,
                 Map.of("강좌 목록", "/admin/lecture/list"),
                 Map.of("강의 목록", "")
@@ -551,7 +556,9 @@ public class AdminController {
 
     @GetMapping("/chapter/regist")
     public void chapterRegist(@RequestParam(name = "lectureIdx", defaultValue = "0") int lectureIdx, Model model) {
+        LectureDTO lectureDTO = adminService.selectLecture(lectureIdx);
         model.addAttribute("lectureIdx", lectureIdx);
+        model.addAttribute("lectureDTO", lectureDTO);
         setBreadcrumb(model,
                 Map.of("강좌 목록", "/admin/lecture/list"),
                 Map.of("강의 등록", "")
@@ -699,7 +706,7 @@ public class AdminController {
         model.addAttribute("searchDTO", searchDTO);
         model.addAttribute("responseDTO", pageResponseDTO);
 
-        setBreadcrumb(model, Map.of("매출 대시보드", ""));
+        setBreadcrumb(model, Map.of("매출 정보", ""));
         return "/admin/sales/dashboard";
     }
 
@@ -807,10 +814,11 @@ public class AdminController {
     public String boardReportList(@ModelAttribute PostPageDTO postPageDTO,
                                   Model model,
                                   HttpServletRequest req) {
+        postPageDTO.setPostCategory(BoardCategory.freeboard.name().toUpperCase());
         String baseUrl = req.getRequestURI();
         postPageDTO.normalizeSearchType();
         postPageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, postPageDTO));
-        int totalCount = adminService.selectReportedPostsCount(postPageDTO);
+        int totalCount = boardService.getPostCount(postPageDTO);
         postPageDTO.setTotal_count(totalCount);
         String paging = NewPagingUtil.pagingArea(postPageDTO);
         List<PostDTO> postDTOs = adminService.selectReportedPosts(postPageDTO);
@@ -884,7 +892,7 @@ public class AdminController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("notAnsweredQnaList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
-        setBreadcrumb(model, Map.of("미답변 문의", ""));
+        setBreadcrumb(model, Map.of("미답변 문의 관리", ""));
 
         return "/admin/qna/list";
     }

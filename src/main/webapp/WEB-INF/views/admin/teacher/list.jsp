@@ -8,50 +8,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>선생님 페이지 관리</title>
-    <style>
-
-        .profile-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .profile-info h1 {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .profile-info p {
-            color: #666;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f5f5f5;
-            font-weight: normal;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        .btn-sm {
-            padding: 4px 8px;
-            font-size: 12px;
-        }
-
-    </style>
 </head>
 <body>
 <%@ include file="../../common/sidebarHeader.jsp" %>
@@ -138,7 +94,7 @@
             </tbody>
         </table>
     </div>
-    <div class="container my-2">
+    <div class="container my-2 pb-5" style="min-height: 100vh;">
         <h5>선생님 등록 요청</h5>
         <table class="table table-hover text-center align-middle">
             <thead class="table-light">

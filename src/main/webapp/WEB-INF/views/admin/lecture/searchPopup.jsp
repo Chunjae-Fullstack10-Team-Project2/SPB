@@ -47,18 +47,16 @@
             <c:forEach var="lecture" items="${lectures}">
                 <tr>
                     <td>${lecture.lectureIdx}</td>
-                    <td>${lecture.lectureTitle}</td>
+                    <td class="text-truncate" style="max-width: 300px;">${lecture.lectureTitle}</td>
                     <td>${lecture.lectureTeacherName}</td>
                     <td>
                         <button type="button" class="btn btn-sm btn-outline-primary" onclick="selectLecture('${lecture.lectureIdx}', '${lecture.lectureTitle}')">선택</button>
                     </td>
                 </tr>
             </c:forEach>
-            <tr>
-                <td colspan="4">${paging}</td>
-            </tr>
             </tbody>
         </table>
+        <div class="text-center">${paging}</div>
         <div class="text-end my-3">
             <button type="button" class="btn btn-secondary btn-sm" onclick="window.close()">창 닫기</button>
         </div>

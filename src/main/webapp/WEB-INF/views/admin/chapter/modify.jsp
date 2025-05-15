@@ -78,7 +78,7 @@
           </div>
 
           <div class="d-flex justify-content-end gap-2">
-            <input type="reset" class="btn btn-outline-secondary" value="취소">
+            <input type="button" id="btnCancel" class="btn btn-outline-secondary" value="취소">
             <input type="button" class="btn btn-primary" onclick="uploadChapter()" value="등록">
           </div>
         </form>
@@ -94,6 +94,9 @@
 </div>
 <script src="${pageContext.request.contextPath}/resources/js/bindCharCount.js"></script>
 <script>
+  document.getElementById('btnCancel').addEventListener('click', ()=> {
+    history.back();
+  })
   bindCharCount(
           document.getElementById('chapterName'),
           document.getElementById('chapterNameCharCount'),

@@ -37,11 +37,19 @@ public class AdminService {
     }
 
     public boolean existsByTeacherId(String teacherId) {
-        return adminMapper.existsByTeacherId(teacherId) == 1 ? true : false;
+        return adminMapper.existsByTeacherId(teacherId) == 1;
     }
 
     public int insertTeacher(TeacherDTO teacherDTO) {
         return adminMapper.insertTeacher(modelMapper.map(teacherDTO, TeacherVO.class));
+    }
+
+    public List<MemberDTO> getAllTeachers(MemberPageDTO memberPageDTO) {
+        return adminMapper.getAllTeachers(memberPageDTO).stream().map(vo -> modelMapper.map(vo, MemberDTO.class)).toList();
+    }
+
+    public int getAllTeachersCount(MemberPageDTO memberPageDTO) {
+        return adminMapper.getAllTeachersCount(memberPageDTO);
     }
 
     public List<LectureDTO> selectLectureList(LecturePageDTO lecturePageDTO) {

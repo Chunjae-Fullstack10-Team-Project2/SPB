@@ -6,7 +6,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>찜한 강의</title>
+    <title>북마크한 강좌</title>
 </head>
 <body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
@@ -69,7 +69,7 @@
                 <tbody>
                 <c:forEach items="${bookmarkList}" var="bookmarkDTO" varStatus="status">
                     <tr>
-                        <td>${status.index + 1}</td>
+                        <td>${bookmarkDTO.bookmarkIdx}</td>
                         <td class="text-start">
                             <a href="/lecture/lectureDetail?lectureIdx=${bookmarkDTO.bookmarkLectureIdx}"
                                class="text-decoration-none text-dark">

@@ -21,19 +21,12 @@
   <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2 class="h4 fw-bold mb-4">강좌 강의 목록</h2>
-      <c:choose>
-        <c:when test="${not empty lectureIdx}">
-          <a href="regist?lectureIdx=${lectureIdx}" class="btn btn-primary"><i class="bi bi-clipboard-plus-fill"></i> 강의 추가</a>
-        </c:when>
-        <c:otherwise>
-          <a href="regist" class="btn btn-primary"><i class="bi bi-clipboard-plus-fill"></i> 강의 추가</a>
-        </c:otherwise>
-      </c:choose>
+      <a href="regist?lectureIdx=${lectureIdx}" class="btn btn-primary"><i class="bi bi-clipboard-plus-fill"></i> 강의 추가</a>
     </div>
     <c:choose>
       <c:when test="${not empty chapters}">
-        <table class="table table-hover text-center align-middle">
-          <thead class="table-light">
+        <table class="table table-hover align-middle">
+          <thead class="table-light text-center">
           <tr>
             <th scope="col">#</th>
             <th scope="col">강좌명</th>
@@ -48,17 +41,17 @@
           <c:forEach items="${chapters}" var="chapter" varStatus="status">
             <tr id="chapterRow-${chapter.chapterIdx}">
               <td>${status.index + 1}</td>
-              <td>${chapter.lectureTitle}</td>
+              <td class="text-center">${chapter.lectureTitle}</td>
               <td>${chapter.chapterName}</td>
-              <td><a href="/upload/${chapter.chapterVideo}" target="_blank"><i class="bi bi-play-circle"></i></a></td>
-              <td>${chapter.chapterRuntime}</td>
-              <td>
+              <td class="text-center"><a href="/upload/${chapter.chapterVideo}" target="_blank"><i class="bi bi-play-circle"></i></a></td>
+              <td class="text-center">${chapter.chapterRuntime}</td>
+              <td class="text-center">
                 <c:choose>
                   <c:when test="${chapter.chapterState == 1}"><span class="badge bg-success">정상</span></c:when>
                   <c:otherwise><span class="badge bg-secondary">삭제됨</span></c:otherwise>
                 </c:choose>
               </td>
-              <td>
+              <td class="text-center">
                 <c:choose>
                   <c:when test="${chapter.chapterState == 1}">
                     <a href="modify?chapterIdx=${chapter.chapterIdx}" class="btn btn-sm btn-warning">
