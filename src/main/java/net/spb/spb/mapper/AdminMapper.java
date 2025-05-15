@@ -1,9 +1,6 @@
 package net.spb.spb.mapper;
 
-import net.spb.spb.domain.ChapterVO;
-import net.spb.spb.domain.LectureVO;
-import net.spb.spb.domain.ReportVO;
-import net.spb.spb.domain.TeacherVO;
+import net.spb.spb.domain.*;
 import net.spb.spb.dto.ChapterDTO;
 import net.spb.spb.dto.LectureDTO;
 import net.spb.spb.dto.OrderDTO;
@@ -32,6 +29,9 @@ public interface AdminMapper {
 
     int restoreTeacher (String teacherId);
 
+    List<MemberVO> getAllTeachers(MemberPageDTO memberPageDTO);
+
+    int getAllTeachersCount(MemberPageDTO memberPageDTO);
     // Lecture
     int insertLecture(LectureVO lectureVo);
 

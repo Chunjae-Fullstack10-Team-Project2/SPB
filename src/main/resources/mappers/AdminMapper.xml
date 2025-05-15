@@ -59,6 +59,61 @@
         where teacherId = #{teacherId}
     </update>
 
+    <select id="getAllTeachers" resultType="net.spb.spb.domain.MemberVO" parameterType="net.spb.spb.dto.pagingsearch.MemberPageDTO">
+        select memberIdx,
+        memberId,
+        memberName,
+        memberBirth,
+        memberCreatedAt,
+        memberState,
+        memberGrade,
+        memberEmail,
+        memberPhone
+        from tbl_member m
+        inner join tbl_teacher t on m.memberId = t.teacherId
+        <where>
+            1=1
+            <if test="search_member_state != null and search_member_state != ''">
+                and memberState = #{search_member_state}
+            </if>
+            <if test="search_member_grade != null and search_member_grade != ''">
+                <if test="search_member_grade gte 0 and search_member_grade lte 14">
+                    and memberGrade = #{search_member_grade}
+                </if>
+            </if>
+            <if test="search_word != null and search_word != ''">
+                and (
+                memberId like concat('%', #{search_word}, '%')
+                or memberName like concat('%', #{search_word}, '%')
+                )
+            </if>
+        </where>
+        order by ${sort_by} ${sort_direction}
+        limit #{page_skip_count}, #{page_size}
+    </select>
+
+    <select id="getAllTeachersCount" resultType="java.lang.Integer" parameterType="net.spb.spb.dto.pagingsearch.MemberPageDTO">
+        select count(memberIdx)
+        from tbl_member m
+        inner join tbl_teacher t on m.memberId = t.teacherId
+        <where>
+            1=1
+            <if test="search_member_state != null and search_member_state != ''">
+                and memberState = #{search_member_state}
+            </if>
+            <if test="search_member_grade != null and search_member_grade != ''">
+                <if test="search_member_grade gte 0 and search_member_grade lte 14">
+                    and memberGrade = #{search_member_grade}
+                </if>
+            </if>
+            <if test="search_word != null and search_word != ''">
+                and (
+                memberId like concat('%', #{search_word}, '%')
+                or memberName like concat('%', #{search_word}, '%')
+                )
+            </if>
+        </where>
+    </select>
     <!-- Lecture -->
     <insert id="insertLecture" parameterType="net.spb.spb.domain.LectureVO">
         insert into tbl_lecture (lectureTitle, lectureDescription, lectureTeacherId, lectureThumbnailImg, lectureAmount)
