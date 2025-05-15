@@ -17,6 +17,7 @@ import net.spb.spb.dto.post.PostReportDTO;
 import net.spb.spb.dto.qna.QnaDTO;
 import net.spb.spb.service.AdminService;
 import net.spb.spb.service.ReportService;
+import net.spb.spb.service.board.BoardServiceIf;
 import net.spb.spb.service.qna.QnaService;
 import net.spb.spb.service.teacher.TeacherServiceIf;
 import net.spb.spb.service.member.MemberServiceIf;
@@ -50,6 +51,7 @@ public class AdminController {
     private final ReportService reportService;
     private final AdminService adminService;
     private final TeacherServiceIf teacherService;
+    private final BoardServiceIf boardService;
     private final QnaService qnaService;
     private final FileUtil fileUtil;
 
@@ -807,10 +809,11 @@ public class AdminController {
     public String boardReportList(@ModelAttribute PostPageDTO postPageDTO,
                                   Model model,
                                   HttpServletRequest req) {
+        postPageDTO.setPostCategory(BoardCategory.freeboard.name().toUpperCase());
         String baseUrl = req.getRequestURI();
         postPageDTO.normalizeSearchType();
         postPageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, postPageDTO));
-        int totalCount = adminService.selectReportedPostsCount(postPageDTO);
+        int totalCount = boardService.getPostCount(postPageDTO);
         postPageDTO.setTotal_count(totalCount);
         String paging = NewPagingUtil.pagingArea(postPageDTO);
         List<PostDTO> postDTOs = adminService.selectReportedPosts(postPageDTO);
