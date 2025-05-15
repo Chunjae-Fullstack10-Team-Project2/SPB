@@ -547,6 +547,7 @@ public class AdminController {
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("searchDTO", chapterPageDTO);
         model.addAttribute("paging", paging);
+        model.addAttribute("lectureIdx", chapterPageDTO.getLectureIdx());
         setBreadcrumb(model,
                 Map.of("강좌 목록", "/admin/lecture/list"),
                 Map.of("강의 목록", "")
@@ -555,7 +556,9 @@ public class AdminController {
 
     @GetMapping("/chapter/regist")
     public void chapterRegist(@RequestParam(name = "lectureIdx", defaultValue = "0") int lectureIdx, Model model) {
+        LectureDTO lectureDTO = adminService.selectLecture(lectureIdx);
         model.addAttribute("lectureIdx", lectureIdx);
+        model.addAttribute("lectureDTO", lectureDTO);
         setBreadcrumb(model,
                 Map.of("강좌 목록", "/admin/lecture/list"),
                 Map.of("강의 등록", "")
