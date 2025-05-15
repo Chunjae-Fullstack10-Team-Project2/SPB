@@ -69,7 +69,7 @@
                 <tbody>
                 <c:forEach items="${bookmarkList}" var="bookmarkDTO" varStatus="status">
                     <tr>
-                        <td>${status.index + 1}</td>
+                        <td>${bookmarkDTO.bookmarkIdx}</td>
                         <td class="text-start">
                             <a href="/lecture/lectureDetail?lectureIdx=${bookmarkDTO.bookmarkLectureIdx}"
                                class="text-decoration-none text-dark">

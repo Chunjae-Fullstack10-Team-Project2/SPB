@@ -69,9 +69,9 @@
                 <tbody>
                 <c:forEach items="${likesList}" var="reportDTO" varStatus="status">
                     <tr>
-                        <td>${status.index + 1}</td>
+                        <td>${reportDTO.postLikeIdx}</td>
                         <td class="text-start">
-                            <a href="/post/detail?postIdx=${reportDTO.postLikeRefIdx}"
+                            <a href="/board/freeboard/view?idx=${reportDTO.postLikeRefIdx}"
                                class="text-decoration-none text-dark">
                                     ${reportDTO.postTitle}
                             </a>
