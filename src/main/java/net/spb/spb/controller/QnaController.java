@@ -224,7 +224,7 @@ public class QnaController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("qnaList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
-        setBreadcrumb(model, Map.of("내가 한 문의", ""));
+        setBreadcrumb(model, Map.of("나의 문의", ""));
         return "mypage/myQna";
     }
 

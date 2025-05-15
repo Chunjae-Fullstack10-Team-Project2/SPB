@@ -5,7 +5,7 @@
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
-    <title>Title</title>
+    <title>Q. ${qnaDTO.qnaTitle}</title>
 </head>
 <body class="bg-light-subtle">
 <%@ include file="../common/header.jsp" %>

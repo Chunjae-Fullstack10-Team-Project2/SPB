@@ -233,7 +233,7 @@ public class MyPageController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("likesList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
-        setBreadcrumb(model, Map.of("좋아요 목록", ""));
+        setBreadcrumb(model, Map.of("추천한 게시글", ""));
         return "mypage/likes";
     }
 
@@ -340,7 +340,7 @@ public class MyPageController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("orderList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
-        setBreadcrumb(model, Map.of("강좌 주문 목록", ""));
+        setBreadcrumb(model, Map.of("강좌 주문 내역", ""));
         return "mypage/order";
     }
 
@@ -449,7 +449,7 @@ public class MyPageController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("bookmarkList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
-        setBreadcrumb(model, Map.of("북마크 목록", ""));
+        setBreadcrumb(model, Map.of("북마크한 강좌", ""));
         return "mypage/bookmark";
     }
 
@@ -501,7 +501,7 @@ public class MyPageController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("postList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
-        setBreadcrumb(model, Map.of("게시글 목록", ""));
+        setBreadcrumb(model, Map.of("작성한 게시글", ""));
 
         return "mypage/post";
     }
@@ -526,7 +526,7 @@ public class MyPageController {
         model.addAttribute("responseDTO", pageResponseDTO);
         model.addAttribute("commentList", pageResponseDTO.getDtoList());
         model.addAttribute("searchDTO", searchDTO);
-        setBreadcrumb(model, Map.of("댓글 목록", ""));
+        setBreadcrumb(model, Map.of("작성한 댓글", ""));
         return "mypage/comment";
     }
 
