@@ -27,7 +27,7 @@
         from tbl_lecture_register as tlr
         inner join tbl_lecture as tl on tlr.lectureRegisterRefIdx = tl.lectureIdx
         inner join tbl_teacher as tt on tl.lectureTeacherId = tt.teacherId
-        <include refid="whereCondition"></include>
+        <include refid="condition"></include>
     </select>
 
     <!-- 나의 강의 목록 -->
@@ -42,7 +42,7 @@
             where tlr.lectureRegisterMemberId = #{memberId}
         </if>
         <if test="pageDTO != null">
-            <include refid="whereCondition"></include>
+            <include refid="condition"></include>
             <if test="pageDTO.page_skip_count != null and pageDTO.page_size != null">
                 limit #{pageDTO.page_skip_count}, #{pageDTO.page_size}
             </if>
