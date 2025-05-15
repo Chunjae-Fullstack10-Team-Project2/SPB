@@ -76,32 +76,34 @@
                 <c:when test="${not empty lectureDTO}">
                     <c:forEach var="lecture" items="${lectureDTO}">
                         <div class="col">
-                            <div class="card h-100 shadow-sm border-0"
-                                 onclick="location.href='/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}'"
-                                 style="cursor: pointer;">
-                                <img src="/upload/<c:out value='${lecture.lectureThumbnailImg}'/>" alt="<c:out value='${lecture.lectureTitle}'/>"
-                                     class="card-img-top"
-                                     onerror="this.src='${cp}/resources/img/default_profileImg.png';">
-                                <div class="card-body">
-                                    <h6 class="card-title fw-semibold"><c:out value='${lecture.lectureTitle}'/></h6>
-                                    <p class="mb-1 text-muted"><c:out value='${lecture.lectureTeacherName}'/> 선생님</p>
-                                    <p class="text-primary fw-bold">
-                                        <fmt:formatNumber value="${lecture.lectureAmount}" type="number"/>원
-                                    </p>
-                                </div>
-                                <div class="d-flex justify-content-center gap-2">
-                                    <c:set var="isBookmarked" value="false" />
-                                    <c:forEach var="b" items="${bookmarked}">
-                                        <c:if test="${b eq lecture.lectureIdx}">
-                                            <c:set var="isBookmarked" value="true" />
-                                        </c:if>
-                                    </c:forEach>
+                            <div class="p-2">
+                                <div class="card h-100 shadow-sm border-0"
+                                     onclick="location.href='/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}'"
+                                     style="cursor: pointer;">
+                                    <img src="/upload/<c:out value='${lecture.lectureThumbnailImg}'/>" alt="<c:out value='${lecture.lectureTitle}'/>"
+                                         class="card-img-top"
+                                         onerror="this.src='${cp}/resources/img/default_profileImg.png';">
+                                    <div class="card-body">
+                                        <h6 class="card-title fw-semibold"><c:out value='${lecture.lectureTitle}'/></h6>
+                                        <p class="mb-1 text-muted"><c:out value='${lecture.lectureTeacherName}'/> 선생님</p>
+                                        <p class="text-primary fw-bold">
+                                            <fmt:formatNumber value="${lecture.lectureAmount}" type="number"/>원
+                                        </p>
+                                    </div>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <c:set var="isBookmarked" value="false" />
+                                        <c:forEach var="b" items="${bookmarked}">
+                                            <c:if test="${b eq lecture.lectureIdx}">
+                                                <c:set var="isBookmarked" value="true" />
+                                            </c:if>
+                                        </c:forEach>
 
-                                    <button class="btn btn-outline-secondary bookmark-btn" data-lecture-idx="${lecture.lectureIdx}" data-bookmarked="${isBookmarked}" onclick="event.stopPropagation();">
-                                        <i class="bi ${isBookmarked ? 'bi-bookmark-fill text-primary' : 'bi-bookmark'}"></i>
-                                    </button>
+                                        <button class="btn btn-outline-secondary bookmark-btn" data-lecture-idx="${lecture.lectureIdx}" data-bookmarked="${isBookmarked}" onclick="event.stopPropagation();">
+                                            <i class="bi ${isBookmarked ? 'bi-bookmark-fill text-primary' : 'bi-bookmark'}"></i>
+                                        </button>
 
-                                    <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); addCart('${lecture.lectureIdx}');">장바구니</button>
+                                        <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); addCart('${lecture.lectureIdx}');">장바구니</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
