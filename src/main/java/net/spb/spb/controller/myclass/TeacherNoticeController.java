@@ -65,9 +65,23 @@ public class TeacherNoticeController {
     public String view(
             @ModelAttribute TeacherNoticePageDTO pageDTO,
             @RequestParam("idx") int idx,
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest req,
             Model model
     ) {
         TeacherNoticeResponseDTO teacherNoticeDTO = noticeService.getTeacherNoticeByIdx(idx);
+
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        if (teacherNoticeDTO == null) {
+            redirectAttributes.addFlashAttribute("message", "요청한 공지사항을 찾을 수 없습니다.");
+            return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
+        }
+        if (!memberId.equals(teacherNoticeDTO.getTeacherNoticeMemberId())) {
+            redirectAttributes.addFlashAttribute("message", "조회 권한이 없습니다.");
+            return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
+        }
 
         model.addAttribute("pageDTO", pageDTO);
         model.addAttribute("teacherNoticeDTO", teacherNoticeDTO);
