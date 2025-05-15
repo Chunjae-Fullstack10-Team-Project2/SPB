@@ -148,7 +148,7 @@
                             나의강의실
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="${cp}/myclass/lecture">내 강의 목록</a></li>
+                            <li><a class="dropdown-item" href="${cp}/myclass">내 강의 목록</a></li>
                             <li><a class="dropdown-item" href="${cp}/myclass/notice">공지사항</a></li>
                             <li><a class="dropdown-item" href="${cp}/myclass/qna">Q&A</a></li>
                             <li><a class="dropdown-item" href="${cp}/myclass/library">자료실</a></li>
@@ -219,7 +219,7 @@
                                 <c:if test="${sessionScope.memberGrade ne 13}">
                                     <li><hr class="dropdown-divider"></li>
                                     <li class="dropdown-header">나의 학습방</li>
-                                    <li><a class="dropdown-item" href="${cp}/mystudy/lecture">내 강의 목록</a></li>
+                                    <li><a class="dropdown-item" href="${cp}/mystudy">내 강의 목록</a></li>
                                     <li><a class="dropdown-item" href="${cp}/mystudy/qna">Q&A</a></li>
                                     <li><a class="dropdown-item" href="${cp}/mystudy/grade">나의성적</a></li>
                                     <li><a class="dropdown-item" href="${cp}/mystudy/review">수강후기</a></li>
@@ -276,7 +276,7 @@
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li>
                             <a class="d-inline-flex text-decoration-none rounded text-dark"
-                               href="${cp}/myclass/lecture">내 강의 목록</a>
+                               href="${cp}/myclass">내 강의 목록</a>
                         </li>
                         <li>
                             <a class=" d-inline-flex text-decoration-none rounded text-dark"
@@ -312,7 +312,7 @@
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li>
                             <a class="d-inline-flex text-decoration-none rounded text-dark"
-                               href="${cp}/mystudy/lecture">내 강의 목록</a>
+                               href="${cp}/mystudy">내 강의 목록</a>
                         </li>
                         <li>
                             <a class=" d-inline-flex text-decoration-none rounded text-dark"

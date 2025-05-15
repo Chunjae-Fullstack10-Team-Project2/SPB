@@ -1,10 +1,6 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: MAIN
-  Date: 2025-05-06
-  Time: 오후 5:04
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -12,94 +8,99 @@
 <html>
 <head>
     <title>Title</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <%@ include file="../common/header.jsp" %>
-    <div class="container">
-        <h1>나의 강의실</h1>
+    <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
+    <div class="content">
+        <div class="container my-5">
+            <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
+            <h1 class="h2 mb-4">나의 강의실</h1>
 
-        <!-- 검색창 영역 -->
-        <div class="search-box">
-            <div class="search-status btn-group" role="group">
-                <input type="radio" class="btn-check" name="lecture_status" id="lecture_status_0" value="0" ${pageDTO.lecture_status == 0 ? 'checked' : ''} />
-                <label class="btn btn-outline-primary" for="lecture_status_0">수강전</label>
+            <%
+                List<Map<String, String>> searchSelect = new ArrayList<>();
+                searchSelect.add(Map.of("value", "lectureTitle", "label", "강좌명"));
+                searchSelect.add(Map.of("value", "teacherName", "label", "선생님"));
 
-                <input type="radio" class="btn-check" name="lecture_status" id="lecture_status_1" value="1" ${pageDTO.lecture_status == 1 ? 'checked' : ''} />
-                <label class="btn btn-outline-primary" for="lecture_status_1">수강중</label>
-
-                <input type="radio" class="btn-check" name="lecture_status" id="lecture_status_2" value="2" ${pageDTO.lecture_status == 2 ? 'checked' : ''} />
-                <label class="btn btn-outline-primary" for="lecture_status_2">수강완료</label>
+                request.setAttribute("searchSelect", searchSelect);
+                request.setAttribute("searchAction", "/mystudy/lecture");
+            %>
+            <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/searchBoxOnlyPage.jsp" />
+            <div class="d-flex flex-wrap gap-2 border-bottom pb-2 mb-4">
+                <a onclick="setLectureStatus();"
+                   class="btn rounded-pill
+                   ${empty param.lecture_status ? 'active btn-primary text-white border-primary' : 'btn-outline-secondary'}">
+                    전체
+                </a>
+                <a onclick="setLectureStatus(0);"
+                   class="btn rounded-pill
+                   ${param.lecture_status eq 0 ? 'active btn-primary text-white border-primary' : 'btn-outline-secondary'}">
+                    수강전
+                </a>
+                <a onclick="setLectureStatus(1);"
+                   class="btn rounded-pill
+                   ${param.lecture_status eq 1 ? 'active btn-primary text-white border-primary' : 'btn-outline-secondary'}">
+                    수강중
+                </a>
+                <a onclick="setLectureStatus(2);"
+                   class="btn rounded-pill
+                   ${param.lecture_status eq 2 ? 'active btn-primary text-white border-primary' : 'btn-outline-secondary'}">
+                    수강완료
+                </a>
             </div>
-            <div class="search-word">
-                <select class="form-select" name="search_category">
-                    <option value="lectureTitle" ${pageDTO.search_category == 'lectureTitle' ? 'selected' : ''}>강의명</option>
-                    <option value="teacherName" ${pageDTO.search_category == 'teacherName' ? 'selected' : ''}>선생님</option>
-                </select>
-                <input class="form-control" type="text" name="search_word" value="${pageDTO.search_word}" placeholder="검색어를 입력하세요."/>
-                <button type="button" class="btn btn-primary" id="btnSearch">검색</button>
-            </div>
-        </div>
-
-        <!-- 목록 영역 -->
-        <div class="lecture-list">
-            <c:choose>
-                <c:when test="${not empty lectureList}">
+            <c:if test="${not empty lectureList}">
+                <div class="lecture-list">
                     <c:forEach var="lecture" items="${lectureList}">
-                        <div class="card">
-                            <div class="row">
-                                <div class="col">
-                                    진도율 ${lecture.lectureProgress != null ? lecture.lectureProgress : 0}%
-                                </div>
-                                <div class="col">
-                                    <div class="card-body">
-                                        <p class="lecture-teacher">${lecture.teacherName}</p>
-                                        <p class="lecture-title">${lecture.lectureTitle}</p>
-                                        <p class="lecture-history">최종학습일: ${lecture.lectureHistoryLastWatchDate != null ? lecture.lectureHistoryLastWatchDate : ''}</p>
+                        <div class="card mb-3 shadow-sm border-0 rounded-4 overflow-hidden" style="min-width: 440px;"
+                             role="button" onclick="location.href='/lecture/lectureDetail?lectureIdx=${lecture.lectureRegisterRefIdx}'">
+                            <div class="col px-4 py-3">
+                                <h6 class="mb-1 text-dark">${lecture.lectureTitle}</h6>
+                                <p class="mb-1 text-muted">${lecture.teacherName} 선생님</p>
+                                <div class="d-flex flex-md-row justify-content-md-between align-items-md-end
+                                            flex-column align-items-start">
+                                    <div class="d-flex flex-row align-items-center gap-2">
+                                        <div class="fw-bold">진도율</div>
+                                        <div class="progress" style="width: 300px; height: 8px;">
+                                            <div class="progress-bar bg-success" role="progressbar"
+                                                 style="width: ${lecture.lectureProgress != null ? lecture.lectureProgress : 0}%;">
+                                            </div>
+                                        </div>
+                                        <div class="small">${lecture.lectureProgress != null ? lecture.lectureProgress : 0}%</div>
                                     </div>
+
+                                    <p class="mb-0 text-secondary small">
+                                        최종 학습일: ${lecture.lectureHistoryLastWatchDate != null ? fn:substring(lecture.lectureHistoryLastWatchDate, 0, 10) : '-'}
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </c:forEach>
-                </c:when>
-                <c:otherwise>
-                    <p>강좌가 없습니다.</p>
-                </c:otherwise>
-            </c:choose>
-        </div>
-        <div class="paging">
-            ${paging}
+                </div>
+            </c:if>
+
+
+            <c:if test="${empty lectureList}">
+                <div class="alert alert-warning text-center" role="alert">
+                    강좌가 없습니다.
+                </div>
+            </c:if>
+
+            <div class="mb-2 mb-md-0 text-center">
+                <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/pagingOnlyPage.jsp" />
+            </div>
         </div>
     </div>
+
     <script>
-        const lectureStatus = document.querySelectorAll('input[name="lecture_status"]');
-        lectureStatus.forEach(status => {
-            status.addEventListener("change", function() {
-                const status = this.value;
-                const params = new URLSearchParams(window.location.search);
-                params.set('lecture_status', status);
-                window.location.href = "/mystudy/lecture?" + params.toString();
-            });
-        });
-
-        const btnSearch = document.getElementById("btnSearch");
-        btnSearch.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-            const search_category = document.querySelector("select[name='search_category']").value;
-            const search_word = document.querySelector("input[name='search_word']").value;
-
-            if (search_category == null || search_word == null) {
-                alert("검색어를 입력해주세요.");
-                return;
+        const setLectureStatus = (status) => {
+            const params = new URLSearchParams(location.search);
+            if(status != null) {
+                params.set("lecture_status", status);
+            } else {
+                params.delete("lecture_status");
             }
 
-            const params = new URLSearchParams(window.location.search);
-            params.set("search_category", search_category);
-            params.set("search_word", search_word);
-            window.location.href = "/mystudy/lecture?" + params.toString();
-        });
+            location.href = "/mystudy?" + params.toString();
+        }
     </script>
 </body>
 </html>

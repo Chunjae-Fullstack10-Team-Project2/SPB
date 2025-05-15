@@ -16,6 +16,7 @@ public class StudentLectureResponseDTO {
     private String lectureRegisterMemberId;
     private int lectureRegisterRefIdx;
     private String lectureTitle;
+    private String lectureTeacherId;
     private String teacherName;
     private LocalDateTime lectureRegisterStartedAt;
     private String lectureRegisterStatus;

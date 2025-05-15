@@ -9,6 +9,7 @@ import net.spb.spb.dto.pagingsearch.StudentLecturePageDTO;
 import net.spb.spb.dto.pagingsearch.TeacherQnaPageDTO;
 import net.spb.spb.dto.teacher.TeacherQnaListRequestDTO;
 import net.spb.spb.dto.teacher.TeacherQnaResponseDTO;
+import net.spb.spb.service.lecture.LectureGradeService;
 import net.spb.spb.service.lecture.StudentLectureServiceIf;
 import net.spb.spb.service.teacher.TeacherQnaService;
 import net.spb.spb.util.BreadcrumbUtil;
@@ -27,9 +28,8 @@ import java.util.Map;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/mystudy")
-public class MyStudyRoomController {
+public class StudentLectureController {
     private final StudentLectureServiceIf studentLectureService;
-    private final TeacherQnaService teacherQnaService;
 
     private static final Map<String, String> ROOT_BREADCRUMB = Map.of("name", "나의학습방", "url", "/mystudy");
 
@@ -41,52 +41,26 @@ public class MyStudyRoomController {
         BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
     }
 
-    @GetMapping("/lecture")
-    public String lecture(@ModelAttribute("pageDTO") StudentLecturePageDTO pageDTO, Model model, HttpServletRequest req) {
-        HttpSession session = req.getSession();
-        String memberId = (String) session.getAttribute("memberId");
-
-        String baseUrl = req.getRequestURI();
-        pageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, pageDTO));
-        pageDTO.setTotal_count(studentLectureService.getStudentLectureTotalCount(memberId, pageDTO));
-
-        List<StudentLectureResponseDTO> lectures = studentLectureService.getStudentLectureList(memberId, pageDTO);
-
-        String paging = PagingUtil.pagingArea(pageDTO);
-
-        model.addAttribute("lectureList", lectures);
-        model.addAttribute("paging", paging);
-
-        setBreadcrumb(model, Map.of("내 강의 목록", "/mystudy/lecture"));
-
-        return "mystudy/lecture";
-    }
-
-    @GetMapping("/qna")
-    public String qna(
-            @ModelAttribute TeacherQnaPageDTO pageDTO,
+    @GetMapping("")
+    public String list(
+            @ModelAttribute("pageDTO") StudentLecturePageDTO pageDTO,
             HttpServletRequest req,
             Model model
     ) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        TeacherQnaListRequestDTO reqDTO = TeacherQnaListRequestDTO.builder()
-                .where_column("ttq.teacherQnaQMemberId")
-                .where_value(memberId)
-                .build();
-
-        int totalCount = teacherQnaService.getTeacherQnaTotalCount(reqDTO, pageDTO);
+        int totalCount = studentLectureService.getStudentLectureTotalCount(memberId, pageDTO);
         pageDTO.setTotal_count(totalCount);
 
-        List<TeacherQnaResponseDTO> qnas = teacherQnaService.getTeacherQnaList(reqDTO, pageDTO);
+        List<StudentLectureResponseDTO> lectures = studentLectureService.getStudentLectureList(memberId, pageDTO);
 
         model.addAttribute("totalCount", totalCount);
+        model.addAttribute("lectureList", lectures);
         model.addAttribute("pageDTO", pageDTO);
-        model.addAttribute("dtoList", qnas);
 
-        setBreadcrumb(model, Map.of("QnA", "/mystudy/qna"));
+        setBreadcrumb(model, Map.of("내 강의 목록", "/mystudy"));
 
-        return "mystudy/qna";
+        return "mystudy/lecture";
     }
 }
