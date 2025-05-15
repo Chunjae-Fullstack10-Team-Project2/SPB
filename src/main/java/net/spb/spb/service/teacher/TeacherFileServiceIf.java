@@ -11,6 +11,9 @@ public interface TeacherFileServiceIf {
     public int createTeacherFile(TeacherFileDTO dto);
     public List<TeacherFileResponseDTO> getTeacherFileList(String teacherId, TeacherFilePageDTO pageDTO);
     public TeacherFileResponseDTO getTeacherFileByIdx(int idx);
+    public int updateTeacherFile(TeacherFileDTO teacherFileDTO);
     public int deleteTeacherFileByIdx(int idx);
     public FileDTO getFileByIdx(int idx);
+
+    public int getTeacherFileTotalCount(String teacherId, TeacherFilePageDTO pageDTO);
 }

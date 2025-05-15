@@ -4,45 +4,62 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html>
 <head>
-    <title>공지사항 수정</title>
+    <title>자료실 수정</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        input[type="file"] {
+            /*display: none;*/
+        }
+        .origin-file, .origin-file > input {
+            cursor:pointer;
+        }
+        .origin-file > input:active {
+            border: none;
+        }
+    </style>
 </head>
 <body>
 <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
     <div class="content">
         <div class="container my-5">
             <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
-            <h1 class="h2 mb-4">공지사항 수정</h1>
+            <h1 class="h2 mb-4">자료실 수정</h1>
 
-            <form name="frmModify" action="/myclass/notice/modify?${pageDTO.linkUrl}" method="post"
+            <form name="frmModify" action="/myclass/library/modify?${pageDTO.linkUrl}" method="post" enctype="multipart/form-data"
                   class="border p-4 rounded bg-light shadow-sm">
-                <input type="hidden" name="teacherNoticeIdx" value="${teacherNoticeDTO.teacherNoticeIdx}"/>
-                <input type="hidden" name="teacherNoticeMemberId" value="${teacherNoticeDTO.teacherNoticeMemberId}"/>
+                <input type="hidden" name="teacherFileIdx" value="${teacherFileDTO.teacherFileIdx}"/>
+                <input type="hidden" name="teacherFileMemberId" value="${teacherFileDTO.teacherFileMemberId}"/>
 
                 <div class="mb-3">
-                    <label for="teacherNoticeTitle" class="form-label">제목</label>
-                    <input type="text" class="form-control char-limit" name="teacherNoticeTitle" id="teacherNoticeTitle"
+                    <label for="teacherFileTitle" class="form-label">제목</label>
+                    <input type="text" class="form-control char-limit" name="teacherFileTitle" id="teacherFileTitle"
                            data-maxlength="50" data-target="#titleCount"
-                           value="${teacherNoticeDTO.teacherNoticeTitle}" placeholder="제목을 입력하세요." maxlength="50" required />
+                           value="${teacherFileDTO.teacherFileTitle}" placeholder="제목을 입력하세요." maxlength="50" required />
                     <div class="text-end small text-muted mt-1 mb-3">
                         <span id="titleCount">0</span> / 50
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="teacherNoticeContent" class="form-label">내용</label>
-                    <textarea class="form-control char-limit" rows="10" name="teacherNoticeContent" id="teacherNoticeContent"
+                    <label for="teacherFileContent" class="form-label">내용</label>
+                    <textarea class="form-control char-limit" rows="10" name="teacherFileContent" id="teacherFileContent"
                               data-maxlength="19000" data-target="#contentCount"
-                              placeholder="내용을 입력하세요" style="resize: none;">${teacherNoticeDTO.teacherNoticeContent}</textarea>
+                              placeholder="내용을 입력하세요" style="resize: none;">${teacherFileDTO.teacherFileContent}</textarea>
                     <div class="text-end small text-muted mt-1 mb-3">
                         <span id="contentCount">0</span> / 19000
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <input class="form-check-input" type="checkbox" value="1" name="teacherNoticeFixed" id="teacherNoticeFixed"
-                    ${teacherNoticeDTO.teacherNoticeFixed == 1 ? "checked" : ""}>
-                    <label class="form-check-label" for="teacherNoticeFixed">이 공지사항을 상단에 고정합니다</label>
+                    <p class="form-label">기존 파일</p>
+                    <p class="form-control">${teacherFileDTO.fileDTO.fileOrgName}</p>
+                    <input type="hidden" name="deleteFile" value="${teacherFileDTO.fileDTO.fileName}" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="file" class="form-label">파일 첨부</label>
+                    <input type="file" class="form-control" name="file" id="file">
+                    <p class="text-danger small mb-0">* 새로운 파일 첨부 시, 기존 파일은 삭제됩니다.</p>
                 </div>
 
                 <div>
@@ -76,6 +93,18 @@
             e.preventDefault();
 
             const frm = document.querySelector('form[name="frmModify"]');
+            const file = frm.file.files;
+
+            if (file.length < 1) {
+                alert("파일을 첨부해주세요.");
+                return;
+            }
+            const maxFileSize = 10 * 1024 * 1024;
+            if (file.size > maxFileSize) {
+                alert("파일은 10MB 이하만 업로드할 수 있습니다.");
+                return;
+            }
+
             frm.submit();
         });
 

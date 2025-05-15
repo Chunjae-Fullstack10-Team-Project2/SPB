@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.spb.spb.mapper.lecture.LectureGradeMapper">
+    <sql id="condition">
+        <where>
+            ${where_column} = #{where_value}
+            <if test="search_word != null and search_word != ''">
+                <if test="search_category == 'lectureRegisterMemberId'">
+                    and tlr.lectureRegisterMemberId like concat('%', #{search_word}, '%')
+                </if>
+                <if test="search_category == 'lectureTitle'">
+                    and tl.lectureTitle like concat('%', #{search_word}, '%')
+                </if>
+                <if test="search_category == 'teacherName'">
+                    and tt.teacherName like concat('%', #{search_word}, '%')
+                </if>
+            </if>
+            <if test="start_date != null and end_date != null">
+                and tlr.lectureRegisterStartedAt between #{start_date} and #{end_date}
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectLectureGradeTotalCount" resultType="int">
+        select count(*)
+        from tbl_lecture_register as tlr
+        inner join tbl_lecture as tl on tlr.lectureRegisterRefIdx = tl.lectureIdx
+        inner join tbl_teacher as tt on tl.lectureTeacherId = tt.teacherId
+        left join tbl_lecture_grade as tlg
+        on tlr.lectureRegisterRefIdx = tlg.lectureGradeRefIdx
+        and tlr.lectureRegisterMemberId = tlg.lectureGradeMemberId
+        <include refid="condition"/>
+    </select>
+
+    <select id="selectLectureGradeList" resultType="net.spb.spb.dto.lecture.LectureGradeListDTO">
+        select
+            tlr.lectureRegisterIdx,
+            tlr.lectureRegisterMemberId,
+            tlr.lectureRegisterRefIdx,
+            tl.lectureTitle,
+            tl.lectureTeacherId,
+            tt.teacherName,
+            tlr.lectureRegisterStartedAt,
+            tlg.lectureGradeScore,
+            (tlg.lectureGradeScore IS NULL) as lectureGradeStatus
+        from tbl_lecture_register as tlr
+        inner join tbl_lecture as tl on tlr.lectureRegisterRefIdx = tl.lectureIdx
+        inner join tbl_teacher as tt on tl.lectureTeacherId = tt.teacherId
+        left join tbl_lecture_grade as tlg
+        on tlr.lectureRegisterRefIdx = tlg.lectureGradeRefIdx
+        and tlr.lectureRegisterMemberId = tlg.lectureGradeMemberId
+        <include refid="condition"/>
+        order by ${sort_by} ${sort_direction}
+        limit #{page_skip_count}, #{page_size}
+    </select>
+
+    <select id="selectLectureGradeByIdx" resultType="net.spb.spb.dto.lecture.LectureGradeDetailDTO">
+        select
+            tlg.lectureGradeIdx,
+            tlg.lectureGradeRefIdx,
+            tl.lectureTitle,
+            tl.lectureDescription,
+            tl.lectureThumbnailImg,
+            tlg.lectureGradeMemberId,
+            tm.memberName,
+            tm.memberProfileImg,
+            tlg.lectureGradeScore,
+            tlg.lectureGradeFeedback,
+            tlg.lectureGradeCreatedAt,
+            tlg.lectureGradeUpdatedAt
+        from tbl_lecture_grade as tlg
+        inner join tbl_lecture as tl on tlg.lectureGradeRefIdx = tl.lectureIdx
+        inner join tbl_member as tm on tlg.lectureGradeMemberId = tm.memberId
+        where lectureGradeIdx = #{idx}
+    </select>
+
+    <insert id="insertLectureGrade" useGeneratedKeys="true" keyColumn="lectureGradeIdx" keyProperty="lectureGradeIdx">
+        insert into tbl_lecture_grade (lectureGradeRefIdx, lectureGradeMemberId, lectureGradeScore, lectureGradeFeedback)
+        values (#{lectureGradeRefIdx}, #{lectureGradeMemberId}, #{lectureGradeScore}, #{lectureGradeFeedback})
+    </insert>
+
+    <update id="updateLectureGrade">
+        update tbl_lecture_grade
+        set lectureGradeScore = #{lectureGradeScore}, lectureGradeFeedback = #{lectureGradeFeedback}
+        where lectureGradeIdx = #{lectureGradeIdx}
+    </update>
+
+    <delete id="deleteLectureGradeByIdx">
+        delete from tbl_lecture_grade
+        where lectureGradeIdx = #{idx}
+    </delete>
+</mapper>

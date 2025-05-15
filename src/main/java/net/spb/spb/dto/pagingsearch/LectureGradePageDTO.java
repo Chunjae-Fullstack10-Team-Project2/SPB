@@ -13,9 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class StudentLecturePageDTO extends PageDTO {
-    @Builder.Default
-    private int lecture_status = 0;
+public class LectureGradePageDTO extends PageDTO {
+    private String where_column;
+    private String where_value;
 
     private String search_category;
 
@@ -27,7 +27,7 @@ public class StudentLecturePageDTO extends PageDTO {
     @Builder.Default
     private String sort_direction = "desc";
 
-    private static final List<String> SORT_COLUMNS = List.of("lectureRegisterIdx", "lectureTitle", "lectureRegisterStartedAt");
+    private static final List<String> SORT_COLUMNS = List.of("lectureRegisterIdx", "lectureTitle", "lectureRegisterStartedAt", "lectureGradeScore");
     private static final List<String> SORT_DIRECTIONS = List.of("asc", "desc");
 
     public String getSort_by() {
@@ -43,10 +43,6 @@ public class StudentLecturePageDTO extends PageDTO {
         sb.append("page_no=" + super.getPage_no());
         sb.append("&page_size=" + super.getPage_size());
         sb.append("&page_bock_size=" + super.getPage_block_size());
-
-        if (this.lecture_status > 0) {
-            sb.append("&lecture_status=" + this.lecture_status);
-        }
 
         if (this.search_category != null && super.getSearch_word() != null) {
             sb.append("&search_category=" + this.search_category);

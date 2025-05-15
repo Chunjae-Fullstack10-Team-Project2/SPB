@@ -74,7 +74,7 @@ public class TeacherNoticeController {
 
         setBreadcrumb(model, Map.of("공지사항", "/myclass/notice"), Map.of("공지사항 상세보기", "/myclass/notice/view?idx=" + idx));
 
-        return "/myclass/notice/view";
+        return "myclass/notice/view";
     }
 
     @GetMapping("/regist")
@@ -126,7 +126,7 @@ public class TeacherNoticeController {
         }
         if(!memberId.equals(notice.getTeacherNoticeMemberId())) {
             redirectAttributes.addFlashAttribute("message", "수정 권한이 없습니다.");
-            return "redirect:/myclass/notice?idx=" + idx + "&" + pageDTO.getLinkUrl();
+            return "redirect:/myclass/notice/view?idx=" + idx + "&" + pageDTO.getLinkUrl();
         }
 
         model.addAttribute("pageDTO", pageDTO);
@@ -140,14 +140,22 @@ public class TeacherNoticeController {
     @PostMapping("/modify")
     public String modifyPost(
             @ModelAttribute TeacherNoticePageDTO pageDTO,
-            @ModelAttribute TeacherNoticeDTO teacherNoticeDTO,
+            @Valid @ModelAttribute TeacherNoticeDTO teacherNoticeDTO,
+            BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
             HttpServletRequest req
     ) {
+        int idx = teacherNoticeDTO.getTeacherNoticeIdx();
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("message", "잘못된 입력이 있습니다. 다시 확인해주세요.");
+            redirectAttributes.addFlashAttribute("teacherNoticeDTO", teacherNoticeDTO);
+            return "redirect:/myclass/library/modify?idx=" + idx + "&" + pageDTO.getLinkUrl();
+        }
+
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        int idx = teacherNoticeDTO.getTeacherNoticeIdx();
         TeacherNoticeResponseDTO notice = noticeService.getTeacherNoticeByIdx(idx);
 
         if (notice == null) {
@@ -161,7 +169,7 @@ public class TeacherNoticeController {
 
         noticeService.updateTeacherNotice(memberId, teacherNoticeDTO);
 
-        return "redirect:/myclass/notice?" + pageDTO.getLinkUrl();
+        return "redirect:/myclass/notice/view?idx=" + idx + "&" + pageDTO.getLinkUrl();
     }
 
     @PostMapping("/delete")

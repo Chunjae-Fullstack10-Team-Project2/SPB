@@ -29,9 +29,6 @@ public class TeacherFileService implements TeacherFileServiceIf {
 
     @Override
     public List<TeacherFileResponseDTO> getTeacherFileList(String teacherId, TeacherFilePageDTO pageDTO) {
-        int totalCount = teacherFileMapper.selectTeacherFileListTotalCount(teacherId, pageDTO);
-        pageDTO.setTotal_count(totalCount);
-
         List<TeacherFileVO> voList = teacherFileMapper.selectTeacherFileList(teacherId, pageDTO);
         return voList.stream().map( vo -> {
             TeacherFileResponseDTO dto = modelMapper.map(vo, TeacherFileResponseDTO.class);
@@ -50,6 +47,12 @@ public class TeacherFileService implements TeacherFileServiceIf {
     }
 
     @Override
+    public int updateTeacherFile(TeacherFileDTO teacherFileDTO) {
+        TeacherFileVO vo = modelMapper.map(teacherFileDTO, TeacherFileVO.class);
+        return teacherFileMapper.updateTeacherFile(vo);
+    }
+
+    @Override
     public int deleteTeacherFileByIdx(int idx) {
         return teacherFileMapper.deleteTeacherFileByIdx(idx);
     }
@@ -57,5 +60,10 @@ public class TeacherFileService implements TeacherFileServiceIf {
     @Override
     public FileDTO getFileByIdx(int idx) {
         return modelMapper.map(teacherFileMapper.selectFileByIdx(idx), FileDTO.class);
+    }
+
+    @Override
+    public int getTeacherFileTotalCount(String teacherId, TeacherFilePageDTO pageDTO) {
+        return teacherFileMapper.selectTeacherFileListTotalCount(teacherId, pageDTO);
     }
 }
