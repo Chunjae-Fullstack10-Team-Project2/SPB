@@ -273,7 +273,7 @@
                 </choose>
             </if>
         </where>
-        order by ${sort_by} ${sort_direction}
+        order by c.chapterIdx asc
         limit #{page_skip_count}, #{page_size}
     </select>
 
@@ -295,7 +295,7 @@
         set chapterName = #{chapterName},
             chapterVideo = #{chapterVideo},
             chapterRuntime = #{chapterRuntime}
-        where chapterLectureIdx = #{chapterLectureIdx}
+        where chapterIdx = #{chapterLectureIdx}
     </update>
 
     <update id="deleteChapter" parameterType="java.lang.Integer">

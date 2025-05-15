@@ -76,7 +76,7 @@
           </div>
 
           <div class="d-flex justify-content-end gap-2">
-            <input type="reset" class="btn btn-outline-secondary" value="취소">
+            <input type="reset" id="btnCancel" class="btn btn-outline-secondary" value="취소">
             <input type="button" class="btn btn-primary" onclick="uploadChapter()" value="등록">
           </div>
 
@@ -94,8 +94,13 @@
   </div>
 
 </div>
+<jsp:include page="/WEB-INF/views/common/toast.jsp" />
 <script src="${pageContext.request.contextPath}/resources/js/bindCharCount.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/toast.js"></script>
 <script>
+  document.getElementById('btnCancel').addEventListener('click', ()=> {
+    history.back();
+  })
   bindCharCount(
           document.getElementById('chapterName'),
           document.getElementById('chapterNameCharCount'),
@@ -152,17 +157,18 @@
       try {
         const response = JSON.parse(xhr.responseText);
         if (xhr.status === 200) {
+          showToast("업로드가 완료되었습니다.", true);
           window.location.href = "/admin/chapter/list";
         } else {
-          alert("업로드 실패: " + response.message);
+          showToast("업로드에 실패하였습니다.", true);
         }
       } catch (e) {
-        alert("응답 처리 중 오류 발생: " + xhr.responseText);
+        showToast("응답 처리 중 오류 발생하였습니다. " + xhr.responseText, true);
       }
     };
     xhr.onerror = function () {
       document.querySelector(".preloader").style.display = "none";
-      alert("네트워크 오류 발생");
+      showToast("네트워크 오류가 발생하였습니다.", true);
     };
 
     xhr.send(formData);
