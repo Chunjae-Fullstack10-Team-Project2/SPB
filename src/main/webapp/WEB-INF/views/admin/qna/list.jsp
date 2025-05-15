@@ -11,7 +11,7 @@
 %>
 <html>
 <head>
-    <title>미답변 문의</title>
+    <title>미답변 문의 관리</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -35,7 +35,7 @@
 
     <div class="container my-5" style="height: 100%; min-height: 100vh;">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0">미답변 문의 목록</h3>
+            <h3 class="mb-0">미답변 문의 관리</h3>
         </div>
         <%
             List<Map<String, String>> searchTypeOptions = new ArrayList<>();

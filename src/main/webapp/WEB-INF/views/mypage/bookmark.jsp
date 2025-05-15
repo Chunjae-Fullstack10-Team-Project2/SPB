@@ -6,7 +6,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>찜한 강의</title>
+    <title>북마크한 강좌</title>
 </head>
 <body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
