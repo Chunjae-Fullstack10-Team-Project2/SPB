@@ -19,9 +19,13 @@ public interface AdminMapper {
 
     int insertTeacher(TeacherVO teacherVO);
 
-    List<MemberDTO> selectTeacherWithoutTeacherProfile();
+    List<MemberDTO> selectTeacherWithoutTeacherProfile(TeacherPageDTO teacherPageDTO);
 
-    List<MemberDTO> selectTeacherWithTeacherProfile();
+    List<MemberDTO> selectTeacherWithTeacherProfile(TeacherPageDTO teacherPageDTO);
+
+    int selectTeacherWithoutTeacherProfileCount(TeacherPageDTO teacherPageDTO);
+
+    int selectTeacherWithTeacherProfileCount(TeacherPageDTO teacherPageDTO);
 
     int modifyTeacherProfile (TeacherVO teacherVO);
 
@@ -32,6 +36,7 @@ public interface AdminMapper {
     List<MemberVO> getAllTeachers(MemberPageDTO memberPageDTO);
 
     int getAllTeachersCount(MemberPageDTO memberPageDTO);
+
     // Lecture
     int insertLecture(LectureVO lectureVo);
 

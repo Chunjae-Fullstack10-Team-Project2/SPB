@@ -36,6 +36,21 @@ public class NewPagingUtil {
         return linkUrl.toString();
     }
 
+    public static String buildLinkUrl(String basePath, TeacherPageDTO dto) {
+        StringBuilder linkUrl = new StringBuilder(basePath);
+        boolean hasQuery = false;
+
+        if (dto.getPage_size() > 0) {
+            linkUrl.append(hasQuery ? "&" : "?").append("page_size=").append(dto.getPage_size());
+            hasQuery = true;
+        }
+        if (dto.getSearch_word() != null && !dto.getSearch_word().isEmpty()) {
+            linkUrl.append(hasQuery ? "&" : "?").append("search_word=").append(dto.getSearch_word());
+            hasQuery = true;
+        }
+        return linkUrl.toString();
+    }
+
     public static String buildLinkUrl(String basePath, MemberPageDTO dto) {
         StringBuilder linkUrl = new StringBuilder(basePath);
         boolean hasQuery = false;
