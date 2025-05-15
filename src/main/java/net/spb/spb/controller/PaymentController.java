@@ -7,13 +7,13 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.*;
+import net.spb.spb.dto.lecture.LectureDTO;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.service.PaymentServiceIf;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.ZonedDateTime;

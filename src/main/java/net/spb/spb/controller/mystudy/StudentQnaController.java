@@ -22,7 +22,7 @@ import java.util.Map;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/mystudy")
+@RequestMapping("/mystudy/qna")
 public class StudentQnaController {
     private final TeacherQnaServiceIf teacherQnaService;
 
@@ -36,8 +36,8 @@ public class StudentQnaController {
         BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
     }
 
-    @GetMapping("/qna")
-    public String qna(
+    @GetMapping("")
+    public String list(
             @ModelAttribute TeacherQnaPageDTO pageDTO,
             HttpServletRequest req,
             Model model

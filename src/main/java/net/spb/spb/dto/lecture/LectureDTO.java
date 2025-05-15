@@ -1,11 +1,10 @@
-package net.spb.spb.dto;
+package net.spb.spb.dto.lecture;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Log4j2
 @Data

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.domain.*;
 import net.spb.spb.dto.*;
+import net.spb.spb.dto.lecture.LectureDTO;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.mapper.PaymentMapper;
 import org.modelmapper.ModelMapper;

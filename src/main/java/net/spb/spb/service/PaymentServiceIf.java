@@ -1,11 +1,10 @@
 package net.spb.spb.service;
 
 import net.spb.spb.dto.CartDTO;
-import net.spb.spb.dto.LectureDTO;
+import net.spb.spb.dto.lecture.LectureDTO;
 import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.PaymentDTO;
 import net.spb.spb.dto.member.MemberDTO;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;

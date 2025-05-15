@@ -53,6 +53,20 @@
         </if>
     </select>
 
+    <select id="getStudentLectures" resultType="net.spb.spb.dto.lecture.LectureDTO">
+        select
+            tl.lectureIdx,
+            tl.lectureTitle,
+            tl.lectureDescription,
+            tl.lectureThumbnailImg,
+            tl.lectureTeacherId,
+            tl.lectureAmount,
+            tl.lectureCreatedAt
+        from tbl_lecture as tl
+        inner join tbl_lecture_register as tlr on tl.lectureIdx = tlr.lectureRegisterRefIdx
+        where tlr.lectureRegisterMemberId = #{memberId}
+    </select>
+
     <!-- 최종학습일 -->
     <select id="getLastWatchDate" resultType="java.util.Date">
         select max(tlh.lectureHistoryLastWatchDate) as lectureHistoryLastWatchDate
