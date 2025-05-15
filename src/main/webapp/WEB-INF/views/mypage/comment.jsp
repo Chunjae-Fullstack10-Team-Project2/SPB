@@ -74,10 +74,7 @@
                                     </span>
                                 </c:when>
                                 <c:otherwise>
-                                    <a href="/board/freeboard/view?idx=${comment.postCommentRefPostIdx}#comment-${comment.postCommentIdx}"
-                                       class="text-dark text-decoration-none">
-                                            ${comment.postCommentContent}
-                                    </a>
+                                    <span>${comment.postCommentContent}</span>
                                 </c:otherwise>
                             </c:choose>
                         </td>

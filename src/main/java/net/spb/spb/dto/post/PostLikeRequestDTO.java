@@ -11,6 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class PostLikeRequestDTO {
+    private int postLikeIdx;
     private int postLikeRefIdx;
     private int postIdx;
     private String postLikeRefType;
