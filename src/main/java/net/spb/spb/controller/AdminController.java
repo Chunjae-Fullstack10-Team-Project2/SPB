@@ -325,10 +325,10 @@ public class AdminController {
         memberPageDTO.setPage_size(5);
         String baseUrl = req.getRequestURI();
         memberPageDTO.setLinkUrl(NewPagingUtil.buildLinkUrl(baseUrl, memberPageDTO));
-        int total_count = memberService.getMemberCount(memberPageDTO);
+        int total_count = adminService.getAllTeachersCount(memberPageDTO);
         memberPageDTO.setTotal_count(total_count);
         String paging = NewPagingUtil.pagingArea(memberPageDTO);
-        List<MemberDTO> memberDTOs = memberService.getMembers(memberPageDTO);
+        List<MemberDTO> memberDTOs = adminService.getAllTeachers(memberPageDTO);
         model.addAttribute("teachers", memberDTOs);
         model.addAttribute("searchDTO", memberPageDTO);
         model.addAttribute("paging", paging);
@@ -403,7 +403,9 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
             return "redirect:/admin/lecture/regist";
         }
-
+        log.info("lectureDTO.getLectureTeacherId() : {}", lectureDTO.getLectureTeacherId());
+        log.info("lectureDTO.getLectureTeacherId().isBlank() : {}", lectureDTO.getLectureTeacherId().isBlank());
+        log.info("!adminService.existsByTeacherId(lectureDTO.getLectureTeacherId()) : {}", !adminService.existsByTeacherId(lectureDTO.getLectureTeacherId()));
         if (lectureDTO.getLectureTeacherId().isBlank() || !adminService.existsByTeacherId(lectureDTO.getLectureTeacherId())) {
             redirectAttributes.addFlashAttribute("errorMessage", "선생님 정보가 올바르지 않습니다.");
             redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
