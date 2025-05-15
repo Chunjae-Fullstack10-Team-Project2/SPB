@@ -69,9 +69,23 @@ public class TeacherQnaController {
     public String view(
             @ModelAttribute TeacherQnaPageDTO pageDTO,
             @RequestParam("idx") int idx,
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest req,
             Model model
     ) {
         TeacherQnaResponseDTO dto = service.getTeacherQnaByIdx(idx);
+
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        if (dto == null) {
+            redirectAttributes.addFlashAttribute("message", "요청한 QnA를 찾을 수 없습니다.");
+            return "redirect:/myclass/qna?" + pageDTO.getLinkUrl();
+        }
+        if (!memberId.equals(dto.getTeacherQnaAMemberId())) {
+            redirectAttributes.addFlashAttribute("message", "조회 권한이 없습니다.");
+            return "redirect:/myclass/qna?" + pageDTO.getLinkUrl();
+        }
 
         model.addAttribute("pageDTO", pageDTO);
         model.addAttribute("dto", dto);

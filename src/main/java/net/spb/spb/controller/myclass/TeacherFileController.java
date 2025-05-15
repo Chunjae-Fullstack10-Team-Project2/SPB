@@ -69,9 +69,23 @@ public class TeacherFileController {
     public String view(
             @ModelAttribute TeacherFilePageDTO pageDTO,
             @RequestParam("idx") int idx,
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest req,
             Model model
     ) {
         TeacherFileResponseDTO teacherFileDTO = service.getTeacherFileByIdx(idx);
+
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        if (teacherFileDTO == null) {
+            redirectAttributes.addFlashAttribute("message", "요청한 자료를 찾을 수 없습니다.");
+            return "redirect:/myclass/library?" + pageDTO.getLinkUrl();
+        }
+        if (!memberId.equals(teacherFileDTO.getTeacherFileMemberId())) {
+            redirectAttributes.addFlashAttribute("message", "조회 권한이 없습니다.");
+            return "redirect:/myclass/library?" + pageDTO.getLinkUrl();
+        }
 
         model.addAttribute("pageDTO", pageDTO);
         model.addAttribute("teacherFileDTO", teacherFileDTO);
