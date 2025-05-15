@@ -72,12 +72,19 @@ public class BoardController {
                        @RequestParam("idx") int idx,
                        Model model,
                        HttpSession session) {
+
         service.setReadCnt(idx);
         String memberId = (String) session.getAttribute("memberId");
         HashMap<String, Object> param = new HashMap<>();
         param.put("postIdx", idx);
         param.put("memberId", memberId);
+
         PostDTO post = service.getPostByIdx(param);
+
+        // 이스케이프된 문자 복원
+        post.setPostContent(StringEscapeUtils.unescapeHtml4(post.getPostContent()));
+        post.setPostComments(post.getPostComments().stream().peek(comment -> StringEscapeUtils.unescapeHtml4(comment.getPostCommentContent())).toList());
+
         model.addAttribute("post", post);
         addBreadcrumb(model, category, "상세 보기");
         return "board/view";

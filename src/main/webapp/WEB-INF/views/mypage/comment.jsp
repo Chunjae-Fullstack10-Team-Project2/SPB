@@ -7,8 +7,6 @@
 <html>
 <head>
     <title>내가 쓴 댓글</title>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
     <style>
         .text-muted-deleted {
             color: lightgray !important;

@@ -17,11 +17,11 @@
         FROM tbl_report AS r
         JOIN tbl_post AS p ON r.reportRefIdx = p.postIdx
         WHERE 1=1
-<choose>
-    <when test="searchDTO.reportState != null and searchDTO.reportState != ''">
-        AND reportState = #{searchDTO.reportState}
-    </when>
-</choose>
+        <choose>
+            <when test="searchDTO.reportState != null and searchDTO.reportState != ''">
+                AND reportState = #{searchDTO.reportState}
+            </when>
+        </choose>
 
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
@@ -72,11 +72,11 @@
         from tbl_report AS r
         JOIN tbl_post AS p on r.reportRefIdx = p.postIdx
         where 1=1
-<choose>
-    <when test="searchDTO.reportState != null and searchDTO.reportState != ''">
-        AND reportState = #{searchDTO.reportState}
-    </when>
-</choose>
+        <choose>
+            <when test="searchDTO.reportState != null and searchDTO.reportState != ''">
+                AND reportState = #{searchDTO.reportState}
+            </when>
+        </choose>
 
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
@@ -126,11 +126,11 @@
         FROM tbl_report AS r
         JOIN tbl_lecture_review as l ON r.reportRefIdx = l.lectureReviewIdx
         WHERE 1=1
-<choose>
-    <when test="searchDTO.reportState != null and searchDTO.reportState != ''">
-        AND reportState = #{searchDTO.reportState}
-    </when>
-</choose>
+        <choose>
+            <when test="searchDTO.reportState != null and searchDTO.reportState != ''">
+                AND reportState = #{searchDTO.reportState}
+            </when>
+        </choose>
 
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
@@ -176,11 +176,11 @@
         FROM tbl_report AS r
         JOIN tbl_lecture_review as l ON r.reportRefIdx = l.lectureReviewIdx
         where 1=1
-<choose>
-    <when test="searchDTO.reportState != null and searchDTO.reportState != ''">
-        AND reportState = #{searchDTO.reportState}
-    </when>
-</choose>
+        <choose>
+            <when test="searchDTO.reportState != null and searchDTO.reportState != ''">
+                AND reportState = #{searchDTO.reportState}
+            </when>
+        </choose>
 
         <if test="searchDTO.searchWord != null and searchDTO.searchWord != ''">
             <choose>
@@ -206,4 +206,33 @@
             </choose>
         </if>
     </select>
+
+    <update id="rejectBoardReport">
+        UPDATE tbl_report
+        SET reportState = 3
+        WHERE reportIdx = #{reportIdx}
+    </update>
+
+    <update id="updateBoardReportAsProcessed">
+        UPDATE tbl_report r
+            JOIN tbl_post p
+        ON r.reportRefIdx = p.postIdx
+            SET r.reportState = 2, p.postState = 2
+        WHERE r.reportIdx = #{reportIdx}
+    </update>
+
+    <update id="updateReviewReportAsProcessed">
+        UPDATE tbl_report r
+            JOIN tbl_lecture_review l
+        ON r.reportRefIdx = l.lectureReviewIdx
+            SET r.reportState = 2, l.lectureReviewState = 2
+        WHERE r.reportIdx = #{reportIdx}
+    </update>
+
+    <update id="rejectReviewReport">
+        UPDATE tbl_report
+        SET reportState = 3
+        WHERE reportIdx = #{reportIdx}
+    </update>
+
 </mapper>

@@ -18,9 +18,21 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         HttpSession session = request.getSession(false);
 
         // 세션이 없거나 memberId가 없으면 로그인 페이지로 리디렉션
+//        if (session == null || session.getAttribute("memberId") == null) {
+//            response.sendRedirect(request.getContextPath() + "/login");
+//            return false; // 컨트롤러 진입 막기
+//        }
         if (session == null || session.getAttribute("memberId") == null) {
+            // 현재 요청 URL 저장
+            String uri = request.getRequestURI();
+            String query = request.getQueryString();
+            String redirectUrl = uri + (query != null ? "?" + query : "");
+
+            session = request.getSession(); // 새 세션 생성
+            session.setAttribute("redirectAfterLogin", redirectUrl);
+
             response.sendRedirect(request.getContextPath() + "/login");
-            return false; // 컨트롤러 진입 막기
+            return false;
         }
 
         // 필요한 경우 세션 정보 로깅

@@ -63,14 +63,21 @@ change this template use File | Settings | File Templates. --%>
                         </c:otherwise>
                     </c:choose>
 
-                    <div>
+                    <div class="flex-grow-1">
                         <div class="fw-semibold">${post.memberName} (${post.postMemberId})</div>
-                        <div class="text-muted small">조회 ${post.postReadCnt} | 댓글 ${fn:length(post.postComments)} | 좋아요
-                            <span class="likeCount">${post.postLikeCnt}</span></div>
+                        <div class="d-flex justify-content-between text-muted small">
+                            <div>${fn:replace(post.postCreatedAt, 'T', ' ')}
+                                <c:if test="${not empty post.postUpdatedAt}">
+                                    (수정: ${fn:replace(post.postUpdatedAt, 'T', ' ')})
+                                </c:if>
+                            </div>
+                            <div>조회 ${post.postReadCnt} | 댓글 ${fn:length(post.postComments)} | 좋아요
+                                <span class="likeCount">${post.postLikeCnt}</span></div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mb-4" style="white-space: pre-line;"><c:out value="${post.postContent}"/></div>
+                <div class="mb-4" style="white-space: pre-line;"><c:out value="${post.postContent}" /></div>
 
                 <div class="img-gallery">
                     <c:forEach items="${post.postFiles}" var="file">
@@ -98,45 +105,44 @@ change this template use File | Settings | File Templates. --%>
                         </c:if>
                     </c:forEach>
                 </div>
-
-                <div class="d-flex gap-2 mt-3">
-                    <button class="btn btn-outline-primary btn-sm" id="btnCopyUrl"><i class="bi bi-share"></i> 공유
-                    </button>
-
-                    <c:if test="${category == 'freeboard' and not empty sessionScope.memberId}">
-                        <button type="submit" id="btnReport" class="btn btn-outline-danger btn-sm"
-                                data-report-ref-idx="${post.postIdx}" data-post-member-id="${post.postMemberId}"
-                                data-report-ref-type="POST">
-                            <i class="bi bi-flag"></i> 신고
+                <!-- 버튼 -->
+                <div class="d-flex justify-content-between align-items-start mt-3 flex-wrap gap-2">
+                    <div>
+                        <button class="btn btn-secondary btn-sm" onclick="location.href='list'"><i class="bi bi-list"></i>
+                            목록
                         </button>
-                    </c:if>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 justify-content-end">
+                        <button class="btn btn-outline-primary btn-sm" id="btnCopyUrl"><i class="bi bi-share"></i> 공유</button>
+                        <c:if test="${category == 'freeboard' and not empty sessionScope.memberId}">
+                            <button type="submit" id="btnReport" class="btn btn-outline-danger btn-sm"
+                                    data-report-ref-idx="${post.postIdx}" data-post-member-id="${post.postMemberId}"
+                                    data-report-ref-type="POST">
+                                <i class="bi bi-flag"></i> 신고
+                            </button>
+                        </c:if>
+                        <c:if test="${sessionScope.memberId eq post.postMemberId}">
+                            <button class="btn btn-warning btn-sm" onclick="location.href='modify?idx=${post.postIdx}'"><i
+                                    class="bi bi-pencil"></i> 수정
+                            </button>
+                            <button class="btn btn-danger btn-sm" id="btnPostDelete" data-post-idx="${post.postIdx}"
+                                    data-member-id="${post.postMemberId}">
+                                <i class="bi bi-trash"></i> 삭제
+                            </button>
+                        </c:if>
+
+                        <c:if test="${not empty sessionScope.memberId}">
+                            <button type="button"
+                                    class="btn btn-outline-success btn-sm ${post.like ? 'liked' : ''}"
+                                    id="btnLike"
+                                    data-post-idx="${post.postIdx}"
+                                    data-like-ref-type="POST">
+                                    ${category != 'freeboard' ? '도움이 돼요 ': ''}
+                                👍&nbsp;&nbsp;<span class="likeCount">${post.postLikeCnt}</span>
+                            </button>
+                        </c:if>
+                    </div>
                 </div>
-
-                <div class="d-flex gap-2 my-4">
-                    <button class="btn btn-secondary btn-sm" onclick="location.href='list'"><i class="bi bi-list"></i>
-                        목록
-                    </button>
-                    <c:if test="${sessionScope.memberId eq post.postMemberId}">
-                        <button class="btn btn-warning btn-sm" onclick="location.href='modify?idx=${post.postIdx}'"><i
-                                class="bi bi-pencil"></i> 수정
-                        </button>
-                        <button class="btn btn-danger btn-sm" id="btnPostDelete" data-post-idx="${post.postIdx}"
-                                data-member-id="${post.postMemberId}">
-                            <i class="bi bi-trash"></i> 삭제
-                        </button>
-                    </c:if>
-                </div>
-
-                <c:if test="${not empty sessionScope.memberId}">
-                    <button type="button"
-                            class="btn btn-outline-success btn-sm ${post.like ? 'liked' : ''}"
-                            id="btnLike"
-                            data-post-idx="${post.postIdx}"
-                            data-like-ref-type="POST">
-                        ${category != 'freeboard' ? '도움이 돼요 ': ''}
-                        👍&nbsp;&nbsp;<span class="likeCount">${post.postLikeCnt}</span>
-                    </button>
-                </c:if>
                 <hr/>
 
                 <!-- 댓글 목록 -->
@@ -162,7 +168,7 @@ change this template use File | Settings | File Templates. --%>
                                     </div>
                                 </div>
                                 <div class="comment-body mt-2">
-                                    <div class="comment-text"><c:out value="${postComment.postCommentContent}"/></div>
+                                    <div class="comment-text" style="white-space: pre-line">${postComment.postCommentContent}</div>
                                     <!-- 댓글 수정 -->
                                     <div class="comment-edit position-relative border rounded p-3 bg-light mt-2"
                                          style="min-height: 100px;">
@@ -171,7 +177,7 @@ change this template use File | Settings | File Templates. --%>
                                         </div>
 
                                         <textarea class="form-control edit-textarea border-0 shadow-none mb-4 ps-0"
-                                                  style="resize: none; overflow: hidden; height: auto; background: transparent;"
+                                                  style="resize: none; background: transparent;"
                                                   maxlength="3000">${postComment.postCommentContent}</textarea>
 
                                         <div class="position-absolute end-0 bottom-0 p-2">
@@ -236,20 +242,14 @@ change this template use File | Settings | File Templates. --%>
     </div>
 </div>
 <!-- Toast 메시지 -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-    <div id="toastMessage" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive"
-         aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body" id="toastText">알림 메시지</div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-        </div>
-    </div>
-</div>
+<jsp:include page="/WEB-INF/views/common/toast.jsp" />
 
 <!-- 스크립트 -->
-
+<script src="${pageContext.request.contextPath}/resources/js/toast.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/escape.js"></script>
 <script>
     const sessionMemberId = '${sessionScope.memberId != null ? sessionScope.memberId : ''}';
+    const category = '${category}';
     // 게시글 삭제
     document.getElementById('btnPostDelete')?.addEventListener('click', function () {
         if (!confirm("정말 게시글을 삭제할까요?")) return;
@@ -294,16 +294,25 @@ change this template use File | Settings | File Templates. --%>
     // 댓글 수정 모드
     function enableEdit(btn) {
         const body = btn.closest('.comment-body');
-        body.querySelector('.comment-text').style.display = 'none';
-        body.querySelector('.comment-edit').style.display = 'block';
+        const editBox = body.querySelector('.comment-edit');
+        const textBox = body.querySelector('.comment-text');
+        const textarea = editBox.querySelector('.edit-textarea');
+        const countSpan = editBox.querySelector('.editCharCount');
+        textBox.style.display = 'none';
+        editBox.style.display = 'block';
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+        countSpan.textContent = textarea.value.length;
     }
 
+    // 댓글 수정 취소
     function cancelEdit(btn) {
         const body = btn.closest('.comment-body');
         body.querySelector('.comment-edit').style.display = 'none';
         body.querySelector('.comment-text').style.display = 'block';
     }
 
+    // 댓글 수정 요청
     function saveEdit(btn, commentIdx, memberId) {
         const commentItem = btn.closest('.comment-item');
         const body = btn.closest('.comment-body');
@@ -336,28 +345,23 @@ change this template use File | Settings | File Templates. --%>
         }).catch((e) => showToast("댓글 수정 실패: " + e, true));
     }
 
-    // 댓글 수정 textarea 실시간 처리
+    // 댓글 수정 textarea 실시간 글자수 처리
     document.querySelectorAll('.edit-textarea').forEach(textarea => {
         const countSpan = textarea.closest('.comment-edit').querySelector('.editCharCount');
-
         const update = () => {
             textarea.style.height = 'auto';
             textarea.style.height = textarea.scrollHeight + 'px';
             countSpan.textContent = textarea.value.length;
         };
-
         textarea.addEventListener('input', update);
-        update(); // 초기 실행
+        update();
     });
 
-    // 댓글 입력
+    // 댓글 입력 textarea 가변 높이
     const textarea = document.getElementById('postCommentContent');
-
     textarea?.addEventListener('input', function () {
         this.style.height = 'auto'; // 높이 초기화
-        this.style.height = this.scrollHeight + 'px'; // 내용만큼 늘림
-
-        // 글자 수 카운트
+        this.style.height = this.scrollHeight + 'px';
         document.getElementById('commentCharCount').textContent = this.value.length;
     });
 
@@ -372,7 +376,7 @@ change this template use File | Settings | File Templates. --%>
             return;
         }
 
-        fetch(`/board/${category}/comment/write`, {
+        fetch(`comment/write`, {
             method: "POST",
             headers: {"Content-Type": "application/x-www-form-urlencoded"},
             body: new URLSearchParams({
@@ -381,66 +385,81 @@ change this template use File | Settings | File Templates. --%>
                 memberProfileImg: memberProfileImg
             })
         })
-            .then(res => res.text())
-            .then(text => {
-                let json;
-                try {
-                    json = JSON.parse(text);
-                } catch (e) {
-                    showToast("서버 응답 형식 오류", true);
-                    return;
-                }
-                if (json.success) {
-                    showToast(json.message);
-                    const comment = json.comment;
-                    let createdAt = json.createdAt;
-                    const profileImg = comment.postCommentMemberProfileImg
-                        ? (comment.postCommentMemberProfileImg.startsWith("/upload/")
-                            ? comment.postCommentMemberProfileImg
-                            : '/upload/' + comment.postCommentMemberProfileImg)
-                        : '/resources/img/default_profileImg.png';
+        .then(res => res.text())
+        .then(text => {
+            let json;
+            try {
+                json = JSON.parse(text);
+            } catch (e) {
+                showToast("서버 응답 형식 오류", true);
+                return;
+            }
+            if (json.success) {
+                showToast(json.message);
+                const comment = json.comment;
+                let createdAt = json.createdAt;
+                const profileImg = comment.postCommentMemberProfileImg
+                    ? (comment.postCommentMemberProfileImg.startsWith("/upload/")
+                        ? comment.postCommentMemberProfileImg
+                        : '/upload/' + comment.postCommentMemberProfileImg)
+                    : '/resources/img/default_profileImg.png';
 
-                    const div = document.createElement('div');
-                    div.setAttribute('data-comment-idx', comment.postCommentIdx);
-                    div.classList.add('comment-item', 'border-bottom', 'pb-2', 'mb-2');
+                const div = document.createElement('div');
+                div.setAttribute('data-comment-idx', comment.postCommentIdx);
+                div.classList.add('comment-item', 'border-bottom', 'pb-2', 'mb-2');
 
-                    div.innerHTML =
-                        '<div class="d-flex justify-content-between">' +
-                        '<div class="d-flex align-items-center">' +
-                        '<img src="' + profileImg + '" width="24" height="24" class="rounded-circle me-2" alt="프로필">' +
-                        '<strong>' + comment.postCommentMemberId + '</strong>' +
-                        '</div>' +
-                        '<div class="text-muted small comment-info" data-original-date="' + createdAt + '">' + createdAt + '</div>' +
-                        '</div>' +
-                        '<div class="comment-body mt-2">' +
-                        '<div class="comment-text">' + comment.postCommentContent + '</div>' +
-                        '<div class="comment-edit position-relative border rounded p-3 bg-light mt-2" style="min-height: 100px;">' +
-                        '<div class="position-absolute top-0 end-0 pe-3 pt-2 small text-muted">' +
-                            '<span class="editCharCount">0</span> / 3000</div>' +
+                div.innerHTML =
+                    '<div class="d-flex justify-content-between">' +
+                    '<div class="d-flex align-items-center">' +
+                    '<img src="' + profileImg + '" width="24" height="24" class="rounded-circle me-2" alt="프로필">' +
+                    '<strong>' + comment.postCommentMemberId + '</strong>' +
+                    '</div>' +
+                    '<div class="text-muted small comment-info" data-original-date="' + createdAt + '">' + createdAt + '</div>' +
+                    '</div>' +
+                    '<div class="comment-body mt-2">' +
+                    '<div class="comment-text">' + escapeHtmlWithLineBreaks(comment.postCommentContent) + '</div>' +
+                    '<div class="comment-edit position-relative border rounded p-3 bg-light mt-2" style="min-height: 100px;">' +
+                    '<div class="position-absolute top-0 end-0 pe-3 pt-2 small text-muted">' +
+                        '<span class="editCharCount">0</span> / 3000</div>' +
 
-                        '<textarea class="form-control edit-textarea border-0 shadow-none mb-4 ps-0" style="resize: none; overflow: hidden; height: auto; background: transparent;" maxlength="3000">' + comment.postCommentContent + '</textarea>' +
-                        '<div class="position-absolute end-0 bottom-0 p-2">' +
-                        '<button class="btn btn-sm btn-outline-primary" onclick="saveEdit(this, ' + comment.postCommentIdx + ', \'' + sessionMemberId + '\')">저장</button>' +
-                        '<button class="btn btn-sm btn-outline-secondary" onclick="cancelEdit(this)">취소</button>' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="text-end mt-2">' +
-                        '<button class="btn btn-sm btn-link" onclick="enableEdit(this)" style="text-decoration: none;">수정</button>' +
-                        '<button class="btn btn-sm btn-link text-danger commentDeleteButton" style="text-decoration: none;"' +
-                        'data-comment-idx="' + comment.postCommentIdx + '" ' +
-                        'data-member-id="' + comment.postCommentMemberId + '">삭제</button>' +
-                        '</div>' +
-                        '</div>';
+                    '<textarea class="form-control edit-textarea border-0 shadow-none mb-4 ps-0" style="resize: none; overflow: hidden; height: auto; background: transparent;" maxlength="3000">' + comment.postCommentContent + '</textarea>' +
+                    '<div class="position-absolute end-0 bottom-0 p-2">' +
+                    '<button class="btn btn-sm btn-outline-primary" onclick="saveEdit(this, ' + comment.postCommentIdx + ', \'' + sessionMemberId + '\')">저장</button>' +
+                    '<button class="btn btn-sm btn-outline-secondary" onclick="cancelEdit(this)">취소</button>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="text-end mt-2">' +
+                    '<button class="btn btn-sm btn-link" onclick="enableEdit(this)" style="text-decoration: none;">수정</button>' +
+                    '<button class="btn btn-sm btn-link text-danger commentDeleteButton" style="text-decoration: none;"' +
+                    'data-comment-idx="' + comment.postCommentIdx + '" ' +
+                    'data-member-id="' + comment.postCommentMemberId + '">삭제</button>' +
+                    '</div>' +
+                    '</div>';
+                const newTextarea = div.querySelector('.edit-textarea');
+                const newCountSpan = div.querySelector('.editCharCount');
+                const updateHeight = () => {
+                    newTextarea.style.height = 'auto';
+                    newTextarea.style.height = newTextarea.scrollHeight + 'px';
+                    newCountSpan.textContent = newTextarea.value.length;
+                };
 
-                    document.getElementById('commentList').appendChild(div);
-                    document.getElementById('postCommentContent').value = '';
-                } else {
-                    showToast(json.message || "댓글 등록에 실패했습니다.", true);
-                }
-            })
-            .catch(err => {
-                showToast("댓글 등록 요청 중 오류 발생", true);
-            });
+                newTextarea.addEventListener('input', updateHeight);
+                updateHeight();
+
+                document.getElementById('commentList').appendChild(div);
+                textarea.value = '';
+                textarea.style.height = 'auto';
+                document.getElementById('commentCharCount').textContent = '0';
+                document.getElementById('commentList').appendChild(div);
+                document.getElementById('postCommentContent').value = '';
+            } else {
+                showToast(json.message || "댓글 등록에 실패했습니다.", true);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showToast("댓글 등록 요청 중 오류 발생", true);
+        });
     });
 
     // 좋아요 처리
@@ -487,26 +506,16 @@ change this template use File | Settings | File Templates. --%>
                 postMemberId: postMemberId
             })
         })
-            .then(res => res.json())
-            .then(json => {
-                if (json.success) {
-                    showToast(json.message);
-                } else {
-                    showToast(json.message, true);
-                }
-            })
-            .catch(() => showToast("신고 처리 중 오류가 발생했습니다.", true));
+        .then(res => res.json())
+        .then(json => {
+            if (json.success) {
+                showToast(json.message);
+            } else {
+                showToast(json.message, true);
+            }
+        })
+        .catch(() => showToast("신고 처리 중 오류가 발생했습니다.", true));
     });
-
-    // toast 함수
-    function showToast(message, isError = false) {
-        const toastEl = document.getElementById("toastMessage");
-        const toastText = document.getElementById("toastText");
-        toastText.innerText = message;
-        toastEl.classList.remove("text-bg-success", "text-bg-danger");
-        toastEl.classList.add(isError ? "text-bg-danger" : "text-bg-success");
-        new bootstrap.Toast(toastEl).show();
-    }
 
     // url 클립보드 복사
     document.getElementById("btnCopyUrl").addEventListener("click", function () {
@@ -516,6 +525,23 @@ change this template use File | Settings | File Templates. --%>
         }).catch(err => {
             showToast("복사에 실패했습니다: " + err, true);
         });
+    });
+
+    // 페이지 로딩 후 모든 .edit-textarea 높이 재조정
+    window.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.edit-textarea').forEach(textarea => {
+            const countSpan = textarea.closest('.comment-edit').querySelector('.editCharCount');
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+            countSpan.textContent = textarea.value.length;
+        });
+
+        const commentInput = document.getElementById('postCommentContent');
+        if (commentInput) {
+            commentInput.style.height = 'auto';
+            commentInput.style.height = commentInput.scrollHeight + 'px';
+            document.getElementById('commentCharCount').textContent = commentInput.value.length;
+        }
     });
 </script>
 </body>

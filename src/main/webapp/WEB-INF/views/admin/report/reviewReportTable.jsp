@@ -13,7 +13,6 @@
 <head>
     <title>리뷰 신고 목록</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <%@ include file="../../common/sidebarHeader.jsp" %>
@@ -46,7 +45,7 @@
         </nav>
     </div>
 
-    <div class="container my-5" style="height: 100%; min-height: 100vh;">
+    <div class="container my-5 pb-5" style="min-height: 100vh;">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">리뷰 신고 목록</h3>
         </div>
@@ -105,16 +104,32 @@
                                 </c:if>
                             </a>
                         </th>
+                        <th>신고 상태</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach items="${reviewReportList}" var="postDTO" varStatus="status">
+                    <c:forEach items="${reviewReportList}" var="reportDTO" varStatus="status">
                         <tr>
-                            <td>${postDTO.reportIdx}</td>
-                            <td class="text-start">${postDTO.lectureReviewContent}</td>
-                            <td>${postDTO.lectureReviewMemberId}</td>
-                            <td>${postDTO.reportMemberId}</td>
-                            <td>${postDTO.lectureReviewCreatedAt.toLocalDate()}</td>
+                            <td>${reportDTO.reportIdx}</td>
+                            <td class="text-start">${reportDTO.lectureReviewContent}</td>
+                            <td>${reportDTO.lectureReviewMemberId}</td>
+                            <td>${reportDTO.reportMemberId}</td>
+                            <td>${reportDTO.lectureReviewCreatedAt.toLocalDate()}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${reportDTO.reportState eq 1}">
+                                        <button class="btn btn-sm btn-outline-success me-1 btn-process-review" data-id="${reportDTO.reportIdx}">처리</button>
+                                        <button class="btn btn-sm btn-outline-danger btn-reject-review" data-id="${reportDTO.reportIdx}">반려</button>
+                                    </c:when>
+                                    <c:when test="${reportDTO.reportState eq 2}">
+                                        <span class="badge bg-success">처리됨</span>
+                                    </c:when>
+                                    <c:when test="${reportDTO.reportState eq 3}">
+                                        <span class="badge bg-secondary">반려됨</span>
+                                    </c:when>
+                                </c:choose>
+                            </td>
+
                         </tr>
                     </c:forEach>
                     </tbody>
@@ -134,6 +149,26 @@
 </div>
 
 <script>
+    $(document).on('click', '.btn-process-review', function () {
+        const reportIdx = $(this).data('id');
+        if (!confirm('해당 강의평 신고를 처리하시겠습니까?')) return;
+        $.post('/admin/report/review/process', { reportIdx })
+            .done(msg => {
+                alert(msg);
+                location.reload();
+            });
+    });
+
+    $(document).on('click', '.btn-reject-review', function () {
+        const reportIdx = $(this).data('id');
+        if (!confirm('해당 강의평 신고를 반려하시겠습니까?')) return;
+        $.post('/admin/report/review/reject', { reportIdx })
+            .done(msg => {
+                alert(msg);
+                location.reload();
+            });
+    });
+
     <c:if test="${not empty message}">
     alert("${message}");
     </c:if>

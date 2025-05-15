@@ -103,7 +103,7 @@
                     <c:forEach var="teacher" items="${teacherDTO}">
                         <div class="col">
                             <div class="card text-center h-100 border-0 shadow-sm" role="button"
-                                 onclick="location.href='/teacher/personal?teacherId=<c:out value="${teacher.teacherId}"/>">
+                                 onclick="location.href='/teacher/personal?teacherId=${teacher.teacherId}'">
                                 <div class="card-body d-flex flex-column align-items-center">
                                     <div class="rounded-circle overflow-hidden border mb-3"
                                          style="width: 120px; height: 120px;">

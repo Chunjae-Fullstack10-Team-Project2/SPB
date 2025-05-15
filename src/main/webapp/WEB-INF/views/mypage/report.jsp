@@ -14,8 +14,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </head>
 <body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
@@ -77,26 +75,26 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${reportList}" var="postDTO">
+                <c:forEach items="${reportList}" var="reportDTO">
                     <tr>
-                        <td>${postDTO.reportIdx}</td>
+                        <td>${reportDTO.reportIdx}</td>
                         <td class="text-start">
-                            <a href="/board/freeboard/view?idx=${postDTO.reportRefIdx}"
+                            <a href="/board/freeboard/view?idx=${reportDTO.reportRefIdx}"
                                class="text-decoration-none text-dark">
-                                    ${postDTO.postTitle}
+                                    ${reportDTO.postTitle}
                             </a>
                         </td>
-                        <td>${postDTO.postMemberId}</td>
-                        <td>${postDTO.postCreatedAt.toLocalDate()}</td>
+                        <td>${reportDTO.postMemberId}</td>
+                        <td>${reportDTO.postCreatedAt.toLocalDate()}</td>
                         <td>
                             <c:choose>
-                                <c:when test="${postDTO.reportState == 1}">
+                                <c:when test="${reportDTO.reportState == 1}">
                                     <button type="button" class="btn btn-sm btn-danger"
-                                            onclick="deleteReport(${postDTO.reportIdx})">
+                                            onclick="deleteReport(${reportDTO.reportIdx})">
                                         삭제
                                     </button>
                                 </c:when>
-                                <c:when test="${postDTO.reportState == 2}">
+                                <c:when test="${reportDTO.reportState == 2}">
                                     <span class="badge bg-secondary">관리자에 의해 삭제됨</span>
                                 </c:when>
                             </c:choose>

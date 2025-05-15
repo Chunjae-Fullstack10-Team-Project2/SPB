@@ -11,7 +11,6 @@
 <html>
 <head>
     <title>나의 1:1 문의</title>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body class="bg-light-subtle">
 
