@@ -145,6 +145,12 @@
             checkboxes.forEach(cb => cb.checked = source.checked);
         }
 
+        document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+            el.addEventListener('click', function (e) {
+                e.stopPropagation();
+            });
+        });
+
         document.querySelectorAll('#btnRegist').forEach(el => {
             el.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -164,7 +170,7 @@
                 e.preventDefault();
                 e.stopPropagation();
 
-                if (!confirm("해당 자료를 삭제하시겠습니까?\n삭제된 자료는 복구되지 않습니다.")) return;
+                if (!confirm("해당 문의를 삭제하시겠습니까?\n삭제된 문의는 복구되지 않습니다.")) return;
 
                 const idx = this.closest("tr").querySelector("input[type='checkbox']").value;
 
@@ -188,7 +194,7 @@
                 return;
             }
 
-            if (!confirm("선택하신 자료를 삭제하시겠습니까?\n삭제된 자료는 복구되지 않습니다.")) return;
+            if (!confirm("선택하신 문의를 삭제하시겠습니까?\n삭제된 문의는 복구되지 않습니다.")) return;
 
             const frm = document.querySelector("form[name='frmSubmit']");
 

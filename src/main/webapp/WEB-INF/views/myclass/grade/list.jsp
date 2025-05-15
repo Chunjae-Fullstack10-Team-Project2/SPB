@@ -187,7 +187,7 @@
                e.preventDefault();
                e.stopPropagation();
 
-               if (!confirm("해당 자료를 삭제하시겠습니까?\n삭제된 자료는 복구되지 않습니다.")) return;
+               if (!confirm("해당 성적표를 삭제하시겠습니까?\n삭제된 성적표는 복구되지 않습니다.")) return;
 
                const idx = this.closest("tr").querySelector("input[type='checkbox']").value;
 
@@ -205,14 +205,12 @@
                 e.preventDefault();
                 e.stopPropagation();
 
-                console.log('클릭');
-
                 const items = document.querySelectorAll('input[name="idxList"]:checked');
                 if (items.length === 0) {
                     alert("삭제할 항목을 선택하세요.");
                     return;
                 }
-                if (!confirm("선택하신 자료를 삭제하시겠습니까?\n삭제된 자료는 복구되지 않습니다.")) return;
+                if (!confirm("선택하신 성적표를 삭제하시겠습니까?\n삭제된 성적표는 복구되지 않습니다.")) return;
 
                 const frm = document.querySelector("form[name='frmSubmit']");
 
