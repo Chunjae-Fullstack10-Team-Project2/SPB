@@ -63,7 +63,7 @@
         </a>
       </div>
       <div class="col-md-3">
-        <a href="${cp}/admin/teacher/list" class="d-block p-3 bg-success bg-opacity-10 rounded shadow-sm text-decoration-none">
+        <a href="${cp}/admin/teacher/manage" class="d-block p-3 bg-success bg-opacity-10 rounded shadow-sm text-decoration-none">
           <i class="bi bi-person-badge-fill text-success fs-4 me-2"></i> <strong class="text-dark">선생님 관리</strong>
         </a>
       </div>

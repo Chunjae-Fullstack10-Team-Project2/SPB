@@ -19,10 +19,15 @@
     <select id="selectTeacherWithoutTeacherProfile" parameterType="net.spb.spb.dto.pagingsearch.TeacherPageDTO" resultType="net.spb.spb.dto.member.MemberDTO">
         SELECT m.memberId, m.memberIdx, m.memberName, m.memberBirth, m.memberCreatedAt
         FROM tbl_member m
-        WHERE m.memberGrade = 13
-          AND NOT EXISTS (
-            SELECT 1 FROM tbl_teacher t WHERE t.teacherId = m.memberId
-        )
+        <where>
+            m.memberGrade = 13
+            AND NOT EXISTS (
+                SELECT 1 FROM tbl_teacher t WHERE t.teacherId = m.memberId
+            )
+            <if test="search_word != null and search_word != ''">
+                and (m.memberName like concat('%', #{search_word}, '%') or m.memberId like concat('%',#{search_word}, '%'))
+            </if>
+        </where>
         ORDER BY m.memberCreatedAt DESC
             LIMIT #{page_skip_count}, #{page_size}
     </select>
@@ -30,10 +35,15 @@
     <select id="selectTeacherWithoutTeacherProfileCount" parameterType="net.spb.spb.dto.pagingsearch.TeacherPageDTO" resultType="int">
         SELECT count(*)
         FROM tbl_member m
-        WHERE m.memberGrade = 13
-          AND NOT EXISTS (
+        <where>
+            m.memberGrade = 13
+            AND NOT EXISTS (
             SELECT 1 FROM tbl_teacher t WHERE t.teacherId = m.memberId
-        )
+            )
+            <if test="search_word != null and search_word != ''">
+                and (m.memberName like concat('%', #{search_word}, '%') or m.memberId like concat('%',#{search_word}, '%'))
+            </if>
+        </where>
     </select>
 
     <select id="selectTeacherWithTeacherProfile" parameterType="net.spb.spb.dto.pagingsearch.TeacherPageDTO" resultType="net.spb.spb.dto.member.MemberDTO">

@@ -20,7 +20,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,7 +27,7 @@ import java.util.stream.Collectors;
 @Controller
 @Log4j2
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/admin/lecture")
 public class AdminLectureController extends AdminBaseController {
 
     private final AdminService adminService;
@@ -36,14 +35,14 @@ public class AdminLectureController extends AdminBaseController {
 
     private static final long MAX_FILE_SIZE_10 = 10 * 1024 * 1024;
 
-    @GetMapping("/lecture/list")
+    @GetMapping("/list")
     public void lectureList(@ModelAttribute LecturePageDTO lecturePageDTO, Model model) {
         List<LectureDTO> lectureDTOs = adminService.selectLectureList(lecturePageDTO);
         model.addAttribute("lectures", lectureDTOs);
         setBreadcrumb(model, Map.of("강좌 목록", ""));
     }
 
-    @GetMapping("/lecture/regist")
+    @GetMapping("/regist")
     public void lectureRegist(Model model) {
         setBreadcrumb(model,
                 Map.of("강좌 목록", "/admin/lecture/list"),
@@ -51,7 +50,7 @@ public class AdminLectureController extends AdminBaseController {
         );
     }
 
-    @PostMapping("/lecture/regist")
+    @PostMapping("/regist")
     public String lectureRegistPOST(@RequestParam(name = "file1") MultipartFile file,
                                     @Valid @ModelAttribute LectureDTO lectureDTO,
                                     BindingResult bindingResult,
@@ -72,9 +71,7 @@ public class AdminLectureController extends AdminBaseController {
             redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
             return "redirect:/admin/lecture/regist";
         }
-        log.info("lectureDTO.getLectureTeacherId() : {}", lectureDTO.getLectureTeacherId());
-        log.info("lectureDTO.getLectureTeacherId().isBlank() : {}", lectureDTO.getLectureTeacherId().isBlank());
-        log.info("!adminService.existsByTeacherId(lectureDTO.getLectureTeacherId()) : {}", !adminService.existsByTeacherId(lectureDTO.getLectureTeacherId()));
+
         if (lectureDTO.getLectureTeacherId().isBlank() || !adminService.existsByTeacherId(lectureDTO.getLectureTeacherId())) {
             redirectAttributes.addFlashAttribute("errorMessage", "선생님 정보가 올바르지 않습니다.");
             redirectAttributes.addFlashAttribute("lectureDTO", lectureDTO);
@@ -94,14 +91,14 @@ public class AdminLectureController extends AdminBaseController {
                 lectureDTO.setLectureThumbnailImg(savedFile.getName());
             }
         } catch (Exception e) {
-            log.info(e.getMessage());
+            log.error(e.getMessage());
         }
         adminService.insertLecture(lectureDTO);
         return "redirect:/admin/lecture/list";
     }
 
 
-    @GetMapping("/lecture/modify")
+    @GetMapping("/modify")
     public void lectureModify(@RequestParam("lectureIdx") int lectureIdx, Model model) {
         LectureDTO lectureDTO = adminService.selectLecture(lectureIdx);
         model.addAttribute("lectureDTO", lectureDTO);
@@ -111,7 +108,7 @@ public class AdminLectureController extends AdminBaseController {
         );
     }
 
-    @PostMapping("/lecture/modify")
+    @PostMapping("/modify")
     public String lectureModifyPOST(@RequestParam(name = "file1") MultipartFile file,
                                     @RequestParam("lectureIdx") int lectureIdx,
                                     @Valid @ModelAttribute LectureDTO lectureDTO,
@@ -153,13 +150,13 @@ public class AdminLectureController extends AdminBaseController {
                 lectureDTO.setLectureThumbnailImg(savedFile.getName());
             }
         } catch (Exception e) {
-            log.info(e.getMessage());
+            log.error(e.getMessage());
         }
         adminService.updateLecture(lectureDTO);
         return "redirect:/admin/lecture/list";
     }
 
-    @PostMapping("/lecture/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public Map<String, Object> lectureDelete(@RequestParam("lectureIdx") int lectureIdx) {
         Map<String, Object> result = new HashMap<>();
@@ -175,7 +172,7 @@ public class AdminLectureController extends AdminBaseController {
         return result;
     }
 
-    @PostMapping("/lecture/restore")
+    @PostMapping("/restore")
     @ResponseBody
     public Map<String, Object> lectureRestore(@RequestParam("lectureIdx") int lectureIdx) {
         Map<String, Object> result = new HashMap<>();
@@ -191,7 +188,7 @@ public class AdminLectureController extends AdminBaseController {
         return result;
     }
 
-    @GetMapping("/lecture/search")
+    @GetMapping("/search")
     public String lectureSearchPopup(@ModelAttribute LecturePageDTO lecturePageDTO, HttpServletRequest req, Model model) {
         String baseUrl = req.getRequestURI();
         lecturePageDTO.setLinkUrl(NewPagingUtil.buildLinkUrl(baseUrl, lecturePageDTO));

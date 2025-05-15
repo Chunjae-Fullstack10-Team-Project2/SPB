@@ -24,13 +24,13 @@ import java.util.Map;
 @Controller
 @Log4j2
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/admin/board")
 public class AdminBoardController extends AdminBaseController {
 
     private final AdminService adminService;
     private final BoardServiceIf boardService;
 
-    @GetMapping("/board/manage")
+    @GetMapping("/manage")
     public String boardReportList(@ModelAttribute PostPageDTO postPageDTO,
                                   Model model,
                                   HttpServletRequest req) {
@@ -50,18 +50,18 @@ public class AdminBoardController extends AdminBaseController {
         return "/admin/board/list";
     }
 
-    @GetMapping("/board/manage/view")
+    @GetMapping("/manage/view")
     @ResponseBody
     public ResponseEntity<PostDTO> boardManageView(@RequestParam("idx") int idx) {
         PostDTO postDTO = adminService.selectPostByIdx(idx);
         return ResponseEntity.ok(postDTO);
     }
 
-    @PostMapping("/board/report/state")
+    @PostMapping("/report/state")
     public Map<String, Object> boardReportState() {
         Map<String, Object> result = new HashMap<>();
         int rtnResult = 0;
-        //adminService.updateReport();
+        // adminService.updateReport();
         if (rtnResult > 0) {
             result.put("success", true);
             result.put("message", "신고가 접수되었습니다.");
@@ -69,11 +69,10 @@ public class AdminBoardController extends AdminBaseController {
             result.put("success", false);
             result.put("message", "신고 접수에 실패했습니다.");
         }
-
         return result;
     }
 
-    @PostMapping("/board/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public Map<String, Object> boardReportDelete(@RequestParam("postIdx") int postIdx) {
         Map<String, Object> result = new HashMap<>();

@@ -24,12 +24,12 @@ import java.util.Map;
 @Controller
 @Log4j2
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/admin/sales")
 public class AdminSalesController extends AdminBaseController {
 
     private final AdminService adminService;
 
-    @GetMapping("/sales/info")
+    @GetMapping("/info")
     public String salesInfo(@ModelAttribute SearchDTO searchDTO,
                             @ModelAttribute PageRequestDTO pageRequestDTO,
                             Model model) {
@@ -58,7 +58,7 @@ public class AdminSalesController extends AdminBaseController {
     }
 
 
-    @GetMapping("/sales/monthly")
+    @GetMapping("/monthly")
     @ResponseBody
     public List<Map<String, Object>> getMonthlySales(
             @RequestParam("timeType") String timeType,
@@ -68,7 +68,7 @@ public class AdminSalesController extends AdminBaseController {
         return adminService.getMonthlySales(timeType, startDate, endDate);
     }
 
-    @GetMapping("/sales/lecture")
+    @GetMapping("/lecture")
     @ResponseBody
     public List<Map<String, Object>> getLectureSales(
             @RequestParam("timeType") String timeType,
@@ -77,7 +77,7 @@ public class AdminSalesController extends AdminBaseController {
         return adminService.getLectureSales(timeType, startDate, endDate);
     }
 
-    @GetMapping("/sales/detail")
+    @GetMapping("/detail")
     @ResponseBody
     public PageResponseDTO<OrderDTO> salesDetailList(
             @RequestParam(value = "searchWord", required = false) String searchWord,
@@ -112,7 +112,7 @@ public class AdminSalesController extends AdminBaseController {
                 .build();
     }
 
-    @GetMapping("/sales/export")
+    @GetMapping("/export")
     public void exportSalesToExcel(
             @RequestParam(name = "searchType", required = false) String searchType,
             @RequestParam(name = "searchWord", required = false) String searchWord,

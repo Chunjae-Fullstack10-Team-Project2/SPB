@@ -29,7 +29,7 @@ import java.util.Map;
 @Controller
 @Log4j2
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/admin/chapter")
 public class AdminChapterController extends AdminBaseController {
 
     private final AdminService adminService;
@@ -37,7 +37,7 @@ public class AdminChapterController extends AdminBaseController {
 
     private static final long MAX_FILE_SIZE_100 = 100 * 1024 * 1024;
 
-    @GetMapping("/chapter/list")
+    @GetMapping("/list")
     public void chapterList(@ModelAttribute ChapterPageDTO chapterPageDTO, Model model, HttpServletRequest req) {
         String baseUrl = req.getRequestURI();
         chapterPageDTO.setLinkUrl(NewPagingUtil.buildLinkUrl(baseUrl, chapterPageDTO));
@@ -55,7 +55,7 @@ public class AdminChapterController extends AdminBaseController {
         );
     }
 
-    @GetMapping("/chapter/regist")
+    @GetMapping("/regist")
     public void chapterRegist(@RequestParam(name = "lectureIdx", defaultValue = "0") int lectureIdx, Model model) {
         LectureDTO lectureDTO = adminService.selectLecture(lectureIdx);
         model.addAttribute("lectureIdx", lectureIdx);
@@ -66,7 +66,7 @@ public class AdminChapterController extends AdminBaseController {
         );
     }
 
-    @PostMapping("/chapter/regist")
+    @PostMapping("/regist")
     @ResponseBody
     public ResponseEntity<?> chapterRegistPOST(@RequestParam(name = "file1", required = true) MultipartFile file,
                                                @Valid @ModelAttribute ChapterDTO chapterDTO,
@@ -108,7 +108,7 @@ public class AdminChapterController extends AdminBaseController {
                 .body(Map.of("message", "강의 등록 중 오류가 발생했습니다."));
     }
 
-    @GetMapping("/chapter/modify")
+    @GetMapping("/modify")
     public void chapterModify(@RequestParam("chapterIdx") int chapterIdx, Model model) {
         ChapterDTO chapterDTO = adminService.selectChapter(chapterIdx);
         model.addAttribute("chapterDTO", chapterDTO);
@@ -118,7 +118,7 @@ public class AdminChapterController extends AdminBaseController {
         );
     }
 
-    @PostMapping("/chapter/modify")
+    @PostMapping("/modify")
     @ResponseBody
     public ResponseEntity<?> chapterModifyPOST(@RequestParam(name = "file1") MultipartFile file,
                                                @Valid @ModelAttribute ChapterDTO chapterDTO,
@@ -151,7 +151,7 @@ public class AdminChapterController extends AdminBaseController {
         return ResponseEntity.ok(Map.of("message", "강의 수정 성공"));
     }
 
-    @PostMapping("/chapter/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public Map<String, Object> chapterDelete(@RequestParam("chapterIdx") int chapterIdx) {
         Map<String, Object> result = new HashMap<>();
@@ -167,7 +167,7 @@ public class AdminChapterController extends AdminBaseController {
         return result;
     }
 
-    @PostMapping("/chapter/restore")
+    @PostMapping("/restore")
     @ResponseBody
     public Map<String, Object> chapterRestore(@RequestParam("chapterIdx") int chapterIdx) {
         Map<String, Object> result = new HashMap<>();
