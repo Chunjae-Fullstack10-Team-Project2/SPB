@@ -118,7 +118,7 @@ public class MemberController {
         String memberId = memberDTO.getMemberId();
 
         memberService.updateMemberStateWithLogin("1", memberId);
-        //memberService.updateMemberPwdChangeDateWithLogin(LocalDate.now().toString(), memberId);
+        memberService.updateMemberPwdChangeDateWithLogin(LocalDate.now().toString(), memberId);
         memberService.updateMemberLastLoginWithLogin(LocalDate.now().toString(), memberId);
     }
 
@@ -139,6 +139,7 @@ public class MemberController {
         MemberDTO memberDTO = memberService.getMemberById(naverMemberId);
         LocalDate now = LocalDate.now();
 
+        // 1. 휴면 상태 검사 먼저
         if (memberDTO.getMemberLastLogin() != null) {
             long daysSinceLogin = ChronoUnit.DAYS.between(memberDTO.getMemberLastLogin(), now);
             if (daysSinceLogin >= 365) {
@@ -147,6 +148,15 @@ public class MemberController {
             }
         }
 
+        // 2. 휴면 상태일 경우 -> 이메일 인증 유도 후 종료
+        if ("5".equals(memberDTO.getMemberState())) {
+            session.setAttribute("memberId", memberDTO.getMemberId());
+            session.setAttribute("memberGrade", memberDTO.getMemberGrade());
+            session.setAttribute("memberDTO", memberDTO);
+            return "redirect:/main";
+        }
+
+        // 3. 비밀번호 변경일 검사
         if (memberDTO.getMemberPwdChangeDate() != null) {
             long daysSincePwd = ChronoUnit.DAYS.between(memberDTO.getMemberPwdChangeDate(), now);
             if (daysSincePwd >= 90) {
@@ -155,7 +165,8 @@ public class MemberController {
             }
         }
 
-        if ("1".equals(memberDTO.getMemberState())) {
+        // 4. 상태가 1 또는 3이면 마지막 로그인 갱신
+        if ("1".equals(memberDTO.getMemberState()) || "3".equals(memberDTO.getMemberState())) {
             memberService.updateMemberLastLoginWithLogin(now.toString(), memberDTO.getMemberId());
         }
 
@@ -232,6 +243,7 @@ public class MemberController {
             MemberDTO fullMember = memberService.getMemberById(memberDTO.getMemberId());
             LocalDate now = LocalDate.now();
 
+            // 휴면 상태 먼저 확인
             if (fullMember.getMemberLastLogin() != null) {
                 long daysSinceLogin = ChronoUnit.DAYS.between(fullMember.getMemberLastLogin(), now);
                 if (daysSinceLogin >= 365) {
@@ -240,6 +252,15 @@ public class MemberController {
                 }
             }
 
+            // 휴면 회원은 로그인 후 메인으로 보내서 이메일 인증 요구 -> 이후 흐름 건너뜀
+            if ("5".equals(fullMember.getMemberState())) {
+                session.setAttribute("memberId", fullMember.getMemberId());
+                session.setAttribute("memberDTO", fullMember);
+                model.addAttribute("errorMessage", "휴면 계정입니다. 이메일 인증 후 계정을 복구해주세요.");
+                return "redirect:/main";
+            }
+
+            // 비밀번호 변경일 확인 (휴면은 제외)
             if (fullMember.getMemberPwdChangeDate() != null) {
                 long daysSincePwd = ChronoUnit.DAYS.between(fullMember.getMemberPwdChangeDate(), now);
                 if (daysSincePwd >= 90) {
@@ -248,7 +269,7 @@ public class MemberController {
                 }
             }
 
-            if ("1".equals(fullMember.getMemberState())) {
+            if ("1".equals(fullMember.getMemberState()) || "3".equals(fullMember.getMemberState())) {
                 memberService.updateMemberLastLoginWithLogin(now.toString(), fullMember.getMemberId());
             }
 
