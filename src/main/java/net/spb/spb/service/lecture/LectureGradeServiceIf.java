@@ -12,6 +12,6 @@ public interface LectureGradeServiceIf {
     public int updateLectureGrade(LectureGradeDTO dto);
     public int deleteLectureGradeByidx(int idx);
     public LectureGradeDetailDTO getLectureGradeByIdx(int idx);
-    public List<LectureGradeListDTO> getLectureGradeTotalCount(LectureGradePageDTO pageDTO);
+    public int getLectureGradeTotalCount(LectureGradePageDTO pageDTO);
     public List<LectureGradeListDTO> getLectureGradeList(LectureGradePageDTO pageDTO);
 }
