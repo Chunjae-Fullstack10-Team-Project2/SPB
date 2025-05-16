@@ -9,14 +9,13 @@ import net.spb.spb.dto.mystudy.PlanResponseDTO;
 import net.spb.spb.dto.lecture.StudentLectureResponseDTO;
 import net.spb.spb.service.PlanServiceIf;
 import net.spb.spb.service.lecture.StudentLectureServiceIf;
-import net.spb.spb.util.BreadcrumbUtil;
+import net.spb.spb.util.StringEscapeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,16 +27,6 @@ public class StudentPlanController {
     private final PlanServiceIf planService;
     private final StudentLectureServiceIf studentLectureService;
 
-    private static final Map<String, String> ROOT_BREADCRUMB = Map.of("name", "나의학습방", "url", "/mystudy");
-
-    private void setBreadcrumb(Model model, Map<String, String> ... page) {
-        LinkedHashMap<String, String> pages = new LinkedHashMap<>();
-        for (Map<String, String> p : page) {
-            pages.putAll(p);
-        }
-        BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
-    }
-
     @GetMapping("")
     public String list(Model model, HttpServletRequest req) {
         HttpSession session = req.getSession();
@@ -45,10 +34,13 @@ public class StudentPlanController {
 
         List<StudentLectureResponseDTO> lectures = studentLectureService.getStudentLectureList(memberId, null);
 
+        lectures.forEach(lecture -> {
+            if (lecture.getLectureTitle() != null) {
+                lecture.setLectureTitle(StringEscapeUtils.unescapeHtml4(lecture.getLectureTitle()));
+            }
+        });
+
         model.addAttribute("lectureList", lectures);
-
-        setBreadcrumb(model, Map.of("학습계획표", "/mystudy/plan"));
-
         return "mystudy/plan";
     }
 
@@ -64,7 +56,7 @@ public class StudentPlanController {
     }
 
     @PostMapping("/delete")
-    public String delete(PlanDTO planDTO, HttpServletRequest req, Model model) {
+    public String delete(PlanDTO planDTO, HttpServletRequest req) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
@@ -98,7 +90,18 @@ public class StudentPlanController {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        return planService.getPlanListByDay(memberId, LocalDate.parse(date));
+        List<PlanResponseDTO> plans = planService.getPlanListByDay(memberId, LocalDate.parse(date));
+
+        plans.forEach(plan -> {
+            if (plan.getPlanContent() != null) {
+                plan.setPlanContent(StringEscapeUtils.unescapeHtml4(plan.getPlanContent()));
+            }
+            if (plan.getLectureTitle() != null) {
+                plan.setLectureTitle(StringEscapeUtils.unescapeHtml4(plan.getLectureTitle()));
+            }
+        });
+
+        return plans;
     }
 
     @GetMapping(value="/search", params={"date1", "date2"})
@@ -107,12 +110,29 @@ public class StudentPlanController {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        return planService.getPlanListByMonth(memberId, LocalDate.parse(date1), LocalDate.parse(date2));
+        List<PlanResponseDTO> plans = planService.getPlanListByMonth(memberId, LocalDate.parse(date1), LocalDate.parse(date2));
+
+        plans.forEach(plan -> {
+            if (plan.getPlanContent() != null) {
+                plan.setPlanContent(StringEscapeUtils.unescapeHtml4(plan.getPlanContent()));
+            }
+            if (plan.getLectureTitle() != null) {
+                plan.setLectureTitle(StringEscapeUtils.unescapeHtml4(plan.getLectureTitle()));
+            }
+        });
+
+        return plans;
     }
 
     @GetMapping("/{idx}")
     @ResponseBody
     public PlanResponseDTO getPlanByIdx(@PathVariable("idx") int idx) {
-        return planService.getPlanByIdx(idx);
+        PlanResponseDTO plan = planService.getPlanByIdx(idx);
+
+        if (plan.getPlanContent() != null) {
+            plan.setPlanContent(StringEscapeUtils.unescapeHtml4(plan.getPlanContent()));
+        }
+
+        return plan;
     }
 }

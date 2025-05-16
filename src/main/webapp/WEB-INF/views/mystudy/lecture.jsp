@@ -7,15 +7,15 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>내 강의 목록</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
     <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
     <div class="content">
-        <div class="container my-5">
+        <div class="container my-5 pb-5">
             <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
-            <h1 class="h2 mb-4">나의 강의실</h1>
+            <h1 class="h2 mb-4">내 강의 목록</h1>
 
             <%
                 List<Map<String, String>> searchSelect = new ArrayList<>();
@@ -90,7 +90,7 @@
                 </div>
             </c:if>
 
-            <div class="mb-2 mb-md-0 text-center">
+            <div class="mb-2 text-center">
                 <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/pagingOnlyPage.jsp" />
             </div>
         </div>
