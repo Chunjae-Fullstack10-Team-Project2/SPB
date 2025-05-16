@@ -45,6 +45,7 @@ public class LectureController {
         String memberId = (String) session.getAttribute("memberId");
         List<LectureDTO> lectureList;
         log.info("searchDTO: {}",searchDTO);
+        pageRequestDTO.setPageSize(12);
         if(subject == null || subject.isBlank()) {
             lectureList = lectureService.getAllLectures(searchDTO, pageRequestDTO);
         } else {
