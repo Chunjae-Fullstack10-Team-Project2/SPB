@@ -14,6 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder
 public class TeacherNoticePageDTO extends PageDTO {
+    private String teacherId;
+
     private String search_category;
 
     private LocalDate start_date;

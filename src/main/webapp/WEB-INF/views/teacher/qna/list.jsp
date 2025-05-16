@@ -13,8 +13,8 @@
 <body>
     <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
     <div class="content">
-        <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
         <div class="container my-5">
+            <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
             <h1 class="mb-4">QnA</h1>
 
             <%
@@ -109,6 +109,10 @@
 
             <div class="mb-2 mb-md-0 text-center">
                 <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/pagingOnlyPage.jsp" />
+            </div>
+
+            <div class="d-flex gap-2 mb-2 justify-content-end">
+                <button class="btn btn-sm btn-primary" type="button" id="btnRegist" onclick="location.href='/teacher/personal/qna/regist?${pageDTO.linkUrl}'">등록</button>
             </div>
         </div>
     </div>
