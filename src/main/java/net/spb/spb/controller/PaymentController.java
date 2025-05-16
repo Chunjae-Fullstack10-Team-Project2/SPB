@@ -42,12 +42,14 @@ public class PaymentController {
             RedirectAttributes redirectAttributes
     ) {
         String sessionId = (String) session.getAttribute("memberId");
-        if(!sessionId.equals(memberId)) {
+        if (!sessionId.equals(memberId)) {
             redirectAttributes.addFlashAttribute("errorMessage", "잘못된 접근입니다.");
             return "redirect:/";
         }
+
         List<CartDTO> cartList = paymentService.selectCart(memberId);
-        log.info("cartList: "+cartList);
+
+        log.info("cartList: " + cartList);
         model.addAttribute("cartList", cartList);
         model.addAttribute("memberId", memberId);
         return "payment/cart";
@@ -103,13 +105,15 @@ public class PaymentController {
 
     @PostMapping("/insertOrder")
     @ResponseBody
-    public int insertOrder(@RequestBody OrderDTO orderDTO, Model model){
+    public int insertOrder(@RequestBody OrderDTO orderDTO, Model model, HttpSession session){
         log.info(orderDTO);
+        String memberId = (String) session.getAttribute("memberId");
         paymentService.insertOrder(orderDTO);
 
         try{
             for(int i=0; i<orderDTO.getOrderLectureList().size(); i++){
                 paymentService.insertOrderLecture(Integer.parseInt(orderDTO.getOrderLectureList().get(i)));
+                paymentService.insertLectureRegister(Integer.parseInt(orderDTO.getOrderLectureList().get(i)), memberId);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -117,6 +121,22 @@ public class PaymentController {
 
         return paymentService.getMaxOrderIdx();
     }
+
+    @PostMapping("/insertRegister")
+    @ResponseBody
+    public void insertOrder(@RequestBody PaymentDTO dto, Model model, HttpSession session){
+        String memberId = (String) session.getAttribute("memberId");
+
+        try{
+            for (Integer lectureIdx : dto.getLectureIdxList()) {
+                paymentService.insertLectureRegister(lectureIdx, memberId);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
 
     @PostMapping("/verify")
     public ResponseEntity<?> verifyPayment(@RequestBody Map<String, String> body, HttpSession session) {
@@ -201,6 +221,8 @@ public class PaymentController {
 
                 paymentService.updateOrderInfo(paymentDTO); //주문테이블 업데이트
 
+
+
                 return ResponseEntity.badRequest().body(Map.of(
                         "status", "fail",
                         "message", "결제 상태 비정상"
@@ -222,17 +244,23 @@ public class PaymentController {
             MemberDTO memberDTO = paymentService.getMemberInfo(memberId);
             model.addAttribute("member", memberDTO);
             model.addAttribute("orderIdx", orderIdx);
+
             List<LectureDTO> lectureDTO = paymentService.getOrderLectureInfo(orderIdx);
+
             model.addAttribute("lectureDTO", lectureDTO);
             log.info("lectureDTO === " + lectureDTO);
-            if(lectureDTO.size()>0){
+
+            if (lectureDTO.size() > 0) {
                 model.addAttribute("lectureDTOSize", lectureDTO.size());
             }
+
             PaymentDTO paymentDTO = paymentService.getPaymentInfo(orderIdx);
             model.addAttribute("paymentDTO", paymentDTO);
             log.info("paymentDTO === " + paymentDTO);
+
             model.addAttribute("totalAmount", lectureDTO.stream().mapToInt(LectureDTO::getLectureAmount).sum());
-        }catch (Exception e){
+
+        } catch (Exception e) {
             System.out.println("🔥 예외 발생: " + e.getMessage());
             e.printStackTrace();
         }

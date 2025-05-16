@@ -14,7 +14,6 @@ import net.spb.spb.service.lecture.LectureServiceIf;
 import net.spb.spb.service.PaymentServiceIf;
 import net.spb.spb.service.teacher.TeacherServiceIf;
 import net.spb.spb.util.ReportRefType;
-import net.spb.spb.util.StringEscapeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -52,15 +51,6 @@ public class LectureController {
             lectureList = lectureService.getLectureMain(subject, searchDTO, pageRequestDTO);
         }
 
-        // 🔽 이스케이프된 문자 복원 처리
-        lectureList.forEach(lecture -> {
-            if (lecture.getLectureTitle() != null) {
-                lecture.setLectureTitle(StringEscapeUtils.unescapeHtml4(lecture.getLectureTitle()));
-            }
-            if (lecture.getLectureDescription() != null) {
-                lecture.setLectureDescription(StringEscapeUtils.unescapeHtml4(lecture.getLectureDescription()));
-            }
-        });
 
 
         log.info("lecture list: {}", lectureList);
@@ -92,13 +82,7 @@ public class LectureController {
             Model model
     ){
         LectureDTO lectureDTO = lectureService.selectLectureMain(lectureIdx);
-        // 이스케이프된 HTML 문자 복원 처리
-        if (lectureDTO.getLectureTitle() != null) {
-            lectureDTO.setLectureTitle(StringEscapeUtils.unescapeHtml4(lectureDTO.getLectureTitle()));
-        }
-        if (lectureDTO.getLectureDescription() != null) {
-            lectureDTO.setLectureDescription(StringEscapeUtils.unescapeHtml4(lectureDTO.getLectureDescription()));
-        }
+
 
         List<ChapterDTO> chapterList = lectureService.selectLectureChapter(lectureIdx);
         List<LectureReviewDTO> reviewList = lectureService.selectLectureReview(lectureIdx, pageRequestDTO);

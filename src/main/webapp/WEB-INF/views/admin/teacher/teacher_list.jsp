@@ -12,7 +12,7 @@
 <body>
 <div>
     <div class="container mt-5 mb-2 d-flex justify-content-between">
-        <h2 class="h4 fw-bold">선생님 요청 목록</h2>
+        <h2 class="h4 fw-bold">등록된 선생님 목록</h2>
     </div>
 
     <div class="container mb-2 d-flex justify-content-between">
