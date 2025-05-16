@@ -30,4 +30,5 @@ public interface PaymentMapper {
     public int getCartCount(@Param("memberId") String memberId);
     public void updateBookmarkState(@Param("dto") PaymentDTO dto);
     public String getOrderStatus(@Param("orderIdx") int orderIdx);
+    public void insertLectureRegister(@Param("orderLectureIdx") int orderLectureIdx, @Param("memberId") String memberId);
 }

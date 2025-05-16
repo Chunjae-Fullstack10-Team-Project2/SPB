@@ -103,13 +103,15 @@ public class PaymentController {
 
     @PostMapping("/insertOrder")
     @ResponseBody
-    public int insertOrder(@RequestBody OrderDTO orderDTO, Model model){
+    public int insertOrder(@RequestBody OrderDTO orderDTO, Model model, HttpSession session){
         log.info(orderDTO);
+        String memberId = (String) session.getAttribute("memberId");
         paymentService.insertOrder(orderDTO);
 
         try{
             for(int i=0; i<orderDTO.getOrderLectureList().size(); i++){
                 paymentService.insertOrderLecture(Integer.parseInt(orderDTO.getOrderLectureList().get(i)));
+                paymentService.insertLectureRegister(Integer.parseInt(orderDTO.getOrderLectureList().get(i)), memberId);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -117,6 +119,22 @@ public class PaymentController {
 
         return paymentService.getMaxOrderIdx();
     }
+
+    @PostMapping("/insertRegister")
+    @ResponseBody
+    public void insertOrder(@RequestBody PaymentDTO dto, Model model, HttpSession session){
+        String memberId = (String) session.getAttribute("memberId");
+
+        try{
+            for (Integer lectureIdx : dto.getLectureIdxList()) {
+                paymentService.insertLectureRegister(lectureIdx, memberId);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
 
     @PostMapping("/verify")
     public ResponseEntity<?> verifyPayment(@RequestBody Map<String, String> body, HttpSession session) {
@@ -200,6 +218,8 @@ public class PaymentController {
                 paymentService.savePaymentInfo(paymentDTO); //결제테이블에 등록
 
                 paymentService.updateOrderInfo(paymentDTO); //주문테이블 업데이트
+
+
 
                 return ResponseEntity.badRequest().body(Map.of(
                         "status", "fail",

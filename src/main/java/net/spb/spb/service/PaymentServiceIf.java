@@ -29,4 +29,5 @@ public interface PaymentServiceIf {
     public int getCartCount(String memberId);
     public void updateBookmarkState(PaymentDTO dto);
     public String getOrderStatus(int orderIdx);
+    public void insertLectureRegister(int orderLectureIdx, String memberId);
 }

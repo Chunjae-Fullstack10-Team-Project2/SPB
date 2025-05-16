@@ -156,4 +156,12 @@
         from tbl_order_info
         where orderIdx = #{orderIdx}
     </select>
+
+    <!--주문 등록 테이블이 등록-->
+    <insert id="insertLectureRegister">
+        insert into tbl_lecture_register
+        (lectureRegisterMemberId, lectureRegisterRefIdx, lectureRegisterStartedAt, lectureRegisterStatus)
+        values
+            (#{memberId}, #{orderLectureIdx}, NOW(), 0)
+    </insert>
 </mapper>    
