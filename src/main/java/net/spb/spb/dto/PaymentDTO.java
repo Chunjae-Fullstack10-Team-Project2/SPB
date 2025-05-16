@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Log4j2
 @Data
@@ -24,5 +25,6 @@ public class PaymentDTO {
     private LocalDateTime paymentApprovedAt2;
     private LocalDateTime paymentCanceledAt2;
     private String paymentPgTid;
+    private List<Integer> lectureIdxList;
 
 }

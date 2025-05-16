@@ -177,6 +177,11 @@ public class PaymentServiceImpl implements PaymentServiceIf{
         return paymentMapper.getOrderStatus(orderIdx);
     }
 
+    @Override
+    public void insertLectureRegister(int orderLectureIdx, String memberId) {
+        paymentMapper.insertLectureRegister(orderLectureIdx, memberId);
+    }
+
     private String getAccessToken() throws Exception {
         org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

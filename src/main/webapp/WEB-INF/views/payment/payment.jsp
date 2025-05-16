@@ -192,13 +192,13 @@
 
     // 결제 처리 함수
     function processPayment() {
-
+        const lectureIdxList = $("input[name='lectureIdx']").map(function () {
+            return $(this).val();
+        }).get();
         const data = {
             orderMemberId : "${member.memberId}",
             orderAmount : document.getElementById('total-price').textContent.replace("원","").replace(",",""),
-            orderLectureList : $("input[name='lectureIdx']").map(function () {
-                return $(this).val();
-            }).get()
+            orderLectureList : lectureIdxList
         }
 
         $.ajax({
@@ -208,7 +208,7 @@
             data: JSON.stringify(data),
             success: function (response) {
                     var paymentMethod = $("input[name='payment-method']:checked").val();
-                requestPay(response);
+                requestPay(lectureIdxList, response);
             },
             error: function (request,status,error) {
                 console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
@@ -227,7 +227,7 @@
     }
 
 
-    function requestPay(orderIdx) {
+    function requestPay(lectureIdxList, orderIdx) {
         const lectureTitleElements = document.querySelectorAll("input[name='lectureTitle']");
         const lectureTitles = Array.from(lectureTitleElements).map(el => el.value);
 
@@ -267,6 +267,7 @@
                     .then(data => {
                         if (data.status === "success") {
                             alert("결제가 완료되었습니다.");
+                            insertRegist(lectureIdxList);
                             window.location.href="/payment/paymentDetail?orderIdx="+orderIdx;
                         } else {
                             alert("결제 검증 실패: " + data.message);
@@ -274,6 +275,23 @@
                     });
             } else {
                 alert("결제 실패: " + rsp.error_msg);
+            }
+        });
+    }
+
+    function insertRegist(lectureIdxList){
+        $.ajax({
+            url: '/payment/insertRegister',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                lectureIdxList : lectureIdxList
+            }),
+            success: function (response) {
+            },
+            error: function (request,status,error) {
+                console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                alert("등록 중 오류가 발생했습니다.");
             }
         });
     }
