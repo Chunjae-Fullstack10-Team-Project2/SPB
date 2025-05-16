@@ -334,7 +334,7 @@
         set chapterName = #{chapterName},
             chapterVideo = #{chapterVideo},
             chapterRuntime = #{chapterRuntime}
-        where chapterIdx = #{chapterLectureIdx}
+        where chapterIdx = #{chapterIdx}
     </update>
 
     <update id="deleteChapter" parameterType="java.lang.Integer">
