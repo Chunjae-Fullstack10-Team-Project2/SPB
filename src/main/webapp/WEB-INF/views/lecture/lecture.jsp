@@ -41,7 +41,7 @@
 <body class="bg-light-subtle">
 <%@ include file="../common/sidebarHeader.jsp" %>
 <div class="content">
-    <div class="container my-5">
+    <div class="container my-5 pb-3">
         <h3 class="mb-4">강좌 목록</h3>
 
         <%-- 검색박스 설정 --%>
@@ -77,7 +77,7 @@
                     <c:forEach var="lecture" items="${lectureDTO}">
                         <div class="col">
                             <div class="p-2">
-                                <div class="card h-100 shadow-sm border-0"
+                                <div class="card h-100 shadow-sm border-0 pb-3"
                                      onclick="location.href='/lecture/lectureDetail?lectureIdx=${lecture.lectureIdx}'"
                                      style="cursor: pointer;">
                                     <img src="/upload/<c:out value='${lecture.lectureThumbnailImg}'/>" alt="<c:out value='${lecture.lectureTitle}'/>"
