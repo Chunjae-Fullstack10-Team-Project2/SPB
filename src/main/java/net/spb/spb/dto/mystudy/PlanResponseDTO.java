@@ -12,8 +12,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data
 public class PlanResponseDTO {
-    private int planIdx;
+    private Integer planIdx;
     private int planLectureIdx;
     private String lectureTitle;
     private String planMemberId;

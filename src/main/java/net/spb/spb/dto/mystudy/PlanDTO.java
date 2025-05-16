@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class PlanDTO {
-    private int planIdx;
+    private Integer planIdx;
     private int planLectureIdx;
     private String planMemberId;
     private String planContent;
