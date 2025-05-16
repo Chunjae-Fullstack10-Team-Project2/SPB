@@ -1,9 +1,8 @@
 package net.spb.spb.mapper.lecture;
 
 import net.spb.spb.domain.LectureVO;
-import net.spb.spb.domain.TeacherVO;
 import net.spb.spb.dto.ChapterDTO;
-import net.spb.spb.dto.LectureDTO;
+import net.spb.spb.dto.lecture.LectureDTO;
 import net.spb.spb.dto.lecture.LectureReviewDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;

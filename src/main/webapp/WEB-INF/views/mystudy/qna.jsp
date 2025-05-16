@@ -75,7 +75,7 @@
                     <c:forEach items="${dtoList}" var="qna" varStatus="status">
                         <tr class="clickable-row"
                             data-href="/teacher/personal/qna/view?idx=${qna.teacherQnaIdx}&teacherId=${qna.teacherQnaAMemberId}">
-                            <td>${pageDTO.total_count - ((pageDTO.page_no - 1) * pageDTO.page_size) - status.index}</td>
+                            <td>${(pageDTO.page_no - 1) * pageDTO.page_size + status.index + 1}</td>
                             <td class="text-start">
                                 <c:if test="${not empty qna.teacherQnaPwd}">
                                     <i class="bi bi-lock-fill"></i>

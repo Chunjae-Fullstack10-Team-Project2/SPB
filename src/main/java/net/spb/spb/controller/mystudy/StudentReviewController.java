@@ -5,18 +5,17 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.lecture.LectureReviewDTO;
-import net.spb.spb.dto.lecture.LectureReviewListRequestDTO;
-import net.spb.spb.dto.lecture.LectureReviewResponseDTO;
-import net.spb.spb.dto.lecture.StudentLectureResponseDTO;
+import net.spb.spb.dto.lecture.*;
 import net.spb.spb.dto.pagingsearch.LectureReviewPageDTO;
 import net.spb.spb.service.lecture.LectureReviewServiceIf;
+import net.spb.spb.service.lecture.LectureServiceIf;
 import net.spb.spb.service.lecture.StudentLectureServiceIf;
 import net.spb.spb.util.BreadcrumbUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,6 +28,7 @@ import java.util.Map;
 public class StudentReviewController {
 
     private final LectureReviewServiceIf lectureReviewService;
+    private final LectureServiceIf lectureService;
     private final StudentLectureServiceIf studentLectureService;
 
     private static final Map<String, String> ROOT_BREADCRUMB = Map.of("name", "나의학습방", "url", "/mystudy");
@@ -58,20 +58,25 @@ public class StudentReviewController {
 
         setBreadcrumb(model, Map.of("수강후기", "/mystudy/review"));
 
-        return "mystudy/review";
+        return "mystudy/review/list";
     }
 
     @GetMapping("/regist")
-    public String registGET(@ModelAttribute LectureReviewPageDTO pageDTO, Model model, HttpServletRequest req) {
+    public String registGET(
+            @ModelAttribute LectureReviewPageDTO pageDTO,
+            HttpServletRequest req,
+            Model model
+    ) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        List<StudentLectureResponseDTO> lectures = studentLectureService.getStudentLectureList(memberId, null);
-
+        List<LectureDTO> lectures = studentLectureService.getStudentLectures(memberId);
+        
         model.addAttribute("lectureList", lectures);
         model.addAttribute("pageDTO", pageDTO);
         setBreadcrumb(model, Map.of("수강후기", "/mystudy/review"), Map.of("수강후기 등록", "/mystudy/review/regist"));
-        return "review/regist";
+
+        return "mystudy/review/regist";
     }
 
     @PostMapping("/regist")
@@ -79,18 +84,34 @@ public class StudentReviewController {
             @ModelAttribute LectureReviewPageDTO pageDTO,
             @Valid @ModelAttribute LectureReviewDTO lectureReviewDTO,
             BindingResult bindingResult,
-            Model model,
+            RedirectAttributes redirectAttributes,
             HttpServletRequest req
     ) {
-        if (bindingResult.hasErrors()) {
-            // 잘못된 입력이 있습니다. 다시 확인해주세요.
-            model.addAttribute("pageDTO", pageDTO);
-            model.addAttribute("lectureReviewDTO", lectureReviewDTO);
-            return "review/regist";
+        if(bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("message", "잘못된 입력이 있습니다. 다시 확인해주세요.");
+            redirectAttributes.addFlashAttribute("review", lectureReviewDTO);
+            return "redirect:/mystudy/review/regist?" + pageDTO.getLinkUrl();
         }
 
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
+
+        int lectureIdx = lectureReviewDTO.getLectureReviewRefIdx();
+        // 해당 강좌가 없을 경우
+        if (lectureService.getLectureByIdx(lectureIdx) == null) {
+            redirectAttributes.addFlashAttribute("message", "요청한 강좌를 찾을 수 없습니다.");
+            return "redirect:/mystudy/review?" + pageDTO.getLinkUrl();
+        }
+        // 해당 강좌를 수강하지 않는 경우
+        if (!studentLectureService.isLectureRegisteredByMemberId(memberId, lectureIdx)) {
+            redirectAttributes.addFlashAttribute("message", "수강 중인 강좌만 후기를 등록할 수 있습니다.");
+            return "redirect:/mystudy/review?" + pageDTO.getLinkUrl();
+        }
+        // 이미 후기를 작성한 경우
+        if (lectureReviewService.hasLectureReview(memberId, lectureIdx)) {
+            redirectAttributes.addFlashAttribute("message", "수강 후기는 한 번만 작성할 수 있습니다.");
+            return "redirect:/mystudy/review?" + pageDTO.getLinkUrl();
+        }
 
         lectureReviewDTO.setLectureReviewMemberId(memberId);
         lectureReviewService.createLectureReview(memberId, lectureReviewDTO);
@@ -99,28 +120,60 @@ public class StudentReviewController {
     }
 
     @GetMapping("/view")
-    public String view(@ModelAttribute LectureReviewPageDTO pageDTO, @RequestParam("idx") int idx, Model model) {
-        LectureReviewResponseDTO lectureReviewResponseDTO = lectureReviewService.getLectureReviewByIdx(idx);
-
-        model.addAttribute("pageDTO", pageDTO);
-        model.addAttribute("lectureReviewDTO", lectureReviewResponseDTO);
-
-        setBreadcrumb(model, Map.of("수강후기", "/mystudy/review"), Map.of("수강후기 상세보기", "/mystudy/review/view"));
-
-        return "/review/view";
-    }
-
-    @GetMapping("/modify")
-    public String modifyGET(@ModelAttribute LectureReviewPageDTO pageDTO, @RequestParam("idx") int idx, Model model, HttpServletRequest req) {
+    public String view(
+            @ModelAttribute LectureReviewPageDTO pageDTO,
+            @RequestParam("idx") int idx,
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest req,
+            Model model
+    ) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        List<StudentLectureResponseDTO> lectures = studentLectureService.getStudentLectureList(memberId, null);
-        LectureReviewResponseDTO lectureReviewDTO = lectureReviewService.getLectureReviewByIdx(idx);
+        LectureReviewResponseDTO review = lectureReviewService.getLectureReviewByIdx(idx);
 
+        if (review == null) {
+            redirectAttributes.addFlashAttribute("message", "요청한 수강후기를 찾을 수 없습니다.");
+            return "redirect:/mystudy/review?" + pageDTO.getLinkUrl();
+        }
+        if (!memberId.equals(review.getLectureReviewMemberId())) {
+            redirectAttributes.addFlashAttribute("message", "조회 권한이 없습니다.");
+            return "redirect:/mystudy/review?" + pageDTO.getLinkUrl();
+        }
+
+        model.addAttribute("review", review);
+        model.addAttribute("pageDTO", pageDTO);
+        setBreadcrumb(model, Map.of("수강후기", "/mystudy/review"), Map.of("수강후기 상세보기", "/mystudy/review/view?idx=" + idx));
+
+        return "mystudy/review/view";
+    }
+    
+    @GetMapping("/modify")
+    public String modifyGET(
+            @ModelAttribute LectureReviewPageDTO pageDTO,
+            @RequestParam("idx") int idx,
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest req,
+            Model model
+    ) {
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        LectureReviewResponseDTO review = lectureReviewService.getLectureReviewByIdx(idx);
+        if (review == null) {
+            redirectAttributes.addFlashAttribute("message", "요청한 수강후기를 찾을 수 없습니다.");
+            return "redirect:/mystudy/review?" + pageDTO.getLinkUrl();
+        }
+        if (!memberId.equals(review.getLectureReviewMemberId())) {
+            redirectAttributes.addFlashAttribute("message", "수정 권한이 없습니다.");
+            return "redirect:/mystudy/review/view?idx=" + idx + "&" + pageDTO.getLinkUrl();
+        }
+
+        List<LectureDTO> lectures = studentLectureService.getStudentLectures(memberId);
+        
         model.addAttribute("pageDTO", pageDTO);
         model.addAttribute("lectureList", lectures);
-        model.addAttribute("lectureReviewDTO", lectureReviewDTO);
+        model.addAttribute("review", review);
 
         setBreadcrumb(model, Map.of("수강후기", "/mystudy/review"), Map.of("수강후기 수정", "/mystudy/review/modify"));
         return "review/modify";
@@ -129,34 +182,58 @@ public class StudentReviewController {
     @PostMapping("/modify")
     public String modifyPost(
             @ModelAttribute LectureReviewPageDTO pageDTO,
-            @ModelAttribute LectureReviewDTO lectureReviewDTO,
-            Model model,
+            @Valid @ModelAttribute LectureReviewDTO lectureReviewDTO,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes,
             HttpServletRequest req
     ) {
+        int idx = lectureReviewDTO.getLectureReviewRefIdx();
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("message", "잘못된 입력이 있습니다. 다시 확인해주세요.");
+            redirectAttributes.addFlashAttribute("review", lectureReviewDTO);
+            return "redirect:/myclass/review/modify?idx=" + idx + "&" + pageDTO.getLinkUrl();
+        }
+
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
+        LectureReviewResponseDTO review = lectureReviewService.getLectureReviewByIdx(idx);
+        if (review == null) {
+            redirectAttributes.addFlashAttribute("message", "요청한 수강후기를 찾을 수 없습니다.");
+            return "redirect:/mystudy/review?" + pageDTO.getLinkUrl();
+        }
+        if (!memberId.equals(review.getLectureReviewMemberId())) {
+            redirectAttributes.addFlashAttribute("message", "수정 권한이 없습니다.");
+            return "redirect:/mystudy/review/view?idx=" + idx + "&" + pageDTO.getLinkUrl();
+        }
+
         lectureReviewService.updateLectureReview(memberId, lectureReviewDTO);
 
-        model.addAttribute("pageDTO", pageDTO);
-        model.addAttribute("lectureReviewDTO", lectureReviewDTO);
-
-        return "redirect:/mystudy/review?idx=" + lectureReviewDTO.getLectureReviewIdx() + "&" + pageDTO.getLinkUrl();
+        return "redirect:/mystudy/review/view?idx=" + idx + "&" + pageDTO.getLinkUrl();
     }
 
     @GetMapping("/delete")
     public String delete(
             @ModelAttribute LectureReviewPageDTO pageDTO,
             @RequestParam("idx") int idx,
-            Model model,
+            RedirectAttributes redirectAttributes,
             HttpServletRequest req
     ) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        lectureReviewService.deleteLectureReviewByIdx(memberId, idx);
+        LectureReviewResponseDTO review = lectureReviewService.getLectureReviewByIdx(idx);
+        if (review == null) {
+            redirectAttributes.addFlashAttribute("message", "요청한 수강후기를 찾을 수 없습니다.");
+            return "redirect:/mystudy/review?" + pageDTO.getLinkUrl();
+        }
+        if (!memberId.equals(review.getLectureReviewMemberId())) {
+            redirectAttributes.addFlashAttribute("message", "삭제 권한이 없습니다.");
+            return "redirect:/mystudy/review/view?idx=" + idx + "&" + pageDTO.getLinkUrl();
+        }
 
-        model.addAttribute("pageDTO", pageDTO);
+        lectureReviewService.deleteLectureReviewByIdx(memberId, idx);
 
         return "redirect:/mystudy/review?" + pageDTO.getLinkUrl();
     }

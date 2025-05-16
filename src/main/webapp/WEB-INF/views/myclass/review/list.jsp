@@ -73,7 +73,7 @@
                     <tbody>
                         <c:forEach items="${reviewList}" var="review" varStatus="status">
                             <tr class="clickable-row"
-                                data-href="/mystudy/review/view?idx=${review.lectureReviewIdx}&${pageDTO.linkUrl}">
+                                data-href="/lecture/lectureDetail?lectureIdx=${review.lectureReviewRefIdx}#review_${lectureReviewIdx}">
                                 <td>${(pageDTO.page_no - 1) * pageDTO.page_size + status.index + 1}</td>
                                 <td>
                                     <c:set var="rating" value="${review.lectureReviewGrade}" />

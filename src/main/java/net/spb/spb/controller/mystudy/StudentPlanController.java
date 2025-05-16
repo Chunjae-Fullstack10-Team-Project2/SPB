@@ -9,12 +9,14 @@ import net.spb.spb.dto.mystudy.PlanResponseDTO;
 import net.spb.spb.dto.lecture.StudentLectureResponseDTO;
 import net.spb.spb.service.PlanServiceIf;
 import net.spb.spb.service.lecture.StudentLectureServiceIf;
+import net.spb.spb.util.BreadcrumbUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,9 +24,19 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/mystudy/plan")
-public class PlanController {
+public class StudentPlanController {
     private final PlanServiceIf planService;
     private final StudentLectureServiceIf studentLectureService;
+
+    private static final Map<String, String> ROOT_BREADCRUMB = Map.of("name", "나의학습방", "url", "/mystudy");
+
+    private void setBreadcrumb(Model model, Map<String, String> ... page) {
+        LinkedHashMap<String, String> pages = new LinkedHashMap<>();
+        for (Map<String, String> p : page) {
+            pages.putAll(p);
+        }
+        BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
+    }
 
     @GetMapping("")
     public String list(Model model, HttpServletRequest req) {
@@ -34,6 +46,8 @@ public class PlanController {
         List<StudentLectureResponseDTO> lectures = studentLectureService.getStudentLectureList(memberId, null);
 
         model.addAttribute("lectureList", lectures);
+
+        setBreadcrumb(model, Map.of("학습계획표", "/mystudy/plan"));
 
         return "mystudy/plan";
     }
@@ -50,7 +64,7 @@ public class PlanController {
     }
 
     @PostMapping("/delete")
-    public String delete(PlanDTO planDTO, HttpServletRequest req) {
+    public String delete(PlanDTO planDTO, HttpServletRequest req, Model model) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 

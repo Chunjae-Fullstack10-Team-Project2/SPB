@@ -14,8 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder
 public class StudentLecturePageDTO extends PageDTO {
-    @Builder.Default
-    private int lecture_status = 0;
+    private Integer lecture_status;
 
     private String search_category;
 
@@ -44,7 +43,7 @@ public class StudentLecturePageDTO extends PageDTO {
         sb.append("&page_size=" + super.getPage_size());
         sb.append("&page_bock_size=" + super.getPage_block_size());
 
-        if (this.lecture_status > 0) {
+        if (this.lecture_status != null) {
             sb.append("&lecture_status=" + this.lecture_status);
         }
 

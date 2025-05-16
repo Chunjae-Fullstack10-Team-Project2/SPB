@@ -103,39 +103,13 @@
 
             <div class="d-flex justify-content-between align-items-center mt-3">
                 <div>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='/myclass/grade?${pageDTO.linkUrl}'">목록</button>
-                </div>
-
-                <div>
-                    <c:if test="${sessionScope.memberId eq lectureGradeDTO.lectureTeacherId}">
-                        <form name="frmSubmit">
-                            <input type="hidden" name="idx" value="${lectureGradeDTO.lectureGradeIdx}" />
-                            <button type="button" class="btn btn-warning btn-sm" id="btnModify">수정</button>
-                            <button type="button" class="btn btn-danger btn-sm" id="btnDelete">삭제</button>
-                        </form>
-                    </c:if>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='/mystudy/grade?${pageDTO.linkUrl}'">목록</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const urlParams = "${pageDTO.linkUrl}";
-
-        document.getElementById('btnModify').addEventListener('click', () => {
-            const frm = document.querySelector('form[name="frmSubmit"]');
-            frm.action = "/myclass/grade/modify?" + urlParams;
-            frm.method = "get";
-            frm.submit();
-        });
-
-        document.getElementById('btnDelete').addEventListener('click', () => {
-            const frm = document.querySelector('form[name="frmSubmit"]');
-            frm.action = "/myclass/grade/delete?" + urlParams;
-            frm.method = "post";
-            frm.submit();
-        });
-
         <c:if test="${not empty message}">
             alert("${message}");
         </c:if>

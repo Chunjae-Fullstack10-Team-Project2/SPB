@@ -2,7 +2,7 @@ package net.spb.spb.mapper;
 
 import net.spb.spb.domain.*;
 import net.spb.spb.dto.ChapterDTO;
-import net.spb.spb.dto.LectureDTO;
+import net.spb.spb.dto.lecture.LectureDTO;
 import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.dto.pagingsearch.*;

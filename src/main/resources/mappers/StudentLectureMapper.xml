@@ -32,9 +32,15 @@
 
     <!-- 나의 강의 목록 -->
     <select id="getStudentLectureList" resultType="net.spb.spb.dto.lecture.StudentLectureResponseDTO">
-        select tlr.lectureRegisterIdx as lectureRegisterIdx
-             , tlr.lectureRegisterRefIdx as lectureRegisterRefIdx, tl.lectureTitle as lectureTitle, tt.teacherName as teacherName
-             , tlr.lectureRegisterStartedAt as lectureRegisterStatedAt, tlr.lectureRegisterStatus as lecturRegisterStatus
+        select
+            tlr.lectureRegisterIdx,
+            tlr.lectureRegisterMemberId,
+            tlr.lectureRegisterRefIdx,
+            tl.lectureTitle,
+            tl.lectureTeacherId,
+            tt.teacherName,
+            tlr.lectureRegisterStartedAt,
+            tlr.lectureRegisterStatus
         from tbl_lecture_register as tlr
         inner join tbl_lecture as tl on tlr.lectureRegisterRefIdx = tl.lectureIdx
         inner join tbl_teacher as tt on tl.lectureTeacherId = tt.teacherId
@@ -43,10 +49,22 @@
         </if>
         <if test="pageDTO != null">
             <include refid="condition"></include>
-            <if test="pageDTO.page_skip_count != null and pageDTO.page_size != null">
-                limit #{pageDTO.page_skip_count}, #{pageDTO.page_size}
-            </if>
+            limit #{pageDTO.page_skip_count}, #{pageDTO.page_size}
         </if>
+    </select>
+
+    <select id="getStudentLectures" resultType="net.spb.spb.dto.lecture.LectureDTO">
+        select
+            tl.lectureIdx,
+            tl.lectureTitle,
+            tl.lectureDescription,
+            tl.lectureThumbnailImg,
+            tl.lectureTeacherId,
+            tl.lectureAmount,
+            tl.lectureCreatedAt
+        from tbl_lecture as tl
+        inner join tbl_lecture_register as tlr on tl.lectureIdx = tlr.lectureRegisterRefIdx
+        where tlr.lectureRegisterMemberId = #{memberId}
     </select>
 
     <!-- 최종학습일 -->

@@ -160,7 +160,7 @@
     </insert>
 
     <select id="selectLectureList" parameterType="net.spb.spb.dto.pagingsearch.LecturePageDTO"
-            resultType="net.spb.spb.dto.LectureDTO">
+            resultType="net.spb.spb.dto.lecture.LectureDTO">
         select
         tl.lectureIdx,
         tl.lectureTitle,
@@ -190,7 +190,7 @@
     </select>
 
     <select id="selectLecture" parameterType="java.lang.Integer"
-            resultType="net.spb.spb.dto.LectureDTO">
+            resultType="net.spb.spb.dto.lecture.LectureDTO">
         select
             tl.lectureIdx,
             tl.lectureTitle,

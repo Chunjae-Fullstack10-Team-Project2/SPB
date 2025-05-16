@@ -5,27 +5,23 @@
 <html>
 <head>
     <title>수강후기 상세보기</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
     <div class="content">
-        <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
-        <div class="container">
-            <p>[${lectureReviewDTO.teacherName} 선생님] ${lectureReviewDTO.lectureTitle}</p>
-            <div class="d-flex gap-2 align-items-center mb-2">
-                <c:if test="${lectureReviewDTO.memberProfileImg != null}">
-                    <img src="${lectureReviewDTO.memberProfileImg}" width="32" height="32" class="rounded-circle">
-                </c:if>
-                <div>
-                    <div class="small">${lectureReviewDTO.lectureReviewMemberId}</div>
-                    <div class="text-muted small">
-                        등록일: ${fn:replace(lectureReviewDTO.lectureReviewCreatedAt, 'T', ' ')}&nbsp;
-                        <c:if test="${lectureReviewDTO.lectureReviewUpdatedAt != null}">
-                            &nbsp;| 수정일: ${fn:replace(lectureReviewDTO.lectureReviewUpdatedAt, 'T', ' ')}&nbsp;
-                        </c:if>
-                        <c:set var="rating" value="${lectureReviewDTO.lectureReviewGrade}" />
-                        | 만족도:
+        <div class="container my-5">
+            <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
+
+            <div class="border p-4 rounded bg-light shadow-sm">
+                <div class="mb-3">
+                    <p class="form-label">작성자</p>
+                    <p class="form-control">${review.lectureReviewMemberId}</p>
+                </div>
+
+                <div class="mb-3">
+                    <p class="form-label">만족도</p>
+                    <p class="form-control">
+                        <c:set var="rating" value="${review.lectureReviewGrade}" />
                         <span class="text-warning">
                             <c:forEach var="i" begin="1" end="5">
                                 <c:choose>
@@ -38,20 +34,32 @@
                                 </c:choose>
                             </c:forEach>
                         </span>
-                    </div>
+                    </p>
+                </div>
+
+                <div class="mb-3">
+                    <p class="form-label">내용</p>
+                    <p class="form-control" style="height: 254px;">${review.lectureReviewContent}</p>
+                </div>
+
+                <div class="d-flex justify-content-between text-muted small">
+                    <p>
+                        등록일: ${fn:replace(review.lectureReviewCreatedAt, 'T', ' ')}
+                        <c:if test="${review.lectureReviewUpdatedAt != null}">
+                            &nbsp;/ 수정일: ${fn:replace(review.lectureReviewUpdatedAt, 'T', ' ')}
+                        </c:if>
+                    </p>
                 </div>
             </div>
 
-            <p>${lectureReviewDTO.lectureReviewContent}</p>
-
             <form>
                 <div class="gap-2 my-4 d-flex justify-content-between">
-                    <input type="hidden" name="idx" value="${lectureReviewDTO.lectureReviewIdx}" />
+                    <input type="hidden" name="idx" value="${review.lectureReviewIdx}" />
                     <div>
                         <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='/mystudy/review?${pageDTO.linkUrl}'">목록</button>
                     </div>
                     <div>
-                        <c:if test="${sessionScope.memberId eq lectureReviewDTO.lectureReviewMemberId}">
+                        <c:if test="${sessionScope.memberId eq review.lectureReviewMemberId}">
                             <button type="button" class="btn btn-warning btn-sm" id="btnModify">수정</button>
                             <button type="button" class="btn btn-danger btn-sm" id="btnDelete">삭제</button>
                         </c:if>

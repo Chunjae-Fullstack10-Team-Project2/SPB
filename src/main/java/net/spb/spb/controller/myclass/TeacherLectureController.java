@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.LectureDTO;
+import net.spb.spb.dto.lecture.LectureDTO;
 import net.spb.spb.dto.pagingsearch.LecturePageDTO;
 import net.spb.spb.service.teacher.TeacherServiceIf;
 import net.spb.spb.util.BreadcrumbUtil;
@@ -21,7 +21,7 @@ import java.util.Map;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/myclass/lecture")
+@RequestMapping("/myclass")
 public class TeacherLectureController {
 
     private final TeacherServiceIf teacherService;

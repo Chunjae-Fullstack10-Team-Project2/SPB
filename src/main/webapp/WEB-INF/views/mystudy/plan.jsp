@@ -1,95 +1,88 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: MAIN
-  Date: 2025-04-29
-  Time: 오후 3:21
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>나의 강의실</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
-
+    <title>학습계획표</title>
     <link rel="stylesheet" href="/resources/css/calendar.css" />
 </head>
 <body>
-    <%@include file="../common/header.jsp" %>
+    <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
+    <div class="content">
+        <div class="container my-5">
+            <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
 
-    <div class="container">
-        <h1>학습계획표</h1>
-        <button type="button" class="btn btn-primary" id="btnGoRegist">계획등록</button>
-        <div class="row">
-            <div class="col-12 col-lg-4" id="planList">
-
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2">학습계획표</h1>
+                <button type="button" class="btn btn-primary" id="btnGoRegist">계획등록</button>
             </div>
-            <div class="col-12 col-lg-8" id="calendarSection">
-                <div class="calendar">
-                    <div class="calendar-header">
-                        <input type="button" id="btnPrev" value="<" />
-                        <span id="calendarTitle"></span>
-                        <input type="button" id="btnNext" value=">" />
-                    </div>
-                    <div class="calendar-body">
-                        <div class="calendar-week">
-                            <div class="sunday">일</div>
-                            <div>월</div>
-                            <div>화</div>
-                            <div>수</div>
-                            <div>목</div>
-                            <div>금</div>
-                            <div class="saturday">토</div>
+            <div class="row">
+                <div class="col-12 col-lg-4" id="planList">
+
+                </div>
+                <div class="col-12 col-lg-8" id="calendarSection">
+                    <div class="calendar">
+                        <div class="calendar-header">
+                            <input type="button" id="btnPrev" value="<" />
+                            <span id="calendarTitle"></span>
+                            <input type="button" id="btnNext" value=">" />
                         </div>
-                        <div class="calendar-date" id="calendarDate"></div>
+                        <div class="calendar-body">
+                            <div class="calendar-week">
+                                <div class="sunday">일</div>
+                                <div>월</div>
+                                <div>화</div>
+                                <div>수</div>
+                                <div>목</div>
+                                <div>금</div>
+                                <div class="saturday">토</div>
+                            </div>
+                            <div class="calendar-date" id="calendarDate"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 모달 -->
+        <div id="modalPlan" class="modal" tabindex="-1" data-mode="">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">계획 상세</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form name="frmModal" method="post">
+                            <input type="hidden" name="planIdx" />
+                            <input type="hidden" name="planMemberId" />
+
+                            <label for="planDate" class="form-label">날짜</label>
+                            <input type="date" class="form-control mb-3" name="planDate" id="planDate"/>
+
+                            <label for="planLecture" class="form-label">강좌</label>
+                            <select class="form-select mb-3" name="planLectureIdx" id="planLecture">
+                                <option value="" selected>강좌를 선택하세요.</option>
+                                <c:forEach items="${lectureList}" var="lecture">
+                                    <option value="${lecture.lectureRegisterRefIdx}">${lecture.lectureTitle}</option>
+                                </c:forEach>
+                            </select>
+
+                            <label for="planContent" class="form-label">메모</label>
+                            <textarea class="form-control" name="planContent" id="planContent" style="resize: none;"></textarea>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="btnRegist">등록</button>
+                        <button type="button" class="btn btn-primary" id="btnModify">수정</button>
+                        <button type="button" class="btn btn-success" id="btnGoModify">수정</button>
+                        <button type="button" class="btn btn-danger" id="btnDelete">삭제</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCancel">취소</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- 모달 -->
-    <div id="modalPlan" class="modal" tabindex="-1" data-mode="">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title">계획 상세</h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form name="frmModal" method="post">
-                        <input type="hidden" name="planIdx" />
-                        <input type="hidden" name="planMemberId" />
-
-                        <label for="planDate" class="form-label">날짜</label>
-                        <input type="date" class="form-control mb-3" name="planDate" id="planDate"/>
-
-                        <label for="planLecture" class="form-label">강좌</label>
-                        <select class="form-select mb-3" name="planLectureIdx" id="planLecture">
-                            <option value="" selected>강좌를 선택하세요.</option>
-                            <c:forEach items="${lectureList}" var="lecture">
-                                <option value="${lecture.lectureRegisterRefIdx}">${lecture.lectureTitle}</option>
-                            </c:forEach>
-                        </select>
-
-                        <label for="planContent" class="form-label">메모</label>
-                        <textarea class="form-control" name="planContent" id="planContent" style="resize: none;"></textarea>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="btnRegist">등록</button>
-                    <button type="button" class="btn btn-primary" id="btnModify">수정</button>
-                    <button type="button" class="btn btn-success" id="btnGoModify">수정</button>
-                    <button type="button" class="btn btn-danger" id="btnDelete">삭제</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCancel">취소</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         // common function
         const getDateOnly = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());

@@ -27,11 +27,11 @@ public class LectureGradePageDTO extends PageDTO {
     @Builder.Default
     private String sort_direction = "desc";
 
-    private static final List<String> SORT_COLUMNS = List.of("lectureRegisterIdx", "lectureTitle", "lectureRegisterStartedAt", "lectureGradeScore");
+    private static final List<String> SORT_COLUMNS = List.of("lectureRegisterIdx", "lectureRegisterMemberId", "lectureTitle", "teacherName", "lectureRegisterStartedAt", "lectureGradeScore");
     private static final List<String> SORT_DIRECTIONS = List.of("asc", "desc");
 
     public String getSort_by() {
-        return SORT_COLUMNS.contains(this.sort_by) ? this.sort_by : "lectureReviewIdx";
+        return SORT_COLUMNS.contains(this.sort_by) ? this.sort_by : "lectureRegisterIdx";
     }
 
     public String getSort_direction() {

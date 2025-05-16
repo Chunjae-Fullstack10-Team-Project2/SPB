@@ -7,15 +7,14 @@
 <html>
 <head>
     <title>수강후기</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
     <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
     <div class="content">
-        <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
         <div class="container my-5">
-            <h1 class="mb-4">수강후기</h1>
+            <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
+            <h1 class="h2 mb-4">수강후기</h1>
 
             <%
                 List<Map<String, String>> searchSelect = new ArrayList<>();
@@ -29,6 +28,13 @@
 
             <c:if test="${not empty reviewList}">
                 <table class="table table-hover text-center align-middle">
+                    <colgroup>
+                        <col style="width: 40px">
+                        <col style="width: 120px">
+                        <col>
+                        <col style="width: 120px">
+                        <col style="width: 90px">
+                    </colgroup>
                     <thead class="table-light">
                     <tr>
                         <th>번호</th>
@@ -56,11 +62,13 @@
                                 </c:if>
                             </a>
                         </th>
+                        <th>강좌상세</th>
                     </tr>
                     </thead>
                     <tbody>
                         <c:forEach items="${reviewList}" var="review" varStatus="status">
-                            <tr>
+                            <tr class="clickable-row"
+                                data-href="/mystudy/review/view?idx=${review.lectureReviewIdx}&${pageDTO.linkUrl}">
                                 <td>${pageDTO.total_count - ((pageDTO.page_no - 1) * pageDTO.page_size) - status.index}</td>
                                 <td>
                                     <c:set var="rating" value="${review.lectureReviewGrade}" />
@@ -78,13 +86,15 @@
                                     </span>
                                 </td>
                                 <td class="text-start">
-                                    <a href="/mystudy/review/view?idx=${review.lectureReviewIdx}&${pageDTO.linkUrl}"
-                                       class="text-decoration-none text-dark">
-                                            <div>${review.lectureReviewContent}</div>
-                                            <div class="text-secondary small">[${review.teacherName} 선생님] ${review.lectureTitle}</div>
-                                    </a>
+                                    <div>${review.lectureReviewContent}</div>
+                                    <div class="text-secondary small">[${review.teacherName} 선생님] ${review.lectureTitle}</div>
                                 </td>
                                 <td>${fn:substring(review.lectureReviewCreatedAt, 0, 10)}</td>
+                                <td>
+                                    <a href="/lecture/lectureDetail?lectureIdx=${review.lectureReviewRefIdx}#review_${lectureReviewIdx}"
+                                       class="btn btn-sm btn-link text-decoration-none text-secondary">강좌상세
+                                    </a>
+                                </td>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -100,10 +110,26 @@
                 <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/pagingOnlyPage.jsp" />
             </div>
 
-            <div class="d-grid float-md-end">
-                <button class="btn btn-primary" type="button" id="btnRegist" onclick="location.href='/mystudy/review/regist?${pageDTO.linkUrl}'">등록</button>
+            <div class="d-flex gap-2 mb-2 justify-content-end">
+                <button class="btn btn-sm btn-primary" type="button" id="btnRegist" onclick="location.href='/mystudy/review/regist?${pageDTO.linkUrl}'">등록</button>
             </div>
         </div>
     </div>
+
+    <script>
+        document.querySelectorAll('.clickable-row').forEach(el => {
+            el.addEventListener('mouseover', function () {
+                this.style.cursor = "pointer";
+            });
+            el.addEventListener('click', function () {
+                const url = this.dataset.href;
+                if (url) window.location.href = url;
+            });
+        });
+
+        <c:if test="${not empty message}">
+            alert("${message}");
+        </c:if>
+    </script>
 </body>
 </html>

@@ -1,8 +1,7 @@
 package net.spb.spb.service.lecture;
 
 import net.spb.spb.dto.ChapterDTO;
-import net.spb.spb.dto.LectureDTO;
-import net.spb.spb.dto.TeacherDTO;
+import net.spb.spb.dto.lecture.LectureDTO;
 import net.spb.spb.dto.lecture.LectureReviewDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;

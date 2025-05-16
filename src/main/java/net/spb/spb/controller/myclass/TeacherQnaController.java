@@ -42,7 +42,8 @@ public class TeacherQnaController {
     public String list(
             @ModelAttribute TeacherQnaPageDTO pageDTO,
             HttpServletRequest req,
-            Model model) {
+            Model model
+    ) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 

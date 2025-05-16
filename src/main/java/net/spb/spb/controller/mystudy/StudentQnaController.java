@@ -4,15 +4,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.spb.spb.dto.lecture.StudentLectureResponseDTO;
-import net.spb.spb.dto.pagingsearch.StudentLecturePageDTO;
 import net.spb.spb.dto.pagingsearch.TeacherQnaPageDTO;
 import net.spb.spb.dto.teacher.TeacherQnaListRequestDTO;
 import net.spb.spb.dto.teacher.TeacherQnaResponseDTO;
-import net.spb.spb.service.lecture.StudentLectureServiceIf;
-import net.spb.spb.service.teacher.TeacherQnaService;
+import net.spb.spb.service.teacher.TeacherQnaServiceIf;
 import net.spb.spb.util.BreadcrumbUtil;
-import net.spb.spb.util.PagingUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,10 +22,9 @@ import java.util.Map;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/mystudy")
-public class MyStudyRoomController {
-    private final StudentLectureServiceIf studentLectureService;
-    private final TeacherQnaService teacherQnaService;
+@RequestMapping("/mystudy/qna")
+public class StudentQnaController {
+    private final TeacherQnaServiceIf teacherQnaService;
 
     private static final Map<String, String> ROOT_BREADCRUMB = Map.of("name", "나의학습방", "url", "/mystudy");
 
@@ -41,29 +36,8 @@ public class MyStudyRoomController {
         BreadcrumbUtil.addBreadcrumb(model, pages, ROOT_BREADCRUMB);
     }
 
-    @GetMapping("/lecture")
-    public String lecture(@ModelAttribute("pageDTO") StudentLecturePageDTO pageDTO, Model model, HttpServletRequest req) {
-        HttpSession session = req.getSession();
-        String memberId = (String) session.getAttribute("memberId");
-
-        String baseUrl = req.getRequestURI();
-        pageDTO.setLinkUrl(PagingUtil.buildLinkUrl(baseUrl, pageDTO));
-        pageDTO.setTotal_count(studentLectureService.getStudentLectureTotalCount(memberId, pageDTO));
-
-        List<StudentLectureResponseDTO> lectures = studentLectureService.getStudentLectureList(memberId, pageDTO);
-
-        String paging = PagingUtil.pagingArea(pageDTO);
-
-        model.addAttribute("lectureList", lectures);
-        model.addAttribute("paging", paging);
-
-        setBreadcrumb(model, Map.of("내 강의 목록", "/mystudy/lecture"));
-
-        return "mystudy/lecture";
-    }
-
-    @GetMapping("/qna")
-    public String qna(
+    @GetMapping("")
+    public String list(
             @ModelAttribute TeacherQnaPageDTO pageDTO,
             HttpServletRequest req,
             Model model

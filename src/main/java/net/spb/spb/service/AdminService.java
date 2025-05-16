@@ -5,7 +5,7 @@ import net.spb.spb.domain.LectureVO;
 import net.spb.spb.domain.ReportVO;
 import net.spb.spb.domain.TeacherVO;
 import net.spb.spb.dto.ChapterDTO;
-import net.spb.spb.dto.LectureDTO;
+import net.spb.spb.dto.lecture.LectureDTO;
 import net.spb.spb.dto.OrderDTO;
 import net.spb.spb.dto.TeacherDTO;
 import net.spb.spb.dto.member.MemberDTO;

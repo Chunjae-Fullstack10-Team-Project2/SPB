@@ -5,10 +5,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.ChapterDTO;
-import net.spb.spb.dto.LectureDTO;
+import net.spb.spb.dto.lecture.LectureDTO;
 import net.spb.spb.dto.pagingsearch.ChapterPageDTO;
 import net.spb.spb.service.AdminService;
-import net.spb.spb.util.BreadcrumbUtil;
 import net.spb.spb.util.FileUtil;
 import net.spb.spb.util.NewPagingUtil;
 import net.spb.spb.util.VideoUtil;
@@ -22,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 

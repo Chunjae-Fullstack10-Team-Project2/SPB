@@ -3,10 +3,8 @@ package net.spb.spb.service.lecture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.domain.LectureVO;
-import net.spb.spb.domain.TeacherVO;
 import net.spb.spb.dto.ChapterDTO;
-import net.spb.spb.dto.LectureDTO;
-import net.spb.spb.dto.TeacherDTO;
+import net.spb.spb.dto.lecture.LectureDTO;
 import net.spb.spb.dto.lecture.LectureReviewDTO;
 import net.spb.spb.dto.pagingsearch.PageRequestDTO;
 import net.spb.spb.dto.pagingsearch.SearchDTO;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service("lectureService")
 @Log4j2
