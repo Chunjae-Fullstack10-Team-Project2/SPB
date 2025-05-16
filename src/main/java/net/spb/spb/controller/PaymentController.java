@@ -10,6 +10,7 @@ import net.spb.spb.dto.*;
 import net.spb.spb.dto.lecture.LectureDTO;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.service.PaymentServiceIf;
+import net.spb.spb.util.StringEscapeUtils;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,12 +43,21 @@ public class PaymentController {
             RedirectAttributes redirectAttributes
     ) {
         String sessionId = (String) session.getAttribute("memberId");
-        if(!sessionId.equals(memberId)) {
+        if (!sessionId.equals(memberId)) {
             redirectAttributes.addFlashAttribute("errorMessage", "잘못된 접근입니다.");
             return "redirect:/";
         }
+
         List<CartDTO> cartList = paymentService.selectCart(memberId);
-        log.info("cartList: "+cartList);
+
+        // 이스케이프 복원 처리
+        cartList.forEach(cart -> {
+            if (cart.getLectureTitle() != null) {
+                cart.setLectureTitle(StringEscapeUtils.unescapeHtml4(cart.getLectureTitle()));
+            }
+        });
+
+        log.info("cartList: " + cartList);
         model.addAttribute("cartList", cartList);
         model.addAttribute("memberId", memberId);
         return "payment/cart";
@@ -242,17 +252,30 @@ public class PaymentController {
             MemberDTO memberDTO = paymentService.getMemberInfo(memberId);
             model.addAttribute("member", memberDTO);
             model.addAttribute("orderIdx", orderIdx);
+
             List<LectureDTO> lectureDTO = paymentService.getOrderLectureInfo(orderIdx);
+
+            // 🔽 lectureTitle 복원 처리
+            lectureDTO.forEach(lecture -> {
+                if (lecture.getLectureTitle() != null) {
+                    lecture.setLectureTitle(StringEscapeUtils.unescapeHtml4(lecture.getLectureTitle()));
+                }
+            });
+
             model.addAttribute("lectureDTO", lectureDTO);
             log.info("lectureDTO === " + lectureDTO);
-            if(lectureDTO.size()>0){
+
+            if (lectureDTO.size() > 0) {
                 model.addAttribute("lectureDTOSize", lectureDTO.size());
             }
+
             PaymentDTO paymentDTO = paymentService.getPaymentInfo(orderIdx);
             model.addAttribute("paymentDTO", paymentDTO);
             log.info("paymentDTO === " + paymentDTO);
+
             model.addAttribute("totalAmount", lectureDTO.stream().mapToInt(LectureDTO::getLectureAmount).sum());
-        }catch (Exception e){
+
+        } catch (Exception e) {
             System.out.println("🔥 예외 발생: " + e.getMessage());
             e.printStackTrace();
         }
