@@ -69,6 +69,7 @@ public class BoardController {
 
     @GetMapping("/{category}/view")
     public String view(@PathVariable("category") BoardCategory category,
+                       @ModelAttribute PostPageDTO pageDTO,
                        @RequestParam("idx") int idx,
                        Model model,
                        HttpSession session) {
@@ -84,7 +85,8 @@ public class BoardController {
         // 이스케이프된 문자 복원
         post.setPostContent(StringEscapeUtils.unescapeHtml4(post.getPostContent()));
         post.setPostComments(post.getPostComments().stream().peek(comment -> StringEscapeUtils.unescapeHtml4(comment.getPostCommentContent())).toList());
-
+        String queryString = pageDTO.toQueryString();
+        model.addAttribute("queryString", queryString);
         model.addAttribute("post", post);
         addBreadcrumb(model, category, "상세 보기");
         return "board/view";
@@ -93,7 +95,9 @@ public class BoardController {
     @GetMapping("/{category}/write")
     public String write(@PathVariable("category") BoardCategory category,
                         Model model,
-                        HttpSession session) {
+                        @ModelAttribute PostPageDTO pageDTO) {
+        String queryString = pageDTO.toQueryString();
+        model.addAttribute("queryString", queryString);
         addBreadcrumb(model, category, "글쓰기");
         return "board/regist";
     }
@@ -101,19 +105,21 @@ public class BoardController {
     @PostMapping("/{category}/write")
     public String writePOST(@RequestParam(name = "files") MultipartFile[] files,
                             @PathVariable("category") BoardCategory category,
+                            @ModelAttribute PostPageDTO pageDTO,
                             HttpSession session,
                             RedirectAttributes redirectAttributes,
                             @Valid @ModelAttribute PostDTO postDTO,
                             BindingResult bindingResult) throws IOException {
-
+        String queryString = pageDTO.toQueryString();
         // 제목 / 내용 체크
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getFieldErrors().stream()
-                    .map(FieldError::getDefaultMessage)  // 메시지만 추출
+                    .map(FieldError::getDefaultMessage)
                     .collect(Collectors.toList());
 
             redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
             redirectAttributes.addFlashAttribute("postDTO", postDTO);
+            redirectAttributes.addFlashAttribute("queryString", queryString);
             return "redirect:/board/" + category + "/write";
         }
 
@@ -123,19 +129,22 @@ public class BoardController {
         if (files.length > 10) {
             redirectAttributes.addFlashAttribute("errorMessage", "파일은 한 번에 최대 10개까지 업로드할 수 있습니다.");
             redirectAttributes.addFlashAttribute("postDTO", postDTO);
-            return "redirect:/board/" + category + "/write";
+            return "redirect:/board/" + category + "/write?"+queryString;
         }
 
+        // 파일 체크
         for (MultipartFile file : files) {
             if (file != null && !file.isEmpty() && file.getSize() > (10 * 1024 * 1024)) {
                 redirectAttributes.addFlashAttribute("errorMessage", "각 파일은 10MB 이하만 업로드할 수 있습니다.");
                 redirectAttributes.addFlashAttribute("postDTO", postDTO);
-                return "redirect:/board/" + category + "/write";
+                return "redirect:/board/" + category + "/write?"+queryString;
             }
         }
 
+        // 게시글 등록
         int postIdx = service.insertPost(postDTO);
 
+        // 파일 등록
         try {
             for (MultipartFile file : files) {
                 if (file != null && !file.isEmpty()) {
@@ -145,25 +154,28 @@ public class BoardController {
                 }
             }
         } catch (Exception e) {
-            log.info(e.getMessage());
+            log.error(e.getMessage());
         }
 
-        return "redirect:/board/" + category + "/list";
+        return "redirect:/board/" + category + "/list?" + queryString;
     }
 
     @GetMapping("/{category}/modify")
     public String modify(@PathVariable("category") BoardCategory category,
+                         @ModelAttribute PostPageDTO pageDTO,
                          @RequestParam("idx") int idx,
                          Model model,
                          HttpSession session,
                          RedirectAttributes redirectAttributes) {
+        String queryString = pageDTO.toQueryString();
         PostDTO postDTO = service.getPostByIdx(idx);
         String loginMemberId = (String) session.getAttribute("memberId");
         if (!loginMemberId.equals(postDTO.getPostMemberId())) {
             redirectAttributes.addFlashAttribute("errorMessage", "수정 권한이 없습니다.");
-            return "redirect:/board/"+category+"/list";
+            return "redirect:/board/"+category+"/list?"+queryString;
         }
         model.addAttribute("post", postDTO);
+        model.addAttribute("queryString", queryString);
         addBreadcrumb(model, category, "수정");
         return "board/modify";
     }
@@ -171,12 +183,14 @@ public class BoardController {
     @PostMapping("/{category}/modify")
     public String modifyPOST(@RequestParam(name = "files") MultipartFile[] files,
                              @PathVariable("category") BoardCategory category,
+                             @ModelAttribute PostPageDTO pageDTO,
                              @Valid @ModelAttribute PostDTO postDTO,
                              BindingResult bindingResult,
                              @RequestParam(name = "deleteFile", defaultValue = "") String[] deleteFile,
                              HttpSession session,
                              RedirectAttributes redirectAttributes) throws IOException {
-
+        String queryString = pageDTO.toQueryString();
+        log.info(queryString);
         // 제목 / 내용 체크
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getFieldErrors().stream()
@@ -184,26 +198,26 @@ public class BoardController {
                     .collect(Collectors.toList());
             redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
             redirectAttributes.addFlashAttribute("postDTO", postDTO);
-            return "redirect:/board/" + category + "/modify?idx="+postDTO.getPostIdx();
+            return "redirect:/board/" + category + "/modify?idx="+postDTO.getPostIdx() + "&" + queryString;
         }
 
         String sessionMemberId = (String) session.getAttribute("memberId");
         if (!sessionMemberId.equals(postDTO.getPostMemberId())) {
             redirectAttributes.addFlashAttribute("errorMessage", "수정 권한이 없습니다.");
-            return "redirect:/board/"+category+"/list";
+            return "redirect:/board/"+category+"/list?"+queryString;
         }
 
         if (files.length > 10) {
             redirectAttributes.addFlashAttribute("errorMessage", "파일은 한 번에 최대 10개까지 업로드할 수 있습니다.");
             redirectAttributes.addFlashAttribute("postDTO", postDTO);
-            return "redirect:/board/" + category + "/modify?idx="+postDTO.getPostIdx();
+            return "redirect:/board/" + category + "/modify?idx="+postDTO.getPostIdx() + "&" + queryString;
         }
 
         for (MultipartFile file : files) {
             if (file != null && !file.isEmpty() && file.getSize() > (10 * 1024 * 1024)) {
                 redirectAttributes.addFlashAttribute("errorMessage", "각 파일은 10MB 이하만 업로드할 수 있습니다.");
                 redirectAttributes.addFlashAttribute("postDTO", postDTO);
-                return "redirect:/board/" + category + "/modify?idx="+postDTO.getPostIdx();
+                return "redirect:/board/" + category + "/modify?idx="+postDTO.getPostIdx() + "&" + queryString;
             }
         }
 
@@ -235,16 +249,18 @@ public class BoardController {
             }
         }
 
-        return "redirect:/board/" + category + "/view?idx="+postDTO.getPostIdx();
+        return "redirect:/board/" + category + "/view?idx="+postDTO.getPostIdx() + "&" + queryString;
     }
 
     @PostMapping("/{category}/delete")
     @ResponseBody
     public Map<String, Object> deletePostAjax(@PathVariable("category") BoardCategory category,
+                                              @ModelAttribute PostPageDTO pageDTO,
                                               @ModelAttribute PostDTO postDTO,
                                               HttpSession session) {
-        Map<String, Object> result = new HashMap<>();
 
+        Map<String, Object> result = new HashMap<>();
+        result.put("queryString", pageDTO.toQueryString());
         String sessionMemberId = (String) session.getAttribute("memberId");
         if (!sessionMemberId.equals(postDTO.getPostMemberId())) {
             result.put("success", false);
@@ -256,7 +272,6 @@ public class BoardController {
         if (rtnResult > 0) {
             result.put("success", true);
             result.put("message", "게시글이 삭제되었습니다.");
-            result.put("redirect", "/board/" + category.name().toLowerCase() + "/list");
         } else {
             result.put("success", false);
             result.put("message", "삭제에 실패했습니다.");

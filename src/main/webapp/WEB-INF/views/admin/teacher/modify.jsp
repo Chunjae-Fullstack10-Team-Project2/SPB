@@ -23,7 +23,7 @@
         <h5 class="mb-0">선생님 수정</h5>
       </div>
       <div class="card-body">
-        <form name="frmModify" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
+        <form name="frmRegist" method="post" action="/admin/teacher/modify" class="needs-validation" novalidate enctype="multipart/form-data">
           <input type="hidden" name="teacherIdx" value="${teacherDTO.teacherIdx}">
           <input type="hidden" name="teacherProfileImg" value="${teacherDTO.teacherProfileImg}">
           <div class="mb-3">
@@ -72,7 +72,7 @@
 </div>
 <script>
   const btnCancel = document.getElementById('btnCancel').addEventListener('click', () => {
-    window.location.href="list";
+    window.location.href="manage";
   });
 
   const teacherSubjectInput = document.getElementById('teacherSubject');

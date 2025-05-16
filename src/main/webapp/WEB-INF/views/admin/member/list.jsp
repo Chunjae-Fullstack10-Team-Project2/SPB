@@ -93,7 +93,15 @@
                 </div>
             </form>
         </div>
-
+        <div class="text-right mb-2">
+            <select class="form-select form-select-sm w-auto" name="page_size" id="selectPageSize">
+                <option value="5" ${searchDTO.page_size == 5 ? "selected":""}>5개씩</option>
+                <option value="10" ${searchDTO.page_size == 10 ? "selected":""}>10개씩</option>
+                <option value="15" ${searchDTO.page_size == 15 ? "selected":""}>15개씩</option>
+                <option value="20" ${searchDTO.page_size == 20 ? "selected":""}>20개씩</option>
+                <option value="30" ${searchDTO.page_size == 30 ? "selected":""}>30개씩</option>
+            </select>
+        </div>
         <table class="table table-hover text-center align-middle">
             <colgroup>
                 <col span="1" style="width: 80px">
@@ -241,6 +249,13 @@
 
     document.getElementById('btnReset').addEventListener('click', function() {
         window.location.href="list";
+    })
+
+    document.getElementById("selectPageSize").addEventListener('change', function () {
+        const pageSize = this.value;
+        const url = new URL(window.location.href);
+        url.searchParams.set("page_size", pageSize);
+        window.location.href = url.toString();
     });
 </script>
 </body>

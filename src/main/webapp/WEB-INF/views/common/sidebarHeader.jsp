@@ -344,7 +344,7 @@
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li><a href="${cp}/admin/member/list"
                                class="d-inline-flex text-decoration-none rounded text-dark">회원 관리</a></li>
-                        <li><a href="${cp}/admin/teacher/list"
+                        <li><a href="${cp}/admin/teacher/manage"
                                class="d-inline-flex text-decoration-none rounded text-dark">선생님 관리</a></li>
                         <li><a href="${cp}/admin/lecture/list"
                                class="d-inline-flex text-decoration-none rounded text-dark">강좌 관리</a></li>

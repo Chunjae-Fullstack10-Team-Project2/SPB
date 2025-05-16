@@ -114,12 +114,20 @@ public class AdminService {
         return adminMapper.selectSalesListForExport(param);
     }
 
-    public List<MemberDTO> selectTeacherWithoutTeacherProfile() {
-        return adminMapper.selectTeacherWithoutTeacherProfile();
+    public List<MemberDTO> selectTeacherWithoutTeacherProfile(TeacherPageDTO teacherPageDTO) {
+        return adminMapper.selectTeacherWithoutTeacherProfile(teacherPageDTO);
     }
 
-    public List<MemberDTO> selectTeacherWithTeacherProfile() {
-        return adminMapper.selectTeacherWithTeacherProfile();
+    public List<MemberDTO> selectTeacherWithTeacherProfile(TeacherPageDTO teacherPageDTO) {
+        return adminMapper.selectTeacherWithTeacherProfile(teacherPageDTO);
+    }
+
+    public int selectTeacherWithoutTeacherProfileCount(TeacherPageDTO teacherPageDTO) {
+        return adminMapper.selectTeacherWithoutTeacherProfileCount(teacherPageDTO);
+    }
+
+    public int selectTeacherWithTeacherProfileCount(TeacherPageDTO teacherPageDTO) {
+        return adminMapper.selectTeacherWithTeacherProfileCount(teacherPageDTO);
     }
 
     public int modifyTeacherProfile(TeacherDTO teacherDTO) {
