@@ -31,6 +31,12 @@ public class MemberStateCheckInterceptor implements HandlerInterceptor {
 
         String memberState = memberDTO.getMemberState();
 
+        if (memberState.equals("6")) {
+            session.invalidate(); // 세션 강제 종료
+            response.sendRedirect(cp + "/login");
+            return false;
+        }
+
         // 비밀번호 변경 90일 경과
         if (memberState.equals("3") &&
                 !(uri.startsWith(cp + "/main") || uri.startsWith(cp + "/mypage/changePwd"))) {

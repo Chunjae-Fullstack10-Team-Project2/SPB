@@ -125,7 +125,8 @@ public class MemberController {
     @GetMapping("/naver/callback")
     public String naverCallback(@RequestParam("code") String code,
                                 @RequestParam("state") String state,
-                                HttpSession session) throws Exception {
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) throws Exception {
 
         String accessToken = naverLoginService.getAccessToken(code, state);
         MemberDTO naverMemberDto = naverLoginService.getUserInfo(accessToken);
@@ -138,6 +139,12 @@ public class MemberController {
 
         MemberDTO memberDTO = memberService.getMemberById(naverMemberId);
         LocalDate now = LocalDate.now();
+
+        if ("6".equals(memberDTO.getMemberState())) {
+            session.invalidate();
+            redirectAttributes.addFlashAttribute("errorMessage", "탈퇴된 회원입니다. 로그인할 수 없습니다.");
+            return "redirect:/login";
+        }
 
         // 1. 휴면 상태 검사 먼저
         if (memberDTO.getMemberLastLogin() != null) {
@@ -242,6 +249,12 @@ public class MemberController {
         if (returnValue == 1) {
             MemberDTO fullMember = memberService.getMemberById(memberDTO.getMemberId());
             LocalDate now = LocalDate.now();
+
+            if ("6".equals(fullMember.getMemberState())) {
+                session.invalidate();
+                model.addAttribute("errorMessage", "탈퇴된 회원입니다. 로그인할 수 없습니다.");
+                return "login/login";
+            }
 
             // 휴면 상태 먼저 확인
             if (fullMember.getMemberLastLogin() != null) {
