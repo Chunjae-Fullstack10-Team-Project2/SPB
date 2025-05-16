@@ -46,8 +46,10 @@
             <mvc:mapping path="/notice/*"/>
             <mvc:mapping path="/qna/regist"/>
             <mvc:mapping path="/mypage/**"/>
-            <mvc:mapping path="/mystudy/*"/>
-            <mvc:mapping path="/myclass/*"/>
+            <mvc:mapping path="/mystudy"/>
+            <mvc:mapping path="/myclass*"/>
+            <mvc:mapping path="/mystudy/**"/>
+            <mvc:mapping path="/myclass/**"/>
             <mvc:mapping path="/teacher/personal/qna/regist"/>
             <mvc:exclude-mapping path="/notice/list"/>
             <mvc:exclude-mapping path="/notice/view"/>

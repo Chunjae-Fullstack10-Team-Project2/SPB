@@ -94,8 +94,12 @@ public class TeacherController {
 
     @GetMapping("/personal/library")
     public String teacherLibraryList(@ModelAttribute TeacherFilePageDTO pageDTO, Model model) {
+        int totalCount = teacherFileService.getTeacherFileTotalCount(pageDTO.getTeacherId(), pageDTO);
+        pageDTO.setTotal_count(totalCount);
+
         List<TeacherFileResponseDTO> files = teacherFileService.getTeacherFileList(pageDTO.getTeacherId(), pageDTO);
 
+        model.addAttribute("totalCount", totalCount);
         model.addAttribute("pageDTO", pageDTO);
         model.addAttribute("fileList", files);
 
@@ -128,8 +132,12 @@ public class TeacherController {
 
     @GetMapping("/personal/notice")
     public String teacherNoticeList(@ModelAttribute TeacherNoticePageDTO pageDTO, Model model) {
+        int totalCount = teacherNoticeService.getTeacherNoticeTotalCount(pageDTO.getTeacherId(), pageDTO);
+        pageDTO.setTotal_count(totalCount);
+
         List<TeacherNoticeResponseDTO> notices = teacherNoticeService.getTeacherNoticeList(pageDTO.getTeacherId(), pageDTO);
 
+        model.addAttribute("totalCount", totalCount);
         model.addAttribute("pageDTO", pageDTO);
         model.addAttribute("noticeList", notices);
 
@@ -170,8 +178,12 @@ public class TeacherController {
                 .where_value(teacherId)
                 .build();
 
+        int totalCount = teacherQnaService.getTeacherQnaTotalCount(reqDTO, pageDTO);
+        pageDTO.setTotal_count(totalCount);
+
         List<TeacherQnaResponseDTO> qnas = teacherQnaService.getTeacherQnaList(reqDTO, pageDTO);
 
+        model.addAttribute("totalCount", totalCount);
         model.addAttribute("pageDTO", pageDTO);
         model.addAttribute("qnaList", qnas);
 

@@ -12,7 +12,7 @@
 <body>
     <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
     <div class="content">
-        <div class="container my-5">
+        <div class="container my-5 pb-5">
             <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
             <div class="container my-5">
                 <h1 class="mb-4">공지사항</h1>
@@ -51,7 +51,7 @@
                         <tbody>
                         <c:forEach items="${noticeList}" var="notice" varStatus="status">
                             <tr ${notice.teacherNoticeFixed == 1 ? "class='table-secondary'" : ""}>
-                                <td>${pageDTO.total_count - ((pageDTO.page_no - 1) * pageDTO.page_size) - status.index}</td>
+                                <td>${(pageDTO.page_no - 1) * pageDTO.page_size + status.index + 1}</td>
                                 <td class="text-start">
                                     <a href="/myclass/notice/view?idx=${notice.teacherNoticeIdx}&${pageDTO.linkUrl}"
                                        class="text-decoration-none text-dark">

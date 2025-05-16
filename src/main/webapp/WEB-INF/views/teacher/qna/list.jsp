@@ -76,7 +76,7 @@
                     <tbody>
                     <c:forEach items="${qnaList}" var="qna" varStatus="status">
                         <tr>
-                            <td>${pageDTO.total_count - ((pageDTO.page_no - 1) * pageDTO.page_size) - status.index}</td>
+                            <td>${(pageDTO.page_no - 1) * pageDTO.page_size + status.index + 1}</td>
                             <td class="text-start">
                                 <c:if test="${not empty qna.teacherQnaPwd}">
                                     <i class="bi bi-lock-fill"></i>

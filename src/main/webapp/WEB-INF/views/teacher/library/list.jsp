@@ -7,14 +7,13 @@
 <html>
 <head>
     <title>자료실</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
     <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
     <div class="content">
-        <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
-        <div class="container my-5">
+        <div class="container my-5 pb-5">
+            <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
             <h1 class="h2 mb-4">자료실</h1>
 
             <%
@@ -49,7 +48,7 @@
                     <tbody>
                         <c:forEach items="${fileList}" var="file" varStatus="status">
                             <tr>
-                                <td>${pageDTO.total_count - ((pageDTO.page_no - 1) * pageDTO.page_size) - status.index}</td>
+                                <td>${(pageDTO.page_no - 1) * pageDTO.page_size + status.index + 1}</td>
                                 <td class="text-start">
                                     <a href="/teacher/personal/library/view?idx=${file.teacherFileIdx}&${pageDTO.linkUrl}"
                                        class="text-decoration-none text-dark">

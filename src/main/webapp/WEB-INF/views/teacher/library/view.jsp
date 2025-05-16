@@ -12,7 +12,7 @@
 <body>
     <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/sidebarHeader.jsp" />
     <div class="content">
-        <div class="container">
+        <div class="container my-5 pb-5">
             <c:import url="${pageContext.request.contextPath}/WEB-INF/views/common/breadcrumb.jsp" />
             <div class="card">
                 <div class="card-body">
