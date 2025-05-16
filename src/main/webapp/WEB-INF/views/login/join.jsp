@@ -476,14 +476,26 @@
         }
     });
 
-    $('#memberName').on('input', function () {
-        const oldVal = $(this).val();
-        const newVal = oldVal.replace(/[^가-힣a-zA-Z]/g, '');
-        if (oldVal !== newVal) {
-            $(this).val(newVal);
-            showInputToast('이름은 한글 또는 영문만 입력 가능합니다.');
-        }
-    });
+    let isComposing = false;
+
+    $('#memberName')
+        .on('compositionstart', function () {
+            isComposing = true;
+        })
+        .on('compositionend', function () {
+            isComposing = false;
+            $(this).trigger('input'); // 조합 끝나면 input 다시 트리거
+        })
+        .on('input', function () {
+            if (isComposing) return; // 조합 중엔 무시
+
+            const oldVal = $(this).val();
+            const newVal = oldVal.replace(/[^가-힣a-zA-Z]/g, '');
+            if (oldVal !== newVal) {
+                $(this).val(newVal);
+                showInputToast('이름은 한글 또는 영문만 입력 가능합니다.');
+            }
+        });
 
     $('#memberZipCode').on('input', function () {
         const oldVal = $(this).val();
