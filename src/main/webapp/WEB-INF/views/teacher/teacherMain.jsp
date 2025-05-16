@@ -83,7 +83,7 @@
         %>
         <jsp:include page="../common/searchBox.jsp"/>
         <div class="d-flex flex-wrap gap-2 border-bottom pb-2 mb-4">
-            <a href="/teacher/main"
+            <a href="/teacher"
                class="btn btn-outline-secondary rounded-pill
               ${empty param.subject ? 'active btn-primary text-white border-primary' : ''}">
                 전체

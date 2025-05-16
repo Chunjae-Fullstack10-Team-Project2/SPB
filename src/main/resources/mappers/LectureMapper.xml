@@ -127,14 +127,21 @@
         where reportRefType = 'LECTURE_REVIEW' and reportRefIdx = #{dto.lectureReviewRefIdx} and reportMemberId = #{dto.lectureReviewMemberId}
         )
     </insert>
-    <select id="selectBookmark">
-        select bookmarkLectureIdx
-        from tbl_bookmark
-        where bookmarkLectureIdx in
-              <foreach collection="lectureIdxList" item="idx" open="(" separator="," close=")">
-                 #{idx}
-              </foreach>
-        and bookmarkMemberId = #{memberId}
+    <select id="selectBookmark" parameterType="map" resultType="int">
+        SELECT bookmarkLectureIdx
+        FROM tbl_bookmark
+        <where>
+            <if test="lectureIdxList != null and lectureIdxList.size() > 0">
+                bookmarkLectureIdx IN
+                <foreach collection="lectureIdxList" item="idx" open="(" separator="," close=")">
+                    #{idx}
+                </foreach>
+                AND bookmarkMemberId = #{memberId}
+            </if>
+            <if test="lectureIdxList == null or lectureIdxList.size() == 0">
+                1 = 0
+            </if>
+        </where>
     </select>
 
     <select id="selectLectureByIdx" resultType="net.spb.spb.domain.LectureVO">
