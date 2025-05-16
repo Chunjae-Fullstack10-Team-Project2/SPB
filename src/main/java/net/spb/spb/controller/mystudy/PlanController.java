@@ -9,6 +9,7 @@ import net.spb.spb.dto.mystudy.PlanResponseDTO;
 import net.spb.spb.dto.lecture.StudentLectureResponseDTO;
 import net.spb.spb.service.PlanServiceIf;
 import net.spb.spb.service.lecture.StudentLectureServiceIf;
+import net.spb.spb.util.StringEscapeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,8 +34,13 @@ public class PlanController {
 
         List<StudentLectureResponseDTO> lectures = studentLectureService.getStudentLectureList(memberId, null);
 
-        model.addAttribute("lectureList", lectures);
+        lectures.forEach(lecture -> {
+            if (lecture.getLectureTitle() != null) {
+                lecture.setLectureTitle(StringEscapeUtils.unescapeHtml4(lecture.getLectureTitle()));
+            }
+        });
 
+        model.addAttribute("lectureList", lectures);
         return "mystudy/plan";
     }
 
@@ -84,7 +90,18 @@ public class PlanController {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        return planService.getPlanListByDay(memberId, LocalDate.parse(date));
+        List<PlanResponseDTO> plans = planService.getPlanListByDay(memberId, LocalDate.parse(date));
+
+        plans.forEach(plan -> {
+            if (plan.getPlanContent() != null) {
+                plan.setPlanContent(StringEscapeUtils.unescapeHtml4(plan.getPlanContent()));
+            }
+            if (plan.getLectureTitle() != null) {
+                plan.setLectureTitle(StringEscapeUtils.unescapeHtml4(plan.getLectureTitle()));
+            }
+        });
+
+        return plans;
     }
 
     @GetMapping(value="/search", params={"date1", "date2"})
@@ -93,12 +110,29 @@ public class PlanController {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
-        return planService.getPlanListByMonth(memberId, LocalDate.parse(date1), LocalDate.parse(date2));
+        List<PlanResponseDTO> plans = planService.getPlanListByMonth(memberId, LocalDate.parse(date1), LocalDate.parse(date2));
+
+        plans.forEach(plan -> {
+            if (plan.getPlanContent() != null) {
+                plan.setPlanContent(StringEscapeUtils.unescapeHtml4(plan.getPlanContent()));
+            }
+            if (plan.getLectureTitle() != null) {
+                plan.setLectureTitle(StringEscapeUtils.unescapeHtml4(plan.getLectureTitle()));
+            }
+        });
+
+        return plans;
     }
 
     @GetMapping("/{idx}")
     @ResponseBody
     public PlanResponseDTO getPlanByIdx(@PathVariable("idx") int idx) {
-        return planService.getPlanByIdx(idx);
+        PlanResponseDTO plan = planService.getPlanByIdx(idx);
+
+        if (plan.getPlanContent() != null) {
+            plan.setPlanContent(StringEscapeUtils.unescapeHtml4(plan.getPlanContent()));
+        }
+
+        return plan;
     }
 }

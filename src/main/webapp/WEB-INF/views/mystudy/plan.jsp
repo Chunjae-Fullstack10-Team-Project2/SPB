@@ -13,21 +13,21 @@
     <title>나의 강의실</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+<%--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>--%>
 
     <link rel="stylesheet" href="/resources/css/calendar.css" />
 </head>
 <body>
     <%@include file="../common/header.jsp" %>
 
-    <div class="container">
+    <div class="container content-nonside">
         <h1>학습계획표</h1>
         <button type="button" class="btn btn-primary" id="btnGoRegist">계획등록</button>
         <div class="row">
             <div class="col-12 col-lg-4" id="planList">
 
             </div>
-            <div class="col-12 col-lg-8" id="calendarSection">
+            <div class="col-12 col-lg-8 pb-5" id="calendarSection">
                 <div class="calendar">
                     <div class="calendar-header">
                         <input type="button" id="btnPrev" value="<" />
@@ -198,6 +198,8 @@
         }
 
         const renderDayPlans = (plans) => {
+            console.log('day plan:', plans);
+
             const planList = document.getElementById('planList');
             planList.innerHTML = '';
 
