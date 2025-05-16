@@ -10,7 +10,6 @@ import net.spb.spb.dto.*;
 import net.spb.spb.dto.lecture.LectureDTO;
 import net.spb.spb.dto.member.MemberDTO;
 import net.spb.spb.service.PaymentServiceIf;
-import net.spb.spb.util.StringEscapeUtils;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,13 +48,6 @@ public class PaymentController {
         }
 
         List<CartDTO> cartList = paymentService.selectCart(memberId);
-
-        // 이스케이프 복원 처리
-        cartList.forEach(cart -> {
-            if (cart.getLectureTitle() != null) {
-                cart.setLectureTitle(StringEscapeUtils.unescapeHtml4(cart.getLectureTitle()));
-            }
-        });
 
         log.info("cartList: " + cartList);
         model.addAttribute("cartList", cartList);
@@ -254,13 +246,6 @@ public class PaymentController {
             model.addAttribute("orderIdx", orderIdx);
 
             List<LectureDTO> lectureDTO = paymentService.getOrderLectureInfo(orderIdx);
-
-            // 🔽 lectureTitle 복원 처리
-            lectureDTO.forEach(lecture -> {
-                if (lecture.getLectureTitle() != null) {
-                    lecture.setLectureTitle(StringEscapeUtils.unescapeHtml4(lecture.getLectureTitle()));
-                }
-            });
 
             model.addAttribute("lectureDTO", lectureDTO);
             log.info("lectureDTO === " + lectureDTO);
