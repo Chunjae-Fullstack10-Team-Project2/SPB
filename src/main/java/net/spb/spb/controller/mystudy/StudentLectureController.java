@@ -57,7 +57,7 @@ public class StudentLectureController {
 
         List<StudentLectureResponseDTO> lectures = studentLectureService.getStudentLectureList(memberId, pageDTO);
         lectures.forEach(dto -> {
-            boolean hasReview = lectureReviewService.hasLectureReview(memberId, dto.getLectureRegisterIdx());
+            boolean hasReview = lectureReviewService.hasLectureReview(memberId, dto.getLectureRegisterRefIdx());
             dto.setHasLectureReview(hasReview);
         });
 

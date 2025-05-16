@@ -26,13 +26,13 @@
         </div>
 
         <div class="d-flex flex-column justify-content-center" style="gap: 0.4rem; line-height: 1.5;">
-            <a href="/myclass/qna" class="text-decoration-none text-primary fw-semibold">
+            <a href="/teacher/personal/qna?teacherId=${teacherDTO.teacherId}" class="text-decoration-none text-primary fw-semibold">
                 💬 질문 있어요
             </a>
-            <a href="/myclass/notice" class="text-decoration-none fw-semibold" style="color: red;">
+            <a href="/teacher/personal/notice?teacherId=${teacherDTO.teacherId}" class="text-decoration-none fw-semibold" style="color: red;">
                 📢 공지합니다
             </a>
-            <a href="/myclass/library" class="text-decoration-none fw-semibold text-dark">
+            <a href="/teacher/personal/library?teacherId=${teacherDTO.teacherId}" class="text-decoration-none fw-semibold text-dark">
                 📁 자료실
             </a>
         </div>

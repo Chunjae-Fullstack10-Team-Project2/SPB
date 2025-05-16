@@ -2,6 +2,7 @@ package net.spb.spb.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.spb.spb.dto.lecture.LectureDTO;
@@ -9,6 +10,7 @@ import net.spb.spb.dto.TeacherDTO;
 import net.spb.spb.dto.pagingsearch.*;
 import net.spb.spb.dto.teacher.*;
 import net.spb.spb.service.teacher.TeacherFileServiceIf;
+import net.spb.spb.service.teacher.TeacherNoticeServiceIf;
 import net.spb.spb.service.teacher.TeacherQnaServiceIf;
 import net.spb.spb.service.teacher.TeacherServiceIf;
 import net.spb.spb.util.BreadcrumbUtil;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -32,6 +35,7 @@ public class TeacherController {
     private final TeacherServiceIf teacherService;
     private final TeacherQnaServiceIf teacherQnaService;
     private final TeacherFileServiceIf teacherFileService;
+    private final TeacherNoticeServiceIf teacherNoticeService;
 
     private static final Map<String, String> ROOT_BREADCRUMB = Map.of("name", "선생님", "url", "/teacher");
 
@@ -121,6 +125,40 @@ public class TeacherController {
         return "teacher/library/view";
     }
 
+    @GetMapping("/personal/notice")
+    public String teacherNoticeList(@ModelAttribute TeacherNoticePageDTO pageDTO, Model model) {
+        List<TeacherNoticeResponseDTO> notices = teacherNoticeService.getTeacherNoticeList(pageDTO.getTeacherId(), pageDTO);
+
+        model.addAttribute("pageDTO", pageDTO);
+        model.addAttribute("noticeList", notices);
+
+        setBreadcrumb(model, Map.of("공지사항", "/teacher/notice"));
+
+        return "teacher/notice/list";
+    }
+
+    @GetMapping("/personal/notice/view")
+    public String teacherNoticeView(
+            @ModelAttribute TeacherFilePageDTO pageDTO,
+            @RequestParam("idx") int idx,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
+        TeacherNoticeResponseDTO teacherNoticeDTO = teacherNoticeService.getTeacherNoticeByIdx(idx);
+
+        if (teacherNoticeDTO == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "요청한 자료를 찾을 수 없습니다.");
+            return "redirect:/teacher/personal/notice?teacherId=" + pageDTO.getTeacherId();
+        }
+
+        model.addAttribute("pageDTO", pageDTO);
+        model.addAttribute("teacherNoticeDTO", teacherNoticeDTO);
+
+        setBreadcrumb(model, Map.of("공지사항", "/teacher/notice"), Map.of("공지사항 상세보기", "/teacher/notice/view"));
+
+        return "teacher/notice/view";
+    }
+
     @GetMapping("/personal/qna")
     public String teacherQnaList(@ModelAttribute TeacherQnaPageDTO pageDTO, Model model) {
         String teacherId = pageDTO.getTeacherId();
@@ -142,10 +180,20 @@ public class TeacherController {
     }
 
     @GetMapping("/personal/qna/view")
-    public String teacherQnaView(@ModelAttribute TeacherQnaPageDTO pageDTO, @RequestParam("idx") int idx, Model model) {
+    public String teacherQnaView(
+            @ModelAttribute TeacherQnaPageDTO pageDTO,
+            @RequestParam("idx") int idx,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
         String teacherId = pageDTO.getTeacherId();
         TeacherDTO teacherDTO = teacherService.selectTeacher(teacherId);
         TeacherQnaResponseDTO teacherQnaDTO = teacherQnaService.getTeacherQnaByIdx(idx);
+
+        if (teacherQnaDTO == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "요청한 QnA를 찾을 수 없습니다.");
+            return "redirect:/teacher/personal/qna?teacherId=" + pageDTO.getTeacherId();
+        }
 
         model.addAttribute("pageDTO", pageDTO);
         model.addAttribute("teacherQnaDTO", teacherQnaDTO);
@@ -155,47 +203,59 @@ public class TeacherController {
         return "teacher/qna/view";
     }
 
-    @GetMapping("/personal/qna/answer")
-    public String teacherQnaAnswerGET(@ModelAttribute TeacherQnaPageDTO pageDTO, @RequestParam("idx") int idx, Model model) {
+    @GetMapping("/personal/qna/regist")
+    public String teacherQnaRegistGET(@ModelAttribute TeacherQnaPageDTO pageDTO, Model model) {
         String teacherId = pageDTO.getTeacherId();
         TeacherDTO teacherDTO = teacherService.selectTeacher(teacherId);
-        TeacherQnaResponseDTO teacherQnaDTO = teacherQnaService.getTeacherQnaByIdx(idx);
-
         model.addAttribute("pageDTO", pageDTO);
-        model.addAttribute("teacherQnaDTO", teacherQnaDTO);
-
-        setBreadcrumb(model, Map.of(teacherDTO.getTeacherName() + " 선생님", "/teacher/personal"), Map.of("QnA", "/teacher/personal/qna"), Map.of("QnA 답변하기", "/teacher/personal/qna/answer"));
-
-        return "teacher/qna/answer";
+        setBreadcrumb(model, Map.of(teacherDTO.getTeacherName() + " 선생님", "/teacher/personal"), Map.of("QnA", "/teacher/personal/qna"), Map.of("QnA 등록", "/teacher/personal/qna/regist"));
+        return "teacher/qna/regist";
     }
 
-//    @PostMapping("/personal/qna/answer")
-//    public String teacherQnaAnswerPOST(
-//            @ModelAttribute TeacherQnaPageDTO pageDTO,
-//            @ModelAttribute TeacherQnaDTO teacherQnaDTO,
-//            Model model,
-//            HttpServletRequest req
-//    ) {
-//        HttpSession session = req.getSession();
-//        String memberId = (String) session.getAttribute("memberId");
-//
-//        teacherQnaService.updateTeacherAnswer(memberId, teacherQnaDTO);
-//
-//        model.addAttribute("pageDTO", pageDTO);
-//        model.addAttribute("teacherQnaDTO", teacherQnaDTO);
-//
-//        return "redirect:/teacher/personal/qna/view?idx=" + teacherQnaDTO.getTeacherQnaIdx() + "&" + pageDTO.getLinkUrl();
-//    }
+    @PostMapping("/personal/qna/regist")
+    public String teacherQnaRegistPOST(
+            @ModelAttribute TeacherQnaPageDTO pageDTO,
+            @Valid @ModelAttribute TeacherQnaQuestionDTO teacherQnaDTO,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest req
+    ) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("message", "잘못된 입력이 있습니다. 다시 확인해주세요.");
+            redirectAttributes.addFlashAttribute("teacherQnaDTO", teacherQnaDTO);
+            return "redirect:/teacher/personal/qna/regist?" + pageDTO.getLinkUrl();
+        }
+
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        teacherQnaDTO.setTeacherQnaQMemberId(memberId);
+        teacherQnaService.createTeacherQuestion(teacherQnaDTO);
+
+        return "redirect:/teacher/personal/qna?" + pageDTO.getLinkUrl();
+    }
 
     @GetMapping("/personal/qna/delete")
     public String teacherQnaDelete(
             @ModelAttribute TeacherQnaPageDTO pageDTO,
             @RequestParam("idx") int idx,
+            RedirectAttributes redirectAttributes,
             Model model,
             HttpServletRequest req
     ) {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
+
+        TeacherQnaResponseDTO teacherQnaDTO = teacherQnaService.getTeacherQnaByIdx(idx);
+
+        if (teacherQnaDTO == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "요청한 QnA를 찾을 수 없습니다.");
+            return "redirect:/teacher/personal/qna?teacherId=" + pageDTO.getTeacherId();
+        }
+        if (!teacherQnaDTO.getTeacherQnaQMemberId().equals(memberId)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "삭제 권한이 없습니다.");
+            return "redirect:/teacher/personal/qna?teacherId=" + pageDTO.getTeacherId() + "&idx=" + idx;
+        }
 
         teacherQnaService.deleteTeacherQuestionByIdx(idx);
 
