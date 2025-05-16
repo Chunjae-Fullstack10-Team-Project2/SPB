@@ -39,7 +39,7 @@ public class TeacherController {
 
     private static final Map<String, String> ROOT_BREADCRUMB = Map.of("name", "선생님", "url", "/teacher");
 
-    private void setBreadcrumb(Model model, Map<String, String> ... page) {
+    private void setBreadcrumb(Model model, Map<String, String>... page) {
         LinkedHashMap<String, String> pages = new LinkedHashMap<>();
         for (Map<String, String> p : page) {
             pages.putAll(p);
@@ -49,14 +49,16 @@ public class TeacherController {
 
     @GetMapping("")
     public String teacherMain(
-            @RequestParam(value="subject", required = false) String subject,
+            @RequestParam(value = "subject", required = false) String subject,
             Model model,
             @ModelAttribute SearchDTO searchDTO,
             @ModelAttribute PageRequestDTO pageRequestDTO
     ) {
-        pageRequestDTO.setPageSize(12);
+        if (pageRequestDTO.getPageSize() == 10) {
+            pageRequestDTO.setPageSize(12);
+        }
         List<TeacherDTO> teacherList;
-        if(subject == null || subject.isBlank()) {
+        if (subject == null || subject.isBlank()) {
             teacherList = teacherService.getAllTeacher(searchDTO, pageRequestDTO);
         } else {
             teacherList = teacherService.getTeacherMain(subject, searchDTO, pageRequestDTO);
@@ -84,9 +86,9 @@ public class TeacherController {
         model.addAttribute("bookmarked", bookmarked);
 
         TeacherDTO teacherDTO = teacherService.selectTeacher(teacherId);
-        log.info("teacherDTO: {}",teacherDTO);
+        log.info("teacherDTO: {}", teacherDTO);
         List<LectureDTO> lectureList = teacherService.selectTeacherLecture(teacherId);
-        log.info("lectureList: {}",lectureList);
+        log.info("lectureList: {}", lectureList);
         model.addAttribute("teacherDTO", teacherDTO);
         model.addAttribute("lectureList", lectureList);
         return "teacher/teacherPersonal";
