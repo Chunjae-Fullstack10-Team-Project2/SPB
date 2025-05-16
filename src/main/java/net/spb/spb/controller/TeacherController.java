@@ -54,6 +54,7 @@ public class TeacherController {
             @ModelAttribute SearchDTO searchDTO,
             @ModelAttribute PageRequestDTO pageRequestDTO
     ) {
+        pageRequestDTO.setPageSize(12);
         List<TeacherDTO> teacherList;
         if(subject == null || subject.isBlank()) {
             teacherList = teacherService.getAllTeacher(searchDTO, pageRequestDTO);
